@@ -2,6 +2,7 @@ package it.polimi.ingsw.galaxytrucker.model.gameClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.EventCard;
 
+import java.util.Collections;
 import java.util.List;
 
 public class Deck {
@@ -30,4 +31,5 @@ public class Deck {
     public void shuffle(){
         Collections.shuffle(cards);
     }
+
 }

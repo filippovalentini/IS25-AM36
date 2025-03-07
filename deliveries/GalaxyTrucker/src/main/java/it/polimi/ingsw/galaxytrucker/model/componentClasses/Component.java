@@ -22,7 +22,7 @@ public class Component {
     public String getImagePath() {
         return imagePath;
     }
-    public void rotateRight() {
+    /*public void rotateRight() {
         if(orientation == Orientation.NORTH) {
             orientation = Orientation.EAST;
         }
@@ -35,7 +35,7 @@ public class Component {
         else {
             orientation = Orientation.NORTH;
         }
-    }
+    }*/
     public void rotateLeft() {
         if(orientation == Orientation.NORTH) {
             orientation = Orientation.WEST;
