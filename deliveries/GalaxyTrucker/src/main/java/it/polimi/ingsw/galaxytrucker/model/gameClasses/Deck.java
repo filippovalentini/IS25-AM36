@@ -26,5 +26,8 @@ public class Deck {
     public EventCard drawCard(){
         return cards.removeLast();
     }
-    public void shuffle(){}
+    //randomize deck's cards
+    public void shuffle(){
+        Collections.shuffle(cards);
+    }
 }

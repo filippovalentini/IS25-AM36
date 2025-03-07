@@ -6,7 +6,8 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import java.util.*;
 
 public class GameState {
-    private Map<Player,Position> players;
+    private Map<String,Position> playersPos;
+    private Map<String,Player> playersPlay;
     private List<Deck> decks;
     private int numPlayers;
     private List<Component> hiddenComponents;
@@ -15,10 +16,16 @@ public class GameState {
 
     public GameState(boolean firstFlight) {
         this.firstFlight = firstFlight;
-        players = new HashMap<>();
+        playerPos = new HashMap<>();
+        playersPlay = new HashMap<>();
         numPlayers = 0;
     }
     public void addPlayer(String nickname, Color color) {
-        players.put(new Player(nickname, color), null);
+        playersPlay.put( nickname, new Player(nickname, color));
     }
-}
+    public void getPosition(String nickname,int initCell) {
+
+
+            }
+    }
+
