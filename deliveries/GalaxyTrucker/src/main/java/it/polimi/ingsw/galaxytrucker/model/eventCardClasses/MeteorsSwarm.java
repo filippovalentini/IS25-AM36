@@ -1,13 +1,14 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
-import it.polimi.ingsw.galaxytrucker.model.shots.Meteor;
+import it.polimi.ingsw.galaxytrucker.model.shotClasses.Meteor;
 
 import java.util.List;
 
 public class MeteorsSwarm extends EventCard{
     private final List<Meteor> meteors;
 
-    public MeteorsSwarm(List<Meteor> meteors) {
+    public MeteorsSwarm(List<Meteor> meteors, String imagePath) {
+        super(imagePath);
         this.meteors = meteors;
     }
     public List<Meteor> getMeteors() {

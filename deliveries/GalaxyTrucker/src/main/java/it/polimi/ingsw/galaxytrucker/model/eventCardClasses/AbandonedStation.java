@@ -5,13 +5,13 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import java.util.List;
 
 //ABANDONED STATION
-class AbandonedStation extends DayLossCard{
+public class AbandonedStation extends DayLossCard{
     private final List<Color> stationGoods;     //goods that a player can gain by using the card
     private final int requiredCrew;     //required crew to land in the station
     private boolean used;       //set to true if a player has already used the card
 
-    public AbandonedStation(List<Color> stationGoods, int requiredCrew, int lostDays) { //constructor
-        super(lostDays);
+    public AbandonedStation(List<Color> stationGoods, int requiredCrew, int lostDays, String imagePath) { //constructor
+        super(lostDays, imagePath);
         this.stationGoods = stationGoods;
         this.requiredCrew = requiredCrew;
         this.used = false;

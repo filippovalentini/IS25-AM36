@@ -5,13 +5,13 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import java.util.List;
 
 //PLANETS
-class Planets extends DayLossCard{
+public class Planets extends DayLossCard{
     private List<List<Color>> planetGoods;      //each element of the main list represents the goods
     //that can be gained by landing on the corresponding planet
     //(each type of good corresponds to a color)
 
-    public Planets(List<List<Color>> planetGoods, int lostDays) {     //constructor
-        super(lostDays);
+    public Planets(List<List<Color>> planetGoods, int lostDays, String imagePath) {     //constructor
+        super(lostDays, imagePath);
         this.planetGoods = planetGoods;
     }
     public void landing(int numberPlanet){      //when a player lands on a planet, the corresponding element

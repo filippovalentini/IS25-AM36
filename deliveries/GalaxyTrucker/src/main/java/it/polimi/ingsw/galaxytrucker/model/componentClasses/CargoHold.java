@@ -1,16 +1,16 @@
 package it.polimi.ingsw.galaxytrucker.model.componentClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class CargoHold extends ConfigurableComponent {
     private List<Color> goods;
     private int numberGoods;
 
-    public CargoHold(boolean isDouble) {
-        super(isDouble);
+    public CargoHold(boolean isDouble, String imagePath, List<Connector> sides) {
+        super(isDouble, imagePath, sides);
         goods = new ArrayList<>();
         numberGoods = 0;
     }

@@ -1,12 +1,16 @@
 package it.polimi.ingsw.galaxytrucker.model.componentClasses;
 
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
+
+import java.util.List;
+
 public class Cabin extends Component {
     private int numberCrew;
     private boolean purpleAlien;
     private boolean brownAlien;
 
-    public Cabin() {
-        super();
+    public Cabin(String imagePath, List<Connector> sides) {
+        super(imagePath, sides);
         numberCrew = 0;
         purpleAlien = false;
         brownAlien = false;

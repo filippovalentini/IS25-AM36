@@ -3,10 +3,11 @@ package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.SpecialEventType;
 
 //SPECIAL EVENT
-class SpecialEvent extends EventCard{
+public class SpecialEvent extends EventCard{
     private final SpecialEventType specialEventType;        //type of special event associated to the card
 
-    public SpecialEvent(SpecialEventType specialEventType){     //constructor
+    public SpecialEvent(SpecialEventType specialEventType, String imagePath){     //constructor
+        super(imagePath);
         this.specialEventType = specialEventType;
     }
     public SpecialEventType getSpecialEventType(){      //returns the type of special event

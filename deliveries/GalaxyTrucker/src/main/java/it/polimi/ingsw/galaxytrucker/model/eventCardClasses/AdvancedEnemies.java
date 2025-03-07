@@ -1,17 +1,13 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
-import it.polimi.ingsw.galaxytrucker.model.shots.CannonShot;
-
-import java.util.List;
-
 //ADVANCED ENEMIES
-abstract class AdvancedEnemies extends DayLossCard{
+public abstract class AdvancedEnemies extends DayLossCard{
     protected final int prizeCredits;
     protected final int enemyStrength;
     protected boolean defeated;
 
-    public AdvancedEnemies(int prizeCredits, int enemyStrength, int lostDays) {
-        super(lostDays);
+    public AdvancedEnemies(int prizeCredits, int enemyStrength, int lostDays, String imagePath) {
+        super(lostDays, imagePath);
         this.prizeCredits = prizeCredits;
         this.enemyStrength = enemyStrength;
         this.defeated = false;

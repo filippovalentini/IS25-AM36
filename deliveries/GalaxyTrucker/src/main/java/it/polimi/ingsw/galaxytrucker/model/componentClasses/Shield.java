@@ -1,7 +1,11 @@
 package it.polimi.ingsw.galaxytrucker.model.componentClasses;
 
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
+
+import java.util.List;
+
 public class Shield extends Component {
-    public Shield() {
-        super();
+    public Shield(String imagePath, List<Connector> sides) {
+        super(imagePath, sides);
     }
 }

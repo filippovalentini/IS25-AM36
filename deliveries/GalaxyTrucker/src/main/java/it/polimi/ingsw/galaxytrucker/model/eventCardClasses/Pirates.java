@@ -1,15 +1,15 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
-import it.polimi.ingsw.galaxytrucker.model.shots.CannonShot;
+import it.polimi.ingsw.galaxytrucker.model.shotClasses.CannonShot;
 
 import java.util.List;
 
 //PIRATES
-class Pirates extends AdvancedEnemies {
+public class Pirates extends AdvancedEnemies {
     private final List<CannonShot> cannonFire;
 
-    public Pirates(int prizeCredits, int enemyStrength, List<CannonShot> cannonFire, int lostDays) {
-        super(prizeCredits, enemyStrength, lostDays);
+    public Pirates(int prizeCredits, int enemyStrength, List<CannonShot> cannonFire, int lostDays, String imagePath) {
+        super(prizeCredits, enemyStrength, lostDays, imagePath);
         this.cannonFire = cannonFire;
     }
     public List<CannonShot> getCannonFire() {

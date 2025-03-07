@@ -1,13 +1,13 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
 //ABANDONED SHIP
-class AbandonedShip extends DayLossCard{
+public class AbandonedShip extends DayLossCard{
     private final int requiredCrew;      //required crew to land in the ship
     private final int gainedCredits;       //credits that a player can gain by using the card
     private boolean used;       //set to true if a player has already used the card
 
-    public AbandonedShip(int requiredCrew, int gainedCredits, int lostDays) {     //constructor
-        super(lostDays);
+    public AbandonedShip(int requiredCrew, int gainedCredits, int lostDays, String imagePath) {     //constructor
+        super(lostDays, imagePath);
         this.requiredCrew = requiredCrew;
         this.gainedCredits = gainedCredits;
         this.used = false;

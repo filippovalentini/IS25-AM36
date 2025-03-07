@@ -7,14 +7,20 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import java.util.List;
 
 public class Component {
+    protected final String imagePath;
     protected List<Connector> sides;
     protected Orientation orientation;
 
-    public Component() {
+    public Component(String imagePath, List<Connector> sides) {
+        this.imagePath = imagePath;
+        this.sides = sides;
         this.orientation = Orientation.NORTH;
     }
     public Orientation getOrientation() {
         return orientation;
+    }
+    public String getImagePath() {
+        return imagePath;
     }
     public void rotateRight() {
         if(orientation == Orientation.NORTH) {
