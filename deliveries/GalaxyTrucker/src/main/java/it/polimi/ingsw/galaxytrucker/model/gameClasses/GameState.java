@@ -16,10 +16,11 @@ public class GameState {
 
     public GameState(boolean firstFlight) {
         this.firstFlight = firstFlight;
-        playerPos = new HashMap<>();
+        playersPos = new HashMap<>();
         playersPlay = new HashMap<>();
         numPlayers = 0;
     }
+    //method to add a player to the game
     public void addPlayer(String nickname, Color color) {
         playersPlay.put( nickname, new Player(nickname, color));
     }
