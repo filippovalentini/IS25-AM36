@@ -11,10 +11,8 @@ public class ShipBoard {
     private List<Component> reservedComponents;
     private Component pickedComponent;
     private final Color color;
-    private Component handComponent ;
 
     public ShipBoard(Color color) {
-        this.handComponent = null;
         this.color = color;
         this.lostComponents = 0;
         this.assembledComponents = new ArrayList<>();
@@ -65,9 +63,5 @@ public class ShipBoard {
     public void destroyComponent(int x, int y){
         assembledComponents.get(x).set(y, null);
         lostComponents++;
-    }
-
-    public Component getHandComponent() {
-        return handComponent;
     }
 }

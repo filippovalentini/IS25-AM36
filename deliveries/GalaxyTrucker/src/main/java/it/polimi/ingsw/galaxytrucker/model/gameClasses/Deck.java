@@ -24,6 +24,9 @@ public class Deck {
     public boolean isPicked() {
         return picked;
     }
+    public void setPicked() {
+        this.picked = true;
+    }
     public EventCard drawCard(){
         return cards.removeLast();
     }

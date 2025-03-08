@@ -29,7 +29,7 @@ public class Player {
     public ShipBoard getShipBoard() {
         return shipBoard;
     }
-    public void quitGame(boolean hasAbandoned) {
+    public void quitGame() {
         this.hasAbandoned = true;
     }
 }
