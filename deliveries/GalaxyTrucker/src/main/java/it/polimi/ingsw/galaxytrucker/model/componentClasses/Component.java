@@ -6,12 +6,14 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 
 import java.util.List;
 
+//this class describes a generic component used to assemble the players' ships. Each subclass of "Component"
+//represents instead a specific type of component
 public class Component {
-    protected final String imagePath;
-    protected List<Connector> sides;
-    protected Orientation orientation;
+    protected final String imagePath;       //path for the image describing the component
+    protected List<Connector> sides;        //list of 4 connectors associated to the 4 sides of the component tile
+    protected Orientation orientation;      //orientation of the connector in position 0 of "sides"
 
-    public Component(String imagePath, List<Connector> sides) {
+    public Component(String imagePath, List<Connector> sides) {     //connector
         this.imagePath = imagePath;
         this.sides = sides;
         this.orientation = Orientation.NORTH;
@@ -22,21 +24,8 @@ public class Component {
     public String getImagePath() {
         return imagePath;
     }
-    /*public void rotateRight() {
-        if(orientation == Orientation.NORTH) {
-            orientation = Orientation.EAST;
-        }
-        else if(orientation == Orientation.EAST) {
-            orientation = Orientation.SOUTH;
-        }
-        else if(orientation == Orientation.SOUTH) {
-            orientation = Orientation.WEST;
-        }
-        else {
-            orientation = Orientation.NORTH;
-        }
-    }*/
-    public void rotateLeft() {
+
+    public void rotateLeft() {      //rotates the component (left) by 90 degrees
         if(orientation == Orientation.NORTH) {
             orientation = Orientation.WEST;
         }
@@ -50,7 +39,7 @@ public class Component {
             orientation = Orientation.NORTH;
         }
     }
-    public Connector getNorthSide(){
+    public Connector getNorthSide(){        //returns the north-oriented side (connector) of the component
         if(orientation == Orientation.NORTH) {
             return sides.get(0);
         }
@@ -64,7 +53,7 @@ public class Component {
             return sides.get(1);
         }
     }
-    public Connector getEastSide(){
+    public Connector getEastSide(){     //returns the east-oriented side (connector) of the component
         if(orientation == Orientation.NORTH) {
             return sides.get(1);
         }
@@ -78,7 +67,7 @@ public class Component {
             return sides.get(2);
         }
     }
-    public Connector getSouthSide(){
+    public Connector getSouthSide(){        //returns the south-oriented side (connector) of the component
         if(orientation == Orientation.NORTH) {
             return sides.get(2);
         }
@@ -92,7 +81,7 @@ public class Component {
             return sides.get(3);
         }
     }
-    public Connector getWestSide(){
+    public Connector getWestSide(){     //returns the south-oriented side (connector) of the component
         if(orientation == Orientation.NORTH) {
             return sides.get(3);
         }
@@ -106,7 +95,7 @@ public class Component {
             return sides.get(0);
         }
     }
-    public boolean isWellOriented(){
+    public boolean isWellOriented(){        //determines if the component is oriented correctly (true by default, it will be overrided by subclasses for which the orientation is important)
         return true;
     }
 }

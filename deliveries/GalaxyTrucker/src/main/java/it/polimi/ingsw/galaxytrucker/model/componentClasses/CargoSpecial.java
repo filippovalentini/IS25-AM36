@@ -13,7 +13,7 @@ public class CargoSpecial extends CargoHold {
     }
 
     @Override
-    public void addGood(Color good) throws FullCargoHoldException {
+    public void addGood(Color good) throws FullCargoHoldException {     //adds one good to the cargo hold (it can also be red)
         if (!isDouble && numberGoods == 1) {
             throw new FullCargoHoldException("The Cargo Hold is full.");
         } else if (isDouble && numberGoods == 2) {

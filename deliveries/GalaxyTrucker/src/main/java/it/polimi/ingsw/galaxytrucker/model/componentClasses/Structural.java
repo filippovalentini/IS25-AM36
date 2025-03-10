@@ -5,7 +5,7 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import java.util.List;
 
 public class Structural extends Component {
-    public Structural(String imagePath, List<Connector> sides) {
+    public Structural(String imagePath, List<Connector> sides) {        //constructor
         super(imagePath, sides);
     }
 }

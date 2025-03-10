@@ -32,6 +32,7 @@ public class Smugglers extends DayLossCard{
     public boolean isDefeated() {   //determines if a player has defeated the smugglers or not
         return defeated;
     }
+
     public void setDefeated() {      //invoked when a player defeats the smugglers
         defeated = true;
     }

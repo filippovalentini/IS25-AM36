@@ -2,14 +2,18 @@ package it.polimi.ingsw.galaxytrucker.model.componentClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.FullCargoHoldException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.UnsupportedCargoColorException;
 
 import java.util.*;
 
-public class CargoHold extends ConfigurableComponent {
-    private List<Color> goods;
-    private int numberGoods;
+import static it.polimi.ingsw.galaxytrucker.model.enumerations.Color.RED;
 
-    public CargoHold(boolean isDouble, String imagePath, List<Connector> sides) {
+public class CargoHold extends ConfigurableComponent {
+    protected List<Color> goods;        //list of goods stored in the cargo hold
+    protected int numberGoods;      //number of goods stored in the cargo hold
+
+    public CargoHold(boolean isDouble, String imagePath, List<Connector> sides) {       //constructor
         super(isDouble, imagePath, sides);
         goods = new ArrayList<>();
         numberGoods = 0;
@@ -20,14 +24,14 @@ public class CargoHold extends ConfigurableComponent {
     public int getNumberGoods() {
         return numberGoods;
     }
-    public void addGood(Color good) throws FullCargoHoldException,UnsupportedCargoColorException{
-        if(good==RED){
-          throw new UnsupportedCargoColorException("Unsupported Cargo type")
-        }
-        if (isDouble==false && numberGoods==3) {
-            throw new FullCargoHoldException("The Cargo Hold is full")
-        } else if (isDouble==true && numberGoods==2) {
-            throw new FullCargoHoldException("The Cargo Hold is full")
+
+    public void addGood(Color good) throws FullCargoHoldException, UnsupportedCargoColorException {     //adds one good to the cargo hold (it can't be red)
+        if(good==Color.RED){
+          throw new UnsupportedCargoColorException("Unsupported Cargo type");
+        } else if (!isDouble && numberGoods==3) {
+            throw new FullCargoHoldException("The Cargo Hold is full");
+        } else if (isDouble && numberGoods==2) {
+            throw new FullCargoHoldException("The Cargo Hold is full");
         } else {
             goods.add(good);
             numberGoods++;

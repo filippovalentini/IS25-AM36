@@ -27,8 +27,8 @@ public class OpenSpace extends EventCard {
                         .flatMap(List::stream)
                         .filter(x -> x instanceof Engine)
                         .map(x -> (ConfigurableComponent) x)
-                        .filter(x -> x.getIsDouble() == false)
-                        .collect(Collectors.toList())
+                        .filter(x -> !x.getIsDouble())
+                        .toList()
                         .size());
             }
 

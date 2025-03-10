@@ -26,6 +26,7 @@ public class AbandonedStation extends DayLossCard{
     public boolean isUsed() {       //determines if the card has been used or not
         return used;
     }
+
     public void setUsed() {     //invoked when a player decides to use the card
         used = true;
     }

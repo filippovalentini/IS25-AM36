@@ -1,26 +1,26 @@
 package it.polimi.ingsw.galaxytrucker.model.gameClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
-import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
-import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
-import it.polimi.ingsw.galaxytrucker.model.enumerations.SpecialEventType;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.*;
-import it.polimi.ingsw.galaxytrucker.model.shotClasses.CannonShot;
-import it.polimi.ingsw.galaxytrucker.model.shotClasses.Meteor;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.EmptyDeckException;
+import it.polimi.ingsw.galaxytrucker.model.shotClasses.*;
 
 import java.util.*;
 
-
+//this class describes the entire status of the game, the controller will invoke its methods in order to modify the
+//model according to specific actions performed by the players on the view
 public class GameState {
-    private Map<String,Position> playersPos;
-    private Map<String,Player> playersPlay;
-    private List<Deck> decks;
-    private int numPlayers;
-    private List<Component> hiddenComponents;
-    private List<Component> shownComponents;
-    private final boolean firstFlight;
+    private Map<String,Position> playersPos;    //maps each player to its position on the ship board
+    private Map<String,Player> playersPlay;     //maps each player to its information
+    private List<Deck> decks;       //decks used during the assembling phase (only for standard game)
+    private Deck gameDeck;      //main deck used during the game
+    private int numPlayers;     //number of players
+    private List<Component> hiddenComponents;       //components turned face down during the assembling phase
+    private List<Component> shownComponents;        //components turned face up during the assembling phase
+    private final boolean firstFlight;      //true if the game has been set as "learning flight", false if it is a standard game
 
-    public GameState(boolean firstFlight) {
+    public GameState(boolean firstFlight) {     //constructor, creates the deck(s) of cards and instantiates the components
         this.firstFlight = firstFlight;
         playersPos = new HashMap<>();
         playersPlay = new HashMap<>();
@@ -35,63 +35,85 @@ public class GameState {
     public Map<String,Player> getPlayersPlay() {
         return playersPlay;
     }
-    //method to add a player to the game
+
+    //adds a player to the game
     public void addPlayer(String nickname, Color color) {
         playersPlay.put(nickname, new Player(nickname, color));
         playersPos.put(nickname, null);
         numPlayers++;
     }
+    //invoked when a player has finished the assembling phase and has to pick a free position on the flight board
     public void setPosition(String nickname, int initCell) {
         playersPos.put(nickname, new Position(initCell));
     }
+    //updates the position of a player on the ship board
     public void changePlayerPosition(String nickname,int cells) {
         playersPos.get(nickname).changePosition(cells);
     }
+    //invoked when a player wants to pick a component among the one placed face down (assembling phase)
     public void pickHidden(String nickname) {
         Collections.shuffle(hiddenComponents);
         Component c = hiddenComponents.getFirst();
         hiddenComponents.removeFirst();
         playersPlay.get(nickname).getShipBoard().pickComponent(c);
     }
+    //invoked when a player wants to pick a specific component among the one placed face up (assembling phase)
     public void pickShown(String nickname, int index) {
         Component c = shownComponents.get(index);
         shownComponents.remove(index);
         playersPlay.get(nickname).getShipBoard().pickComponent(c);
     }
-    /**
-     * method to drop a component back in the shownComponents list
-     * @param nickname the owner of the component to drop
-     */
+    //invoked when a player wants to reserve the component that it has picked for its ship board
+    public void reserveComponent(String nickname) {
+        playersPlay.get(nickname).getShipBoard().reserveComponent();
+    }
+    //invoked when a player wants to pick one of the components that it has reserved for its ship board
+    public void pickReservedComponent(String nickname, int position) {
+        playersPlay.get(nickname).getShipBoard().pickReservedComponent(position);
+    }
+    //invoked when a player wants to release (therefore, place face up) the component that it has picked
     public void putShown(String nickname) {
         shownComponents.add(playersPlay.get(nickname).getShipBoard().releaseComponent());
     }
-    //combine all decks into one (0),shuffle it and extract a card from it
-    public void solveNextCard(){
-        for(int i=1;i<4;i++){
-            decks.get(0).getCards().addAll(decks.get(i).getCards()); ;
-            decks.get(i).getCards().clear();
-        }
-        for(int i=1;i<4;i++){
-            decks.remove(i);
-        }
-        decks.get(0).shuffle();
-        decks.get(0).drawCard().solve();
+    //invoked when a component of a player's ship board must be destroyed
+    public void destroyComponent(String nickname, int x, int y) {
+        playersPlay.get(nickname).getShipBoard().destroyComponent(x,y);
     }
+    //creates the main deck for the game by unifying and shuffling the 4 decks used during the assembling phase;
+    //this method is invoked after the assembling phase
+    public void createGameDeck() {
+        List<EventCard> gameDeckCards = new ArrayList<>();
+        for (Deck deck : decks) {
+            gameDeckCards.addAll(deck.getCards());
+        }
+        Collections.shuffle(gameDeckCards);
+        gameDeck = new Deck(gameDeckCards);
+    }
+    //invoked when the leader draws a new card from the deck (during the game), which must be solved
+    public void solveNextCard() {
+        EventCard currentCard = gameDeck.drawCard();
+        currentCard.solve(this);
+    }
+    //invoked when a player wants to assemble on the ship board the component that it has picked
     public void assembleComponentGS(String nickname, int x, int y){
        playersPlay.get(nickname).getShipBoard().assembleComponent(x,y);
     }
+    //invoked when a player wants to change the orientation of the component that it has picked
     public void rotatePickedComponentLeft(String nickname){
         playersPlay.get(nickname).getShipBoard().getPickedComponent().rotateLeft();
     }
+    //invoked when a player wants to view the content of one of the 3 available decks of the flight board (assembling phase)
     public Deck checkDeck(int deckNumber){
         Deck d = decks.get(deckNumber);
         d.setPicked();
         return d;
     }
+    //this method instantiates all the components (tiles) of the game, which will be placed face down (hidden)
     public void createComponents(){
         hiddenComponents = new ArrayList<>();
         shownComponents = new ArrayList<>();
     }
+    //this method instantiates all the adventure cards of the game and creates the 4 decks for the assembling phase
     public void createDecks(){
         List<EventCard> levelOneCards = new ArrayList<>();
         List<EventCard> levelTwoCards = new ArrayList<>();
