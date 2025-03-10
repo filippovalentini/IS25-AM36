@@ -1,6 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.model.componentClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.NoBatteriesException;
 
 import java.util.List;
 
@@ -19,7 +20,10 @@ public class Battery extends ConfigurableComponent {
     public int getNumberBatteries() {
         return numberBatteries;
     }
-    public void useBatteries(int batteriesToUse) {
+    public void useBatteries(int batteriesToUse) throws NoBatteriesException {
+        if(batteriesToUse > numberBatteries) {
+            throw new NoBatteriesException("Not enough batteries");
+        }
         numberBatteries -= batteriesToUse;
     }
 }
