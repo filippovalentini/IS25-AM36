@@ -20,11 +20,17 @@ public class CargoHold extends ConfigurableComponent {
     public int getNumberGoods() {
         return numberGoods;
     }
-    public void addGood(Color good) throws FullCargoHold{
-        if (isDouble==true && goods.size()==3) {
-            throw new FullCargoHold()
+    public void addGood(Color good) throws FullCargoHoldException,UnsupportedCargoColorException{
+        if(good==RED){
+          throw new UnsupportedCargoColorException("Unsupported Cargo type")
         }
-        goods.add(good);
-        numberGoods++;
+        if (isDouble==false && numberGoods==3) {
+            throw new FullCargoHoldException("The Cargo Hold is full")
+        } else if (isDouble==true && numberGoods==2) {
+            throw new FullCargoHoldException("The Cargo Hold is full")
+        } else {
+            goods.add(good);
+            numberGoods++;
+        }
     }
 }
