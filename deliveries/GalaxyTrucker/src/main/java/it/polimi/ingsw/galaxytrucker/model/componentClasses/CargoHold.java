@@ -20,7 +20,10 @@ public class CargoHold extends ConfigurableComponent {
     public int getNumberGoods() {
         return numberGoods;
     }
-    public void addGood(Color good) {
+    public void addGood(Color good) throws FullCargoHold{
+        if (isDouble==true && goods.size()==3) {
+            throw new FullCargoHold()
+        }
         goods.add(good);
         numberGoods++;
     }
