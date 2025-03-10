@@ -1,5 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
+import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
+
 //SLAVERS
 public class Slavers extends AdvancedEnemies{
     private final int crewLoss;
@@ -12,5 +14,5 @@ public class Slavers extends AdvancedEnemies{
         return crewLoss;
     }
     @Override
-    public void solve(){}       //implements the effect of the card
+    public void solve(GameState gameState){}       //implements the effect of the card
 }

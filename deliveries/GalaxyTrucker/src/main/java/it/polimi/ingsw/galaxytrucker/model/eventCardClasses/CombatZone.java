@@ -1,5 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
+import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
+
 //COMBAT ZONE
 public class CombatZone extends EventCard{
     private final boolean levelOne;     //discriminates between level I and level II card
@@ -12,5 +14,5 @@ public class CombatZone extends EventCard{
         return levelOne;
     }
     @Override
-    public void solve(){}       //implements the effect of the card
+    public void solve(GameState gameState){}       //implements the effect of the card
 }

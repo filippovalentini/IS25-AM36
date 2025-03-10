@@ -1,5 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
+import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
+
 //ABANDONED SHIP
 public class AbandonedShip extends DayLossCard{
     private final int requiredCrew;      //required crew to land in the ship
@@ -25,5 +27,5 @@ public class AbandonedShip extends DayLossCard{
         used = true;
     }
     @Override
-    public void solve(){}       //implements the effect of the card
+    public void solve(GameState gameState){}       //implements the effect of the card
 }

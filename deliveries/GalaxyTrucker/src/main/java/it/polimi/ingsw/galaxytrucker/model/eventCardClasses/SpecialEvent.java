@@ -1,6 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.SpecialEventType;
+import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 
 //SPECIAL EVENT
 public class SpecialEvent extends EventCard{
@@ -14,5 +15,5 @@ public class SpecialEvent extends EventCard{
         return specialEventType;
     }
     @Override
-    public void solve(){}       //implements the effect of the card
+    public void solve(GameState gameState){}       //implements the effect of the card
 }

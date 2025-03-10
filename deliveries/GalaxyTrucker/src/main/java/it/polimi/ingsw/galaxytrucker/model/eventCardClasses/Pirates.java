@@ -1,5 +1,6 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
+import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import it.polimi.ingsw.galaxytrucker.model.shotClasses.CannonShot;
 
 import java.util.List;
@@ -16,5 +17,5 @@ public class Pirates extends AdvancedEnemies {
         return cannonFire;
     }
     @Override
-    public void solve(){}       //implements the effect of the card
+    public void solve(GameState gameState){}       //implements the effect of the card
 }

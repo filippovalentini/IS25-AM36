@@ -11,7 +11,7 @@ public class ConfigurableComponent extends Component {
         super(imagePath, sides);
         this.isDouble = isDouble;
     }
-    public boolean isDouble() {
+    public boolean getIsDouble() {
         return isDouble;
     }
 }
