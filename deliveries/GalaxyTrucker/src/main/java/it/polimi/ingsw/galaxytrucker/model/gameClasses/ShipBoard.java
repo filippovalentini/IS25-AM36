@@ -27,16 +27,35 @@ public class ShipBoard {
         this.reservedComponents = new ArrayList<>();
         this.pickedComponent = null;
     }
-    public List<List<Component>> getAssembledComponents() {
-        return assembledComponents;
+    public ShipBoard clone() { //return a copy of the ShipBoard
+        ShipBoard retShipBoard = new ShipBoard(this.color);
+        retShipBoard.lostComponents = this.lostComponents;
+        retShipBoard.assembledComponents = new ArrayList<>();
+        for(int i=0; i<this.assembledComponents.size(); i++){
+            List<Component> row = new ArrayList<>(this.assembledComponents.get(i));
+            retShipBoard.assembledComponents.add(row);
+        }
+        retShipBoard.reservedComponents = new ArrayList<>(this.reservedComponents);
+        if(this.pickedComponent != null){
+            retShipBoard.pickedComponent = this.pickedComponent.clone();
+        }
+        return retShipBoard;
     }
-    public Component getAssembledComponent(int x, int y) {
-        return assembledComponents.get(x).get(y);
+    public List<List<Component>> getAssembledComponents() { //return a copy of the assembled components
+        List<List<Component>> retAssembledComponents = new ArrayList<>();
+        for(int i=0; i<this.assembledComponents.size(); i++){
+            List<Component> row = new ArrayList<>(this.assembledComponents.get(i));
+            retAssembledComponents.add(row);
+        }
+        return retAssembledComponents;
     }
-    public List<Component> getReservedComponents() {
-        return reservedComponents;
+    public Component getAssembledComponent(int x, int y) { //return a copy of the assembled component in the given position
+        return (assembledComponents.get(x).get(y)).clone();
     }
-    public Component getPickedComponent() {
+    public List<Component> getReservedComponents() { //return a copy of the reserved components
+        return new ArrayList<>(this.reservedComponents);
+    }
+    public Component getPickedComponent() { //return the actual picked component
         return pickedComponent;
     }
     public Color getColor() {
@@ -45,7 +64,6 @@ public class ShipBoard {
     public int getLostComponents() {
         return lostComponents;
     }
-
     //invoked when the owner of the ship board picks a component from the table
     public void pickComponent(Component component) throws PickedComponentException {
         if(pickedComponent!=null){

@@ -4,6 +4,8 @@ package it.polimi.ingsw.galaxytrucker.model.componentClasses;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 //this class describes a generic component used to assemble the players' ships. Each subclass of "Component"
@@ -17,6 +19,11 @@ public class Component {
         this.imagePath = imagePath;
         this.sides = sides;
         this.orientation = Orientation.NORTH;
+    }
+    public Component clone(){ //return a copy of the component
+        Component retComponent = new Component(this.imagePath, new ArrayList<>(this.sides));
+        retComponent.orientation = this.orientation;
+        return retComponent;
     }
     public Orientation getOrientation() {
         return orientation;

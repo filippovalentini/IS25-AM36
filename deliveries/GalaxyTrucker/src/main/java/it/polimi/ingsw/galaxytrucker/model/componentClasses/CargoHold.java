@@ -18,8 +18,8 @@ public class CargoHold extends ConfigurableComponent {
         goods = new ArrayList<>();
         numberGoods = 0;
     }
-    public List<Color> getGoods() {
-        return goods;
+    public List<Color> getGoods() { //return a copy of the listed goods
+        return new ArrayList<>(this.goods);
     }
     public int getNumberGoods() {
         return numberGoods;

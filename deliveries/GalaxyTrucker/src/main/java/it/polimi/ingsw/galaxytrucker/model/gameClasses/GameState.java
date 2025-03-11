@@ -29,11 +29,15 @@ public class GameState {
         createDecks();
     }
 
-    public Map<String,Position> getPlayersPos() {
-        return playersPos;
+    public Map<String,Position> getPlayersPos() { //return a copy of the player postion map
+        if(this.playersPos == null) { return null;}
+        Map<String,Position> retPlayerPos = new HashMap<>(playersPos);
+        return retPlayerPos;
     }
-    public Map<String,Player> getPlayersPlay() {
-        return playersPlay;
+    public Map<String,Player> getPlayersPlay() { // return a copy of the player nickanme map
+        if(this.playersPlay == null) { return null;}
+        Map<String,Player> retPlayersPlay = new HashMap<>(playersPlay);
+        return retPlayersPlay;
     }
 
     //adds a player to the game
@@ -103,10 +107,11 @@ public class GameState {
         playersPlay.get(nickname).getShipBoard().getPickedComponent().rotateLeft();
     }
     //invoked when a player wants to view the content of one of the 3 available decks of the flight board (assembling phase)
-    public Deck checkDeck(int deckNumber){
+    public Deck checkDeck(int deckNumber){ //return a copy of the deck
         Deck d = decks.get(deckNumber);
         d.setPicked();
-        return d;
+        List<EventCard> retCards = d.getCards();
+        return new Deck(retCards);
     }
     //this method instantiates all the components (tiles) of the game, which will be placed face down (hidden)
     public void createComponents(){

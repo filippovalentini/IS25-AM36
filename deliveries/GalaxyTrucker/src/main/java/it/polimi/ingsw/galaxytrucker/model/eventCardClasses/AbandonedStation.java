@@ -3,6 +3,7 @@ package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 
+import java.util.ArrayList;
 import java.util.List;
 
 //ABANDONED STATION
@@ -18,7 +19,7 @@ public class AbandonedStation extends DayLossCard{
         this.used = false;
     }
     public List<Color> getStationGoods() {      //returns the goods that a player can gain in the station
-        return stationGoods;
+        return new ArrayList<>(this.stationGoods);
     }
     public int getRequiredCrew() {      //returns the required crew to land in the station
         return requiredCrew;

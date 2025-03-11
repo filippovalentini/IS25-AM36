@@ -42,7 +42,8 @@ public class ShipBoardTest {
 
     @Test
     void testPickReservedComponent() {
-        shipBoard.getReservedComponents().add(component1);
+        shipBoard.pickComponent(component1);
+        shipBoard.reserveComponent();
         shipBoard.pickReservedComponent(0);
 
         assertEquals(component1, shipBoard.getPickedComponent());
@@ -51,18 +52,18 @@ public class ShipBoardTest {
     @Test
     void testAssembleComponent() {
         shipBoard.pickComponent(component1);
-        shipBoard.assembleComponent(6, 7); //above the initial cabin
+        shipBoard.assembleComponent(3, 5); //above the initial cabin
 
-        assertEquals(component1, shipBoard.getAssembledComponent(6, 7));
+        assertEquals(component1, shipBoard.getAssembledComponent(3, 5));
     }
 
     @Test
     public void testDestroyComponent() {
         shipBoard.pickComponent(component1);
-        shipBoard.assembleComponent(6, 7); //above the initial cabin
-        shipBoard.destroyComponent(6, 7);
+        shipBoard.assembleComponent(3, 5); //above the initial cabin
+        shipBoard.destroyComponent(3, 5);
 
         assertEquals(1, shipBoard.getLostComponents());
-        assertEquals(null, shipBoard.getAssembledComponent(6,7));
+        assertEquals(null, shipBoard.getAssembledComponent(3,5));
     }
 }

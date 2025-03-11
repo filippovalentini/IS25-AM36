@@ -14,7 +14,7 @@ public class Player {
         this.hasAbandoned = false;
         this.shipBoard = new ShipBoard(color);
     }
-    public String getNickname() {
+    public String getNickname() { //return a copy of the nickname
         return nickname;
     }
     public int getCredits() {
@@ -24,6 +24,9 @@ public class Player {
         return hasAbandoned;
     }
     public ShipBoard getShipBoard() {
+        if(this.shipBoard == null) {return null;}
+        ShipBoard retShipBoard;
+        retShipBoard = this.shipBoard.clone();
         return shipBoard;
     }
 

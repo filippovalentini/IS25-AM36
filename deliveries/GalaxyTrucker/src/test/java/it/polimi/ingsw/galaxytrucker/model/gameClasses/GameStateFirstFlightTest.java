@@ -37,8 +37,8 @@ public class GameStateFirstFlightTest {
         gameState.setPosition(player1, 5);
         gameState.setPosition(player2, 10);
 
-        assertEquals(5, gameState.getPlayersPos().get(player1));
-        assertEquals(10, gameState.getPlayersPos().get(player2));
+        assertEquals(5, gameState.getPlayersPos().get(player1).getCell());
+        assertEquals(10, gameState.getPlayersPos().get(player2).getCell());
     }
 
     @Test
@@ -48,8 +48,8 @@ public class GameStateFirstFlightTest {
         gameState.changePlayerPosition(player1, 3);
         gameState.changePlayerPosition(player2, -1);
 
-        assertEquals(8, gameState.getPlayersPos().get(player1));
-        assertEquals(9, gameState.getPlayersPos().get(player2));
+        assertEquals(8, gameState.getPlayersPos().get(player1).getCell());
+        assertEquals(9, gameState.getPlayersPos().get(player2).getCell());
     }
 
 

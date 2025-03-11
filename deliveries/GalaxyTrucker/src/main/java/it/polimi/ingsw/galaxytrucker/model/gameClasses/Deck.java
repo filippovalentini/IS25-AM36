@@ -14,8 +14,10 @@ public class Deck {
         this.cards = cards;
         this.picked = false;
     }
-    public List<EventCard> getCards() {
-        return cards;
+    public List<EventCard> getCards() { //return a copy of eventCards
+        if(this.cards == null) {return null;}
+        List<EventCard> retCards = new ArrayList<>(this.cards);
+        return retCards;
     }
     public int getNumberCards() {
         return cards.size();

@@ -18,10 +18,22 @@ import static org.junit.jupiter.api.Assertions.*;
 class DeckTest {
 
     @Test
+    void testGetCards(){
+        List<EventCard> listOfEventCards = new ArrayList<>();
+        EventCard ec = new AbandonedShip(2, 3, 1, "abandonedshipL1_1.jpg");
+        listOfEventCards.add(ec);
+        Deck d = new Deck(listOfEventCards);
+        assertEquals(d.getCards().size(), 1);
+        assertEquals(d.getCards().get(0), ec);
+        List<EventCard> copyListOfEventCards = d.getCards();
+        copyListOfEventCards.removeLast(); //removing from copied list shouldn't have effects on Deck cards
+        assertEquals(d.getCards().size(), 1);
+    }
+
+    @Test
     void testDrawCardFromEmptyDeck() {
         List<EventCard> listOfEventCards = new ArrayList<>();
         Deck deck = new Deck(listOfEventCards);
-        deck.drawCard();
         assertThrows(EmptyDeckException.class, () -> deck.drawCard());
     }
 
@@ -30,7 +42,7 @@ class DeckTest {
         List<EventCard> listOfEventCards = new ArrayList<>();
         listOfEventCards.add(new AbandonedShip(2, 3, 1, "abandonedshipL1_1.jpg"));
         Deck deck = new Deck(listOfEventCards);
-        assertEquals(EventCard.class, deck.drawCard().getClass());
+        assertEquals(AbandonedShip.class, deck.drawCard().getClass());
     }
 
     @Test
@@ -49,5 +61,28 @@ class DeckTest {
         listOfEventCards.add(new AbandonedStation(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN)), 5, 1, "abandonedstationL1_1.jpg"));
         Deck deck = new Deck(listOfEventCards);
         assertEquals(listOfEventCards, deck.getCards());
+    }
+
+    @Test
+    void testShuffleHasNoLeaks() {
+        List<EventCard> listOfEventCards = new ArrayList<>();
+        listOfEventCards.add(new AbandonedShip(2, 3, 1, "abandonedshipL1_1.jpg"));
+        listOfEventCards.add(new AbandonedStation(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN)), 5, 1, "abandonedstationL1_1.jpg"));
+        Deck deck = new Deck(listOfEventCards);
+        int initialSize = deck.getNumberCards();
+        deck.shuffle();
+        assertEquals(initialSize, deck.getNumberCards());
+    }
+
+    @Test
+    void testDrawAfterShuffle(){
+        List<EventCard> listOfEventCards = new ArrayList<>();
+        listOfEventCards.add(new AbandonedShip(2, 3, 1, "abandonedshipL1_1.jpg"));
+        listOfEventCards.add(new AbandonedStation(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN)), 5, 1, "abandonedstationL1_1.jpg"));
+        Deck deck = new Deck(listOfEventCards);
+        int initialSize = deck.getNumberCards();
+        deck.shuffle();
+        deck.drawCard();
+        assertEquals(initialSize-1, deck.getNumberCards());
     }
 }
