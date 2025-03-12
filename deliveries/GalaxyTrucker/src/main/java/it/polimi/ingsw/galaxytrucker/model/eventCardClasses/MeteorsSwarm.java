@@ -8,8 +8,8 @@ import java.util.List;
 public class MeteorsSwarm extends EventCard{
     private final List<Meteor> meteors;
 
-    public MeteorsSwarm(List<Meteor> meteors, String imagePath) {       //constructor
-        super(imagePath);
+    public MeteorsSwarm(List<Meteor> meteors, int imageID) {       //constructor
+        super(imageID);
         this.meteors = meteors;
     }
     public List<Meteor> getMeteors() {

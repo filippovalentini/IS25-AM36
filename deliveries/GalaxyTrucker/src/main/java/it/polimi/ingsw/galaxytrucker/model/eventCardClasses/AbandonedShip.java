@@ -8,8 +8,8 @@ public class AbandonedShip extends DayLossCard{
     private final int gainedCredits;       //credits that a player can gain by using the card
     private boolean used;       //set to true if a player has already used the card
 
-    public AbandonedShip(int requiredCrew, int gainedCredits, int lostDays, String imagePath) {     //constructor
-        super(lostDays, imagePath);
+    public AbandonedShip(int requiredCrew, int gainedCredits, int lostDays, int imageID) {     //constructor
+        super(lostDays, imageID);
         this.requiredCrew = requiredCrew;
         this.gainedCredits = gainedCredits;
         this.used = false;

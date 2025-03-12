@@ -7,8 +7,8 @@ import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 public class SpecialEvent extends EventCard{
     private final SpecialEventType specialEventType;        //type of special event associated to the card
 
-    public SpecialEvent(SpecialEventType specialEventType, String imagePath){     //constructor
-        super(imagePath);
+    public SpecialEvent(SpecialEventType specialEventType, int imageID){     //constructor
+        super(imageID);
         this.specialEventType = specialEventType;
     }
     public SpecialEventType getSpecialEventType(){      //returns the type of special event

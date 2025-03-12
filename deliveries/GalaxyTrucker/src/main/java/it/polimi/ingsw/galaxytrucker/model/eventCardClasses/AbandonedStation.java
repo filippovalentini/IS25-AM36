@@ -12,8 +12,8 @@ public class AbandonedStation extends DayLossCard{
     private final int requiredCrew;     //required crew to land in the station
     private boolean used;       //set to true if a player has already used the card
 
-    public AbandonedStation(List<Color> stationGoods, int requiredCrew, int lostDays, String imagePath) { //constructor
-        super(lostDays, imagePath);
+    public AbandonedStation(List<Color> stationGoods, int requiredCrew, int lostDays, int imageID) { //constructor
+        super(lostDays, imageID);
         this.stationGoods = stationGoods;
         this.requiredCrew = requiredCrew;
         this.used = false;

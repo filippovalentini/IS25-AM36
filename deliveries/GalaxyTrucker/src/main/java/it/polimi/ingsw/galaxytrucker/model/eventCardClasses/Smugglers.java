@@ -12,8 +12,8 @@ public class Smugglers extends DayLossCard{
     private final int enemyStrength;        //strength required to defeat the smugglers
     private boolean defeated;       //set to true if a player has defeated the smugglers
 
-    public Smugglers(List<Color> prizeGoods, int goodLoss, int enemyStrength, int lostDays, String imagePath) {  //constructor
-        super(lostDays, imagePath);
+    public Smugglers(List<Color> prizeGoods, int goodLoss, int enemyStrength, int lostDays, int imageID) {  //constructor
+        super(lostDays, imageID);
         this.prizeGoods = prizeGoods;
         this.goodLoss = goodLoss;
         this.enemyStrength = enemyStrength;

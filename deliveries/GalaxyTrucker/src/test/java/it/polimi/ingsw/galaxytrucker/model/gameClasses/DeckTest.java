@@ -20,7 +20,7 @@ class DeckTest {
     @Test
     void testGetCards(){
         List<EventCard> listOfEventCards = new ArrayList<>();
-        EventCard ec = new AbandonedShip(2, 3, 1, "abandonedshipL1_1.jpg");
+        EventCard ec = new AbandonedShip(2, 3, 1, 1001);
         listOfEventCards.add(ec);
         Deck d = new Deck(listOfEventCards);
         assertEquals(d.getCards().size(), 1);
@@ -40,7 +40,7 @@ class DeckTest {
     @Test
     void testDrawCardFromNonEmptyDeck() {
         List<EventCard> listOfEventCards = new ArrayList<>();
-        listOfEventCards.add(new AbandonedShip(2, 3, 1, "abandonedshipL1_1.jpg"));
+        listOfEventCards.add(new AbandonedShip(2, 3, 1, 1001));
         Deck deck = new Deck(listOfEventCards);
         assertEquals(AbandonedShip.class, deck.drawCard().getClass());
     }
@@ -48,7 +48,7 @@ class DeckTest {
     @Test
     void testDrawCardAndSameCard() {
         List<EventCard> listOfEventCards = new ArrayList<>();
-        EventCard ec = new AbandonedShip(2, 3, 1, "abandonedshipL1_1.jpg");
+        EventCard ec = new AbandonedShip(2, 3, 1, 1001);
         listOfEventCards.add(ec);
         Deck deck = new Deck(listOfEventCards);
         assertEquals(ec, deck.drawCard());
@@ -57,8 +57,8 @@ class DeckTest {
     @Test
     void testGetCardsFromDeck() {
         List<EventCard> listOfEventCards = new ArrayList<>();
-        listOfEventCards.add(new AbandonedShip(2, 3, 1, "abandonedshipL1_1.jpg"));
-        listOfEventCards.add(new AbandonedStation(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN)), 5, 1, "abandonedstationL1_1.jpg"));
+        listOfEventCards.add(new AbandonedShip(2, 3, 1, 1001));
+        listOfEventCards.add(new AbandonedStation(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN)), 5, 1, 2001));
         Deck deck = new Deck(listOfEventCards);
         assertEquals(listOfEventCards, deck.getCards());
     }
@@ -66,8 +66,8 @@ class DeckTest {
     @Test
     void testShuffleHasNoLeaks() {
         List<EventCard> listOfEventCards = new ArrayList<>();
-        listOfEventCards.add(new AbandonedShip(2, 3, 1, "abandonedshipL1_1.jpg"));
-        listOfEventCards.add(new AbandonedStation(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN)), 5, 1, "abandonedstationL1_1.jpg"));
+        listOfEventCards.add(new AbandonedShip(2, 3, 1, 1001));
+        listOfEventCards.add(new AbandonedStation(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN)), 5, 1, 2001));
         Deck deck = new Deck(listOfEventCards);
         int initialSize = deck.getNumberCards();
         deck.shuffle();
@@ -77,8 +77,8 @@ class DeckTest {
     @Test
     void testDrawAfterShuffle(){
         List<EventCard> listOfEventCards = new ArrayList<>();
-        listOfEventCards.add(new AbandonedShip(2, 3, 1, "abandonedshipL1_1.jpg"));
-        listOfEventCards.add(new AbandonedStation(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN)), 5, 1, "abandonedstationL1_1.jpg"));
+        listOfEventCards.add(new AbandonedShip(2, 3, 1, 1001));
+        listOfEventCards.add(new AbandonedStation(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN)), 5, 1, 2001));
         Deck deck = new Deck(listOfEventCards);
         int initialSize = deck.getNumberCards();
         deck.shuffle();

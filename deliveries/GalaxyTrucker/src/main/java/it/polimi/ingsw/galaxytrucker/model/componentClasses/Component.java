@@ -4,7 +4,6 @@ package it.polimi.ingsw.galaxytrucker.model.componentClasses;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +30,7 @@ public class Component {
     public String getImagePath() {
         return imagePath;
     }
+
 
     public void rotateLeft() {      //rotates the component (left) by 90 degrees
         if(orientation == Orientation.NORTH) {

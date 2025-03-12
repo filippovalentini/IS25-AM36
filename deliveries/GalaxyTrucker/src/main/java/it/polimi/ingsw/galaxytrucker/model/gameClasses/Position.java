@@ -1,12 +1,16 @@
 package it.polimi.ingsw.galaxytrucker.model.gameClasses;
-//this class is used to manage the position of players on the flight board
-public class Position {
-    private int lap;        //lap number
-    private int cell;       //cell number
 
-    public Position(int startingPosition){      //constructor, invoked when a player ends the assembling phase
+import java.util.Set;
+
+//this class is used to manage the position of players on the flight board
+public abstract class Position {
+    public static Set<Integer> validStartingCells;
+    protected int lap;        //lap number
+    protected int cell;       //cell number
+
+    public Position(int startingCell){      //constructor, invoked when a player ends the assembling phase
         this.lap = 0;
-        this.cell = startingPosition;
+        this.cell = startingCell;
     }
     public int getLap() {
         return lap;
@@ -15,29 +19,6 @@ public class Position {
         return cell;
     }
 
-    public void changePosition(int steps){      //updates the position of a player of a specified amount of steps (forwards or backwards)
-        if(steps > 0){
-            for(int i = 0; i < steps; i++){
-                if(cell == 23){
-                    cell = 0;
-                    lap++;
-                }
-                else{
-                    cell++;
-                }
-            }
-        }
-        else{
-            for(int i = 0; i < (-steps); i++){
-                if(cell == 0){
-                    cell = 23;
-                    lap--;
-                }
-                else{
-                    cell--;
-                }
-            }
-        }
-    }
+    public abstract void changePosition(int steps); //updates the position of a player of a specified amount of steps (forwards or backwards)
 
 }

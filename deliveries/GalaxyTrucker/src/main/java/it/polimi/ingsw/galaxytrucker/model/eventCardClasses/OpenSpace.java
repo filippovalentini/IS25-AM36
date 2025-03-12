@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 //OPEN SPACE
 public class OpenSpace extends EventCard {
 
-    public OpenSpace(String imagePath) {
-        super(imagePath);
+    public OpenSpace(int imageID) {
+        super(imageID);
     }
 
     @Override

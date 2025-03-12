@@ -10,7 +10,7 @@ class PlayerTest {
     @Test
     void testUpdateCredits(){
         int credits = 5;
-        Player player = new Player("playerone", Color.BLUE);
+        Player player = new Player("playerone", Color.BLUE, true);
         player.updateCredits(credits);
         assertEquals(credits, player.getCredits());
     }

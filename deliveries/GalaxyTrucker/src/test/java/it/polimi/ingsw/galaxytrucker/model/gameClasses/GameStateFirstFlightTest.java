@@ -14,7 +14,7 @@ public class GameStateFirstFlightTest {
 
     @BeforeEach
     public void initFirstFlight() {
-        gameState = new GameState(true);
+        gameState = new GameState(true, 4);
         player1 = "truck3r";
         player2 = "4lien";
         gameState.addPlayer(player1, Color.RED);
@@ -23,7 +23,7 @@ public class GameStateFirstFlightTest {
 
     @Test
     public void testAddPlayer() {
-        GameState gameStateAddPlayers = new GameState(true);
+        GameState gameStateAddPlayers = new GameState(true, 4);
         player1 = "truck3r";
         player2 = "4lien";
         gameStateAddPlayers.addPlayer(player1, Color.RED);

@@ -6,8 +6,8 @@ public abstract class AdvancedEnemies extends DayLossCard{
     protected final int enemyStrength;      //strength of the enemy
     protected boolean defeated;     //true if the enemy has been defeated
 
-    public AdvancedEnemies(int prizeCredits, int enemyStrength, int lostDays, String imagePath) {   //constructor
-        super(lostDays, imagePath);
+    public AdvancedEnemies(int prizeCredits, int enemyStrength, int lostDays, int imageID) {   //constructor
+        super(lostDays, imageID);
         this.prizeCredits = prizeCredits;
         this.enemyStrength = enemyStrength;
         this.defeated = false;

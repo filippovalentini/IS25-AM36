@@ -9,8 +9,8 @@ import java.util.List;
 public class Pirates extends AdvancedEnemies {
     private final List<CannonShot> cannonFire;      //list of cannon shots that can hit the ship of a player
 
-    public Pirates(int prizeCredits, int enemyStrength, List<CannonShot> cannonFire, int lostDays, String imagePath) {
-        super(prizeCredits, enemyStrength, lostDays, imagePath);
+    public Pirates(int prizeCredits, int enemyStrength, List<CannonShot> cannonFire, int lostDays, int imageID) {
+        super(prizeCredits, enemyStrength, lostDays, imageID);
         this.cannonFire = cannonFire;
     }
     public List<CannonShot> getCannonFire() {

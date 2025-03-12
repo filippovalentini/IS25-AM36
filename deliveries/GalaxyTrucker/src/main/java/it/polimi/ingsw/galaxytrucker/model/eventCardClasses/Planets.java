@@ -11,8 +11,8 @@ public class Planets extends DayLossCard{
     //that can be gained by landing on the corresponding planet
     //(each type of good corresponds to a color)
 
-    public Planets(List<List<Color>> planetGoods, int lostDays, String imagePath) {     //constructor
-        super(lostDays, imagePath);
+    public Planets(List<List<Color>> planetGoods, int lostDays, int imageID) {     //constructor
+        super(lostDays, imageID);
         this.planetGoods = planetGoods;
     }
     public void landing(int numberPlanet){      //when a player lands on a planet, the corresponding element

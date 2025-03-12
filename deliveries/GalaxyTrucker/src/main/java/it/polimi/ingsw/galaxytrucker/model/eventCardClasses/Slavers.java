@@ -6,8 +6,8 @@ import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 public class Slavers extends AdvancedEnemies{
     private final int crewLoss;     //number of crew members that a ship board can lose if the card has effect on the corresponding player
 
-    public Slavers(int prizeCredits, int enemyStrength, int crewLoss, int lostDays, String imagePath) {
-        super(prizeCredits, enemyStrength, lostDays, imagePath);
+    public Slavers(int prizeCredits, int enemyStrength, int crewLoss, int lostDays, int imageID) {
+        super(prizeCredits, enemyStrength, lostDays, imageID);
         this.crewLoss = crewLoss;
     }
     public int getCrewLoss() {

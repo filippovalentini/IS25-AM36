@@ -10,7 +10,7 @@ class PositionTest {
 
     @BeforeEach
     void init(){
-        position = new Position(0);
+        position = new LevelTwoPosition(0);
     }
 
     @Test

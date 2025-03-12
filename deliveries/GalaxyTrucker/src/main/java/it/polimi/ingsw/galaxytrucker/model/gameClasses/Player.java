@@ -8,11 +8,16 @@ public class Player {
     private boolean hasAbandoned;       //true if the player has abandoned the game
     private ShipBoard shipBoard;        //ship board of the player
 
-    public Player(String nickname, Color color) {       //constructor
+    public Player(String nickname, Color color, boolean levelOne) {       //constructor
         this.nickname = nickname;
         this.credits = 0;
         this.hasAbandoned = false;
-        this.shipBoard = new ShipBoard(color);
+        if(levelOne){
+            shipBoard = new LevelOneShipBoard(color);
+        }
+        else{
+            shipBoard = new LevelTwoShipBoard(color);
+        }
     }
     public String getNickname() { //return a copy of the nickname
         return nickname;
@@ -24,9 +29,6 @@ public class Player {
         return hasAbandoned;
     }
     public ShipBoard getShipBoard() {
-        if(this.shipBoard == null) {return null;}
-        ShipBoard retShipBoard;
-        retShipBoard = this.shipBoard.clone();
         return shipBoard;
     }
 

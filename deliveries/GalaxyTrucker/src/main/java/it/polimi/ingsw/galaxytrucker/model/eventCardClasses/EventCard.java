@@ -6,13 +6,13 @@ import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 //this class is used to generalize the concept of adventure/event card used during the game; each subclass of "EventCard"
 //represents a specific type of card
 public abstract class EventCard {
-    protected final String imagePath;       //path for the image associated to the adventure card
+    protected final int imageID;       //path for the image associated to the adventure card
 
-    public EventCard(String imagePath) {        //constructor
-        this.imagePath = imagePath;
+    public EventCard(int imageID) {        //constructor
+        this.imageID = imageID;
     }
-    public String getImagePath() {
-        return imagePath;
+    public int getImagePath() {
+        return imageID;
     }
 
     //applies the effect of the card to the players involved in the game; this abstract method is defined in different

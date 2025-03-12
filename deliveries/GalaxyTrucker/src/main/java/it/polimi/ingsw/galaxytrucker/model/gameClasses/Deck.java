@@ -2,6 +2,7 @@ package it.polimi.ingsw.galaxytrucker.model.gameClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.EventCard;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.EmptyDeckException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.PickedDeckException;
 
 import java.util.*;
 //this class is used to represent both the three decks used in the assembling phase (only for standard game)
@@ -15,9 +16,10 @@ public class Deck {
         this.picked = false;
     }
     public List<EventCard> getCards() { //return a copy of eventCards
-        if(this.cards == null) {return null;}
-        List<EventCard> retCards = new ArrayList<>(this.cards);
-        return retCards;
+        if(this.cards == null) {
+            return null;
+        }
+        return new ArrayList<>(this.cards);
     }
     public int getNumberCards() {
         return cards.size();
@@ -26,7 +28,10 @@ public class Deck {
         return picked;
     }
 
-    public void setPicked() {       //invoked when a player picks a deck
+    public void setPicked() throws PickedDeckException{       //invoked when a player picks a deck
+        if(picked){
+            throw new PickedDeckException("The deck has been picked by another player");
+        }
         this.picked = true;
     }
 
@@ -39,9 +44,9 @@ public class Deck {
         }
 
     }
-    public void shuffle(){
+    public void shuffle(){      //shuffles the cards in the deck
         Collections.shuffle(cards);
-    }       //shuffles the cards in the deck
+    }
 
 }
 
