@@ -2,6 +2,7 @@ package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.componentClasses.ConfigurableComponent;
 import it.polimi.ingsw.galaxytrucker.model.componentClasses.Engine;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.Player;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.ShipBoard;
@@ -18,21 +19,5 @@ public class OpenSpace extends EventCard {
     }
 
     @Override
-    public void solve(GameState gameState) {
-        List<Integer> stepsAhead = new ArrayList<>();
-        List<Player> playerList = new ArrayList<>(gameState.getPlayersPlay().values());
-        for (Player player : playerList) {
-            {
-                stepsAhead.add(player.getShipBoard().getAssembledComponents().stream()
-                        .flatMap(List::stream)
-                        .filter(x -> x instanceof Engine)
-                        .map(x -> (ConfigurableComponent) x)
-                        .filter(x -> !x.getIsDouble())
-                        .toList()
-                        .size());
-            }
-
-
-        }       //implements the effect of the card
-    }
+    public void fly(GameState gameState, String nickname, int usedBatteries) throws InvalidActionException{}
 }

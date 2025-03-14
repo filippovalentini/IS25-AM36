@@ -26,7 +26,7 @@ public class ShipBoardTest {
         connectorList1.add(Connector.SINGLE);
         connectorList1.add(Connector.SINGLE);
         connectorList1.add(Connector.SMOOTH);
-        component1 = new Component(, "SamplePath", connectorList1);
+        component1 = new Component(9, connectorList1);
     }
 
     @Test

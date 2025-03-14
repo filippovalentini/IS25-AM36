@@ -29,7 +29,18 @@ public class EventCard {
     public void landing(GameState gameState, String nickname) throws InvalidActionException {
         throw new InvalidActionException("Invalid action");
     }
-
+    public void specialEffect(GameState gameState) throws InvalidActionException {
+        throw new InvalidActionException("Invalid action");
+    }
+    public void defeat(GameState gameState, String nickname, int usedBatteries, boolean looseDays) throws InvalidActionException {
+        throw new InvalidActionException("Invalid action");
+    }
+    public void fly(GameState gameState, String nickname, int usedBatteries) throws InvalidActionException {
+        throw new InvalidActionException("Invalid action");
+    }
+    public void useBatteries(GameState gameState, String nickname, int usedBatteries) throws InvalidActionException {
+        throw new InvalidActionException("Invalid action");
+    }
 }
 
 

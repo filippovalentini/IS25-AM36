@@ -16,6 +16,7 @@ public class GameState {
     private final int numPlayers;     //number of players
     private Map<String,Position> playersPos;    //maps each player to its position on the ship board
     private Map<String,Player> playersPlay;     //maps each player to its information
+    private String turnPlayer;
     private List<Deck> decks;       //decks used during the assembling phase (only for standard game)
     private Deck gameDeck;      //main deck used during the game
     private EventCard currentCard;
@@ -284,6 +285,7 @@ public class GameState {
     //invoked when the leader draws a new card from the deck (during the game), which must be solved
     public void pickNextCard() throws EmptyDeckException {
         currentCard = gameDeck.drawCard();
+        currentCard.specialEffect(this);
     }
     //invoked when a player wants to view the content of one of the 3 available decks of the flight board (assembling phase)
     public Deck checkDeck(int deckNumber) throws PickedDeckException{ //return a copy of the deck

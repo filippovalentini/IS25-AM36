@@ -23,11 +23,11 @@ class DeckTest {
         EventCard ec = new AbandonedShip(2, 3, 1, 1001);
         listOfEventCards.add(ec);
         Deck d = new Deck(listOfEventCards);
-        assertEquals(d.getCards().size(), 1);
-        assertEquals(d.getCards().get(0), ec);
+        assertEquals(1, d.getCards().size());
+        assertEquals(d.getCards().getFirst(), ec);
         List<EventCard> copyListOfEventCards = d.getCards();
         copyListOfEventCards.removeLast(); //removing from copied list shouldn't have effects on Deck cards
-        assertEquals(d.getCards().size(), 1);
+        assertEquals(1, d.getCards().size());
     }
 
     @Test

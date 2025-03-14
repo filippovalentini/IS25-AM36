@@ -1,5 +1,6 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
+import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 
 //SLAVERS
@@ -14,5 +15,5 @@ public class Slavers extends AdvancedEnemies{
         return crewLoss;
     }
     @Override
-    public void solve(GameState gameState){}       //implements the effect of the card
+    public void defeat(GameState gameState, String nickname, int usedBatteries, boolean looseDays) throws InvalidActionException{}
 }

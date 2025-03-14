@@ -1,6 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 
 import java.util.List;
@@ -37,5 +38,5 @@ public class Smugglers extends DayLossCard{
         defeated = true;
     }
     @Override
-    public void solve(GameState gameState){}       //implements the effect of the card
+    public void defeat(GameState gameState, String nickname, int usedBatteries, boolean looseDays) throws InvalidActionException{}
 }
