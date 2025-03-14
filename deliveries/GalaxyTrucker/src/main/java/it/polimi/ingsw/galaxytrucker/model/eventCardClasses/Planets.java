@@ -1,6 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 
 import java.util.List;
@@ -15,14 +16,11 @@ public class Planets extends DayLossCard{
         super(lostDays, imageID);
         this.planetGoods = planetGoods;
     }
-    public void landing(int numberPlanet){      //when a player lands on a planet, the corresponding element
+    @Override
+    public void planetLanding(GameState gameState, String nickname, int numberPlanet) throws InvalidActionException {      //when a player lands on a planet, the corresponding element
         //is set to null, as the other players cannot land on it
         //and gain the goods
         planetGoods.set(numberPlanet, null);
     }
-    public List<List<Color>> getPlanetGoods() {     //returns the goods for each planet
-        return planetGoods;
-    }
-    @Override
-    public void solve(GameState gameState){}       //implements the effect of the card
+
 }

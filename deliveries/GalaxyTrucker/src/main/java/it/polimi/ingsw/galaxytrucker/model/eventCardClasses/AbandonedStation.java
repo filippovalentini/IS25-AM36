@@ -1,6 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 
 import java.util.ArrayList;
@@ -32,5 +33,5 @@ public class AbandonedStation extends DayLossCard{
         used = true;
     }
     @Override
-    public void solve(GameState gameState){}       //implements the effect of the card
+    public void landing(GameState gameState, String nickname) throws InvalidActionException {}
 }

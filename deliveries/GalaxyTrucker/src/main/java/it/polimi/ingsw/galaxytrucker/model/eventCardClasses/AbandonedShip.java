@@ -1,5 +1,6 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
+import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 
 //ABANDONED SHIP
@@ -28,5 +29,5 @@ public class AbandonedShip extends DayLossCard{
         used = true;
     }
     @Override
-    public void solve(GameState gameState){}       //implements the effect of the card
+    public void landing(GameState gameState, String nickname) throws InvalidActionException{}
 }
