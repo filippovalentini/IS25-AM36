@@ -1,5 +1,6 @@
 package it.polimi.ingsw.galaxytrucker.model.gameClasses;
 
+import it.polimi.ingsw.galaxytrucker.model.componentClasses.Battery;
 import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.*;
@@ -27,8 +28,6 @@ public class GameState {
         playersPos = new HashMap<>();
         playersPlay = new HashMap<>();
         this.numPlayers = numPlayers;
-        createComponents(firstFlight);
-        createDecks(firstFlight);
     }
 
     //
@@ -44,9 +43,7 @@ public class GameState {
         Map<String,Player> retPlayersPlay = new HashMap<>(playersPlay);
         return retPlayersPlay;
     }
-    public int getNumPlayers() {
-        return numPlayers;
-    }
+    public int getCurrentPlayers(){return playersPlay.size();}
 
     //
      //STARTING PHASE
@@ -56,6 +53,26 @@ public class GameState {
     public void createComponents(boolean firstFlight) {
         hiddenComponents = new ArrayList<>();
         shownComponents = new ArrayList<>();
+
+        hiddenComponents.add(new Battery(true, 201, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.SINGLE, Connector.DOUBLE, Connector.SMOOTH))));
+        hiddenComponents.add(new Battery(true, 202, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.DOUBLE, Connector.SMOOTH, Connector.SMOOTH))));
+        hiddenComponents.add(new Battery(true, 203, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.DOUBLE, Connector.SINGLE, Connector.SMOOTH))));
+        hiddenComponents.add(new Battery(true, 204, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SINGLE, Connector.DOUBLE, Connector.SINGLE))));
+        hiddenComponents.add(new Battery(true, 205, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.SMOOTH, Connector.SMOOTH, Connector.SINGLE))));
+        hiddenComponents.add(new Battery(true, 206, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.SINGLE, Connector.SINGLE, Connector.SINGLE))));
+        hiddenComponents.add(new Battery(true, 207, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.DOUBLE, Connector.DOUBLE, Connector.DOUBLE))));
+        hiddenComponents.add(new Battery(true, 208, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Battery(true, 209, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Battery(true, 210, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.UNIVERSAL, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Battery(true, 211, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Battery(false, 212, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.SMOOTH, Connector.DOUBLE, Connector.SMOOTH))));
+        hiddenComponents.add(new Battery(false, 213, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.SINGLE, Connector.DOUBLE, Connector.SMOOTH))));
+        hiddenComponents.add(new Battery(false, 214, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH))));
+        hiddenComponents.add(new Battery(false, 215, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SINGLE, Connector.SMOOTH, Connector.SMOOTH))));
+        hiddenComponents.add(new Battery(false, 216, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.DOUBLE, Connector.SINGLE, Connector.SMOOTH))));
+        hiddenComponents.add(new Battery(false, 217, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SINGLE))));
+
+
     }
     //if the game is set as "standard", this method instantiates all the adventure cards of the game and creates the 4 decks
     // for the assembling phase; instead, if the game is set as "fist flight", this method creates directly the
@@ -153,14 +170,18 @@ public class GameState {
             gameDeckCards.add(new Smugglers(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN, Color.BLUE)),2,4,1,8005));
             gameDeckCards.add(new SpecialEvent(SpecialEventType.STARDUST, 4002));
             //game deck creation
-            gameDeck = new Deck(gameDeckCards);
-            gameDeck.shuffle();
+            Deck d = new Deck(gameDeckCards);
+            decks = new ArrayList<>();
+            decks.add(d);
         }
 
         currentCard = null;
     }
     //adds a player to the game
-    public void addPlayer(String nickname, Color color) throws UniqueNicknameException, UniquePlayerColorException {
+    public void addPlayer(String nickname, Color color) throws UniqueNicknameException, UniquePlayerColorException, NumberPlayersException {
+        if(numPlayers == getCurrentPlayers()){
+            throw new NumberPlayersException("Too many players");
+        }
         for(String n : playersPlay.keySet()) {
             if(n.equals(nickname)) {
                 throw new UniqueNicknameException("Nickname already taken");
@@ -173,6 +194,14 @@ public class GameState {
         }
         playersPlay.put(nickname, new Player(nickname, color, firstFlight));
         playersPos.put(nickname, null);
+    }
+    //invoked when one of the players decides to start the assembling phase
+    public void startAssembling() throws NumberPlayersException {
+        if(numPlayers > getCurrentPlayers()){
+            throw new NumberPlayersException("Not enough players");
+        }
+        createComponents(firstFlight);
+        createDecks(firstFlight);
     }
 
     //

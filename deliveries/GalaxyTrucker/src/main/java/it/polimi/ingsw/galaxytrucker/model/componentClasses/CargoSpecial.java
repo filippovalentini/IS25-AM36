@@ -8,8 +8,8 @@ import java.util.List;
 
 public class CargoSpecial extends CargoHold {
 
-    public CargoSpecial(boolean isDouble, String imagePath, List<Connector> sides) {
-        super(isDouble, imagePath, sides);
+    public CargoSpecial(boolean isDouble, int imageID, List<Connector> sides) {
+        super(isDouble, imageID, sides);
     }
 
     @Override

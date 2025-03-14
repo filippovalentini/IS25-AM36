@@ -10,25 +10,25 @@ import java.util.List;
 //this class describes a generic component used to assemble the players' ships. Each subclass of "Component"
 //represents instead a specific type of component
 public class Component {
-    protected final String imagePath;       //path for the image describing the component
+    protected final int imageID;       //path for the image describing the component
     protected List<Connector> sides;        //list of 4 connectors associated to the 4 sides of the component tile
     protected Orientation orientation;      //orientation of the connector in position 0 of "sides"
 
-    public Component(String imagePath, List<Connector> sides) {     //connector
-        this.imagePath = imagePath;
+    public Component(int imageID, List<Connector> sides) {     //connector
+        this.imageID = imageID;
         this.sides = sides;
         this.orientation = Orientation.NORTH;
     }
     public Component clone(){ //return a copy of the component
-        Component retComponent = new Component(this.imagePath, new ArrayList<>(this.sides));
+        Component retComponent = new Component(this.imageID, new ArrayList<>(this.sides));
         retComponent.orientation = this.orientation;
         return retComponent;
     }
     public Orientation getOrientation() {
         return orientation;
     }
-    public String getImagePath() {
-        return imagePath;
+    public int getImageID() {
+        return imageID;
     }
 
 

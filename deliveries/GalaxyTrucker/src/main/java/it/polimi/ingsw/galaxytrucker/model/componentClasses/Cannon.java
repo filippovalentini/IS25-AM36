@@ -5,7 +5,7 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import java.util.List;
 
 public class Cannon extends ConfigurableComponent { //constructor
-    public Cannon(boolean isDouble, String imagePath, List<Connector> sides) {
-        super(isDouble, imagePath, sides);
+    public Cannon(boolean isDouble, int imageID, List<Connector> sides) {
+        super(isDouble, imageID, sides);
     }
 }

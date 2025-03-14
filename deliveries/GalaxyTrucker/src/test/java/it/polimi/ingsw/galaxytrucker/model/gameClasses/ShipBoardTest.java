@@ -7,7 +7,6 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class ShipBoardTest {
         connectorList1.add(Connector.SINGLE);
         connectorList1.add(Connector.SINGLE);
         connectorList1.add(Connector.SMOOTH);
-        component1 = new Component("SamplePath", connectorList1);
+        component1 = new Component(, "SamplePath", connectorList1);
     }
 
     @Test

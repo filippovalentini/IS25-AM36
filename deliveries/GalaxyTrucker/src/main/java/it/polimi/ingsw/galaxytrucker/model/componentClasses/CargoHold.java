@@ -13,8 +13,8 @@ public class CargoHold extends ConfigurableComponent {
     protected List<Color> goods;        //list of goods stored in the cargo hold
     protected int numberGoods;      //number of goods stored in the cargo hold
 
-    public CargoHold(boolean isDouble, String imagePath, List<Connector> sides) {       //constructor
-        super(isDouble, imagePath, sides);
+    public CargoHold(boolean isDouble, int imageID, List<Connector> sides) {       //constructor
+        super(isDouble, imageID, sides);
         goods = new ArrayList<>();
         numberGoods = 0;
     }

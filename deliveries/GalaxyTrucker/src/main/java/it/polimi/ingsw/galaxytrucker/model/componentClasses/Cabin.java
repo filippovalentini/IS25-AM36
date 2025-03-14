@@ -10,8 +10,8 @@ public class Cabin extends Component {
     private boolean purpleAlien;        //true if there is a purple alien in the cabin
     private boolean brownAlien;     //true if there is a brown alien in the cabin
 
-    public Cabin(String imagePath, List<Connector> sides) {     //constructor
-        super(imagePath, sides);
+    public Cabin(int imageID, List<Connector> sides) {     //constructor
+        super(imageID, sides);
         numberCrew = 0;
         purpleAlien = false;
         brownAlien = false;

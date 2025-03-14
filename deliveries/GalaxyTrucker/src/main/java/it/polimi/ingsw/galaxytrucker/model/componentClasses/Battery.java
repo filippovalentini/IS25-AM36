@@ -8,8 +8,8 @@ import java.util.List;
 public class Battery extends ConfigurableComponent {
     private int numberBatteries;        //number of batteries hold by the component
 
-    public Battery(boolean isDouble, String imagePath, List<Connector> sides) { //constructor
-        super(isDouble, imagePath, sides);
+    public Battery(boolean isDouble, int imageID, List<Connector> sides) { //constructor
+        super(isDouble, imageID, sides);
         if (isDouble) {
             this.numberBatteries = 2;
         }
