@@ -1,7 +1,8 @@
 package it.polimi.ingsw.galaxytrucker.model.gameClasses;
 
-import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
+import it.polimi.ingsw.galaxytrucker.model.componentClasses.*;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 
 import java.util.*;
@@ -9,10 +10,11 @@ import java.util.*;
 public class ShipBoard {
     protected int imageID;
     protected int lostComponents;     //number of misplaced tiles and of components destroyed during the game
-    protected List<List<Component>> assembledComponents;      //components assembled on the ship board
+    protected List<List<Component>> assembledComponents;     //components assembled on the ship board
     protected List<Component> reservedComponents;     //components reserved during the assembling phase
     protected Component pickedComponent;      //component which has been picked by a player and brought to its ship board
     protected final Color color;      //color associated to the ship board (and to the player that owns it)
+    protected boolean correct;      //determines if the ship is correctly assembled
 
     public ShipBoard(Color color) {     //constructor
         this.color = color;
@@ -20,6 +22,7 @@ public class ShipBoard {
         this.assembledComponents = new ArrayList<>();
         this.reservedComponents = new ArrayList<>();
         this.pickedComponent = null;
+        this.correct = true;
     }
     /*
     public ShipBoard clone() { //return a copy of the ShipBoard
@@ -37,7 +40,8 @@ public class ShipBoard {
         }
         return retShipBoard;
     }
-     */
+    */
+
     public List<List<Component>> getAssembledComponents() { //return a copy of the assembled components
         List<List<Component>> retAssembledComponents = new ArrayList<>();
         for (List<Component> assembledComponent : this.assembledComponents) {
@@ -63,6 +67,9 @@ public class ShipBoard {
     }
     public int getLostComponents() {
         return lostComponents;
+    }
+    public boolean isCorrect() {
+        return correct;
     }
     //invoked when the owner of the ship board picks a component from the table
     public void pickComponent(Component component) throws PickedComponentException {
@@ -113,7 +120,8 @@ public class ShipBoard {
     }
     //assembles the component picked by a player in the specified cell (x,y) of its ship board
     public void assembleComponent(int x, int y) throws AssembledComponentException, PickedComponentException {
-        if(assembledComponents.get(x).get(y) != null){
+        Empty emptySpace = new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
+        if(!assembledComponents.get(x).get(y).equals(emptySpace)){
             throw new AssembledComponentException("Already assembled component");
         }
         else if(pickedComponent==null){
@@ -126,10 +134,11 @@ public class ShipBoard {
     }
     //removes an assembled component from the ship board
     public void destroyComponent(int x, int y) throws AssembledComponentException {
-        if(assembledComponents.get(x).get(y) == null){
+        Empty emptySpace = new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
+        if(assembledComponents.get(x).get(y).equals(emptySpace)){
             throw new AssembledComponentException("No component to be destroyed");
         }
-        assembledComponents.get(x).set(y, null);
+        assembledComponents.get(x).set(y, emptySpace);
         lostComponents++;
     }
 }

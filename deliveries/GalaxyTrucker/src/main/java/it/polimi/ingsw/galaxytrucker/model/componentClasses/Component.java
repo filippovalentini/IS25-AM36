@@ -1,11 +1,10 @@
 package it.polimi.ingsw.galaxytrucker.model.componentClasses;
 
 
-import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
-import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 //this class describes a generic component used to assemble the players' ships. Each subclass of "Component"
 //represents instead a specific type of component
@@ -31,6 +30,12 @@ public class Component {
         return imageID;
     }
 
+    @Override
+    public boolean equals(Object component) {
+        if(this == component) return true;
+        if(component == null || getClass() != component.getClass()) return false;
+        return this.imageID == ((Component) component).getImageID();
+    }
 
     public void rotateLeft() {      //rotates the component (left) by 90 degrees
         if(orientation == Orientation.NORTH) {

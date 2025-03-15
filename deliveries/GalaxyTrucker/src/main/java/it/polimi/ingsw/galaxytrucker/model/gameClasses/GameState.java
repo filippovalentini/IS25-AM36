@@ -1,7 +1,6 @@
 package it.polimi.ingsw.galaxytrucker.model.gameClasses;
 
-import it.polimi.ingsw.galaxytrucker.model.componentClasses.Battery;
-import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
+import it.polimi.ingsw.galaxytrucker.model.componentClasses.*;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.*;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
@@ -14,21 +13,23 @@ import java.util.*;
 public class GameState {
     private final boolean firstFlight;      //true if the game has been set as "learning flight", false if it is a standard game
     private final int numPlayers;     //number of players
-    private Map<String,Position> playersPos;    //maps each player to its position on the ship board
+    private Map<String,Position> playersPos;    //maps (in position order) each player to its position on the flight board
     private Map<String,Player> playersPlay;     //maps each player to its information
-    private String turnPlayer;
+    private String turnPlayer;       //player that must perform an action in order to solve a card
     private List<Deck> decks;       //decks used during the assembling phase (only for standard game)
     private Deck gameDeck;      //main deck used during the game
     private EventCard currentCard;
     private List<Component> hiddenComponents;       //components turned face down during the assembling phase
     private List<Component> shownComponents;        //components turned face up during the assembling phase
+    private State state;
 
 
     public GameState(boolean firstFlight, int numPlayers) {     //constructor, creates the deck(s) of cards and instantiates the components
         this.firstFlight = firstFlight;
-        playersPos = new HashMap<>();
-        playersPlay = new HashMap<>();
+        this.playersPos = new LinkedHashMap<>();
+        this.playersPlay = new HashMap<>();
         this.numPlayers = numPlayers;
+        this.state = State.WAITING_FOR_PLAYERS;
     }
 
     //
@@ -73,7 +74,149 @@ public class GameState {
         hiddenComponents.add(new Battery(false, 216, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.DOUBLE, Connector.SINGLE, Connector.SMOOTH))));
         hiddenComponents.add(new Battery(false, 217, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SINGLE))));
 
+        hiddenComponents.add(new Cabin(301, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL, Connector.SINGLE))));
+        hiddenComponents.add(new Cabin(302, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.DOUBLE, Connector.SINGLE, Connector.SINGLE))));
+        hiddenComponents.add(new Cabin(303, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.DOUBLE, Connector.DOUBLE, Connector.SINGLE))));
+        hiddenComponents.add(new Cabin(304, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SMOOTH, Connector.SMOOTH, Connector.SINGLE))));
+        hiddenComponents.add(new Cabin(305, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SINGLE, Connector.SMOOTH, Connector.SINGLE))));
+        hiddenComponents.add(new Cabin(306, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SINGLE, Connector.DOUBLE, Connector.SINGLE))));
+        hiddenComponents.add(new Cabin(307, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SINGLE, Connector.UNIVERSAL, Connector.DOUBLE))));
+        hiddenComponents.add(new Cabin(308, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.DOUBLE, Connector.SMOOTH, Connector.DOUBLE))));
+        hiddenComponents.add(new Cabin(309, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SINGLE, Connector.DOUBLE, Connector.DOUBLE))));
+        hiddenComponents.add(new Cabin(310, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.SMOOTH, Connector.SMOOTH, Connector.DOUBLE))));
+        hiddenComponents.add(new Cabin(311, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SINGLE, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Cabin(312, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SINGLE, Connector.SINGLE, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Cabin(313, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.DOUBLE, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Cabin(314, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.SMOOTH, Connector.SINGLE, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Cabin(315, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.SMOOTH, Connector.DOUBLE, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Cabin(316, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SMOOTH, Connector.DOUBLE, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Cabin(317, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.DOUBLE, Connector.SMOOTH, Connector.UNIVERSAL))));
 
+        hiddenComponents.add(new Cannon(false, 401,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SINGLE, Connector.SMOOTH))));
+        hiddenComponents.add(new Cannon(false, 402,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SINGLE, Connector.SMOOTH))));
+        hiddenComponents.add(new Cannon(false, 403,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.DOUBLE, Connector.SMOOTH))));
+        hiddenComponents.add(new Cannon(false, 404,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.DOUBLE, Connector.SMOOTH))));
+        hiddenComponents.add(new Cannon(false, 405,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SINGLE, Connector.SMOOTH, Connector.SMOOTH))));
+        hiddenComponents.add(new Cannon(false, 406,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SINGLE, Connector.DOUBLE, Connector.SMOOTH))));
+        hiddenComponents.add(new Cannon(false, 407,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SINGLE, Connector.UNIVERSAL, Connector.SMOOTH))));
+        hiddenComponents.add(new Cannon(false, 408,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.DOUBLE, Connector.SMOOTH, Connector.SMOOTH))));
+        hiddenComponents.add(new Cannon(false, 409,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.DOUBLE, Connector.SINGLE, Connector.SMOOTH))));
+        hiddenComponents.add(new Cannon(false, 410,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.DOUBLE, Connector.UNIVERSAL, Connector.SMOOTH))));
+        hiddenComponents.add(new Cannon(false, 411,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.UNIVERSAL, Connector.SINGLE, Connector.SMOOTH))));
+        hiddenComponents.add(new Cannon(false, 412,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SINGLE))));
+        hiddenComponents.add(new Cannon(false, 413,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.DOUBLE, Connector.SINGLE))));
+        hiddenComponents.add(new Cannon(false, 414,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL, Connector.SINGLE))));
+        hiddenComponents.add(new Cannon(false, 415,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SINGLE, Connector.SINGLE, Connector.SINGLE))));
+        hiddenComponents.add(new Cannon(false, 416,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.DOUBLE, Connector.UNIVERSAL, Connector.SINGLE))));
+        hiddenComponents.add(new Cannon(false, 417,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.UNIVERSAL, Connector.SMOOTH, Connector.SINGLE))));
+        hiddenComponents.add(new Cannon(false, 418,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.DOUBLE))));
+        hiddenComponents.add(new Cannon(false, 419,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SINGLE, Connector.DOUBLE))));
+        hiddenComponents.add(new Cannon(false, 420,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL, Connector.DOUBLE))));
+        hiddenComponents.add(new Cannon(false, 421,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SINGLE, Connector.SMOOTH, Connector.DOUBLE))));
+        hiddenComponents.add(new Cannon(false, 422,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SINGLE, Connector.UNIVERSAL, Connector.DOUBLE))));
+        hiddenComponents.add(new Cannon(false, 423,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.DOUBLE, Connector.DOUBLE, Connector.DOUBLE))));
+        hiddenComponents.add(new Cannon(false, 424,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.DOUBLE, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Cannon(false, 425,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.DOUBLE, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Cannon(true, 426,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SINGLE, Connector.SMOOTH))));
+        hiddenComponents.add(new Cannon(true, 427,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.DOUBLE, Connector.SMOOTH))));
+        hiddenComponents.add(new Cannon(true, 428,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SINGLE, Connector.UNIVERSAL, Connector.SMOOTH))));
+        hiddenComponents.add(new Cannon(true, 429,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.UNIVERSAL, Connector.SMOOTH, Connector.SMOOTH))));
+        hiddenComponents.add(new Cannon(true, 430,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.UNIVERSAL, Connector.DOUBLE, Connector.SMOOTH))));
+        hiddenComponents.add(new Cannon(true, 431,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SINGLE, Connector.DOUBLE, Connector.SINGLE))));
+        hiddenComponents.add(new Cannon(true, 432,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.DOUBLE, Connector.SMOOTH, Connector.SINGLE))));
+        hiddenComponents.add(new Cannon(true, 433,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL, Connector.DOUBLE))));
+        hiddenComponents.add(new Cannon(true, 434,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.DOUBLE, Connector.SINGLE, Connector.DOUBLE))));
+        hiddenComponents.add(new Cannon(true, 435,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Cannon(true, 436,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SINGLE, Connector.UNIVERSAL))));
+
+        hiddenComponents.add(new CargoHold(true, 501, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SINGLE, Connector.UNIVERSAL, Connector.SMOOTH))));
+        hiddenComponents.add(new CargoHold(true, 502, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SINGLE, Connector.UNIVERSAL, Connector.SINGLE))));
+        hiddenComponents.add(new CargoHold(true, 503, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.UNIVERSAL, Connector.SMOOTH, Connector.SINGLE))));
+        hiddenComponents.add(new CargoHold(true, 504, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new CargoHold(true, 505, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new CargoHold(true, 506, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SINGLE, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new CargoHold(true, 507, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.DOUBLE, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new CargoHold(true, 508, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SINGLE, Connector.DOUBLE, Connector.UNIVERSAL))));
+        hiddenComponents.add(new CargoHold(true, 509, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new CargoHold(false, 510, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SINGLE))));
+        hiddenComponents.add(new CargoHold(false, 511, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.SMOOTH, Connector.SINGLE, Connector.SMOOTH))));
+        hiddenComponents.add(new CargoHold(false, 512, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.DOUBLE))));
+        hiddenComponents.add(new CargoHold(false, 513, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SMOOTH, Connector.DOUBLE, Connector.SMOOTH))));
+        hiddenComponents.add(new CargoHold(false, 514, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.SMOOTH, Connector.DOUBLE, Connector.SINGLE))));
+        hiddenComponents.add(new CargoHold(false, 515, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SMOOTH, Connector.SINGLE, Connector.DOUBLE))));
+        hiddenComponents.add(new CargoSpecial(false, 601, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.DOUBLE, Connector.SINGLE, Connector.UNIVERSAL))));
+        hiddenComponents.add(new CargoSpecial(false, 602, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.UNIVERSAL, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new CargoSpecial(false, 603, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.SINGLE, Connector.SINGLE, Connector.UNIVERSAL))));
+        hiddenComponents.add(new CargoSpecial(false, 604, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SINGLE, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new CargoSpecial(false, 605, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.DOUBLE, Connector.DOUBLE, Connector.UNIVERSAL))));
+        hiddenComponents.add(new CargoSpecial(false, 606, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new CargoSpecial(true, 607, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SINGLE))));
+        hiddenComponents.add(new CargoSpecial(true, 608, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.DOUBLE, Connector.SMOOTH, Connector.SINGLE))));
+        hiddenComponents.add(new CargoSpecial(true, 609, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.DOUBLE))));
+
+        hiddenComponents.add(new Engine(false, 701, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.UNIVERSAL, Connector.SMOOTH, Connector.SMOOTH))));
+        hiddenComponents.add(new Engine(false, 702, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.UNIVERSAL, Connector.SMOOTH, Connector.SMOOTH))));
+        hiddenComponents.add(new Engine(false, 703, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH))));
+        hiddenComponents.add(new Engine(false, 704, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH))));
+        hiddenComponents.add(new Engine(false, 705, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.SINGLE, Connector.SMOOTH, Connector.SMOOTH))));
+        hiddenComponents.add(new Engine(false, 706, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH))));
+        hiddenComponents.add(new Engine(false, 707, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH))));
+        hiddenComponents.add(new Engine(false, 708, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.UNIVERSAL, Connector.SMOOTH, Connector.SMOOTH))));
+        hiddenComponents.add(new Engine(false, 709, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.DOUBLE, Connector.SMOOTH, Connector.SMOOTH))));
+        hiddenComponents.add(new Engine(false, 710, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.UNIVERSAL, Connector.SMOOTH, Connector.SINGLE))));
+        hiddenComponents.add(new Engine(false, 711, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SINGLE, Connector.SMOOTH, Connector.SINGLE))));
+        hiddenComponents.add(new Engine(false, 712, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.SMOOTH, Connector.SMOOTH, Connector.SINGLE))));
+        hiddenComponents.add(new Engine(false, 713, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.DOUBLE, Connector.SMOOTH, Connector.SINGLE))));
+        hiddenComponents.add(new Engine(false, 714, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SINGLE, Connector.SMOOTH, Connector.DOUBLE))));
+        hiddenComponents.add(new Engine(false, 715, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.DOUBLE, Connector.SMOOTH, Connector.DOUBLE))));
+        hiddenComponents.add(new Engine(false, 716, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SMOOTH, Connector.SMOOTH, Connector.DOUBLE))));
+        hiddenComponents.add(new Engine(false, 717, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.SINGLE, Connector.SMOOTH, Connector.DOUBLE))));
+        hiddenComponents.add(new Engine(false, 718, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Engine(false, 719, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Engine(false, 720, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.DOUBLE, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Engine(false, 721, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Engine(true, 722, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH))));
+        hiddenComponents.add(new Engine(true, 723, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.UNIVERSAL, Connector.SMOOTH, Connector.SMOOTH))));
+        hiddenComponents.add(new Engine(true, 724, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH))));
+        hiddenComponents.add(new Engine(true, 725, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.SINGLE, Connector.SMOOTH, Connector.SMOOTH))));
+        hiddenComponents.add(new Engine(true, 726, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.SINGLE, Connector.SMOOTH, Connector.SINGLE))));
+        hiddenComponents.add(new Engine(true, 727, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.DOUBLE, Connector.SMOOTH, Connector.DOUBLE))));
+        hiddenComponents.add(new Engine(true, 728, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.SMOOTH, Connector.SMOOTH, Connector.DOUBLE))));
+        hiddenComponents.add(new Engine(true, 729, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.UNIVERSAL, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Engine(true, 730, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL))));
+
+        hiddenComponents.add(new Shield(901, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SINGLE, Connector.UNIVERSAL, Connector.SINGLE))));
+        hiddenComponents.add(new Shield(902, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.SMOOTH, Connector.SINGLE, Connector.SINGLE))));
+        hiddenComponents.add(new Shield(903, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SINGLE, Connector.DOUBLE, Connector.SINGLE))));
+        hiddenComponents.add(new Shield(904, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL, Connector.DOUBLE))));
+        hiddenComponents.add(new Shield(905, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.DOUBLE, Connector.DOUBLE, Connector.DOUBLE))));
+        hiddenComponents.add(new Shield(906, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.DOUBLE, Connector.SINGLE, Connector.DOUBLE))));
+        hiddenComponents.add(new Shield(907, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SINGLE, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Shield(908, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.DOUBLE, Connector.DOUBLE, Connector.UNIVERSAL))));
+
+        hiddenComponents.add(new Structural(101, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.SMOOTH, Connector.SINGLE))));
+        hiddenComponents.add(new Structural(102, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.UNIVERSAL, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Structural(103, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.UNIVERSAL, Connector.SINGLE, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Structural(104, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.UNIVERSAL, Connector.DOUBLE, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Structural(105, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.UNIVERSAL, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Structural(106, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.SINGLE, Connector.DOUBLE, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Structural(107, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.DOUBLE, Connector.SMOOTH, Connector.UNIVERSAL))));
+        hiddenComponents.add(new Structural(108, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.DOUBLE, Connector.DOUBLE, Connector.UNIVERSAL))));
+
+        if(!firstFlight){
+            hiddenComponents.add(new LifeSupport(false, 801, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.SINGLE, Connector.SMOOTH, Connector.SINGLE))));
+            hiddenComponents.add(new LifeSupport(false, 802, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SINGLE, Connector.SMOOTH, Connector.SINGLE))));
+            hiddenComponents.add(new LifeSupport(false, 803, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL))));
+            hiddenComponents.add(new LifeSupport(false, 804, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SINGLE, Connector.UNIVERSAL))));
+            hiddenComponents.add(new LifeSupport(false, 805, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.DOUBLE, Connector.SMOOTH, Connector.UNIVERSAL))));
+            hiddenComponents.add(new LifeSupport(false, 806, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL))));
+            hiddenComponents.add(new LifeSupport(true, 807, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.DOUBLE, Connector.SMOOTH, Connector.DOUBLE))));
+            hiddenComponents.add(new LifeSupport(true, 808, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.DOUBLE, Connector.SMOOTH, Connector.DOUBLE))));
+            hiddenComponents.add(new LifeSupport(true, 809, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL))));
+            hiddenComponents.add(new LifeSupport(true, 810, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.DOUBLE, Connector.UNIVERSAL))));
+            hiddenComponents.add(new LifeSupport(true, 811, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SINGLE, Connector.SMOOTH, Connector.UNIVERSAL))));
+            hiddenComponents.add(new LifeSupport(true, 812, new ArrayList<>(Arrays.asList(Connector.DOUBLE, Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL))));
+        }
     }
     //if the game is set as "standard", this method instantiates all the adventure cards of the game and creates the 4 decks
     // for the assembling phase; instead, if the game is set as "fist flight", this method creates directly the
@@ -179,9 +322,9 @@ public class GameState {
         currentCard = null;
     }
     //adds a player to the game
-    public void addPlayer(String nickname, Color color) throws UniqueNicknameException, UniquePlayerColorException, NumberPlayersException {
-        if(numPlayers == getCurrentPlayers()){
-            throw new NumberPlayersException("Too many players");
+    public void addPlayer(String nickname, Color color) throws UniqueNicknameException, UniquePlayerColorException, InvalidActionException {
+        if(state != State.WAITING_FOR_PLAYERS){
+            throw new InvalidActionException("Game has already been started");
         }
         for(String n : playersPlay.keySet()) {
             if(n.equals(nickname)) {
@@ -195,12 +338,14 @@ public class GameState {
         }
         playersPlay.put(nickname, new Player(nickname, color, firstFlight));
         playersPos.put(nickname, null);
-    }
-    //invoked when one of the players decides to start the assembling phase
-    public void startAssembling() throws NumberPlayersException {
-        if(numPlayers > getCurrentPlayers()){
-            throw new NumberPlayersException("Not enough players");
+        if(numPlayers == getCurrentPlayers()){
+            state = State.SHIP_BUILDING;
+            startAssembling();
         }
+    }
+
+    //invoked when one of the players decides to start the assembling phase
+    public void startAssembling() {
         createComponents(firstFlight);
         createDecks(firstFlight);
     }
@@ -210,42 +355,70 @@ public class GameState {
     //
 
     //invoked when a player wants to pick a component among the one placed face down (assembling phase)
-    public void pickHidden(String nickname) throws PickedComponentException {
+    public void pickHidden(String nickname) throws PickedComponentException, InvalidActionException {
+        if(state != State.SHIP_BUILDING){
+            throw new InvalidActionException("Assembling phase is finished");
+        }
         Collections.shuffle(hiddenComponents);
         Component c = hiddenComponents.removeFirst();
         playersPlay.get(nickname).getShipBoard().pickComponent(c);
     }
     //invoked when a player wants to pick a specific component among the one placed face up (assembling phase)
-    public void pickShown(String nickname, int index) throws PickedComponentException {
+    public void pickShown(String nickname, int index) throws PickedComponentException, InvalidActionException {
+        if(state != State.SHIP_BUILDING){
+            throw new InvalidActionException("Assembling phase is finished");
+        }
         Component c = shownComponents.remove(index);
         playersPlay.get(nickname).getShipBoard().pickComponent(c);
     }
     //invoked when a player wants to reserve the component that it has picked for its ship board
-    public void reserveComponent(String nickname) throws PickedComponentException, ReservedComponentException{
+    public void reserveComponent(String nickname) throws PickedComponentException, ReservedComponentException, InvalidActionException {
+        if(state != State.SHIP_BUILDING){
+            throw new InvalidActionException("Assembling phase is finished");
+        }
         playersPlay.get(nickname).getShipBoard().reserveComponent();
     }
     //invoked when a player wants to pick one of the components that it has reserved for its ship board
-    public void pickReservedComponent(String nickname, int position) throws ReservedComponentException, PickedComponentException {
+    public void pickReservedComponent(String nickname, int position) throws ReservedComponentException, PickedComponentException, InvalidActionException {
+        if(state != State.SHIP_BUILDING){
+            throw new InvalidActionException("Assembling phase is finished");
+        }
         playersPlay.get(nickname).getShipBoard().pickReservedComponent(position);
     }
     //invoked when a player wants to release (therefore, place face up) the component that it has picked
-    public void putShown(String nickname) throws PickedComponentException {
+    public void putShown(String nickname) throws PickedComponentException, InvalidActionException {
+        if(state != State.SHIP_BUILDING){
+            throw new InvalidActionException("Assembling phase is finished");
+        }
         shownComponents.add(playersPlay.get(nickname).getShipBoard().releaseComponent());
     }
     //invoked when a player wants to assemble on the ship board the component that it has picked
-    public void assembleComponentGS(String nickname, int x, int y) throws AssembledComponentException, PickedComponentException {
+    public void assembleComponentGS(String nickname, int x, int y) throws AssembledComponentException, PickedComponentException, InvalidActionException {
+        if(state != State.SHIP_BUILDING){
+            throw new InvalidActionException("Assembling phase is finished");
+        }
         playersPlay.get(nickname).getShipBoard().assembleComponent(x,y);
     }
     //invoked when a player wants to change the orientation of the component that it has picked
-    public void rotatePickedComponentLeft(String nickname){
+    public void rotatePickedComponentLeft(String nickname) throws InvalidActionException {
+        if(state != State.SHIP_BUILDING){
+            throw new InvalidActionException("Assembling phase is finished");
+        }
         playersPlay.get(nickname).getShipBoard().getPickedComponent().rotateLeft();
     }
     //invoked when a component of a player's ship board must be destroyed
-    public void destroyComponent(String nickname, int x, int y) throws AssembledComponentException {
+    public void destroyComponent(String nickname, int x, int y) throws AssembledComponentException, InvalidActionException {
+        if(state != State.SHIP_CONTROL){
+            throw new InvalidActionException("Assembling phase is finished");
+        }
         playersPlay.get(nickname).getShipBoard().destroyComponent(x,y);
+        checkShipBoards();
     }
     //invoked when a player has finished the assembling phase and has to pick a free position on the flight board
-    public void setPosition(String nickname, int initCell) throws InvalidPositionException {
+    public void setPosition(String nickname, int initCell) throws InvalidPositionException, InvalidActionException {
+        if(state != State.SHIP_BUILDING){
+            throw new InvalidActionException("Assembling phase is finished");
+        }
         if(firstFlight) {
             if(!LevelOnePosition.validStartingCells.contains(initCell)) {
                 throw new InvalidPositionException("Invalid starting position");
@@ -257,7 +430,7 @@ public class GameState {
             }
         }
         for(Position p : playersPos.values()) {
-            if(p.getCell() == initCell) {
+            if(p!= null && p.getCell() == initCell) {
                 throw new InvalidPositionException("Starting position already taken");
             }
         }
@@ -267,9 +440,27 @@ public class GameState {
         else{
             playersPos.put(nickname, new LevelTwoPosition(initCell));
         }
+        if(!playersPos.containsValue(null)){
+            state = State.SHIP_CONTROL;
+            checkShipBoards();
+        }
+    }
+    //checks the correctness of all the ships in the game
+    public void checkShipBoards(){
+        boolean correctShips = true;
+        for(Player p : playersPlay.values()) {
+            if(!p.getShipBoard().isCorrect()){
+                correctShips = false;
+                break;
+            }
+        }
+        if(correctShips){
+            state = State.CARD_PICKING;
+            createGameDeck();
+        }
     }
     //updates the position of a player on the ship board
-    public void changePlayerPosition(String nickname,int cells) {
+    public void changePlayerPosition(String nickname, int cells) {
         playersPos.get(nickname).changePosition(cells);
     }
     //creates the main deck for the game by unifying and shuffling the 4 decks used during the assembling phase;
@@ -283,17 +474,22 @@ public class GameState {
         gameDeck.shuffle();
     }
     //invoked when the leader draws a new card from the deck (during the game), which must be solved
-    public void pickNextCard() throws EmptyDeckException {
-        currentCard = gameDeck.drawCard();
-        currentCard.specialEffect(this);
+    public void pickNextCard(String nickname) throws InvalidActionException {
+        if(state != State.CARD_PICKING){
+            throw new InvalidActionException("Can't pick a new card");
+        }
+        if(!nickname.equals(playersPos.keySet().iterator().next())){
+            throw new InvalidActionException("Only leader can pick cards");
+        }
+        try{
+            currentCard = gameDeck.drawCard();
+            currentCard.specialEffect(this);
+            state = State.CARD_SOLVING;
+        } catch (EmptyDeckException e) {
+            state = State.END;
+        }
     }
-    //invoked when a player wants to view the content of one of the 3 available decks of the flight board (assembling phase)
-    public Deck checkDeck(int deckNumber) throws PickedDeckException{ //return a copy of the deck
-        Deck d = decks.get(deckNumber);
-        d.setPicked();
-        List<EventCard> retCards = d.getCards();
-        return new Deck(retCards);
-    }
+
 
  }
 

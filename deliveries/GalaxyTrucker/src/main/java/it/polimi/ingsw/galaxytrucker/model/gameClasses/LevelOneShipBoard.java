@@ -1,9 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.model.gameClasses;
 
-import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
-import it.polimi.ingsw.galaxytrucker.model.componentClasses.Space;
-import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
-import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
+import it.polimi.ingsw.galaxytrucker.model.componentClasses.*;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 
 import java.util.*;
 
@@ -15,7 +13,7 @@ public class LevelOneShipBoard extends ShipBoard {
         for (int i = 0; i < 5; i++) {       //at the beginning of the assembling phase, all assembled components are set to null
             List<Component> row = new ArrayList<>();
             for (int j = 0; j < 5; j++) {
-                row.add(null);
+                row.add(new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH))));
             }
             assembledComponents.add(row);
         }
@@ -27,5 +25,18 @@ public class LevelOneShipBoard extends ShipBoard {
         assembledComponents.get(1).set(0, new Space(3, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH))));
         assembledComponents.get(1).set(4, new Space(3, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH))));
         assembledComponents.get(4).set(2, new Space(3, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH))));
+        if(color == Color.BLUE){
+            assembledComponents.get(2).set(2, new Cabin(318, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL))));
+        }
+        else if(color == Color.GREEN){
+            assembledComponents.get(2).set(2, new Cabin(319, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL))));
+        }
+        else if(color == Color.RED){
+            assembledComponents.get(2).set(2, new Cabin(320, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL))));
+        }
+        else{
+            assembledComponents.get(2).set(2, new Cabin(321, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL))));
+
+        }
     }
 }
