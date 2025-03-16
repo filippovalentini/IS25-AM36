@@ -5,8 +5,7 @@ import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.AbandonedShip;
 import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.AbandonedStation;
 import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.EventCard;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.EmptyDeckException;
-import jdk.jfr.Event;
-import org.junit.jupiter.api.BeforeAll;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.PickedDeckException;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -34,7 +33,7 @@ class DeckTest {
     void testDrawCardFromEmptyDeck() {
         List<EventCard> listOfEventCards = new ArrayList<>();
         Deck deck = new Deck(listOfEventCards);
-        assertThrows(EmptyDeckException.class, () -> deck.drawCard());
+        assertThrows(EmptyDeckException.class, deck::drawCard);
     }
 
     @Test
@@ -55,7 +54,7 @@ class DeckTest {
     }
 
     @Test
-    void testGetCardsFromDeck() {
+    void testGetActualCardsFromDeck() {
         List<EventCard> listOfEventCards = new ArrayList<>();
         listOfEventCards.add(new AbandonedShip(2, 3, 1, 1001));
         listOfEventCards.add(new AbandonedStation(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN)), 5, 1, 2001));
@@ -84,5 +83,14 @@ class DeckTest {
         deck.shuffle();
         deck.drawCard();
         assertEquals(initialSize-1, deck.getNumberCards());
+    }
+
+    @Test
+    void testShouldntPickPickedDeck(){
+        List<EventCard> listOfEventCards = new ArrayList<>();
+        listOfEventCards.add(new AbandonedShip(2, 3, 1, 1001));
+        Deck deck = new Deck(listOfEventCards);
+        deck.setPicked();
+        assertThrows(PickedDeckException.class, deck::setPicked);
     }
 }

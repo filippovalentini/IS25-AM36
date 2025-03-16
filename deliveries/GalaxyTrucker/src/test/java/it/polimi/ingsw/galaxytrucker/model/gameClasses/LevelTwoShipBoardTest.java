@@ -12,15 +12,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ShipBoardTest {
-
-    private ShipBoard shipBoard;
+public class LevelTwoShipBoardTest {
+    private LevelTwoShipBoard levelTwoShipBoard;
     private Component component1;
-    private Component component2;
 
     @BeforeEach
-    void init() {
-        shipBoard = new ShipBoard(Color.BLUE);
+    void init(){
+        levelTwoShipBoard = new LevelTwoShipBoard(Color.RED);
         List<Connector> connectorList1 = new ArrayList<>();
         connectorList1.add(Connector.SINGLE);
         connectorList1.add(Connector.SINGLE);
@@ -31,38 +29,34 @@ public class ShipBoardTest {
 
     @Test
     void testPickAndReleaseComponent() {
-        shipBoard.pickComponent(component1); //pick
-        assertEquals(component1, shipBoard.getPickedComponent());
-        Component releasedComponent = shipBoard.releaseComponent(); //release
-
+        levelTwoShipBoard.pickComponent(component1); //pick
+        assertEquals(component1, levelTwoShipBoard.getPickedComponent());
+        Component releasedComponent = levelTwoShipBoard.releaseComponent(); //release
         assertEquals(component1, releasedComponent);
-        assertNull(shipBoard.getPickedComponent());
+        assertNull(levelTwoShipBoard.getPickedComponent());
     }
 
     @Test
     void testPickReservedComponent() {
-        shipBoard.pickComponent(component1);
-        shipBoard.reserveComponent();
-        shipBoard.pickReservedComponent(0);
-
-        assertEquals(component1, shipBoard.getPickedComponent());
+        levelTwoShipBoard.pickComponent(component1);
+        levelTwoShipBoard.reserveComponent();
+        levelTwoShipBoard.pickReservedComponent(0);
+        assertEquals(component1, levelTwoShipBoard.getPickedComponent());
     }
 
     @Test
     void testAssembleComponent() {
-        shipBoard.pickComponent(component1);
-        shipBoard.assembleComponent(3, 5); //above the initial cabin
-
-        assertEquals(component1, shipBoard.getAssembledComponent(3, 5));
+        levelTwoShipBoard.pickComponent(component1);
+        levelTwoShipBoard.assembleComponent(1, 3); //above the initial cabin
+        assertEquals(component1, levelTwoShipBoard.getAssembledComponent(1, 3));
     }
 
     @Test
     public void testDestroyComponent() {
-        shipBoard.pickComponent(component1);
-        shipBoard.assembleComponent(3, 5); //above the initial cabin
-        shipBoard.destroyComponent(3, 5);
-
-        assertEquals(1, shipBoard.getLostComponents());
-        assertEquals(null, shipBoard.getAssembledComponent(3,5));
+        levelTwoShipBoard.pickComponent(component1);
+        levelTwoShipBoard.assembleComponent(1, 3); //above the initial cabin
+        levelTwoShipBoard.destroyComponent(1, 3);
+        assertEquals(1, levelTwoShipBoard.getLostComponents());
+        assertTrue(levelTwoShipBoard.isEmptyComponent(1, 3));
     }
 }
