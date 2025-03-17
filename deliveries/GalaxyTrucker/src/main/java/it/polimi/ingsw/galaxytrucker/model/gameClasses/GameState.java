@@ -500,6 +500,16 @@ public class GameState {
             state = State.END;
         }
     }
+    public void updatePlayerCredits(String nickname, int credits) {
+        playersPlay.get(nickname).updateCredits(credits);
+    }
+    public int getPlayerCrewCount(String nickname) {
+        return playersPlay.get(nickname).getCrewCount();
+    }
+    public void removedCrewMember(String nickname, List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) {
+        playersPlay.get(nickname).removeShipBoardCrew(x, y, eachCabinCrew, numberCrewToRemove);
+    }
+
 
 
  }

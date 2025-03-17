@@ -1,6 +1,9 @@
 package it.polimi.ingsw.galaxytrucker.model.gameClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+
+import java.util.List;
+
 //this class is used to describe all the main information associated to a player
 public class Player {
     private final String nickname;      //unique nickname
@@ -31,6 +34,12 @@ public class Player {
     public ShipBoard getShipBoard() {
         return shipBoard;
     }
+    public int getCrewCount(){
+        return shipBoard.getNumberCrew();
+    }
+    public void removeShipBoardCrew(List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) {
+        shipBoard.removeCrewMembers(x, y, eachCabinCrew, numberCrewToRemove);
+    }
 
     public void quitGame() {    //invoked when a player must leave the game
         this.hasAbandoned = true;
@@ -38,4 +47,6 @@ public class Player {
     public void updateCredits(int update) {     //updates teh cosmic credits pf a player
         this.credits += update;
     }
+
+
 }

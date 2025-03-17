@@ -2,6 +2,9 @@ package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
+import it.polimi.ingsw.galaxytrucker.model.gameClasses.Player;
+
+import java.util.List;
 
 //ABANDONED SHIP
 public class AbandonedShip extends DayLossCard{
@@ -28,6 +31,17 @@ public class AbandonedShip extends DayLossCard{
     public void setUsed() {     //invoked when a player decides to use the card
         used = true;
     }
-    @Override
-    public void landing(GameState gameState, String nickname) throws InvalidActionException{}
+    //the player decides which crew members to remove from the ship and lands in the station
+    public void landing(GameState gameState, String nickname, List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) throws InvalidActionException{
+        if (this.used) {
+            throw new InvalidActionException("Already used this card.");
+        }
+        if (gameState.getPlayerCrewCount(nickname)< this.requiredCrew) {
+            throw new InvalidActionException("You do not have enough crew member");
+        }
+        gameState.removedCrewMember(nickname, x, y, eachCabinCrew, numberCrewToRemove);
+        gameState.updatePlayerCredits(nickname,this.gainedCredits);
+        gameState.changePlayerPosition(nickname,this.getLostDays());
+        this.used = true;
+    }
 }

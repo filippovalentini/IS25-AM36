@@ -145,4 +145,34 @@ public class ShipBoard {
         assembledComponents.get(x).set(y, emptySpace);
         lostComponents++;
     }
+    //remove the specified crew members from each cabin in the ship board
+    public void removeCrewMembers(List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) throws NoCrewException {
+        int sumRemovedCrewMembers = 0;
+        for(int i=0; i<x.size(); i++){
+            if(assembledComponents.get(x.get(i)).get(y.get(i)).getClass() != Cabin.class){
+                throw new NoCrewException("Invalid component, it must be a cabin");
+            }
+            else {
+                ((Cabin) assembledComponents.get(x.get(i)).get(y.get(i))).removeCrew(eachCabinCrew.get(i));
+                sumRemovedCrewMembers++;
+            }
+        }
+        if(sumRemovedCrewMembers != numberCrewToRemove){
+            throw new NoCrewException("Wrong number of crew members to remove");
+        }
+    }
+
+    //get the number of crew members in the ship board
+    public int getNumberCrew() {
+        int numberCrew = 0;
+        for (List<Component> assembledComponent : assembledComponents) {
+            for (Component component : assembledComponent) {
+                if (component.getClass() == Cabin.class) {
+                    numberCrew += ((Cabin) component).getNumberCrew();
+                }
+            }
+        }
+        return numberCrew;
+    }
+
 }
