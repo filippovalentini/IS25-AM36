@@ -23,6 +23,7 @@ public class ShipBoard {
         this.reservedComponents = new ArrayList<>();
         this.pickedComponent = null;
         this.correct = true;
+
     }
     /*
     public ShipBoard clone() { //return a copy of the ShipBoard

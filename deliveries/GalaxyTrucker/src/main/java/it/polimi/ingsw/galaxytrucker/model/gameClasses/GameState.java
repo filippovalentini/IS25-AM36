@@ -31,7 +31,18 @@ public class GameState {
         this.numPlayers = numPlayers;
         this.state = State.WAITING_FOR_PLAYERS;
     }
-
+    //
+    // SET GAME STATE
+    //
+    public void setGameState(State state) {
+        this.state = state;
+    }
+    //
+    // GET GAME State
+    //
+    public State getGameState() {
+        return this.state;
+    }
     //
     //GETTERS
     //
