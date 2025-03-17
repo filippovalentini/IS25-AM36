@@ -18,12 +18,6 @@ public class AbandonedShip extends DayLossCard{
         this.gainedCredits = gainedCredits;
         this.used = false;
     }
-    public int getRequiredCrew() {      //returns the required crew to land in the station
-        return requiredCrew;
-    }
-    public int getGainedCredits() {     //returns the credits that a player can gain by using the card
-        return gainedCredits;
-    }
     public boolean isUsed() {       //determines if the card has been used or not
         return used;
     }

@@ -13,12 +13,6 @@ public abstract class AdvancedEnemies extends DayLossCard{
         this.defeated = false;
     }
 
-    public int getPrizeCredits() {
-        return prizeCredits;
-    }
-    public int getEnemyStrength() {
-        return enemyStrength;
-    }
     public boolean isDefeated() {
         return defeated;
     }

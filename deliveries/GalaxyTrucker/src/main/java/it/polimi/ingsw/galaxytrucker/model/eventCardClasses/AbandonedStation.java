@@ -19,12 +19,7 @@ public class AbandonedStation extends DayLossCard{
         this.requiredCrew = requiredCrew;
         this.used = false;
     }
-    public List<Color> getStationGoods() {      //returns the goods that a player can gain in the station
-        return new ArrayList<>(this.stationGoods);
-    }
-    public int getRequiredCrew() {      //returns the required crew to land in the station
-        return requiredCrew;
-    }
+
     public boolean isUsed() {       //determines if the card has been used or not
         return used;
     }

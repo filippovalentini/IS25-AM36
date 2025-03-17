@@ -43,22 +43,11 @@ public class ShipBoard {
     }
     */
 
-    public List<List<Component>> getAssembledComponents() { //return a copy of the assembled components
-        List<List<Component>> retAssembledComponents = new ArrayList<>();
-        for (List<Component> assembledComponent : this.assembledComponents) {
-            List<Component> row = new ArrayList<>(assembledComponent);
-            retAssembledComponents.add(row);
-        }
-        return retAssembledComponents;
-    }
     public Component getAssembledComponent(int x, int y) { //return a copy of the assembled component in the given position
         return (assembledComponents.get(x).get(y)).clone();
     }
     public boolean isEmptyComponent(int x, int y) { //should have used instead of getAssembledComponent for empty check
         return assembledComponents.get(x).get(y).getClass() == Empty.class;
-    }
-    public List<Component> getReservedComponents() { //return a copy of the reserved components
-        return new ArrayList<>(this.reservedComponents);
     }
     public Component getPickedComponent() { //return the actual picked component
         return pickedComponent;

@@ -21,15 +21,6 @@ public class Smugglers extends DayLossCard{
         this.defeated = false;
     }
 
-    public List<Color> getPrizeGoods() {    //returns the goods that a player gains by defeating the smugglers
-        return prizeGoods;
-    }
-    public int getGoodLoss() {   //returns the goods that a player loses if defeated by the smugglers
-        return goodLoss;
-    }
-    public int getEnemyStrength(){   //returns the strength required to defeat the smugglers
-        return enemyStrength;
-    }
     public boolean isDefeated() {   //determines if a player has defeated the smugglers or not
         return defeated;
     }

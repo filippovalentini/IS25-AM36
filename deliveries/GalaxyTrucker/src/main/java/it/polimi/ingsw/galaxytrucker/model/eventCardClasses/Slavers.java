@@ -11,9 +11,7 @@ public class Slavers extends AdvancedEnemies{
         super(prizeCredits, enemyStrength, lostDays, imageID);
         this.crewLoss = crewLoss;
     }
-    public int getCrewLoss() {
-        return crewLoss;
-    }
+
     @Override
     public void defeat(GameState gameState, String nickname, int usedBatteries, boolean looseDays) throws InvalidActionException{}
 }

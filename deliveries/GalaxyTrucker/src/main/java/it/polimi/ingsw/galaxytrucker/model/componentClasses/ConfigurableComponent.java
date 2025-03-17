@@ -11,7 +11,7 @@ public class ConfigurableComponent extends Component {      //classes of compone
         super(imageID, sides);
         this.isDouble = isDouble;
     }
-    public boolean getIsDouble() {
+    public boolean isDouble() {
         return isDouble;
     }       //determines if the component configuration is double or not
 }

@@ -18,10 +18,10 @@ public class GameState {
     private String turnPlayer;       //player that must perform an action in order to solve a card
     private List<Deck> decks;       //decks used during the assembling phase (only for standard game)
     private Deck gameDeck;      //main deck used during the game
-    private EventCard currentCard;
+    private EventCard currentCard;          //current card picked from the deck during the game
     private List<Component> hiddenComponents;       //components turned face down during the assembling phase
     private List<Component> shownComponents;        //components turned face up during the assembling phase
-    private State state;
+    private State state;            //current state of the game
 
 
     public GameState(boolean firstFlight, int numPlayers) {     //constructor, creates the deck(s) of cards and instantiates the components
@@ -404,14 +404,14 @@ public class GameState {
         shownComponents.add(playersPlay.get(nickname).getShipBoard().releaseComponent());
     }
     //invoked when a player wants to assemble on the ship board the component that it has picked
-    public void assembleComponentGS(String nickname, int x, int y) throws AssembledComponentException, PickedComponentException, InvalidActionException {
+    public void assembleComponent(String nickname, int x, int y) throws AssembledComponentException, PickedComponentException, InvalidActionException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Assembling phase is finished");
         }
         playersPlay.get(nickname).getShipBoard().assembleComponent(x,y);
     }
     //invoked when a player wants to change the orientation of the component that it has picked
-    public void rotatePickedComponentLeft(String nickname) throws InvalidActionException {
+    public void rotatePickedComponent(String nickname) throws InvalidActionException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Assembling phase is finished");
         }
