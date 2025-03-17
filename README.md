@@ -1,6 +1,22 @@
-# IS24_AM36 - Progetto di Ingegneria del Software
+# Galaxy Trucker
 
-# La cartella "deliveries\UML" contiene tre diagrammi delle classi UML:
-# 1. Diagramma del model
-# 2. Diagramma relativo alla classe EventCard (carta avvenura)
-# 3. Diagramma relativo alla classe Component
+![impossibile to display galaxy_trucker_image.jpg](galaxy_trucker_image.png)
+
+# Software Engineering Project
+
+## Project Overview
+This project is a Java-based implementation of the table game Galaxy Trucker developed at Politecnico di Milano. The team members are Bonora Lorenzo, Bove Thomas, Dal Monte Nicolò, Valentini Filippo.
+The implementation features both a command-line interface (CLI) and a JavaFX graphical user interface.
+
+## Task reached:
+| Feature | Implemented |
+|:------- |:----------- |
+| Complete rules | :x: |
+| TUI | :x: |
+| GUI | :x: |
+| RMI | :x: |
+| Socket | :x: |
+| Level one flight | :x: |
+| Multiple games | :x: |
+| Persistence | :x: |
+| Resilience to clients disconnections | :x: |
