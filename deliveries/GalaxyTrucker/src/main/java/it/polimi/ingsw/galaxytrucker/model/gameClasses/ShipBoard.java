@@ -53,6 +53,9 @@ public class ShipBoard {
     public Component getAssembledComponent(int x, int y) { //return a copy of the assembled component in the given position
         return (assembledComponents.get(x).get(y)).clone();
     }
+    public boolean isEmptyComponent(int x, int y) { //should have used instead of getAssembledComponent for empty check
+        return assembledComponents.get(x).get(y).getClass() == Empty.class;
+    }
     public List<Component> getReservedComponents() { //return a copy of the reserved components
         return new ArrayList<>(this.reservedComponents);
     }
