@@ -37,4 +37,12 @@ public class CargoHold extends ConfigurableComponent {
             numberGoods++;
         }
     }
+
+    public void substituteGood(Color good, int pos){
+        if(good==Color.RED){
+            throw new UnsupportedCargoColorException("Unsupported Cargo type");
+        } else {
+            goods.set(pos, good);
+        }
+    }
 }

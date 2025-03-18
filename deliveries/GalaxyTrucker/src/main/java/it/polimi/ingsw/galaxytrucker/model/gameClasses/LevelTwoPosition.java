@@ -3,9 +3,10 @@ package it.polimi.ingsw.galaxytrucker.model.gameClasses;
 import java.util.Set;
 
 public class LevelTwoPosition extends Position {
+    public static final Set<Integer> validStartingCells = Set.of(0,1,3,6);
+
     public LevelTwoPosition(int startingCell){
         super(startingCell);
-        validStartingCells = Set.of(0,1,3,6);
     }
     @Override
     public void changePosition(int steps){

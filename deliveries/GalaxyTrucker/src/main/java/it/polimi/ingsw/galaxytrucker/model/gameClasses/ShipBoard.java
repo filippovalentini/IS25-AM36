@@ -200,7 +200,7 @@ public class ShipBoard {
             }
             else {
                 ((Cabin) assembledComponents.get(x.get(i)).get(y.get(i))).removeCrew(eachCabinCrew.get(i));
-                sumRemovedCrewMembers++;
+                sumRemovedCrewMembers += eachCabinCrew.get(i);
             }
         }
         if(sumRemovedCrewMembers != numberCrewToRemove){
@@ -219,5 +219,12 @@ public class ShipBoard {
         }
         return numberCrew;
     }
-
+    //substitute cargo goods at the given coordinates with the goods given in input
+    public void substituteCargoGoodGivenGood(int cargo_row, int cargo_col, Color good, int pos){
+        if(color==Color.RED){ //special cargo needed
+            ((CargoSpecial)(assembledComponents).get(cargo_row).get(cargo_col)).substituteGood(good, pos);
+        }else {
+            ((CargoHold) (assembledComponents.get(cargo_row).get(cargo_col))).substituteGood(good, pos);
+        }
+    }
 }

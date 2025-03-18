@@ -1,5 +1,6 @@
 package it.polimi.ingsw.galaxytrucker.model.gameClasses;
 
+import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 
 import java.util.List;
@@ -48,5 +49,8 @@ public class Player {
         this.credits += update;
     }
 
+    public void substituteShipboardCargoGood(int cargo_row, int cargo_col, Color good, int pos){
+        this.shipBoard.substituteCargoGoodGivenGood(cargo_row, cargo_col, good, pos);
+    }
 
 }

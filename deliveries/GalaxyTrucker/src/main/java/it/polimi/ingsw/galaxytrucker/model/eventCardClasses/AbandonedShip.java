@@ -21,9 +21,10 @@ public class AbandonedShip extends DayLossCard{
     public boolean isUsed() {       //determines if the card has been used or not
         return used;
     }
-
-    public void setUsed() {     //invoked when a player decides to use the card
-        used = true;
+    //invoked when a player decides to use the card
+    public void setUsed() throws InvalidActionException{
+        if(this.used) throw new InvalidActionException("Ship already used");
+        this.used = true;
     }
     //the player decides which crew members to remove from the ship and lands in the station
     public void landing(GameState gameState, String nickname, List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) throws InvalidActionException{

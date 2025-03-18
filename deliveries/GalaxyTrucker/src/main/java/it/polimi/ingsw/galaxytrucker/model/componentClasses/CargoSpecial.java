@@ -3,6 +3,7 @@ package it.polimi.ingsw.galaxytrucker.model.componentClasses;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.FullCargoHoldException;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.UnsupportedCargoColorException;
 
 import java.util.List;
 
@@ -22,5 +23,10 @@ public class CargoSpecial extends CargoHold {
             goods.add(good);
             numberGoods++;
         }
+    }
+
+    @Override
+    public void substituteGood(Color good, int pos){
+        goods.set(pos, good);
     }
 }

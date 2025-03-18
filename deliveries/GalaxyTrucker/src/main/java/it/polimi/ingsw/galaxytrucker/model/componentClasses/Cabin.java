@@ -12,7 +12,7 @@ public class Cabin extends Component {
 
     public Cabin(int imageID, List<Connector> sides) {     //constructor
         super(imageID, sides);
-        numberCrew = 0;
+        numberCrew = 2; //each cabin when game starts has 2 members
         purpleAlien = false;
         brownAlien = false;
     }

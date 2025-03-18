@@ -36,7 +36,6 @@ class PlanetsTest {
     @Test
     void testPlanetLanding() {
         int numberPlanet = 0;
-
         assertDoesNotThrow(() -> planets.planetLanding(gameState, nickname, numberPlanet));
     }
 

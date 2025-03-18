@@ -21,6 +21,6 @@ class OpenSpaceTest {
 
     @Test
     void testFly() throws InvalidActionException {
-        os.fly(gameState, "filippo", 1);
+        assertDoesNotThrow(() -> os.fly(gameState, "filippo", 1));
     }
 }

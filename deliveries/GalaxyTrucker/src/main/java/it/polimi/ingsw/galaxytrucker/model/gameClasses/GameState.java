@@ -21,8 +21,6 @@ public class GameState {
     private List<Component> hiddenComponents;       //components turned face down during the assembling phase
     private List<Component> shownComponents;        //components turned face up during the assembling phase
     private State state;            //current state of the game
-
-
     public GameState(boolean firstFlight, int numPlayers) {     //constructor, creates the deck(s) of cards and instantiates the components
         this.firstFlight = firstFlight;
         this.playersPos = new LinkedHashMap<>();
@@ -51,6 +49,9 @@ public class GameState {
     }
     public int getCurrentPlayers(){return playersPlay.size();}
 
+    public List<Component> getShownComponent() { //return a copy of the shown components
+        return new ArrayList<Component>(shownComponents);
+    }
     //
      //STARTING PHASE
     //
@@ -558,7 +559,9 @@ public class GameState {
         playersPlay.get(nickname).removeShipBoardCrew(x, y, eachCabinCrew, numberCrewToRemove);
     }
 
-
+    public void substitutePlayerGood(String nickname, int cargo_row, int cargo_col, Color good, int pos){
+        playersPlay.get(nickname).substituteShipboardCargoGood(cargo_row, cargo_col, good, pos);
+    }
 
  }
 

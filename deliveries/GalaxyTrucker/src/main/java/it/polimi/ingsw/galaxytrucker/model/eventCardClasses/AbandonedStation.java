@@ -25,8 +25,21 @@ public class AbandonedStation extends DayLossCard{
     }
 
     public void setUsed() {     //invoked when a player decides to use the card
+        if (this.used) {throw new InvalidActionException("Abandoned station already used");}
         used = true;
     }
-    @Override
-    public void landing(GameState gameState, String nickname) throws InvalidActionException {}
+
+    //substitute the cargo goods (specified by coordinates of component) of the player with the station goods
+    public void landing(GameState gameState, String nickname, List<Integer> x, List<Integer> y, List<Integer> goodsPosInCargo) throws InvalidActionException {
+        if (this.used) {
+            throw new InvalidActionException("Already used this card.");
+        }
+        if (gameState.getPlayerCrewCount(nickname)< this.requiredCrew) {
+            throw new InvalidActionException("You do not have enough crew member");
+        }
+        for(int i=0; i<x.size(); i++){
+            gameState.substitutePlayerGood(nickname, x.get(i), y.get(i), stationGoods.get(i),goodsPosInCargo.get(i));
+        }
+        this.used = true;
+    }
 }

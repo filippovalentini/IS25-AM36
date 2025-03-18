@@ -3,9 +3,9 @@ package it.polimi.ingsw.galaxytrucker.model.gameClasses;
 import java.util.Set;
 
 public class LevelOnePosition extends Position {
+    public static final Set<Integer> validStartingCells = Set.of(0,1,2,4);
     public LevelOnePosition(int startingCell) {
         super(startingCell);
-        validStartingCells = Set.of(0,1,2,4);
     }
     @Override
     public void changePosition(int steps) {
