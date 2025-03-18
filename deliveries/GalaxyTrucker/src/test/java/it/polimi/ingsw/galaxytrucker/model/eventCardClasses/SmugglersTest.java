@@ -1,6 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,6 +12,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SmugglersTest {
     private Smugglers smugglers;
+    private GameState gameState;
+    String nickname;
+    String nickname2;
 
     @BeforeEach
     void init(){
@@ -22,12 +26,20 @@ class SmugglersTest {
     }
 
     @Test
-    void testDefeat(){
+    void testDefeat() {
+        int usedBatteries = 4;
+        boolean looseDays = true;
 
+        assertDoesNotThrow(() -> smugglers.defeat(gameState, nickname, usedBatteries, looseDays));
+        assertTrue(smugglers.isDefeated());
     }
 
     @Test
-    void testShouldNotAttackIfDefeated(){
+    void testShouldNotAttackIfDefeated() {
+        int usedBatteries = 4;
+        boolean looseDays = true;
+        smugglers.defeat(gameState, nickname, usedBatteries, looseDays);
 
+        assertDoesNotThrow(() -> smugglers.defeat(gameState, nickname, usedBatteries, looseDays));
     }
 }
