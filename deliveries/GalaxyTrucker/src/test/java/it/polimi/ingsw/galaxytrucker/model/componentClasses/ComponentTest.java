@@ -49,28 +49,28 @@ class ComponentTest {
         assertEquals(Orientation.NORTH, component.getOrientation());
         assertEquals(Connector.SMOOTH, component.getNorthSide());
         component.rotateLeft();
-        assertEquals(Connector.SMOOTH, component.getNorthSide());
+        assertEquals(Connector.DOUBLE, component.getNorthSide());
     }
 
     @Test
     void testGetEastSide() {
         assertEquals(Connector.DOUBLE, component.getEastSide());
         component.rotateLeft();
-        assertEquals(Connector.SMOOTH, component.getEastSide());
+        assertEquals(Connector.UNIVERSAL, component.getEastSide());
     }
 
     @Test
     void testGetSouthSide() {
         assertEquals(Connector.UNIVERSAL, component.getSouthSide());
         component.rotateLeft();
-        assertEquals(Connector.DOUBLE, component.getSouthSide());
+        assertEquals(Connector.SMOOTH, component.getSouthSide());
     }
 
     @Test
     void testGetWestSide() {
         assertEquals(Connector.SMOOTH, component.getWestSide());
         component.rotateLeft();
-        assertEquals(Connector.UNIVERSAL, component.getWestSide());
+        assertEquals(Connector.SMOOTH, component.getWestSide());
     }
 
     @Test

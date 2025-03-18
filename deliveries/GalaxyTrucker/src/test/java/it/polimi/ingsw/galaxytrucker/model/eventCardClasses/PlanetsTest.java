@@ -1,6 +1,8 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
+import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,6 +13,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PlanetsTest {
     private Planets planets;
+    private GameState gameState;
+    String nickname;
+    String nickname2;
 
     @BeforeEach
     void init(){
@@ -29,12 +34,17 @@ class PlanetsTest {
     }
 
     @Test
-    void testPlanetLanding(){
+    void testPlanetLanding() {
+        int numberPlanet = 0;
 
+        assertDoesNotThrow(() -> planets.planetLanding(gameState, nickname, numberPlanet));
     }
 
     @Test
-    void testShouldNotLandingIfPlanetNull(){
+    void testShouldNotLandingIfPlanetNull() {
+        int numberPlanet = 0;
+        planets.planetLanding(gameState, nickname, numberPlanet);
 
+        assertThrows(InvalidActionException.class, () -> planets.planetLanding(gameState, nickname, numberPlanet));
     }
 }
