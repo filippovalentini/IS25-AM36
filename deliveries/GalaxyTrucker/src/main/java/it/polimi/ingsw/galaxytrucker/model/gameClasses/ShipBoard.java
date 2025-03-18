@@ -64,6 +64,7 @@ public class ShipBoard {
     public boolean isCorrect() {
         return correct;
     }
+
     //invoked when the owner of the ship board picks a component from the table
     public void pickComponent(Component component) throws PickedComponentException {
         if(pickedComponent!=null){
@@ -113,7 +114,7 @@ public class ShipBoard {
     }
     //assembles the component picked by a player in the specified cell (x,y) of its ship board
     public void assembleComponent(int x, int y) throws AssembledComponentException, PickedComponentException {
-        Empty emptySpace = new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
+        Component emptySpace = new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
         if(!assembledComponents.get(x).get(y).equals(emptySpace)){
             throw new AssembledComponentException("Already assembled component");
         }
@@ -124,16 +125,72 @@ public class ShipBoard {
             assembledComponents.get(x).set(y, pickedComponent);
             pickedComponent = null;
         }
+        updateCorrectness();
+
     }
     //removes an assembled component from the ship board
     public void destroyComponent(int x, int y) throws AssembledComponentException {
-        Empty emptySpace = new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
+        Component emptySpace = new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
         if(assembledComponents.get(x).get(y).equals(emptySpace)){
             throw new AssembledComponentException("No component to be destroyed");
         }
         assembledComponents.get(x).set(y, emptySpace);
         lostComponents++;
+        updateCorrectness();
     }
+    //determines if the ship board is correctly assembled
+    public void updateCorrectness(){
+        Component space = new Space(3, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
+        Component empty = new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
+        boolean correctness = true;
+
+        for (int i = 0; i < assembledComponents.size(); i++) {
+            for(int j = 0; j < assembledComponents.get(i).size(); j++){
+                Component c = assembledComponents.get(i).get(j);
+                if(!c.equals(space) && !c.equals(empty)){
+                    if(!c.isWellOriented()){
+                        correctness = false;
+                        break;
+                    }
+                    if(i>0){
+                        Component c1 = assembledComponents.get(i-1).get(j);
+                        if(!c.getNorthSide().compatibleWith(c1.getSouthSide()) && !c1.equals(space) && !c.equals(empty)){
+                            correctness = false;
+                            break;
+                        }
+                    }
+                    if(i<assembledComponents.size()-1){
+                        Component c1 = assembledComponents.get(i+1).get(j);
+                        if(!c.getSouthSide().compatibleWith(c1.getNorthSide()) && !c1.equals(space) && !c.equals(empty)){
+                            correctness = false;
+                            break;
+                        }
+                    }
+                    if(j>0){
+                        Component c1 = assembledComponents.get(i).get(j-1);
+                        if(!c.getWestSide().compatibleWith(c1.getEastSide()) && !c1.equals(space) && !c.equals(empty)){
+                            correctness = false;
+                            break;
+                        }
+                    }
+                    if(j<assembledComponents.get(i).size()-1){
+                        Component c1 = assembledComponents.get(i).get(j+1);
+                        if(!c.getEastSide().compatibleWith(c1.getWestSide()) && !c1.equals(space) && !c.equals(empty)){
+                            correctness = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            if(!correctness){
+                break;
+            }
+        }
+
+        correct = correctness;
+
+    }
+
     //remove the specified crew members from each cabin in the ship board
     public void removeCrewMembers(List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) throws NoCrewException {
         int sumRemovedCrewMembers = 0;
@@ -150,7 +207,6 @@ public class ShipBoard {
             throw new NoCrewException("Wrong number of crew members to remove");
         }
     }
-
     //get the number of crew members in the ship board
     public int getNumberCrew() {
         int numberCrew = 0;

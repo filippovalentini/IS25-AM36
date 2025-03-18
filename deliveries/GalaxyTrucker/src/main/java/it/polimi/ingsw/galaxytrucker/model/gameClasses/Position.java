@@ -21,4 +21,10 @@ public abstract class Position {
 
     public abstract void changePosition(int steps); //updates the position of a player of a specified amount of steps (forwards or backwards)
 
+    public boolean higherThan(Position position) {   //determines if a position on the flight board is higher than another one
+        if(this.lap > position.lap)
+            return true;
+        else return this.lap == position.lap && this.cell > position.cell;
+    }
+
 }

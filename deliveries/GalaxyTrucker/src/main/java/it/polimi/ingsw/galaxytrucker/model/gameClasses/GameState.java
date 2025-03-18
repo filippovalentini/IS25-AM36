@@ -5,7 +5,6 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.*;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.model.shotClasses.*;
-
 import java.util.*;
 
 //this class describes the entire status of the game, the controller will invoke its methods in order to modify the
@@ -32,20 +31,14 @@ public class GameState {
         this.state = State.WAITING_FOR_PLAYERS;
     }
     //
-    // SET GAME STATE
+    // GETTERS AND SETTERS
     //
     public void setGameState(State state) {
         this.state = state;
     }
-    //
-    // GET GAME State
-    //
     public State getGameState() {
         return this.state;
     }
-    //
-    //GETTERS
-    //
     public Map<String,Position> getPlayersPos() { //return a copy of the player postion map
         if(this.playersPos == null) { return null;}
         Map<String,Position> retPlayerPos = new HashMap<>(playersPos);
@@ -354,7 +347,6 @@ public class GameState {
             startAssembling();
         }
     }
-
     //invoked when one of the players decides to start the assembling phase
     public void startAssembling() {
         createComponents(firstFlight);
@@ -417,14 +409,6 @@ public class GameState {
         }
         playersPlay.get(nickname).getShipBoard().getPickedComponent().rotateLeft();
     }
-    //invoked when a component of a player's ship board must be destroyed
-    public void destroyComponent(String nickname, int x, int y) throws AssembledComponentException, InvalidActionException {
-        if(state != State.SHIP_CONTROL){
-            throw new InvalidActionException("Assembling phase is finished");
-        }
-        playersPlay.get(nickname).getShipBoard().destroyComponent(x,y);
-        checkShipBoards();
-    }
     //invoked when a player has finished the assembling phase and has to pick a free position on the flight board
     public void setPosition(String nickname, int initCell) throws InvalidPositionException, InvalidActionException {
         if(state != State.SHIP_BUILDING){
@@ -456,6 +440,19 @@ public class GameState {
             checkShipBoards();
         }
     }
+
+    //
+     //SHIP CONTROL PHASE
+    //
+
+    //invoked when a component of a player's ship board must be destroyed
+    public void destroyComponent(String nickname, int x, int y) throws AssembledComponentException, InvalidActionException {
+        if(state != State.SHIP_CONTROL){
+            throw new InvalidActionException("Assembling phase is finished");
+        }
+        playersPlay.get(nickname).getShipBoard().destroyComponent(x,y);
+        checkShipBoards();
+    }
     //checks the correctness of all the ships in the game
     public void checkShipBoards(){
         boolean correctShips = true;
@@ -484,6 +481,11 @@ public class GameState {
         gameDeck = new Deck(gameDeckCards);
         gameDeck.shuffle();
     }
+
+    //
+     //FLIGHT PHASE
+    //
+
     //invoked when the leader draws a new card from the deck (during the game), which must be solved
     public void pickNextCard(String nickname) throws InvalidActionException {
         if(state != State.CARD_PICKING){
@@ -500,6 +502,52 @@ public class GameState {
             state = State.END;
         }
     }
+    //invoked when a player decides to land on a planet in order to gain goods
+    public void planetLanding(String nickname, int numberPlanet) throws InvalidActionException {
+        if(state != State.CARD_SOLVING){
+            throw new InvalidActionException("Card must be picked first");
+        }
+        currentCard.planetLanding(this, nickname, numberPlanet);
+    }
+    //invoked when a player's ship has to be hit by a meteor/cannon shot; the player can decide whether to
+    //activate a shield or a cannon to defend its ship
+    public void hitShip(String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException {
+        if(state != State.CARD_SOLVING){
+            throw new InvalidActionException("Card must be picked first");
+        }
+        currentCard.hitShip(this, nickname, diceResult, activateShield, activateCannon);
+    }
+    //invoked when a player decides to land on an abandoned station/ship
+    public void landing(String nickname) throws InvalidActionException {
+        if(state != State.CARD_SOLVING){
+            throw new InvalidActionException("Card must be picked first");
+        }
+        currentCard.landing(this, nickname);
+    }
+    //invoked when a player wants to defeat an enemy; the player can decide whether to lose flight days
+    //to gain credits/goods or not
+    public void defeat(String nickname, int usedBatteries, boolean loseDays) throws InvalidActionException {
+        if(state != State.CARD_SOLVING){
+            throw new InvalidActionException("Card must be picked first");
+        }
+        currentCard.defeat(this, nickname, usedBatteries, loseDays);
+    }
+    //invoked when a player wants to fly across the flight board exploiting its engine strength
+    public void fly(String nickname, int usedBatteries) throws InvalidActionException {
+        if(state != State.CARD_SOLVING){
+            throw new InvalidActionException("Card must be picked first");
+        }
+        currentCard.fly(this, nickname, usedBatteries);
+    }
+    //invoked when a player wants to use batteries to have an advantage while solving a card
+    public void useBatteries(GameState gameState, String nickname, int usedBatteries) throws InvalidActionException {
+        if(state != State.CARD_SOLVING){
+            throw new InvalidActionException("Card must be picked first");
+        }
+        currentCard.useBatteries(gameState, nickname, usedBatteries);
+    }
+
+
     public void updatePlayerCredits(String nickname, int credits) {
         playersPlay.get(nickname).updateCredits(credits);
     }

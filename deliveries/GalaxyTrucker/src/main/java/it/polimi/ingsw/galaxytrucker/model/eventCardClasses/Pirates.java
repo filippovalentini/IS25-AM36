@@ -19,5 +19,5 @@ public class Pirates extends AdvancedEnemies {
     @Override
     public void hitShip(GameState gameState, String nickname, int diceResult, boolean activateShield, boolean activateCannon){}
     @Override
-    public void defeat(GameState gameState, String nickname, int usedBatteries, boolean looseDays){}
+    public void defeat(GameState gameState, String nickname, int usedBatteries, boolean loseDays){}
 }

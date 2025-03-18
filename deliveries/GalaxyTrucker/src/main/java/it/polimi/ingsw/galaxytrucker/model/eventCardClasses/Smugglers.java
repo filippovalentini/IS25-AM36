@@ -29,5 +29,5 @@ public class Smugglers extends DayLossCard{
         defeated = true;
     }
     @Override
-    public void defeat(GameState gameState, String nickname, int usedBatteries, boolean looseDays) throws InvalidActionException{}
+    public void defeat(GameState gameState, String nickname, int usedBatteries, boolean loseDays) throws InvalidActionException{}
 }

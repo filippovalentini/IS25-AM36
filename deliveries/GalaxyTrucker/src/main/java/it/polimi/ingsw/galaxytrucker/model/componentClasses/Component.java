@@ -53,7 +53,7 @@ public class Component {
     }
     public Connector getNorthSide(){        //returns the north-oriented side (connector) of the component
         if(orientation == Orientation.NORTH) {
-            return sides.get(0);
+            return sides.getFirst();
         }
         else if(orientation == Orientation.EAST) {
             return sides.get(3);
@@ -70,7 +70,7 @@ public class Component {
             return sides.get(1);
         }
         else if(orientation == Orientation.EAST) {
-            return sides.get(0);
+            return sides.getFirst();
         }
         else if(orientation == Orientation.SOUTH) {
             return sides.get(3);
@@ -87,7 +87,7 @@ public class Component {
             return sides.get(1);
         }
         else if(orientation == Orientation.SOUTH) {
-            return sides.get(0);
+            return sides.getFirst();
         }
         else {
             return sides.get(3);
@@ -104,7 +104,7 @@ public class Component {
             return sides.get(1);
         }
         else {
-            return sides.get(0);
+            return sides.getFirst();
         }
     }
     public boolean isWellOriented(){        //determines if the component is oriented correctly (true by default, it will be overrided by subclasses for which the orientation is important)

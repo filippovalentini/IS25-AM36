@@ -13,5 +13,5 @@ public class Slavers extends AdvancedEnemies{
     }
 
     @Override
-    public void defeat(GameState gameState, String nickname, int usedBatteries, boolean looseDays) throws InvalidActionException{}
+    public void defeat(GameState gameState, String nickname, int usedBatteries, boolean loseDays) throws InvalidActionException{}
 }
