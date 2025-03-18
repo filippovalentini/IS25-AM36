@@ -62,7 +62,7 @@ public class ShipBoard {
         return lostComponents;
     }
     public boolean isCorrect() {
-        return correct;
+         return correct;
     }
 
     //invoked when the owner of the ship board picks a component from the table
