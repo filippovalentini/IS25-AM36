@@ -107,7 +107,23 @@ public class Component {
             return sides.getFirst();
         }
     }
+
     public boolean isWellOriented(){        //determines if the component is oriented correctly (true by default, it will be overrided by subclasses for which the orientation is important)
         return true;
+    }
+    public boolean hasMembers(){ return false;}
+    public boolean hasDoubleEngines() { return false;}
+    public void removeMember(){}
+    public int getNumberCrew() {
+        return 0;
+    }
+    public int getNumberBatteries(){ return 0;}
+    public boolean isNotEmpty(){
+        Component empty = new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
+        return !this.equals(empty);
+    }
+    public boolean belongsToShip(){
+        Component space = new Space(3, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
+        return !this.equals(space);
     }
 }

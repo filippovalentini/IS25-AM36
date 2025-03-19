@@ -17,6 +17,8 @@ public class Battery extends ConfigurableComponent {
             this.numberBatteries = 3;
         }
     }
+
+    @Override
     public int getNumberBatteries() {
         return numberBatteries;
     }

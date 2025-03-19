@@ -2,6 +2,7 @@ package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
+import it.polimi.ingsw.galaxytrucker.model.gameClasses.Player;
 
 //COMBAT ZONE
 public class CombatZone extends EventCard{
@@ -16,7 +17,11 @@ public class CombatZone extends EventCard{
     }
 
     @Override
-    public void specialEffect(GameState gameState) throws InvalidActionException{}
+    //the player with fewer crew members loses 3 flight days
+    public void specialEffect(GameState gameState) throws InvalidActionException{
+        String nickname = gameState.getCrewMinPlayer();
+        gameState.changePlayerPosition(nickname, -3);
+    }
     @Override
     public void useBatteries(GameState gameState, String nickname, int usedBatteries) throws InvalidActionException{}
     @Override

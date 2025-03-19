@@ -20,6 +20,8 @@ public class MeteorsSwarm extends EventCard{
     }
 
     @Override
-    public void hitShip(GameState gameState, String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException{}
+    public void hitShip(GameState gameState, String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException{
+
+    }
 
 }

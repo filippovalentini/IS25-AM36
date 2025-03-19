@@ -25,23 +25,7 @@ public class ShipBoard {
         this.correct = true;
 
     }
-    /*
-    public ShipBoard clone() { //return a copy of the ShipBoard
 
-        ShipBoard retShipBoard = new ShipBoard(this.color);
-        retShipBoard.lostComponents = this.lostComponents;
-        retShipBoard.assembledComponents = new ArrayList<>();
-        for(int i=0; i<this.assembledComponents.size(); i++){
-            List<Component> row = new ArrayList<>(this.assembledComponents.get(i));
-            retShipBoard.assembledComponents.add(row);
-        }
-        retShipBoard.reservedComponents = new ArrayList<>(this.reservedComponents);
-        if(this.pickedComponent != null){
-            retShipBoard.pickedComponent = this.pickedComponent.clone();
-        }
-        return retShipBoard;
-    }
-    */
 
     public Component getAssembledComponent(int x, int y) { //return a copy of the assembled component in the given position
         return (assembledComponents.get(x).get(y)).clone();
@@ -140,42 +124,40 @@ public class ShipBoard {
     }
     //determines if the ship board is correctly assembled
     public void updateCorrectness(){
-        Component space = new Space(3, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
-        Component empty = new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
         boolean correctness = true;
 
         for (int i = 0; i < assembledComponents.size(); i++) {
             for(int j = 0; j < assembledComponents.get(i).size(); j++){
                 Component c = assembledComponents.get(i).get(j);
-                if(!c.equals(space) && !c.equals(empty)){
+                if(c.isNotEmpty() && c.belongsToShip()){
                     if(!c.isWellOriented()){
                         correctness = false;
                         break;
                     }
                     if(i>0){
                         Component c1 = assembledComponents.get(i-1).get(j);
-                        if(!c.getNorthSide().compatibleWith(c1.getSouthSide()) && !c1.equals(space) && !c.equals(empty)){
+                        if(!c.getNorthSide().compatibleWith(c1.getSouthSide()) && c1.isNotEmpty() && c1.belongsToShip()){
                             correctness = false;
                             break;
                         }
                     }
                     if(i<assembledComponents.size()-1){
                         Component c1 = assembledComponents.get(i+1).get(j);
-                        if(!c.getSouthSide().compatibleWith(c1.getNorthSide()) && !c1.equals(space) && !c.equals(empty)){
+                        if(!c.getSouthSide().compatibleWith(c1.getNorthSide()) && c1.isNotEmpty() && c1.belongsToShip()){
                             correctness = false;
                             break;
                         }
                     }
                     if(j>0){
                         Component c1 = assembledComponents.get(i).get(j-1);
-                        if(!c.getWestSide().compatibleWith(c1.getEastSide()) && !c1.equals(space) && !c.equals(empty)){
+                        if(!c.getWestSide().compatibleWith(c1.getEastSide()) && c1.isNotEmpty() && c1.belongsToShip()){
                             correctness = false;
                             break;
                         }
                     }
                     if(j<assembledComponents.get(i).size()-1){
                         Component c1 = assembledComponents.get(i).get(j+1);
-                        if(!c.getEastSide().compatibleWith(c1.getWestSide()) && !c1.equals(space) && !c.equals(empty)){
+                        if(!c.getEastSide().compatibleWith(c1.getWestSide()) && c1.isNotEmpty() && c1.belongsToShip()){
                             correctness = false;
                             break;
                         }
@@ -190,6 +172,122 @@ public class ShipBoard {
         correct = correctness;
 
     }
+    //counts the number of exposed connectors of the ship board
+    public int countExposedConnectors() {
+        int exposedConnectors = 0;
+
+        for (int i = 0; i < assembledComponents.size(); i++) {
+            for(int j = 0; j < assembledComponents.get(i).size(); j++){
+                Component c = assembledComponents.get(i).get(j);
+                if(c.isNotEmpty() && c.belongsToShip()){
+                    if(i>0){
+                        Component c1 = assembledComponents.get(i-1).get(j);
+                        if(c.getNorthSide()!=Connector.SMOOTH && (!c1.isNotEmpty() || !c1.belongsToShip())){
+                            exposedConnectors++;
+                        }
+                    }
+                    if(i<assembledComponents.size()-1){
+                        Component c1 = assembledComponents.get(i+1).get(j);
+                        if(c.getNorthSide()!=Connector.SMOOTH && (!c1.isNotEmpty() || !c1.belongsToShip())){
+                            exposedConnectors++;
+                        }
+                    }
+                    if(j>0){
+                        Component c1 = assembledComponents.get(i).get(j-1);
+                        if(c.getNorthSide()!=Connector.SMOOTH && (!c1.isNotEmpty() || !c1.belongsToShip())){
+                            exposedConnectors++;
+                        }
+                    }
+                    if(j<assembledComponents.get(i).size()-1){
+                        Component c1 = assembledComponents.get(i).get(j+1);
+                        if(c.getNorthSide()!=Connector.SMOOTH && (!c1.isNotEmpty() || !c1.belongsToShip())){
+                            exposedConnectors++;
+                        }
+                    }
+                }
+            }
+        }
+        return exposedConnectors;
+    }
+    //removes a member (human or alien) from each cabin that is directly connected with another busy cabin
+    public void epidemicEffect() {
+        List<int[]> hitCabins = new ArrayList<>();
+
+        for (int i = 0; i < assembledComponents.size(); i++) {
+            for(int j = 0; j < assembledComponents.get(i).size(); j++){
+                Component c = assembledComponents.get(i).get(j);
+                if(c.hasMembers()){
+                    if(i>0){
+                        Component c1 = assembledComponents.get(i-1).get(j);
+                        if(c1.hasMembers()){
+                            hitCabins.add(new int[]{i,j});
+                            break;
+                        }
+                    }
+                    if(i<assembledComponents.size()-1){
+                        Component c1 = assembledComponents.get(i+1).get(j);
+                        if(c1.hasMembers()){
+                            hitCabins.add(new int[]{i,j});
+                            break;
+                        }
+                    }
+                    if(j>0){
+                        Component c1 = assembledComponents.get(i).get(j-1);
+                        if(c1.hasMembers()){
+                            hitCabins.add(new int[]{i,j});
+                            break;
+                        }
+                    }
+                    if(j<assembledComponents.get(i).size()-1){
+                        Component c1 = assembledComponents.get(i).get(j+1);
+                        if(c1.hasMembers()){
+                            hitCabins.add(new int[]{i,j});
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        for (int[] hitCabin : hitCabins) {
+            Component c = assembledComponents.get(hitCabin[0]).get(hitCabin[1]);
+            c.removeMember();
+        }
+    }
+    //returns the number of crew members in the ship board
+    public int getNumberCrew() {
+        int numberCrew = 0;
+        for (List<Component> componentRow : assembledComponents) {
+            for (Component component : componentRow) {
+                numberCrew += component.getNumberCrew();
+            }
+        }
+        return numberCrew;
+    }
+    //returns the number of batteries on the ship board
+    public int getNumberBatteries() {
+        int numberBatteries = 0;
+        for (List<Component> componentRow : assembledComponents) {
+            for (Component component : componentRow) {
+                numberBatteries += component.getNumberBatteries();
+            }
+        }
+        return numberBatteries;
+    }
+    //returns the number of double engines on the ship board
+    public int getNumberDoubleEngines() {
+        int numberDoubleEngines = 0;
+        for (List<Component> componentRow : assembledComponents) {
+            for (Component component : componentRow) {
+                if(component.hasDoubleEngines()){
+                    numberDoubleEngines++;
+                }
+            }
+        }
+        return numberDoubleEngines;
+    }
+
+
 
     //remove the specified crew members from each cabin in the ship board
     public void removeCrewMembers(List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) throws NoCrewException {
@@ -206,18 +304,6 @@ public class ShipBoard {
         if(sumRemovedCrewMembers != numberCrewToRemove){
             throw new NoCrewException("Wrong number of crew members to remove");
         }
-    }
-    //get the number of crew members in the ship board
-    public int getNumberCrew() {
-        int numberCrew = 0;
-        for (List<Component> assembledComponent : assembledComponents) {
-            for (Component component : assembledComponent) {
-                if (component.getClass() == Cabin.class) {
-                    numberCrew += ((Cabin) component).getNumberCrew();
-                }
-            }
-        }
-        return numberCrew;
     }
     //substitute cargo goods at the given coordinates with the goods given in input
     public void substituteCargoGoodGivenGood(int cargo_row, int cargo_col, Color good, int pos){

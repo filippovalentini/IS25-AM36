@@ -2,7 +2,9 @@ package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.SpecialEventType;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
-import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
+import it.polimi.ingsw.galaxytrucker.model.gameClasses.*;
+
+import java.util.*;
 
 //SPECIAL EVENT
 public class SpecialEvent extends EventCard{
@@ -15,6 +17,32 @@ public class SpecialEvent extends EventCard{
     public SpecialEventType getSpecialEventType(){      //returns the type of special event
         return specialEventType;
     }
+
     @Override
-    public void specialEffect(GameState gameState) throws InvalidActionException{}
+    //if the special event is of the type STARDUST, this method ensures that each player loses as many flight
+    //days as the number of exposed connectors on its ship. If the special event is of the type EPIDEMIC, this method
+    //ensures that each player loses a crew member from each cabin which is connected to another busy cabin
+    public void specialEffect(GameState gameState) throws InvalidActionException{
+        List<String> nicknames = new ArrayList<>(gameState.getPlayersPos().keySet());
+        Collections.reverse(nicknames);
+
+        if(specialEventType == SpecialEventType.STARDUST){
+            int exposedConnectors;
+            for(String nickname : nicknames){
+                Player player = gameState.getPlayersPlay().get(nickname);
+                if(!player.hasAbandoned()){
+                    exposedConnectors = player.getShipBoard().countExposedConnectors();
+                    gameState.changePlayerPosition(nickname, -exposedConnectors);
+                }
+            }
+        }
+        if(specialEventType == SpecialEventType.EPIDEMIC){
+            for(String nickname : nicknames){
+                Player player = gameState.getPlayersPlay().get(nickname);
+                if(!player.hasAbandoned()){
+                    player.getShipBoard().epidemicEffect();
+                }
+            }
+        }
+    }
 }

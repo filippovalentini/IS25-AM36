@@ -7,6 +7,7 @@ public class LevelOnePosition extends Position {
     public LevelOnePosition(int startingCell) {
         super(startingCell);
     }
+
     @Override
     public void changePosition(int steps) {
         if(steps > 0){

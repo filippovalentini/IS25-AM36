@@ -1,6 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.NoBatteriesException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 
 //EVENT CARD
@@ -40,7 +41,7 @@ public class EventCard  {
         throw new InvalidActionException("Invalid action");
     }
     //invoked when a player wants to fly across the flight board exploiting its engine strength
-    public void fly(GameState gameState, String nickname, int usedBatteries) throws InvalidActionException {
+    public void fly(GameState gameState, String nickname, int usedBatteries) throws InvalidActionException, NoBatteriesException {
         throw new InvalidActionException("Invalid action");
     }
     //invoked when a player wants to use batteries to have an advantage while solving a card

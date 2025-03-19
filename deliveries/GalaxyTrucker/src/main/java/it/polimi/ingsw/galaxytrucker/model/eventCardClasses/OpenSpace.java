@@ -1,15 +1,9 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
-import it.polimi.ingsw.galaxytrucker.model.componentClasses.ConfigurableComponent;
-import it.polimi.ingsw.galaxytrucker.model.componentClasses.Engine;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
-import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
-import it.polimi.ingsw.galaxytrucker.model.gameClasses.Player;
-import it.polimi.ingsw.galaxytrucker.model.gameClasses.ShipBoard;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.NoBatteriesException;
+import it.polimi.ingsw.galaxytrucker.model.gameClasses.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 //OPEN SPACE
 public class OpenSpace extends EventCard {
@@ -19,5 +13,16 @@ public class OpenSpace extends EventCard {
     }
 
     @Override
-    public void fly(GameState gameState, String nickname, int usedBatteries) throws InvalidActionException{}
+    public void fly(GameState gameState, String nickname, int usedBatteries) throws InvalidActionException, NoBatteriesException {
+        Player player = gameState.getPlayersPlay().get(nickname);
+        if(player.hasAbandoned()){
+            gameState.changeTurn();
+            return;
+        }
+        int maxBatteries = player.getShipBoard().getNumberBatteries();
+        if(maxBatteries < usedBatteries) {
+            throw new InvalidActionException("Too few batteries");
+        }
+
+    }
 }

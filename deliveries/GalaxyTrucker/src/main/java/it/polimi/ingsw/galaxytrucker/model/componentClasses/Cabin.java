@@ -17,9 +17,6 @@ public class Cabin extends Component {
         brownAlien = false;
     }
 
-    public int getNumberCrew() {
-        return numberCrew;
-    }
     public boolean isPurpleAlien() {
         return purpleAlien;
     }
@@ -62,5 +59,24 @@ public class Cabin extends Component {
         else {
             brownAlien = false;
         }
+    }
+
+    @Override
+    public boolean hasMembers() {
+        return numberCrew > 0 || brownAlien || purpleAlien;
+    }
+    @Override
+    public void removeMember() {
+        try{
+            removeCrew(1);
+        }
+        catch(NoCrewException e){
+            removeAlien(true);
+            removeAlien(false);
+        }
+    }
+    @Override
+    public int getNumberCrew() {
+        return numberCrew;
     }
 }

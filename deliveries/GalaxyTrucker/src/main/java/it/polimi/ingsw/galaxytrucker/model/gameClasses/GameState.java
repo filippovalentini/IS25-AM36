@@ -25,6 +25,7 @@ public class GameState {
         this.firstFlight = firstFlight;
         this.playersPos = new LinkedHashMap<>();
         this.playersPlay = new HashMap<>();
+        this.turnPlayer = "";
         this.numPlayers = numPlayers;
         this.state = State.WAITING_FOR_PLAYERS;
     }
@@ -39,19 +40,39 @@ public class GameState {
     }
     public Map<String,Position> getPlayersPos() { //return a copy of the player postion map
         if(this.playersPos == null) { return null;}
-        Map<String,Position> retPlayerPos = new HashMap<>(playersPos);
-        return retPlayerPos;
+        return new LinkedHashMap<>(playersPos);
+    }
+    public String getTurnPlayer() {
+        return turnPlayer;
     }
     public Map<String,Player> getPlayersPlay() { // return a copy of the player nickanme map
         if(this.playersPlay == null) { return null;}
-        Map<String,Player> retPlayersPlay = new HashMap<>(playersPlay);
-        return retPlayersPlay;
+        return new HashMap<>(playersPlay);
     }
     public int getCurrentPlayers(){return playersPlay.size();}
-
     public List<Component> getShownComponent() { //return a copy of the shown components
         return new ArrayList<Component>(shownComponents);
     }
+    //this method returns the nickname of the player with fewer crew members
+    public String getCrewMinPlayer() {
+        int numberCrew;
+        int crewMin=1000;
+        String crewMinPlayer = "";
+        for(String nickname : getPlayersPlay().keySet()){
+            Player player = getPlayersPlay().get(nickname);
+            numberCrew = player.getShipBoard().getNumberCrew();
+            if(numberCrew < crewMin && !player.hasAbandoned()){
+                crewMin = numberCrew;
+                crewMinPlayer = nickname;
+            }
+            else if(numberCrew == crewMin && !player.hasAbandoned() && playersPos.get(nickname).higherThan(playersPos.get(crewMinPlayer))){
+                crewMin = numberCrew;
+                crewMinPlayer = nickname;
+            }
+        }
+        return crewMinPlayer;
+    }
+
     //
      //STARTING PHASE
     //
@@ -466,6 +487,7 @@ public class GameState {
         if(correctShips){
             state = State.CARD_PICKING;
             createGameDeck();
+            updateTurns();
         }
     }
     //updates the position of a player on the ship board
@@ -487,12 +509,16 @@ public class GameState {
      //FLIGHT PHASE
     //
 
+    //this method orders playersPos in position order and assigns the leader's nickname to turnPlayer
+    public void updateTurns(){}
+    //this method updates turnPlayer with the nickname of the next player that has to perform an action
+    public void changeTurn(){}
     //invoked when the leader draws a new card from the deck (during the game), which must be solved
     public void pickNextCard(String nickname) throws InvalidActionException {
         if(state != State.CARD_PICKING){
             throw new InvalidActionException("Can't pick a new card");
         }
-        if(!nickname.equals(playersPos.keySet().iterator().next())){
+        if(!nickname.equals(turnPlayer)){
             throw new InvalidActionException("Only leader can pick cards");
         }
         try{
@@ -508,6 +534,9 @@ public class GameState {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
         }
+        if(!nickname.equals(turnPlayer)){
+            throw new InvalidActionException("Wait for the turn");
+        }
         currentCard.planetLanding(this, nickname, numberPlanet);
     }
     //invoked when a player's ship has to be hit by a meteor/cannon shot; the player can decide whether to
@@ -516,12 +545,18 @@ public class GameState {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
         }
+        if(!nickname.equals(turnPlayer)){
+            throw new InvalidActionException("Wait for the turn");
+        }
         currentCard.hitShip(this, nickname, diceResult, activateShield, activateCannon);
     }
     //invoked when a player decides to land on an abandoned station/ship
     public void landing(String nickname) throws InvalidActionException {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
+        }
+        if(!nickname.equals(turnPlayer)){
+            throw new InvalidActionException("Wait for the turn");
         }
         currentCard.landing(this, nickname);
     }
@@ -531,6 +566,9 @@ public class GameState {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
         }
+        if(!nickname.equals(turnPlayer)){
+            throw new InvalidActionException("Wait for the turn");
+        }
         currentCard.defeat(this, nickname, usedBatteries, loseDays);
     }
     //invoked when a player wants to fly across the flight board exploiting its engine strength
@@ -538,12 +576,18 @@ public class GameState {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
         }
+        if(!nickname.equals(turnPlayer)){
+            throw new InvalidActionException("Wait for the turn");
+        }
         currentCard.fly(this, nickname, usedBatteries);
     }
     //invoked when a player wants to use batteries to have an advantage while solving a card
     public void useBatteries(GameState gameState, String nickname, int usedBatteries) throws InvalidActionException {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
+        }
+        if(!nickname.equals(turnPlayer)){
+            throw new InvalidActionException("Wait for the turn");
         }
         currentCard.useBatteries(gameState, nickname, usedBatteries);
     }

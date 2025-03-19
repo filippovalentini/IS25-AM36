@@ -6,7 +6,6 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 import java.util.*;
 
 public class LevelOneShipBoard extends ShipBoard {
-
     public LevelOneShipBoard(Color color) {
         super(color);
         imageID = 1;
