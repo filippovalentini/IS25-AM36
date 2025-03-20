@@ -1,5 +1,6 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
+import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.Player;

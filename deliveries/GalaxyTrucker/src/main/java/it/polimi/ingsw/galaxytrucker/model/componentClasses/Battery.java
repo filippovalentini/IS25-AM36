@@ -22,7 +22,7 @@ public class Battery extends ConfigurableComponent {
     public int getNumberBatteries() {
         return numberBatteries;
     }
-
+    @Override
     public void useBatteries(int batteriesToUse) throws NoBatteriesException {      //removes one or more batteries from the battery component
         if(batteriesToUse > numberBatteries) {
             throw new NoBatteriesException("Not enough batteries");

@@ -2,6 +2,7 @@ package it.polimi.ingsw.galaxytrucker.model.componentClasses;
 
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.NoBatteriesException;
 
 import java.util.ArrayList;
 import java.util.*;
@@ -113,11 +114,15 @@ public class Component {
     }
     public boolean hasMembers(){ return false;}
     public boolean hasDoubleEngines() { return false;}
+    public boolean hasSingleEngine() { return false;}
+    public boolean hasDoubleCannons() { return false;}
+    public boolean hasSingleCannon() { return false;}
     public void removeMember(){}
     public int getNumberCrew() {
         return 0;
     }
     public int getNumberBatteries(){ return 0;}
+    public void useBatteries(int batteriesToUse) throws NoBatteriesException{}
     public boolean isNotEmpty(){
         Component empty = new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
         return !this.equals(empty);

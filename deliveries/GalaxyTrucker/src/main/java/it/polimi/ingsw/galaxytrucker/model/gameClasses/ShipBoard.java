@@ -112,6 +112,15 @@ public class ShipBoard {
         updateCorrectness();
 
     }
+    //rotates the picked component left
+    public void rotatePickedComponent() throws PickedComponentException {
+        if(pickedComponent==null){
+            throw new PickedComponentException("No picked component");
+        }
+        else {
+            pickedComponent.rotateLeft();
+        }
+    }
     //removes an assembled component from the ship board
     public void destroyComponent(int x, int y) throws AssembledComponentException {
         Component emptySpace = new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
@@ -285,6 +294,72 @@ public class ShipBoard {
             }
         }
         return numberDoubleEngines;
+    }
+    //returns the number of single engines on the ship board
+    public int getNumberSingleEngines() {
+        int numberSingleEngines = 0;
+        for (List<Component> componentRow : assembledComponents) {
+            for (Component component : componentRow) {
+                if(component.hasSingleEngine()){
+                    numberSingleEngines++;
+                }
+            }
+        }
+        return numberSingleEngines;
+    }
+    //returns the number of double cannons on the ship board
+    public int getNumberDoubleCannons() {
+        int numberDoubleCannons = 0;
+        for (List<Component> componentRow : assembledComponents) {
+            for (Component component : componentRow) {
+                if(component.hasDoubleCannons()){
+                    numberDoubleCannons++;
+                }
+            }
+        }
+        return numberDoubleCannons;
+    }
+    //returns the number of single cannons on the ship board
+    public int getNumberSingleCannons() {
+        int numberSingleCannons = 0;
+        for (List<Component> componentRow : assembledComponents) {
+            for (Component component : componentRow) {
+                if(component.hasSingleCannon()){
+                    numberSingleCannons++;
+                }
+            }
+        }
+        return numberSingleCannons;
+    }
+    //returns the cannon strength of the ship board, removing the given batteries in order to activate double cannons
+    public float getCannonStrength(int usedBatteries){
+        return 1;
+    }
+    //returns the engine strength of the ship board, removing the given batteries in order to activate double engines
+    public float getEngineStrength(int usedBatteries) throws NoBatteriesException {
+        int activatedDoubleEngines = Math.min(getNumberDoubleEngines(), usedBatteries);
+        int batteries = activatedDoubleEngines;
+        int componentBatteries;
+        for (List<Component> componentRow : assembledComponents) {
+            for (Component component : componentRow) {
+                componentBatteries = component.getNumberBatteries();
+                if(componentBatteries > 0){
+                    if(componentBatteries > batteries){
+                        component.useBatteries(batteries);
+                        batteries = 0;
+                        break;
+                    }
+                    else{
+                        component.useBatteries(componentBatteries);
+                        batteries-=componentBatteries;
+                    }
+                }
+            }
+            if(batteries ==0){
+                break;
+            }
+        }
+        return activatedDoubleEngines*2 + getNumberSingleEngines();
     }
 
 

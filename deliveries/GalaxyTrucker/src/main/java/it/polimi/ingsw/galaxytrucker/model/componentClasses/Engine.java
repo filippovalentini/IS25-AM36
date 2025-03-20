@@ -17,4 +17,8 @@ public class Engine extends ConfigurableComponent {
     public boolean hasDoubleEngines() {
         return isDouble();
     }
+    @Override
+    public boolean hasSingleEngine() {
+        return !isDouble();
+    }
 }

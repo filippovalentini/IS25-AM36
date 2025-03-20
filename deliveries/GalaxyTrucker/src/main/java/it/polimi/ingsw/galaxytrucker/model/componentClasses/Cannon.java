@@ -8,4 +8,9 @@ public class Cannon extends ConfigurableComponent { //constructor
     public Cannon(boolean isDouble, int imageID, List<Connector> sides) {
         super(isDouble, imageID, sides);
     }
+
+    @Override
+    public boolean hasDoubleCannons() { return isDouble();}
+    @Override
+    public boolean hasSingleCannon() { return !isDouble();}
 }

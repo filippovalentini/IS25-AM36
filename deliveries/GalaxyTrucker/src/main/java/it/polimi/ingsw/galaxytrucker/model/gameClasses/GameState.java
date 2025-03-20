@@ -6,6 +6,7 @@ import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.*;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.model.shotClasses.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 //this class describes the entire status of the game, the controller will invoke its methods in order to modify the
 //model according to specific actions performed by the players on the view
@@ -31,6 +32,8 @@ public class GameState {
     }
     //
     // GETTERS AND SETTERS
+    // these methods don't belong to the model-controller interface, but are needed by the methods of
+    // the EventCardClasses package in order to modify the model due to the effect of a card
     //
     public void setGameState(State state) {
         this.state = state;
@@ -53,24 +56,55 @@ public class GameState {
     public List<Component> getShownComponent() { //return a copy of the shown components
         return new ArrayList<Component>(shownComponents);
     }
+    //returns the list of player nicknames (in position order)
+    public List<String> getNicknames(){
+        return new ArrayList<>(playersPos.keySet());
+    }
+    //determines whether a player has abandoned the game
+    public boolean hasAbandoned(String nickname){
+        return playersPlay.get(nickname).hasAbandoned();
+    }
+    //return the ship board color of a player
+    public Color getColor(String nickname){
+        return playersPlay.get(nickname).getColor();
+    }
+    //returns teh number of exposed connectors on a player's ship board
+    public int countExposedConnectors(String nickname){
+        return playersPlay.get(nickname).countExposedConnectors();
+    }
+    //returns the number of crew members in a player's ship board
+    public int getNumberCrew(String nickname){
+        return playersPlay.get(nickname).getNumberCrew();
+    }
+    //returns the number of batteries on a player's ship board
+    public int getNumberBatteries(String nickname){
+        return playersPlay.get(nickname).getNumberBatteries();
+    }
     //this method returns the nickname of the player with fewer crew members
     public String getCrewMinPlayer() {
         int numberCrew;
         int crewMin=1000;
         String crewMinPlayer = "";
-        for(String nickname : getPlayersPlay().keySet()){
-            Player player = getPlayersPlay().get(nickname);
-            numberCrew = player.getShipBoard().getNumberCrew();
-            if(numberCrew < crewMin && !player.hasAbandoned()){
+        for(String nickname : getNicknames()){
+            numberCrew = getNumberCrew(nickname);
+            if(numberCrew < crewMin && !hasAbandoned(nickname)){
                 crewMin = numberCrew;
                 crewMinPlayer = nickname;
             }
-            else if(numberCrew == crewMin && !player.hasAbandoned() && playersPos.get(nickname).higherThan(playersPos.get(crewMinPlayer))){
+            else if(numberCrew == crewMin && !hasAbandoned(nickname) && playersPos.get(nickname).higherThan(playersPos.get(crewMinPlayer))){
                 crewMin = numberCrew;
                 crewMinPlayer = nickname;
             }
         }
         return crewMinPlayer;
+    }
+    //returns the cannon strength of a player, removing the given batteries from its ship board in order to activate double cannons
+    public float getCannonStrength(String nickname, int usedBatteries){
+        return playersPlay.get(nickname).getCannonStrength(usedBatteries);
+    }
+    //returns the engine strength of a player, removing the given batteries from its ship board in order to activate double engines
+    public float getEngineStrength(String nickname, int usedBatteries){
+        return playersPlay.get(nickname).getEngineStrength(usedBatteries);
     }
 
     //
@@ -352,13 +386,11 @@ public class GameState {
         if(state != State.WAITING_FOR_PLAYERS){
             throw new InvalidActionException("Game has already been started");
         }
-        for(String n : playersPlay.keySet()) {
+        for(String n : getNicknames()) {
             if(n.equals(nickname)) {
                 throw new UniqueNicknameException("Nickname already taken");
             }
-        }
-        for(Player p : playersPlay.values()){
-            if(color == p.getShipBoard().getColor()){
+            if(color == getColor(n)){
                 throw new UniquePlayerColorException("Color already taken");
             }
         }
@@ -386,7 +418,7 @@ public class GameState {
         }
         Collections.shuffle(hiddenComponents);
         Component c = hiddenComponents.removeFirst();
-        playersPlay.get(nickname).getShipBoard().pickComponent(c);
+        playersPlay.get(nickname).pickComponent(c);
     }
     //invoked when a player wants to pick a specific component among the one placed face up (assembling phase)
     public void pickShown(String nickname, int index) throws PickedComponentException, InvalidActionException {
@@ -394,42 +426,42 @@ public class GameState {
             throw new InvalidActionException("Assembling phase is finished");
         }
         Component c = shownComponents.remove(index);
-        playersPlay.get(nickname).getShipBoard().pickComponent(c);
+        playersPlay.get(nickname).pickComponent(c);
     }
     //invoked when a player wants to reserve the component that it has picked for its ship board
     public void reserveComponent(String nickname) throws PickedComponentException, ReservedComponentException, InvalidActionException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Assembling phase is finished");
         }
-        playersPlay.get(nickname).getShipBoard().reserveComponent();
+        playersPlay.get(nickname).reserveComponent();
     }
     //invoked when a player wants to pick one of the components that it has reserved for its ship board
     public void pickReservedComponent(String nickname, int position) throws ReservedComponentException, PickedComponentException, InvalidActionException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Assembling phase is finished");
         }
-        playersPlay.get(nickname).getShipBoard().pickReservedComponent(position);
+        playersPlay.get(nickname).pickReservedComponent(position);
     }
     //invoked when a player wants to release (therefore, place face up) the component that it has picked
     public void putShown(String nickname) throws PickedComponentException, InvalidActionException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Assembling phase is finished");
         }
-        shownComponents.add(playersPlay.get(nickname).getShipBoard().releaseComponent());
+        shownComponents.add(playersPlay.get(nickname).releaseComponent());
     }
     //invoked when a player wants to assemble on the ship board the component that it has picked
     public void assembleComponent(String nickname, int x, int y) throws AssembledComponentException, PickedComponentException, InvalidActionException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Assembling phase is finished");
         }
-        playersPlay.get(nickname).getShipBoard().assembleComponent(x,y);
+        playersPlay.get(nickname).assembleComponent(x,y);
     }
     //invoked when a player wants to change the orientation of the component that it has picked
-    public void rotatePickedComponent(String nickname) throws InvalidActionException {
+    public void rotatePickedComponent(String nickname) throws InvalidActionException, PickedComponentException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Assembling phase is finished");
         }
-        playersPlay.get(nickname).getShipBoard().getPickedComponent().rotateLeft();
+        playersPlay.get(nickname).rotatePickedComponent();
     }
     //invoked when a player has finished the assembling phase and has to pick a free position on the flight board
     public void setPosition(String nickname, int initCell) throws InvalidPositionException, InvalidActionException {
@@ -472,14 +504,14 @@ public class GameState {
         if(state != State.SHIP_CONTROL){
             throw new InvalidActionException("Assembling phase is finished");
         }
-        playersPlay.get(nickname).getShipBoard().destroyComponent(x,y);
+        playersPlay.get(nickname).destroyComponent(x,y);
         checkShipBoards();
     }
     //checks the correctness of all the ships in the game
     public void checkShipBoards(){
         boolean correctShips = true;
         for(Player p : playersPlay.values()) {
-            if(!p.getShipBoard().isCorrect()){
+            if(!p.hasCorrectShipBoard()){
                 correctShips = false;
                 break;
             }
@@ -509,10 +541,50 @@ public class GameState {
      //FLIGHT PHASE
     //
 
-    //this method orders playersPos in position order and assigns the leader's nickname to turnPlayer
-    public void updateTurns(){}
+    //this method orders playersPos in (decreasing) position order and assigns the leader's nickname to turnPlayer
+    public void updateTurns(){
+        playersPos = playersPos.entrySet()
+                .stream()
+                .sorted((p1,p2) ->{
+                    Position pp1 = p1.getValue();
+                    Position pp2 = p2.getValue();
+                    return pp2.higherThan(pp1) ? 1 : -1;
+                }).collect(LinkedHashMap::new, (map, entry) -> map.put(entry.getKey(), entry.getValue()), Map::putAll);
+        turnPlayer = playersPos.keySet().iterator().next();
+    }
     //this method updates turnPlayer with the nickname of the next player that has to perform an action
-    public void changeTurn(){}
+    public void nextTurn(){
+        Iterator<String> iterator = playersPos.keySet().iterator();
+        boolean found = false;
+        //finds the nickname that follows turnPlayer in playerPos
+        while (iterator.hasNext()) {
+            String current = iterator.next();
+            if (found) {
+                turnPlayer = current;
+                return;
+            }
+            if (current.equals(turnPlayer)) {
+                found = true;
+            }
+        }
+        //if turnPlayer is the last player in position order, turns are updated and the leader nickname is assigned to turnPlayer
+        updateTurns();
+    }
+    //returns true if a player is the last one for the current game turn
+    public boolean isLastInTurn(String nickname){
+        String lastPlayer = null;
+
+        for (String k : playersPos.keySet()) {
+            lastPlayer = k;
+        }
+
+        return nickname.equals(lastPlayer);
+    }
+    //this method is invoked when a player has to leave the game
+    public void quitGame(String nickname){
+        playersPos.remove(nickname);
+        playersPlay.get(nickname).quitGame();
+    }
     //invoked when the leader draws a new card from the deck (during the game), which must be solved
     public void pickNextCard(String nickname) throws InvalidActionException {
         if(state != State.CARD_PICKING){
@@ -523,11 +595,19 @@ public class GameState {
         }
         try{
             currentCard = gameDeck.drawCard();
-            currentCard.specialEffect(this);
             state = State.CARD_SOLVING;
+            currentCard.specialEffect(this);
         } catch (EmptyDeckException e) {
             state = State.END;
         }
+    }
+    //removes a member (human or alien) from each cabin (of a player's ship board) that is directly
+    //connected with another busy cabin
+    public void epidemicEffect(String nickname) throws InvalidActionException {
+        if(state != State.CARD_SOLVING){
+            throw new InvalidActionException("Card must be picked first");
+        }
+        playersPlay.get(nickname).epidemicEffect();
     }
     //invoked when a player decides to land on a planet in order to gain goods
     public void planetLanding(String nickname, int numberPlanet) throws InvalidActionException {
@@ -582,14 +662,14 @@ public class GameState {
         currentCard.fly(this, nickname, usedBatteries);
     }
     //invoked when a player wants to use batteries to have an advantage while solving a card
-    public void useBatteries(GameState gameState, String nickname, int usedBatteries) throws InvalidActionException {
+    public void useBatteries(String nickname, int usedBatteries) throws InvalidActionException {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
         }
         if(!nickname.equals(turnPlayer)){
             throw new InvalidActionException("Wait for the turn");
         }
-        currentCard.useBatteries(gameState, nickname, usedBatteries);
+        currentCard.useBatteries(this, nickname, usedBatteries);
     }
 
 
@@ -597,7 +677,7 @@ public class GameState {
         playersPlay.get(nickname).updateCredits(credits);
     }
     public int getPlayerCrewCount(String nickname) {
-        return playersPlay.get(nickname).getCrewCount();
+        return playersPlay.get(nickname).getNumberCrew();
     }
     public void removedCrewMember(String nickname, List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) {
         playersPlay.get(nickname).removeShipBoardCrew(x, y, eachCabinCrew, numberCrewToRemove);
