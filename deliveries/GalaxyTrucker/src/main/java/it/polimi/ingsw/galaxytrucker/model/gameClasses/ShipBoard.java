@@ -3,7 +3,9 @@ package it.polimi.ingsw.galaxytrucker.model.gameClasses;
 import it.polimi.ingsw.galaxytrucker.model.componentClasses.*;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
+import it.polimi.ingsw.galaxytrucker.model.shotClasses.Meteor;
 
 import java.util.*;
 //this class is used to describe all information associated to the shipboard of a player
@@ -23,6 +25,29 @@ public class ShipBoard {
         this.reservedComponents = new ArrayList<>();
         this.pickedComponent = null;
         this.correct = true;
+
+        for (int i = 0; i < 5; i++) {       //at the beginning of the assembling phase, all assembled components are set to empty
+            List<Component> row = new ArrayList<>();
+            for (int j = 0; j < 7; j++) {
+                row.add(new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH))));
+            }
+            assembledComponents.add(row);
+        }
+
+        //based on the color associated to the ship board, a specific starting cabin is assembled in the middle
+        if(color == Color.BLUE){
+            assembledComponents.get(2).set(3, new Cabin(318, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL))));
+        }
+        else if(color == Color.GREEN){
+            assembledComponents.get(2).set(3, new Cabin(319, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL))));
+        }
+        else if(color == Color.RED){
+            assembledComponents.get(2).set(3, new Cabin(320, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL))));
+        }
+        else{
+            assembledComponents.get(2).set(3, new Cabin(321, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL))));
+
+        }
 
     }
 
@@ -261,6 +286,125 @@ public class ShipBoard {
         for (int[] hitCabin : hitCabins) {
             Component c = assembledComponents.get(hitCabin[0]).get(hitCabin[1]);
             c.removeMember();
+        }
+    }
+    //determines whether a side of the ship board is protected by a shield and (if yes) activates it by using
+    //a battery
+    public boolean protectedShipBoard(Orientation orientation) {
+        boolean protection = false;
+        for (List<Component> componentRow : assembledComponents) {
+            for (Component component : componentRow) {
+                if(component.protects(orientation)){
+                    protection = true;
+                    break;
+                }
+            }
+            if(protection){
+                break;
+            }
+        }
+
+        if(protection){
+            boolean foundBattery = false;
+            for (List<Component> componentRow : assembledComponents) {
+                for (Component component : componentRow) {
+                    if(component.getNumberBatteries() > 0){
+                        component.useBatteries(1);
+                        foundBattery = true;
+                        break;
+                    }
+                }
+                if(foundBattery){
+                    break;
+                }
+            }
+        }
+
+        return protection;
+    }
+    //determines whether the ship board exposes a smooth side in a specific direction
+    public boolean smoothSide(Orientation orientation, int direction){
+        Component c;
+        if(orientation == Orientation.NORTH){
+            for (List<Component> componentRow : assembledComponents) {
+                c = componentRow.get(direction);
+                if (c.isNotEmpty() && c.belongsToShip()) {
+                    if (c.getNorthSide() == Connector.SMOOTH) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        }
+        else if(orientation == Orientation.SOUTH){
+            for(int i=assembledComponents.size()-1; i>=0; i--){
+                c = assembledComponents.get(i).get(direction);
+                if(c.isNotEmpty() && c.belongsToShip()){
+                    if(c.getSouthSide()==Connector.SMOOTH){
+                        return true;
+                    }
+                    else{
+                        return false;
+                    }
+                }
+            }
+        }
+        else if(orientation == Orientation.WEST){
+            for(int j=0; j<assembledComponents.get(direction).size(); j++){
+                c = assembledComponents.get(direction).get(j);
+                if(c.isNotEmpty() && c.belongsToShip()){
+                    if(c.getWestSide()==Connector.SMOOTH){
+                        return true;
+                    }
+                    else{
+                        return false;
+                    }
+                }
+            }
+        }
+        else{
+            for(int j=assembledComponents.get(direction).size()-1; j>=0; j--){
+                c = assembledComponents.get(direction).get(j);
+                if(c.isNotEmpty() && c.belongsToShip()){
+                    if(c.getEastSide()==Connector.SMOOTH){
+                        return true;
+                    }
+                    else{
+                        return false;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    //invoked when a meteor/cannon shot hits the ship board
+    public void meteorAttack(Meteor meteor, int direction, boolean activateShield, boolean activateCannon){
+        Orientation orientation = meteor.getOrientation();
+        //in this case the meteor doesn't hit the ship board
+        if(direction < 0){
+            return;
+        }
+        //in this case the meteor doesn't hit the ship board
+        if((orientation.isVertical() && direction > 6) || (orientation.isHorizontal() && direction > 4)){
+            return;
+        }
+
+        if(!meteor.isLarge()){
+            if((activateShield && protectedShipBoard(orientation)) || smoothSide(orientation, direction)){
+                return;
+            }
+            else{
+                destroyLine(orientation, direction);
+            }
+        }
+        else {
+            if(armedShipBoard(activateCannon, orientation, direction)){
+                return;
+            }
+            else{
+                destroyLine(orientation, direction);
+            }
         }
     }
     //returns the number of crew members in the ship board

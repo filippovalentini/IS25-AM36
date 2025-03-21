@@ -6,7 +6,6 @@ import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.*;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.model.shotClasses.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 //this class describes the entire status of the game, the controller will invoke its methods in order to modify the
 //model according to specific actions performed by the players on the view
@@ -397,7 +396,6 @@ public class GameState {
         playersPlay.put(nickname, new Player(nickname, color, firstFlight));
         playersPos.put(nickname, null);
         if(numPlayers == getCurrentPlayers()){
-            state = State.SHIP_BUILDING;
             startAssembling();
         }
     }
@@ -405,6 +403,7 @@ public class GameState {
     public void startAssembling() {
         createComponents(firstFlight);
         createDecks(firstFlight);
+        state = State.SHIP_BUILDING;
     }
 
     //
@@ -609,6 +608,16 @@ public class GameState {
         }
         playersPlay.get(nickname).epidemicEffect();
     }
+    //invoked when a meteor/cannon shot hits a player's ship board
+    public void meteorAttack(String nickname, Meteor meteor, int direction, boolean activateShield, boolean activateCannon) throws InvalidActionException {
+        if(state != State.CARD_SOLVING){
+            throw new InvalidActionException("Card must be picked first");
+        }
+        playersPlay.get(nickname).meteorAttack(meteor, direction, activateShield, activateCannon);
+    }
+
+    //ACTIONS THAT A PLAYER CAN PERFORM TO SOLVE A CARD
+
     //invoked when a player decides to land on a planet in order to gain goods
     public void planetLanding(String nickname, int numberPlanet) throws InvalidActionException {
         if(state != State.CARD_SOLVING){
@@ -621,7 +630,7 @@ public class GameState {
     }
     //invoked when a player's ship has to be hit by a meteor/cannon shot; the player can decide whether to
     //activate a shield or a cannon to defend its ship
-    public void hitShip(String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException {
+    public void hit(String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException, NoBatteriesException {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
         }

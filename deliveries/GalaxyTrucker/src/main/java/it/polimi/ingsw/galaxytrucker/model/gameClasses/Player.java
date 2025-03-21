@@ -4,6 +4,7 @@ import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.AssembledComponentException;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
+import it.polimi.ingsw.galaxytrucker.model.shotClasses.Meteor;
 
 import java.util.List;
 
@@ -84,6 +85,10 @@ public class Player {
     //connected with another busy cabin
     public void epidemicEffect(){
         shipBoard.epidemicEffect();
+    }
+    //invoked when a meteor/cannon shot hits a player's ship board
+    public void meteorAttack(Meteor meteor, int direction, boolean activateShield, boolean activateCannon) {
+        shipBoard.meteorAttack(meteor, direction, activateShield, activateCannon);
     }
     //returns the number of crew members in the player's ship board
     public int getNumberCrew(){
