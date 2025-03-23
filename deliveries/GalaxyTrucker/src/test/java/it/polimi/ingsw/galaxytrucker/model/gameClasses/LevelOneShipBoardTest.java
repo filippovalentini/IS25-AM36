@@ -3,11 +3,9 @@ package it.polimi.ingsw.galaxytrucker.model.gameClasses;
 import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
-import it.polimi.ingsw.galaxytrucker.model.componentClasses.Empty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.invoke.TypeDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 
