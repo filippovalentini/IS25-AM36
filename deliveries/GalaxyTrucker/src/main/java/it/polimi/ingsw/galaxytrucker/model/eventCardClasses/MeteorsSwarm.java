@@ -22,7 +22,7 @@ public class MeteorsSwarm extends EventCard{
         return meteors;
     }
 
-    @Override
+    /*@Override
     public void hitShip(GameState gameState, String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException, NoBatteriesException {
         if((activateCannon || activateShield) && gameState.getNumberBatteries(nickname) == 0){
             throw new InvalidActionException("Too few batteries");
@@ -41,5 +41,7 @@ public class MeteorsSwarm extends EventCard{
             currentMeteor++;
         }
     }
+
+     */
 
 }

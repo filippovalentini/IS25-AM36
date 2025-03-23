@@ -379,7 +379,7 @@ public class ShipBoard {
         return false;
     }
     //invoked when a meteor/cannon shot hits the ship board
-    public void meteorAttack(Meteor meteor, int direction, boolean activateShield, boolean activateCannon){
+    /*public void meteorAttack(Meteor meteor, int direction, boolean activateShield, boolean activateCannon){
         Orientation orientation = meteor.getOrientation();
         //in this case the meteor doesn't hit the ship board
         if(direction < 0){
@@ -407,6 +407,8 @@ public class ShipBoard {
             }
         }
     }
+
+     */
     //returns the number of crew members in the ship board
     public int getNumberCrew() {
         int numberCrew = 0;

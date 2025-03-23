@@ -609,12 +609,14 @@ public class GameState {
         playersPlay.get(nickname).epidemicEffect();
     }
     //invoked when a meteor/cannon shot hits a player's ship board
-    public void meteorAttack(String nickname, Meteor meteor, int direction, boolean activateShield, boolean activateCannon) throws InvalidActionException {
+    /*public void meteorAttack(String nickname, Meteor meteor, int direction, boolean activateShield, boolean activateCannon) throws InvalidActionException {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
         }
         playersPlay.get(nickname).meteorAttack(meteor, direction, activateShield, activateCannon);
     }
+
+     */
 
     //ACTIONS THAT A PLAYER CAN PERFORM TO SOLVE A CARD
 
