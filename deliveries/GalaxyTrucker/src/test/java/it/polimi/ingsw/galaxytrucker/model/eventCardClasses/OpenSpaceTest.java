@@ -1,6 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.componentClasses.Battery;
+import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
 import it.polimi.ingsw.galaxytrucker.model.componentClasses.Engine;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
@@ -18,7 +19,6 @@ class OpenSpaceTest {
     private GameState gameState;
     private String player1;
     private String player2;
-    private Engine engine1;
     private Engine engine2;
     private List<Connector> sides;
 
@@ -33,11 +33,8 @@ class OpenSpaceTest {
         gameState.setPosition(player1, 6);
         gameState.setPosition(player2, 3);
         sides = new ArrayList<>();
-        engine1= new Engine(false,0,sides);
-        engine2= new Engine(false,1,sides);
-
-        gameState.getPlayersPlay().get(player2).pickComponent(engine1);
-        gameState.getPlayersPlay().get(player2).assembleComponent(0, 0);
+        sides.add();
+        engine2= new Engine(false,1, sides);
         gameState.getPlayersPlay().get(player2).pickComponent(engine2);
         gameState.getPlayersPlay().get(player2).assembleComponent(1, 1);
     }
