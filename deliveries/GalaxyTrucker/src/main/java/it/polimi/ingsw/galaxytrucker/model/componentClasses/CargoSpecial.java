@@ -15,18 +15,22 @@ public class CargoSpecial extends CargoHold {
 
     @Override
     public void addGood(Color good) throws FullCargoHoldException {     //adds one good to the cargo hold (it can also be red)
-        if (!isDouble && numberGoods == 1) {
+        if (!isDouble && this.goods.size() == 1) {
             throw new FullCargoHoldException("The Cargo Hold is full.");
-        } else if (isDouble && numberGoods == 2) {
+        } else if (isDouble && this.goods.size() == 2) {
             throw new FullCargoHoldException("The Cargo Hold is full.");
         } else {
             goods.add(good);
-            numberGoods++;
+            //numberGoods++;
         }
     }
 
     @Override
     public void substituteGood(Color good, int pos){
-        goods.set(pos, good);
+        if(goods.size()<2 && isDouble || goods.size()<1 && !isDouble){
+            addGood(good);
+        }else{ //full cargo (it will substitute)
+            goods.set(pos, good);
+        }
     }
 }

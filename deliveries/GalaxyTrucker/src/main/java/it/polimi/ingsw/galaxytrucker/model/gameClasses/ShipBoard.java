@@ -389,7 +389,7 @@ public class ShipBoard {
         if((orientation.isVertical() && direction > 6) || (orientation.isHorizontal() && direction > 4)){
             return;
         }
-
+        /*
         if(!meteor.isLarge()){
             if((activateShield && protectedShipBoard(orientation)) || smoothSide(orientation, direction)){
                 return;
@@ -406,7 +406,7 @@ public class ShipBoard {
             else{
                 destroyLine(orientation, direction);
             }
-        }
+        }*/
     }
     //returns the number of crew members in the ship board
     public int getNumberCrew() {
@@ -527,7 +527,7 @@ public class ShipBoard {
     }
     //substitute cargo goods at the given coordinates with the goods given in input
     public void substituteCargoGoodGivenGood(int cargo_row, int cargo_col, Color good, int pos){
-        if(color==Color.RED){ //special cargo needed
+        if(good==Color.RED){ //special cargo needed
             ((CargoSpecial)(assembledComponents).get(cargo_row).get(cargo_col)).substituteGood(good, pos);
         }else {
             ((CargoHold) (assembledComponents.get(cargo_row).get(cargo_col))).substituteGood(good, pos);

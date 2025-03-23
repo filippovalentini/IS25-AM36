@@ -11,30 +11,30 @@ import static it.polimi.ingsw.galaxytrucker.model.enumerations.Color.RED;
 
 public class CargoHold extends ConfigurableComponent {
     protected List<Color> goods;        //list of goods stored in the cargo hold
-    protected int numberGoods;      //number of goods stored in the cargo hold
+    //protected int numberGoods;      //number of goods stored in the cargo hold (can be inferred from the list)
 
     public CargoHold(boolean isDouble, int imageID, List<Connector> sides) {       //constructor
         super(isDouble, imageID, sides);
         goods = new ArrayList<>();
-        numberGoods = 0;
+        //numberGoods = 0;
     }
     public List<Color> getGoods() { //return a copy of the listed goods
         return new ArrayList<>(this.goods);
     }
     public int getNumberGoods() {
-        return numberGoods;
+        return goods.size();
     }
 
     public void addGood(Color good) throws FullCargoHoldException, UnsupportedCargoColorException {     //adds one good to the cargo hold (it can't be red)
         if(good==Color.RED){
           throw new UnsupportedCargoColorException("Unsupported Cargo type");
-        } else if (!isDouble && numberGoods==3) {
+        } else if (!isDouble && goods.size()==3) {
             throw new FullCargoHoldException("The Cargo Hold is full");
-        } else if (isDouble && numberGoods==2) {
+        } else if (isDouble && goods.size()==2) {
             throw new FullCargoHoldException("The Cargo Hold is full");
         } else {
             goods.add(good);
-            numberGoods++;
+            //numberGoods++;
         }
     }
 
@@ -42,7 +42,11 @@ public class CargoHold extends ConfigurableComponent {
         if(good==Color.RED){
             throw new UnsupportedCargoColorException("Unsupported Cargo type");
         } else {
-            goods.set(pos, good);
+            if(goods.size()<3 && !isDouble || goods.size()<2 && isDouble){
+                addGood(good);
+            }else{ //full cargo (it will substitute)
+                goods.set(pos, good);
+            }
         }
     }
 }

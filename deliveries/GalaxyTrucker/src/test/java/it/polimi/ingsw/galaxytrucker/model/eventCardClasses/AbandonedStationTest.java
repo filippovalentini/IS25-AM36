@@ -6,6 +6,7 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.NoCrewException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -81,8 +82,8 @@ class AbandonedStationTest {
         sG.add(Color.GREEN);
         AbandonedStation abandonedStationFreeCrew = new AbandonedStation(sG, 0, 1, 0);
         assertTrue(gameState.getPlayerCrewCount(player1)>0);
-        abandonedStation.landing(gameState, player1, x_cargo, y_cargo, goodsPosCargo);
-        assertTrue(abandonedStation.isUsed());
+        abandonedStationFreeCrew.landing(gameState, player1, x_cargo, y_cargo, goodsPosCargo);
+        assertTrue(abandonedStationFreeCrew.isUsed());
     }
 
     @Test
