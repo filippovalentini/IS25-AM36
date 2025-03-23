@@ -34,7 +34,9 @@ class OpenSpaceTest {
         gameState.setPosition(player2, 3);
         sides = new ArrayList<>();
         sides.add(Connector.SMOOTH);
-
+        sides.add(Connector.DOUBLE);
+        sides.add(Connector.UNIVERSAL);
+        sides.add(Connector.SMOOTH);
         engine2= new Engine(false,1, sides);
         gameState.getPlayersPlay().get(player2).pickComponent(engine2);
         gameState.getPlayersPlay().get(player2).assembleComponent(1, 1);
@@ -43,6 +45,7 @@ class OpenSpaceTest {
     @Test
     void testFly(){
         os.fly(gameState,player1,0);
-        assertEquals(player1, gameState.getTurnPlayer(), "The leader should be player2 (thomas)");
+        assertEquals(player2, gameState.getTurnPlayer(), "The leader should be player2 (thomas)");
+        assertEquals(player1, gameState.getTurnPlayer());
     }
 }
