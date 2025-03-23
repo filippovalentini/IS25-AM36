@@ -33,7 +33,7 @@ class OpenSpaceTest {
         gameState.setPosition(player1, 6);
         gameState.setPosition(player2, 3);
         sides = new ArrayList<>();
-        sides.add();
+        sides.add(c);
         engine2= new Engine(false,1, sides);
         gameState.getPlayersPlay().get(player2).pickComponent(engine2);
         gameState.getPlayersPlay().get(player2).assembleComponent(1, 1);
