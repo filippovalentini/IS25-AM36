@@ -396,6 +396,7 @@ public class ShipBoard {
             }
             else{
                 destroyLine(orientation, direction);
+
             }
         }
         else {
