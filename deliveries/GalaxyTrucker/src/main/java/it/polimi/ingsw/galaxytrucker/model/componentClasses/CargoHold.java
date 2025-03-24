@@ -49,4 +49,24 @@ public class CargoHold extends ConfigurableComponent {
             }
         }
     }
+
+    @Override
+    public int goodsPrice(){
+        int price = 0;
+        for(Color good : goods){
+            if(good==Color.RED){
+                price+= 4;
+            }
+            else if(good==Color.YELLOW){
+                price+= 3;
+            }
+            else if(good==Color.GREEN){
+                price+= 2;
+            }
+            else{
+                price+= 1;
+            }
+        }
+        return price;
+    }
 }

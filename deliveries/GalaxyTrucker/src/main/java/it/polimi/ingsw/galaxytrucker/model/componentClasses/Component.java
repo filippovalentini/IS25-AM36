@@ -124,6 +124,8 @@ public class Component {
     public int getNumberBatteries(){ return 0;}
     public void useBatteries(int batteriesToUse) throws NoBatteriesException{}
     public boolean protects(Orientation orientation){ return false;}
+    public boolean pointsForward(){ return false;}
+    public int goodsPrice(){ return 0;}
     public boolean isNotEmpty(){
         Component empty = new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
         return !this.equals(empty);

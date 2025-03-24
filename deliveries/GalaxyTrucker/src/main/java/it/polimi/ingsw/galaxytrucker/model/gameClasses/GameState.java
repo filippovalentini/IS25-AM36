@@ -98,12 +98,16 @@ public class GameState {
         return crewMinPlayer;
     }
     //returns the cannon strength of a player, removing the given batteries from its ship board in order to activate double cannons
-    public float getCannonStrength(String nickname, int usedBatteries){
+    public double getCannonStrength(String nickname, int usedBatteries){
         return playersPlay.get(nickname).getCannonStrength(usedBatteries);
     }
     //returns the engine strength of a player, removing the given batteries from its ship board in order to activate double engines
-    public float getEngineStrength(String nickname, int usedBatteries){
+    public int getEngineStrength(String nickname, int usedBatteries){
         return playersPlay.get(nickname).getEngineStrength(usedBatteries);
+    }
+    //updates the cosmic credits of a player
+    public void updatePlayerCredits(String nickname, int update) {
+        playersPlay.get(nickname).updateCredits(update);
     }
 
     //
@@ -597,6 +601,7 @@ public class GameState {
             state = State.CARD_SOLVING;
             currentCard.specialEffect(this);
         } catch (EmptyDeckException e) {
+            computeTotalRewards();
             state = State.END;
         }
     }
@@ -681,10 +686,73 @@ public class GameState {
         currentCard.useBatteries(this, nickname, usedBatteries);
     }
 
+    //
+     //GAME OVER
+    //
 
-    public void updatePlayerCredits(String nickname, int credits) {
-        playersPlay.get(nickname).updateCredits(credits);
+
+    //invoked when the game is over (all players have abandoned or the adventure card deck is empty) in order
+    //to compute the final amount of cosmic credits for each player, including final rewards and penalties
+    public void computeTotalRewards(){
+        finishOrderReward();
+        bestShipReward();
+        saleOfGoodsReward();
+        lossPenalty();
     }
+    //assigns rewards to players based on their final order on the flight board
+    public void finishOrderReward(){
+        List<Integer> rewards;
+        if(firstFlight){
+            rewards = new ArrayList<>(Arrays.asList(4,3,2,1));
+        }
+        else{
+            rewards = new ArrayList<>(Arrays.asList(8,6,4,2));
+        }
+        int i = 0;
+        for(String nickname: playersPos.keySet()){
+            updatePlayerCredits(nickname, rewards.get(i));
+            i++;
+        }
+    }
+    //assigns a reward to the player with the best ship, i.e. the one with the lowest number of exposed connectors
+    public void bestShipReward(){
+        String bestShipPlayer = "";
+        int minExposedConnectors = 1000;
+        int exposedConnectorsCount;
+        for(String nickname: playersPlay.keySet()){
+            exposedConnectorsCount = countExposedConnectors(nickname);
+            if(exposedConnectorsCount < minExposedConnectors){
+                bestShipPlayer = nickname;
+                minExposedConnectors = exposedConnectorsCount;
+            }
+        }
+        if(firstFlight){
+            updatePlayerCredits(bestShipPlayer, 2);
+        }
+        else{
+            updatePlayerCredits(bestShipPlayer, 4);
+        }
+    }
+    //assigns a penalty to each player based on the number of components lost during the game
+    public void lossPenalty(){
+        for(String nickname: playersPlay.keySet()){
+            updatePlayerCredits(nickname, -playersPlay.get(nickname).getLostComponents());
+        }
+    }
+    //assigns to each player a reward based on the number and type of goods carried by their ships
+    public void saleOfGoodsReward(){
+        for(String nickname: playersPlay.keySet()){
+            if(hasAbandoned(nickname)){
+                updatePlayerCredits(nickname, Math.abs(playersPlay.get(nickname).getGoodsPrice()/2));
+            }
+            else{
+                updatePlayerCredits(nickname, playersPlay.get(nickname).getGoodsPrice());
+            }
+        }
+    }
+
+
+
     public int getPlayerCrewCount(String nickname) {
         return playersPlay.get(nickname).getNumberCrew();
     }

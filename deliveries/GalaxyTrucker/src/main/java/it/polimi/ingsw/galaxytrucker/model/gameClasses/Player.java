@@ -38,6 +38,7 @@ public class Player {
     public ShipBoard getShipBoard() {
         return shipBoard;
     }
+    public int getLostComponents(){ return shipBoard.getLostComponents(); }
     public Color getColor(){
         return shipBoard.getColor();
     }
@@ -99,17 +100,22 @@ public class Player {
         return shipBoard.getNumberBatteries();
     }
     //returns the cannon strength of a player, removing the given batteries from its ship board in order to activate double cannons
-    public float getCannonStrength(int usedBatteries){
+    public double getCannonStrength(int usedBatteries){
         return shipBoard.getCannonStrength(usedBatteries);
     }
     //returns the engine strength of a player, removing the given batteries from its ship board in order to activate double engines
-    public float getEngineStrength(int usedBatteries){
+    public int getEngineStrength(int usedBatteries){
         return shipBoard.getEngineStrength(usedBatteries);
     }
-
+    //returns the overall price for all the goods carried by the player's ship
+    public int getGoodsPrice(){
+        return shipBoard.getGoodsPrice();
+    }
+    //invoked when the player has to leave the game
     public void quitGame() {    //invoked when a player must leave the game
         this.hasAbandoned = true;
     }
+    //updates the cosmic credits of the player
     public void updateCredits(int update) {     //updates teh cosmic credits pf a player
         this.credits += update;
     }

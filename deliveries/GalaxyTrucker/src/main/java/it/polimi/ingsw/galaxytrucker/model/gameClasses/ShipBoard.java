@@ -428,6 +428,29 @@ public class ShipBoard {
         }
         return numberBatteries;
     }
+    //removes batteries from the ship board
+    public void removeBatteries(int batteries) throws NoBatteriesException{
+        int componentBatteries;
+        for (List<Component> componentRow : assembledComponents) {
+            for (Component component : componentRow) {
+                componentBatteries = component.getNumberBatteries();
+                if(componentBatteries > 0){
+                    if(componentBatteries > batteries){
+                        component.useBatteries(batteries);
+                        batteries = 0;
+                        break;
+                    }
+                    else{
+                        component.useBatteries(componentBatteries);
+                        batteries-=componentBatteries;
+                    }
+                }
+            }
+            if(batteries ==0){
+                break;
+            }
+        }
+    }
     //returns the number of double engines on the ship board
     public int getNumberDoubleEngines() {
         int numberDoubleEngines = 0;
@@ -476,35 +499,55 @@ public class ShipBoard {
         }
         return numberSingleCannons;
     }
-    //returns the cannon strength of the ship board, removing the given batteries in order to activate double cannons
-    public float getCannonStrength(int usedBatteries){
-        return 1;
-    }
-    //returns the engine strength of the ship board, removing the given batteries in order to activate double engines
-    public float getEngineStrength(int usedBatteries) throws NoBatteriesException {
-        int activatedDoubleEngines = Math.min(getNumberDoubleEngines(), usedBatteries);
-        int batteries = activatedDoubleEngines;
-        int componentBatteries;
+    //returns the number of double cannons on the ship board
+    public int getNumberForwardDoubleCannons() {
+        int numberDoubleCannons = 0;
         for (List<Component> componentRow : assembledComponents) {
             for (Component component : componentRow) {
-                componentBatteries = component.getNumberBatteries();
-                if(componentBatteries > 0){
-                    if(componentBatteries > batteries){
-                        component.useBatteries(batteries);
-                        batteries = 0;
-                        break;
-                    }
-                    else{
-                        component.useBatteries(componentBatteries);
-                        batteries-=componentBatteries;
-                    }
+                if(component.hasDoubleCannons() && component.pointsForward()){
+                    numberDoubleCannons++;
                 }
             }
-            if(batteries ==0){
-                break;
+        }
+        return numberDoubleCannons;
+    }
+    //returns the number of single cannons on the ship board
+    public int getNumberForwardSingleCannons() {
+        int numberSingleCannons = 0;
+        for (List<Component> componentRow : assembledComponents) {
+            for (Component component : componentRow) {
+                if(component.hasSingleCannon() && component.pointsForward()){
+                    numberSingleCannons++;
+                }
             }
         }
+        return numberSingleCannons;
+    }
+    //returns the cannon strength of the ship board, removing the given batteries in order to activate double cannons
+    public double getCannonStrength(int usedBatteries) throws NoBatteriesException{
+        int activatedDoubleCannons = Math.min(getNumberDoubleCannons(), usedBatteries);
+        removeBatteries(activatedDoubleCannons);
+        int forwardDoubleCannons = Math.min(getNumberForwardDoubleCannons(), activatedDoubleCannons);
+        int lateralDoubleCannons = ((activatedDoubleCannons > forwardDoubleCannons) ? activatedDoubleCannons-forwardDoubleCannons : 0);
+        int forwardSingleCannons = getNumberForwardSingleCannons();
+        int lateralSingleCannons = getNumberSingleCannons() - forwardSingleCannons;
+        return lateralDoubleCannons + forwardDoubleCannons*2 + lateralSingleCannons*0.5 + forwardSingleCannons;
+    }
+    //returns the engine strength of the ship board, removing the given batteries in order to activate double engines
+    public int getEngineStrength(int usedBatteries) throws NoBatteriesException {
+        int activatedDoubleEngines = Math.min(getNumberDoubleEngines(), usedBatteries);
+        removeBatteries(activatedDoubleEngines);
         return activatedDoubleEngines*2 + getNumberSingleEngines();
+    }
+    //returns the overall price for all the goods carried by the player's ship
+    public int getGoodsPrice(){
+        int goodsPrice = 0;
+        for(List<Component> componentRow : assembledComponents){
+            for(Component component : componentRow){
+                goodsPrice+=component.goodsPrice();
+            }
+        }
+        return goodsPrice;
     }
 
 

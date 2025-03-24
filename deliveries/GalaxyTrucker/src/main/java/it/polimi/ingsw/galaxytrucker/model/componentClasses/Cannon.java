@@ -1,6 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.model.componentClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 
 import java.util.List;
 
@@ -13,4 +14,8 @@ public class Cannon extends ConfigurableComponent { //constructor
     public boolean hasDoubleCannons() { return isDouble();}
     @Override
     public boolean hasSingleCannon() { return !isDouble();}
+    @Override
+    public boolean pointsForward(){
+        return this.orientation == Orientation.NORTH;
+    }
 }
