@@ -20,6 +20,9 @@ public class Planets extends DayLossCard{
     public void planetLanding(GameState gameState, String nickname, int numberPlanet) throws InvalidActionException {      //when a player lands on a planet, the corresponding element
         //is set to null, as the other players cannot land on it
         //and gain the goods
+        if(planetGoods.get(numberPlanet)==null){
+            throw new InvalidActionException("Planet number "+numberPlanet+" is already used");
+        }
         planetGoods.set(numberPlanet, null);
     }
 

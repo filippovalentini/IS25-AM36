@@ -1,7 +1,9 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.NoBatteriesException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 
 import java.util.List;
@@ -29,5 +31,24 @@ public class Smugglers extends DayLossCard{
         defeated = true;
     }
     @Override
-    public void defeat(GameState gameState, String nickname, int usedBatteries, boolean loseDays) throws InvalidActionException{}
+    public void defeat(GameState gameState, String nickname, int usedBatteries, boolean loseDays) throws InvalidActionException{
+        if(this.defeated){
+            throw new InvalidActionException("Pirates already defeated");
+        }
+        if(gameState.getNumberBatteries(nickname) < usedBatteries) {
+            throw new NoBatteriesException("Too few batteries");
+        }
+        double cannonStrength = gameState.getCannonStrength(nickname, usedBatteries);
+        if(cannonStrength>=this.enemyStrength){
+            if(!this.defeated){
+                //gameState.substitutePlayerGood(...);
+                gameState.changePlayerPosition(nickname, this.getLostDays());
+            }
+            this.defeated = true;
+        }
+        if(gameState.isLastInTurn(nickname)) {
+            gameState.setGameState(State.CARD_PICKING);
+        }
+        gameState.nextTurn();
+    }
 }

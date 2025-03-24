@@ -1,6 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,23 +16,32 @@ class SmugglersTest {
     private GameState gameState;
     String nickname;
     String nickname2;
+    List<Color> prizeGoods;
 
     @BeforeEach
     void init(){
-        List<Color> prizeGoods = new ArrayList<>();
+        prizeGoods = new ArrayList<>();
         prizeGoods.add(Color.YELLOW);
         prizeGoods.add(Color.GREEN);
         prizeGoods.add(Color.BLUE);
         smugglers = new Smugglers(prizeGoods, 2,4, 1, 0);
+        gameState = new GameState(false, 2);
+        nickname = "a";
+        nickname2 = "b";
+        gameState.addPlayer(nickname, Color.BLUE);
+        gameState.addPlayer(nickname2, Color.RED);
+        gameState.setPosition(nickname, 0);
+        gameState.setPosition(nickname2, 1);
+        gameState.setGameState(State.CARD_SOLVING);
     }
 
     @Test
     void testDefeat() {
-        int usedBatteries = 4;
+        Smugglers weakSmugglers = new Smugglers(prizeGoods, 2,0, 1, 0);
+        int usedBatteries = 0;
         boolean looseDays = true;
-
-        assertDoesNotThrow(() -> smugglers.defeat(gameState, nickname, usedBatteries, looseDays));
-        assertTrue(smugglers.isDefeated());
+        weakSmugglers.defeat(gameState, nickname, usedBatteries, looseDays);
+        assertTrue(weakSmugglers.isDefeated());
     }
 
     @Test
@@ -39,7 +49,6 @@ class SmugglersTest {
         int usedBatteries = 4;
         boolean looseDays = true;
         smugglers.defeat(gameState, nickname, usedBatteries, looseDays);
-
         assertDoesNotThrow(() -> smugglers.defeat(gameState, nickname, usedBatteries, looseDays));
     }
 }

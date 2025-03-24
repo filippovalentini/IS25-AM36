@@ -621,6 +621,14 @@ public class GameState {
         playersPlay.get(nickname).meteorAttack(meteor, direction, activateShield, activateCannon);
     }
 
+    //invoked when a cannon shot hits a player's ship board
+    public void cannonFireAttack(String nickname, CannonShot cannonFire, int direction, boolean activateShield) throws InvalidActionException{
+        if(state != State.CARD_SOLVING){
+            throw new InvalidActionException("Card must be picked first");
+        }
+        playersPlay.get(nickname).cannonFireAttack(cannonFire, direction, activateShield);
+    }
+
     //ACTIONS THAT A PLAYER CAN PERFORM TO SOLVE A CARD
 
     //invoked when a player decides to land on a planet in order to gain goods

@@ -15,14 +15,12 @@ class SlaversTest {
     @BeforeEach
     void init(){
         slavers = new Slavers(5,6, 3,1,0);
-
     }
 
     @Test
     void testDefeat() {
         int usedBatteries = 6;
         boolean looseDays = true;
-
         assertDoesNotThrow(() -> slavers.defeat(gameState, nickname, usedBatteries, looseDays));
     }
 
@@ -31,7 +29,6 @@ class SlaversTest {
         int usedBatteries = 6;
         boolean looseDays = true;
         slavers.defeat(gameState, nickname, usedBatteries, looseDays);
-
         assertDoesNotThrow(() -> slavers.defeat(gameState, nickname, usedBatteries, looseDays));
     }
 }

@@ -5,6 +5,7 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
+import it.polimi.ingsw.galaxytrucker.model.shotClasses.CannonShot;
 import it.polimi.ingsw.galaxytrucker.model.shotClasses.Meteor;
 
 import java.util.*;
@@ -406,6 +407,23 @@ public class ShipBoard {
             else{
                 destroyLine(orientation, direction);
             }
+        }*/
+    }
+    //invoked when a cannon shot hits the ship board
+    public void cannonFireAttack(CannonShot cannonFire, int direction, boolean activateShield){
+        Orientation cfOrientation = cannonFire.getOrientation();
+        if((cfOrientation.isVertical() && direction > 6) || (cfOrientation.isHorizontal() && direction > 4)){
+            return;
+        }/*
+        if(!cannonFire.isLarge()){
+            if(activateShield){
+                return;
+            }
+            else{
+                destroyLine(cfOrientation, direction);
+            }
+        }else{
+            destroyLine(cfOrientation, direction);
         }*/
     }
     //returns the number of crew members in the ship board
