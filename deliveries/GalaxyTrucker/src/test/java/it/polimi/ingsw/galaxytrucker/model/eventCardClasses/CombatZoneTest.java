@@ -1,5 +1,6 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
+import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,8 +19,13 @@ class CombatZoneTest {
     @BeforeEach
     void init() {
         gameState = new GameState(false, 2);
+        player1 = "a";
+        player2 = "b";
         gameState.addPlayer(player1, Color.RED);
         gameState.addPlayer(player2, Color.YELLOW);
+        gameState.setPosition(player1, 0);
+        gameState.setPosition(player2, 3);
+        gameState.setGameState(State.CARD_SOLVING);
         combatZoneLV1 = new CombatZone(true, 0);
         combatZoneLV2 = new CombatZone(false, 0);
     }
@@ -27,7 +33,7 @@ class CombatZoneTest {
     @Test
     void testSpecialEffectLV1() {
         combatZoneLV1.specialEffect(gameState);
-        //
+        assertEquals(0, gameState.getPlayersPos().get(player2).getCell()); //player2 should have lost 3 position
     }
 
     @Test

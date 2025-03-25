@@ -20,8 +20,12 @@ public class CombatZone extends EventCard{
     @Override
     //the player with fewer crew members loses 3 flight days
     public void specialEffect(GameState gameState) throws InvalidActionException{
-        String nickname = gameState.getCrewMinPlayer();
-        gameState.changePlayerPosition(nickname, -3);
+        if(this.levelOne){ //level one effect
+            String nickname = gameState.getCrewMinPlayer();
+            gameState.changePlayerPosition(nickname, -3);
+        }else{ //level two effect
+
+        }
     }
     @Override
     public void useBatteries(GameState gameState, String nickname, int usedBatteries) throws InvalidActionException{}
