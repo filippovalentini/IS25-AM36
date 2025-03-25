@@ -73,7 +73,7 @@ public class GameState {
         return playersPlay.get(nickname).countExposedConnectors();
     }
     //returns the number of crew members in a player's ship board
-    public int getNumberCrew(String nickname){
+    public int getCrewCount(String nickname) {
         return playersPlay.get(nickname).getNumberCrew();
     }
     //returns the number of batteries on a player's ship board
@@ -86,7 +86,7 @@ public class GameState {
         int crewMin=1000;
         String crewMinPlayer = "";
         for(String nickname : getNicknames()){
-            numberCrew = getNumberCrew(nickname);
+            numberCrew = getCrewCount(nickname);
             if(numberCrew < crewMin && !hasAbandoned(nickname)){
                 crewMin = numberCrew;
                 crewMinPlayer = nickname;
@@ -109,6 +109,10 @@ public class GameState {
     //updates the cosmic credits of a player
     public void updatePlayerCredits(String nickname, int update) {
         playersPlay.get(nickname).updateCredits(update);
+    }
+    //substitutes (or adds) a good in a specific container of a player's cargo hold
+    public void substitutePlayerGood(String nickname, int cargo_row, int cargo_col, Color good, int pos){
+        playersPlay.get(nickname).substituteShipboardCargoGood(cargo_row, cargo_col, good, pos);
     }
 
     //
@@ -584,6 +588,10 @@ public class GameState {
 
         return nickname.equals(lastPlayer);
     }
+    //sets turnPlayer to a specific player's nickname
+    public void setTurnPlayer(String nickname){
+        this.turnPlayer = nickname;
+    }
     //this method is invoked when a player has to leave the game
     public void quitGame(String nickname){
         playersPos.remove(nickname);
@@ -654,14 +662,14 @@ public class GameState {
         currentCard.hitShip(this, nickname, diceResult, activateShield, activateCannon);
     }
     //invoked when a player decides to land on an abandoned station/ship
-    public void landing(String nickname) throws InvalidActionException {
+    public void landing(String nickname, List<Integer> x, List<Integer> y, List<Integer> z) throws InvalidActionException, NoCrewException {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
         }
         if(!nickname.equals(turnPlayer)){
             throw new InvalidActionException("Wait for the turn");
         }
-        currentCard.landing(this, nickname);
+        currentCard.landing(this, nickname, x, y, z);
     }
     //invoked when a player wants to defeat an enemy; the player can decide whether to lose flight days
     //to gain credits/goods or not
@@ -685,7 +693,7 @@ public class GameState {
         currentCard.fly(this, nickname, usedBatteries);
     }
     //invoked when a player wants to use batteries to have an advantage while solving a card
-    public void useBatteries(String nickname, int usedBatteries) throws InvalidActionException {
+    public void useBatteries(String nickname, int usedBatteries) throws InvalidActionException, NoBatteriesException {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
         }
@@ -693,6 +701,16 @@ public class GameState {
             throw new InvalidActionException("Wait for the turn");
         }
         currentCard.useBatteries(this, nickname, usedBatteries);
+    }
+    //invoked when a player doesn't want to exploit the benefits of a card and therefore skips the turn
+    public void skip(String nickname) throws InvalidActionException {
+        if(state != State.CARD_SOLVING){
+            throw new InvalidActionException("Card must be picked first");
+        }
+        if(!nickname.equals(turnPlayer)){
+            throw new InvalidActionException("Wait for the turn");
+        }
+        currentCard.skip(this, nickname);
     }
 
     //
@@ -762,16 +780,12 @@ public class GameState {
 
 
 
-    public int getPlayerCrewCount(String nickname) {
-        return playersPlay.get(nickname).getNumberCrew();
-    }
+
     public void removedCrewMember(String nickname, List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) {
         playersPlay.get(nickname).removeShipBoardCrew(x, y, eachCabinCrew, numberCrewToRemove);
     }
 
-    public void substitutePlayerGood(String nickname, int cargo_row, int cargo_col, Color good, int pos){
-        playersPlay.get(nickname).substituteShipboardCargoGood(cargo_row, cargo_col, good, pos);
-    }
+
 
  }
 

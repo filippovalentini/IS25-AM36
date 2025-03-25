@@ -155,8 +155,8 @@ public class GameStateFirstFlightTest {
     }
 
     @Test
-    public void testGetPlayerCrewCount() {
-        assertEquals(0, gameState.getPlayerCrewCount(player1));
+    public void testGetCrewCount() {
+        assertEquals(0, gameState.getCrewCount(player1));
     }
 
     @Test
@@ -165,7 +165,7 @@ public class GameStateFirstFlightTest {
         List<Integer> y = new ArrayList<>();
         List<Integer> eachCabinCrew = new ArrayList<>();
         gameState.removedCrewMember(player1, x, y, eachCabinCrew, 1);
-        assertEquals(0, gameState.getPlayerCrewCount(player1));
+        assertEquals(0, gameState.getCrewCount(player1));
     }
 
     @Test

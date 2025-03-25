@@ -13,6 +13,7 @@ public abstract class AdvancedEnemies extends DayLossCard{
         this.defeated = false;
     }
 
+
     public boolean isDefeated() {
         return defeated;
     }

@@ -10,6 +10,7 @@ public abstract class DayLossCard extends EventCard{
         super(imageID);
         this.lostDays = lostDays;
     }
+
     public int getLostDays(){       //returns the lost days
         return lostDays;
     }       //returns the lost days

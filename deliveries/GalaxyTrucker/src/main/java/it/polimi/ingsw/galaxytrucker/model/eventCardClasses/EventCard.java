@@ -1,8 +1,9 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
-import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.NoBatteriesException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
+
+import java.util.List;
 
 //EVENT CARD
 //this class is used to generalize the concept of adventure/event card used during the game; each subclass of "EventCard"
@@ -27,7 +28,7 @@ public class EventCard  {
         throw new InvalidActionException("Invalid action");
     }
     //invoked when a player decides to land on an abandoned station/ship
-    public void landing(GameState gameState, String nickname) throws InvalidActionException {
+    public void landing(GameState gameState, String nickname, List<Integer> x, List<Integer> y, List<Integer> z) throws InvalidActionException, NoCrewException {
         throw new InvalidActionException("Invalid action");
     }
     //invoked when a card is picked from the deck during the solving phase; it has an effect on all the players of
@@ -45,7 +46,11 @@ public class EventCard  {
         throw new InvalidActionException("Invalid action");
     }
     //invoked when a player wants to use batteries to have an advantage while solving a card
-    public void useBatteries(GameState gameState, String nickname, int usedBatteries) throws InvalidActionException {
+    public void useBatteries(GameState gameState, String nickname, int usedBatteries) throws InvalidActionException, NoBatteriesException {
+        throw new InvalidActionException("Invalid action");
+    }
+    //invoked when a player doesn't want to exploit the benefits of a card and therefore skips the turn
+    public void skip(GameState gameState, String nickname) throws InvalidActionException {
         throw new InvalidActionException("Invalid action");
     }
 }

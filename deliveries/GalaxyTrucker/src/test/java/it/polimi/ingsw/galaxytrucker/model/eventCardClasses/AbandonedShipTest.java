@@ -5,8 +5,6 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.NoCrewException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
-import it.polimi.ingsw.galaxytrucker.model.gameClasses.Player;
-import it.polimi.ingsw.galaxytrucker.model.gameClasses.ShipBoard;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -55,7 +53,7 @@ class AbandonedShipTest {
         yCabin.add(3);
         eachCabinCrew.add(2);
         int requiredCrew = 2;
-        abandonedShip.landing(gameState, player1,xCabin,yCabin,eachCabinCrew,requiredCrew);
+        abandonedShip.landing(gameState, player1,xCabin,yCabin,eachCabinCrew);
         assertTrue(abandonedShip.isUsed());
     }
 
@@ -68,7 +66,7 @@ class AbandonedShipTest {
         yCabin.add(3);
         eachCabinCrew.add(2);
         int requiredCrew = 3;
-        assertThrows(NoCrewException.class,() -> abandonedShip.landing(gameState, player1,xCabin,yCabin,eachCabinCrew,requiredCrew));
+        assertThrows(NoCrewException.class,() -> abandonedShip.landing(gameState, player1,xCabin,yCabin,eachCabinCrew));
 
     }
 

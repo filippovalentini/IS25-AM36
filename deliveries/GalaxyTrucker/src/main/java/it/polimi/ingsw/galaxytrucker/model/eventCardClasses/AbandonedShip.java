@@ -1,8 +1,10 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
+import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.NoBatteriesException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.NoCrewException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
-import it.polimi.ingsw.galaxytrucker.model.gameClasses.Player;
 
 import java.util.List;
 
@@ -26,17 +28,30 @@ public class AbandonedShip extends DayLossCard{
         if(this.used) throw new InvalidActionException("Ship already used");
         this.used = true;
     }
+
+    @Override
     //the player decides which crew members to remove from the ship and lands in the station
-    public void landing(GameState gameState, String nickname, List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) throws InvalidActionException{
+    public void landing(GameState gameState, String nickname, List<Integer> x, List<Integer> y, List<Integer> z) throws InvalidActionException, NoCrewException {
         if (this.used) {
             throw new InvalidActionException("Already used this card.");
         }
-        if (gameState.getPlayerCrewCount(nickname)< this.requiredCrew) {
-            throw new InvalidActionException("You do not have enough crew member");
+        if (gameState.getCrewCount(nickname)< this.requiredCrew) {
+            throw new NoCrewException("You do not have enough crew member");
         }
-        gameState.removedCrewMember(nickname, x, y, eachCabinCrew, numberCrewToRemove);
-        gameState.updatePlayerCredits(nickname,this.gainedCredits);
-        gameState.changePlayerPosition(nickname,this.getLostDays());
+        gameState.removedCrewMember(nickname, x, y, z, this.requiredCrew);
+        gameState.updatePlayerCredits(nickname, this.gainedCredits);
+        gameState.changePlayerPosition(nickname, -this.lostDays);
         this.used = true;
+        gameState.setGameState(State.CARD_PICKING);
+        gameState.updateTurns();
+    }
+
+    @Override
+    //invoked when a player doesn't want to land on the station
+    public void skip(GameState gameState, String nickname) throws InvalidActionException {
+        if(gameState.isLastInTurn(nickname)) {
+            gameState.setGameState(State.CARD_PICKING);
+        }
+        gameState.nextTurn();
     }
 }

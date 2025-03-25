@@ -1,10 +1,10 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 
-import java.util.ArrayList;
 import java.util.List;
 
 //ABANDONED STATION
@@ -29,17 +29,30 @@ public class AbandonedStation extends DayLossCard{
         used = true;
     }
 
+    @Override
     //substitute the cargo goods (specified by coordinates of component) of the player with the station goods
-    public void landing(GameState gameState, String nickname, List<Integer> x, List<Integer> y, List<Integer> goodsPosInCargo) throws InvalidActionException {
+    public void landing(GameState gameState, String nickname, List<Integer> x, List<Integer> y, List<Integer> z) throws InvalidActionException {
         if (this.used) {
-            throw new InvalidActionException("Already used this card.");
+            throw new InvalidActionException("Already used card");
         }
-        if (gameState.getPlayerCrewCount(nickname)< this.requiredCrew) {
-            throw new InvalidActionException("You do not have enough crew member");
+        if (gameState.getCrewCount(nickname)< this.requiredCrew) {
+            throw new InvalidActionException("You don't have enough crew members");
         }
         for(int i=0; i<x.size(); i++){
-            gameState.substitutePlayerGood(nickname, x.get(i), y.get(i), stationGoods.get(i),goodsPosInCargo.get(i));
+            gameState.substitutePlayerGood(nickname, x.get(i), y.get(i), stationGoods.get(i), z.get(i));
         }
+        gameState.changePlayerPosition(nickname, -this.lostDays);
         this.used = true;
+        gameState.setGameState(State.CARD_PICKING);
+        gameState.updateTurns();
+    }
+
+    @Override
+    //invoked when a player doesn't want to land on the station
+    public void skip(GameState gameState, String nickname) throws InvalidActionException {
+        if(gameState.isLastInTurn(nickname)) {
+            gameState.setGameState(State.CARD_PICKING);
+        }
+        gameState.nextTurn();
     }
 }
