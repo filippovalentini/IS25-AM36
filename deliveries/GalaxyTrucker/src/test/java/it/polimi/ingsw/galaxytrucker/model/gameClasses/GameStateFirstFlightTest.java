@@ -58,6 +58,9 @@ public class GameStateFirstFlightTest {
         gameState.setGameState(State.CARD_SOLVING);
         gameState.updateTurns();
         assertEquals(player4, gameState.getPlayersPlay().entrySet().iterator().next().getKey());
+        gameState.changePlayerPosition(player3,3);
+        gameState.updateTurns(); //player 3 should be first
+        assertEquals(player3, gameState.getPlayersPlay().entrySet().iterator().next().getKey()); // problem
     }
 
     @Test
