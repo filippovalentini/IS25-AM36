@@ -306,22 +306,40 @@ public class ShipBoard {
         }
 
         if(protection){
-            boolean foundBattery = false;
-            for (List<Component> componentRow : assembledComponents) {
-                for (Component component : componentRow) {
-                    if(component.getNumberBatteries() > 0){
-                        component.useBatteries(1);
-                        foundBattery = true;
-                        break;
-                    }
-                }
-                if(foundBattery){
-                    break;
-                }
-            }
+            removeBatteries(1);
         }
 
         return protection;
+    }
+    //determines whether a row/column of a ship board is armed (has a cannon) in a specific direction; it can
+    //also activate a double cannon if specified and if necessary
+    public boolean armedShipBoard(boolean activatedCannon, Orientation orientation, int direction) {
+        for (int i = 0; i < assembledComponents.size(); i++) {
+            for (int j = 0; j < assembledComponents.get(i).size(); j++) {
+                Component c = assembledComponents.get(i).get(j);
+                if(c.getOrientation() != orientation){
+                    continue;
+                }
+                if(c.hasSingleCannon()){
+                    if(     (orientation == Orientation.NORTH && j == direction) ||
+                            (orientation == Orientation.SOUTH && j == direction) ||
+                            (orientation == Orientation.EAST && i == direction) ||
+                            (orientation == Orientation.WEST && i == direction)){
+                        return true;
+                    }
+                }
+                if(c.hasDoubleCannons() && activatedCannon){
+                    if(     (orientation == Orientation.NORTH && j == direction) ||
+                            (orientation == Orientation.SOUTH && j == direction) ||
+                            (orientation == Orientation.EAST && i == direction) ||
+                            (orientation == Orientation.WEST && i == direction)){
+                        removeBatteries(1);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
     //determines whether the ship board exposes a smooth side in a specific direction
     public boolean smoothSide(Orientation orientation, int direction){
@@ -377,7 +395,43 @@ public class ShipBoard {
                 }
             }
         }
-        return false;
+        return true;
+    }
+    //destroys the first component of the ship from north, in the specified column
+    public void destroyNorth(int column){
+        for(int i=0; i<assembledComponents.size(); i++){
+            Component c = assembledComponents.get(i).get(column);
+            if(c.isNotEmpty() && c.belongsToShip()){
+                destroyComponent(i,column);
+            }
+        }
+    }
+    //destroys the first component of the ship from south, in the specified column
+    public void destroySouth(int column){
+        for(int i=assembledComponents.size()-1; i>=0; i--){
+            Component c = assembledComponents.get(i).get(column);
+            if(c.isNotEmpty() && c.belongsToShip()){
+                destroyComponent(i,column);
+            }
+        }
+    }
+    //destroys the first component of the ship from east, in the specified row
+    public void destroyEast(int row){
+        for(int j=assembledComponents.get(row).size() - 1; j>=0; j--){
+            Component c = assembledComponents.get(row).get(j);
+            if(c.isNotEmpty() && c.belongsToShip()){
+                destroyComponent(row,j);
+            }
+        }
+    }
+    //destroys the first component of the ship from west, in the specified row
+    public void destroyWest(int row){
+        for(int j=0; j< assembledComponents.get(row).size(); j++){
+            Component c = assembledComponents.get(row).get(j);
+            if(c.isNotEmpty() && c.belongsToShip()){
+                destroyComponent(row,j);
+            }
+        }
     }
     //invoked when a meteor/cannon shot hits the ship board
     public void meteorAttack(Meteor meteor, int direction, boolean activateShield, boolean activateCannon){
@@ -390,41 +444,57 @@ public class ShipBoard {
         if((orientation.isVertical() && direction > 6) || (orientation.isHorizontal() && direction > 4)){
             return;
         }
-        /*
+        //if the meteor is small, if an appropriate shield is activated or if the meteor hits a smooth side, then
+        //nothing is destroyed
         if(!meteor.isLarge()){
             if((activateShield && protectedShipBoard(orientation)) || smoothSide(orientation, direction)){
                 return;
             }
-            else{
-                destroyLine(orientation, direction);
-
-            }
         }
+        //if the meteor is large, if an appropriate cannon points towards the meteor, then nothing is destroyed
         else {
             if(armedShipBoard(activateCannon, orientation, direction)){
                 return;
             }
-            else{
-                destroyLine(orientation, direction);
-            }
-        }*/
+        }
+        //if the ship board is not safe the meteor destroys a component
+        if(orientation == Orientation.NORTH){
+            destroyNorth(direction);
+        }else if(orientation == Orientation.SOUTH){
+            destroySouth(direction);
+        }else if(orientation == Orientation.WEST){
+            destroyWest(direction);
+        }else{
+            destroyEast(direction);
+        }
     }
     //invoked when a cannon shot hits the ship board
     public void cannonFireAttack(CannonShot cannonFire, int direction, boolean activateShield){
-        Orientation cfOrientation = cannonFire.getOrientation();
-        if((cfOrientation.isVertical() && direction > 6) || (cfOrientation.isHorizontal() && direction > 4)){
+        Orientation orientation = cannonFire.getOrientation();
+        //in this case the cannon fire doesn't hit the ship board
+        if(direction < 0){
             return;
-        }/*
+        }
+        //in this case the cannon fire doesn't hit the ship board
+        if((orientation.isVertical() && direction > 6) || (orientation.isHorizontal() && direction > 4)){
+            return;
+        }
+        //if the cannon fire is small, if an appropriate shield is activated, then nothing is destroyed
         if(!cannonFire.isLarge()){
-            if(activateShield){
+            if(activateShield && protectedShipBoard(orientation)){
                 return;
             }
-            else{
-                destroyLine(cfOrientation, direction);
-            }
+        }
+        //if the ship board is not safe or if the cannon fire is big, the meteor destroys a component
+        if(orientation == Orientation.NORTH){
+            destroyNorth(direction);
+        }else if(orientation == Orientation.SOUTH){
+            destroySouth(direction);
+        }else if(orientation == Orientation.WEST){
+            destroyWest(direction);
         }else{
-            destroyLine(cfOrientation, direction);
-        }*/
+            destroyEast(direction);
+        }
     }
     //returns the number of crew members in the ship board
     public int getNumberCrew() {
@@ -453,7 +523,7 @@ public class ShipBoard {
             for (Component component : componentRow) {
                 componentBatteries = component.getNumberBatteries();
                 if(componentBatteries > 0){
-                    if(componentBatteries > batteries){
+                    if(componentBatteries >= batteries){
                         component.useBatteries(batteries);
                         batteries = 0;
                         break;
