@@ -40,23 +40,41 @@ class GameStateNormalTest {
     }
 
     @Test
-    public void testSetPosition() {
-        gameState.setPosition(player1, 5);
-        gameState.setPosition(player2, 10);
+    public void testUpdateTurnsWithMaxPlayers(){
+        gameState = new GameState(false, 4);
+        player1 = "truck3r";
+        player2 = "4lien";
+        String player3 = "cr3w";
+        String player4 = "pir4t3";
+        gameState.addPlayer(player1, Color.RED);
+        gameState.addPlayer(player2, Color.BLUE);
+        gameState.addPlayer(player3, Color.YELLOW);
+        gameState.addPlayer(player4, Color.GREEN);
+        gameState.setPosition(player1, 0);
+        gameState.setPosition(player2, 1);
+        gameState.setPosition(player3, 3);
+        gameState.setPosition(player4, 6);
+        gameState.setGameState(State.CARD_SOLVING);
+        gameState.updateTurns();
+        assertEquals(player4, gameState.getPlayersPlay().entrySet().iterator().next().getKey());
+    }
 
-        assertEquals(5, gameState.getPlayersPos().get(player1).getCell());
-        assertEquals(10, gameState.getPlayersPos().get(player2).getCell());
+    @Test
+    public void testSetPosition() {
+        gameState.setPosition(player1, 0);
+        gameState.setPosition(player2, 6);
+        assertEquals(0, gameState.getPlayersPos().get(player1).getCell());
+        assertEquals(6, gameState.getPlayersPos().get(player2).getCell());
     }
 
     @Test
     public void testChangePlayerPosition() {
-        gameState.setPosition(player1, 5);
-        gameState.setPosition(player2, 10);
+        gameState.setPosition(player1, 0);
+        gameState.setPosition(player2, 6);
         gameState.changePlayerPosition(player1, 3);
         gameState.changePlayerPosition(player2, -1);
-
-        assertEquals(8, gameState.getPlayersPos().get(player1).getCell());
-        assertEquals(9, gameState.getPlayersPos().get(player2).getCell());
+        assertEquals(3, gameState.getPlayersPos().get(player1).getCell());
+        assertEquals(5, gameState.getPlayersPos().get(player2).getCell());
     }
 
     @Test

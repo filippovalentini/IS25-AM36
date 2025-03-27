@@ -67,7 +67,6 @@ class AbandonedShipTest {
         eachCabinCrew.add(2);
         int requiredCrew = 3;
         assertThrows(NoCrewException.class,() -> abandonedShip.landing(gameState, player1,xCabin,yCabin,eachCabinCrew));
-
     }
 
 }

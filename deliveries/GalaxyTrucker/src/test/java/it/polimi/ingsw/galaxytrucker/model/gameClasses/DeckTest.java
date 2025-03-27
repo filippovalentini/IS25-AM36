@@ -86,7 +86,7 @@ class DeckTest {
     }
 
     @Test
-    void testShouldntPickPickedDeck(){
+    void testShouldNotPickPickedDeck(){
         List<EventCard> listOfEventCards = new ArrayList<>();
         listOfEventCards.add(new AbandonedShip(2, 3, 1, 1001));
         Deck deck = new Deck(listOfEventCards);
