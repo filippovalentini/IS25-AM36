@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -57,10 +58,10 @@ public class GameStateFirstFlightTest {
         gameState.setPosition(player4, 4);
         gameState.setGameState(State.CARD_SOLVING);
         gameState.updateTurns();
-        assertEquals(player4, gameState.getPlayersPlay().entrySet().iterator().next().getKey());
+        assertEquals(player4, gameState.getTurnPlayer());
         gameState.changePlayerPosition(player3,3);
         gameState.updateTurns(); //player 3 should be first
-        assertEquals(player3, gameState.getPlayersPlay().entrySet().iterator().next().getKey()); // problem
+        assertEquals(player3, gameState.getTurnPlayer());
     }
 
     @Test
@@ -85,7 +86,6 @@ public class GameStateFirstFlightTest {
     public void testPutShown() {
         gameState.pickShown(player1, 0);
         gameState.putShown(player1);
-
         assertEquals(null, gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
     }
 
