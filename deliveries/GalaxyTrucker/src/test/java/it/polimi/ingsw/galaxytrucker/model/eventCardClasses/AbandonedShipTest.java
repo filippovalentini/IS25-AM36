@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AbandonedShipTest {
     private AbandonedShip abandonedShip;
+    private AbandonedShip abandonedShip1;
     private String player1;
     private String player2;
     private GameState gameState;
@@ -29,7 +30,8 @@ class AbandonedShipTest {
         gameState.setPosition(player1, 6);
         gameState.setPosition(player2, 3);
         gameState.setGameState(State.CARD_PICKING); //end of assembling phase
-        abandonedShip = new AbandonedShip(2, 3, 1, 0);
+        abandonedShip = new AbandonedShip(3, 3, 1, 0);
+        abandonedShip1 = new AbandonedShip(1, 3, 1, 0);
     }
 
     @Test
@@ -51,10 +53,9 @@ class AbandonedShipTest {
         List<Integer> eachCabinCrew = new ArrayList<>();
         xCabin.add(2);
         yCabin.add(3);
-        eachCabinCrew.add(2);
-        int requiredCrew = 2;
-        abandonedShip.landing(gameState, player1,xCabin,yCabin,eachCabinCrew);
-        assertTrue(abandonedShip.isUsed());
+        eachCabinCrew.add(1);
+        abandonedShip1.landing(gameState, player1,xCabin,yCabin,eachCabinCrew);
+        assertTrue(abandonedShip1.isUsed());
     }
 
     @Test
@@ -65,7 +66,6 @@ class AbandonedShipTest {
         xCabin.add(2);
         yCabin.add(3);
         eachCabinCrew.add(2);
-        int requiredCrew = 3;
         assertThrows(NoCrewException.class,() -> abandonedShip.landing(gameState, player1,xCabin,yCabin,eachCabinCrew));
     }
 

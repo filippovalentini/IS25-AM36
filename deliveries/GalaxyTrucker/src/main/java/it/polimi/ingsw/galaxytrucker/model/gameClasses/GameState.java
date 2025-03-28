@@ -35,6 +35,11 @@ public class GameState {
     // these methods don't belong to the model-controller interface, but are needed by the methods of
     // the EventCardClasses package in order to modify the model due to the effect of a card
     //
+     //METODO DA TOGLIERE!!!!!!!!!!
+    public void assembleComponent(String nickname, Component component, int x, int y){
+        playersPlay.get(nickname).assembleComponent(component, x, y);
+    }
+
     public void setGameState(State state) {
         this.state = state;
     }

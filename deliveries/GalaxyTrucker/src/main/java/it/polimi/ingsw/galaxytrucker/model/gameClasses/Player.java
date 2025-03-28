@@ -27,6 +27,10 @@ public class Player {
             shipBoard = new LevelTwoShipBoard(color);
         }
     }
+    //METODO DA TOGLIERE!!!!!!!!!!
+    public void assembleComponent(Component component, int x, int y){
+        shipBoard.assembleComponent(component, x, y);
+    }
     public String getNickname() { //return a copy of the nickname
         return nickname;
     }
