@@ -46,6 +46,5 @@ class OpenSpaceTest {
     void testFly(){
         os.fly(gameState,player1,0);
         assertEquals(player2, gameState.getTurnPlayer(), "The leader should be player2 (thomas)");
-        assertEquals(player1, gameState.getTurnPlayer());
     }
 }
