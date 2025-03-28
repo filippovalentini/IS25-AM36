@@ -52,6 +52,10 @@ public class ShipBoard {
 
     }
 
+    public void assembleComponent(Component component, int x, int y) {
+        assembledComponents.get(x).set(y, component);
+    }
+
 
     public Component getAssembledComponent(int x, int y) { //return a copy of the assembled component in the given position
         return (assembledComponents.get(x).get(y)).clone();

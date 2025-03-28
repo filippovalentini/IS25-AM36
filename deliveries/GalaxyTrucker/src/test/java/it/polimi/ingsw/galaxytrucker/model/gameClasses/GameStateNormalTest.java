@@ -56,10 +56,12 @@ class GameStateNormalTest {
         gameState.setPosition(player4, 6);
         gameState.setGameState(State.CARD_SOLVING);
         gameState.updateTurns();
-        assertEquals(player4, gameState.getTurnPlayer());
+        assertEquals(player4, gameState.getPlayersPos().keySet().iterator().next());
+        gameState.nextTurn();
+        assertEquals(player3, gameState.getTurnPlayer());
         gameState.changePlayerPosition(player2, 6);
         gameState.updateTurns(); //player 2 should be first
-        assertEquals(player2, gameState.getTurnPlayer());
+        assertEquals(player2, gameState.getPlayersPos().keySet().iterator().next());
     }
 
     @Test
