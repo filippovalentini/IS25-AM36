@@ -42,15 +42,26 @@ public class CombatZone extends EventCard{
 
     @Override
     //the player with fewer crew members loses 3 flight days
-    public void specialEffect(GameState gameState) throws InvalidActionException{
-        if(this.levelOne){ //default effect of level one combat zone
-            if(phase!=1){
+    public void specialEffect(GameState gameState) throws InvalidActionException {
+        if (this.levelOne) { //default effect of level one combat zone
+            if (phase != 1) {
                 throw new InvalidActionException("Wrong phase of the combat zone");
+            } else {
+                String nickname = gameState.getCrewMinPlayer();
+                gameState.changePlayerPosition(nickname, -3);
+                gameState.updateTurns();
+                phase = 2;
             }
-            String nickname = gameState.getCrewMinPlayer();
-            gameState.changePlayerPosition(nickname, -3);
-            gameState.updateTurns();
-            phase = 2;
+        } else { //default effect of level two combat zone
+            if (phase != 3) {
+                throw new InvalidActionException("Wrong phase of the combat zone");
+            } else {
+                String nickname = gameState.getCrewMinPlayer();
+                ;
+                gameState.updateTurns();
+
+            }
+
         }
     }
 
@@ -89,6 +100,36 @@ public class CombatZone extends EventCard{
                 throw new InvalidActionException("Wrong phase of the combat zone");
             }
         }
+        else{ //level two
+            if(phase==1){
+                double cannonStrenght= gameState.getCannonStrength(nickname, usedBatteries);
+                if(cannonStrenght < worstCannonStrength){
+                    worstCannonPlayer = nickname;
+                    worstCannonStrength = cannonStrenght;
+                }
+                if(gameState.isLastInTurn(nickname)){
+                    gameState.setTurnPlayer(worstCannonPlayer);
+                }else{
+                    gameState.nextTurn();
+                }
+            }
+            else if(phase==2){
+                int engineStrength = gameState.getEngineStrength(nickname, usedBatteries);
+                if(engineStrength < worstEngineStrength){
+                    worstEnginePlayer = nickname;
+                    worstEngineStrength = engineStrength;
+                }
+                if(gameState.isLastInTurn(nickname)){
+                    gameState.setTurnPlayer(worstEnginePlayer);
+                }else{
+                    gameState.nextTurn();
+                }
+            }
+            else{
+                throw new InvalidActionException("Wrong phase of the combat zone");
+            }
+
+        }
     }
 
     @Override
@@ -112,23 +153,12 @@ public class CombatZone extends EventCard{
     @Override
     //invoked when the player with smaller cannon strength (level one) or crew (level two) has to be hit by a
     //cannon shot
-    public void hitShip(GameState gameState, String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException{
+    public void hitShip(GameState gameState, String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException, NoBatteriesException {
+
         if(activateShield && gameState.getNumberBatteries(nickname) == 0){
-            throw new InvalidActionException("Too few batteries");
-        }
-        Orientation orientation = cannonShots.get(currentShot).getOrientation();
-        int direction = (orientation.isVertical() ? diceResult-4 : diceResult-5);
-        gameState.cannonFireAttack(nickname, cannonShots.get(currentShot), direction, activateShield);
-        if(currentShot == cannonShots.size() - 1){
-            if(gameState.isLastInTurn(nickname)) {
-                gameState.setGameState(State.CARD_PICKING);
-            }
-            currentShot=0;
-            gameState.nextTurn();
-        }
-        else{
-            currentShot++;
-        }
+
     }
+
+
 
 }
