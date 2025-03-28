@@ -1,6 +1,9 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
+import it.polimi.ingsw.galaxytrucker.model.componentClasses.CargoHold;
+import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
@@ -15,9 +18,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MeteorsSwarmTest {
     private MeteorsSwarm meteorsSwarm;
+    private String player1;
+    private String player2;
+    private GameState gameState;
+
 
     @BeforeEach
     void init(){
+        player1 = "thomas";
+        player2 = "nico";
+        gameState = new GameState(false, 2);
+        gameState.addPlayer(player1,Color.RED);
+        gameState.addPlayer(player2,Color.BLUE);
+        gameState.setPosition(player1, 1);
+        gameState.setPosition(player2, 0);
+        gameState.setGameState(State.CARD_SOLVING);
         Meteor mLarge = new Meteor(true, Orientation.SOUTH);
         Meteor mNotLarge1 = new Meteor(false, Orientation.EAST);
         Meteor mNotLarge2 = new Meteor(false, Orientation.WEST);
@@ -25,21 +40,31 @@ class MeteorsSwarmTest {
         meteorsList.add(mLarge);
         meteorsList.add(mNotLarge1);
         meteorsList.add(mNotLarge2);
-        meteorsSwarm = new MeteorsSwarm(meteorsList, 0);
+        meteorsSwarm = new MeteorsSwarm(meteorsList, 1828);
+        gameState.setGameState(State.SHIP_BUILDING);
+        int h=0;
+        for(int i=0; i<151; i++){ //show all components
+            gameState.pickHidden(player1);
+            gameState.putShown(player1);
+        }
+        List<Component> shownComponents = gameState.getShownComponent();
+
+        for(int i=0; i<4; i++) {
+            for(int j=0; j<6; j++) {
+                gameState.assembleComponent(player1, gameState.getShownComponent().get(h),i,j);
+                h+=h;
+            }
+            }
     }
 
     @Test
     void testHitShip(){
         int diceResult = 4;
-        GameState gameState = new GameState(false, 2);
-        String player1 = "player1";
-        String player2 = "player2";
-        gameState.addPlayer(player1, Color.RED);
-        gameState.addPlayer(player2, Color.BLUE);
-        gameState.setPosition(player1, 1);
-        gameState.setPosition(player2, 0);
         gameState.setGameState(State.CARD_SOLVING);
+        meteorsSwarm.hitShip(gameState, player1, diceResult, false, false);
         //player 1 hits
+        assertEquals(false, gameState.getPlayersPlay().get(player1).getShipBoard().getAssembledComponent(4,0).isNotEmpty());
+
         assertDoesNotThrow(() -> meteorsSwarm.hitShip(gameState, player1, diceResult, false, false));
         assertDoesNotThrow(() -> meteorsSwarm.hitShip(gameState, player1, diceResult, false, false));
         assertDoesNotThrow(() -> meteorsSwarm.hitShip(gameState, player1, diceResult, false, false));
