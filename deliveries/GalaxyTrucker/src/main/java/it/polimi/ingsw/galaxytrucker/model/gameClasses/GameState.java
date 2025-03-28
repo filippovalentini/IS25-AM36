@@ -677,7 +677,7 @@ public class GameState {
     }
     //invoked when a player wants to defeat an enemy; the player can decide whether to lose flight days
     //to gain credits/goods or not
-    public void defeat(String nickname, int usedBatteries, boolean loseDays) throws InvalidActionException {
+    public void defeat(String nickname, int usedBatteries, boolean loseDays) throws InvalidActionException, NoBatteriesException {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
         }
@@ -687,7 +687,7 @@ public class GameState {
         currentCard.defeat(this, nickname, usedBatteries, loseDays);
     }
     //invoked when a player wants to fly across the flight board exploiting its engine strength
-    public void fly(String nickname, int usedBatteries) throws InvalidActionException {
+    public void fly(String nickname, int usedBatteries) throws InvalidActionException, NoBatteriesException {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
         }

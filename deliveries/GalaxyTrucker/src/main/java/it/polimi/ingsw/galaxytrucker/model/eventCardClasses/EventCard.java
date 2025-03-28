@@ -38,7 +38,7 @@ public class EventCard  {
     }
     //invoked when a player wants to defeat an enemy; the player can decide whether to lose flight days
     //to gain credits/goods or not
-    public void defeat(GameState gameState, String nickname, int usedBatteries, boolean loseDays) throws InvalidActionException {
+    public void defeat(GameState gameState, String nickname, int usedBatteries, boolean loseDays) throws InvalidActionException, NoBatteriesException {
         throw new InvalidActionException("Invalid action");
     }
     //invoked when a player wants to fly across the flight board exploiting its engine strength
