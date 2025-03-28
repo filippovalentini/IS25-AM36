@@ -45,22 +45,160 @@ public class GameController {
         }
     }
 
+    //ASSEMBLING PHASE
+
     //invoked when a player wants to pick a component among the one placed face down (assembling phase)
-    public void pickHidden(String nickname){}
+    public int pickHidden(String nickname){
+        synchronized (model) {
+            try{
+                model.pickHidden(nickname);
+                return 0;       //successful picked component
+            }
+            catch(InvalidActionException e){
+                return -1;      //invalid action (wrong game phase)
+            }
+            catch(PickedComponentException e){
+                return -2;      //already picked one component
+            }
+        }
+    }
     //invoked when a player wants to pick a specific component among the one placed face up (assembling phase)
-    public void pickShown(String nickname, int index){}
+    public int pickShown(String nickname, int index){
+        synchronized (model) {
+            try{
+                model.pickShown(nickname, index);
+                return 0;       //successful picked component
+            }
+            catch(InvalidActionException e){
+                return -1;      //invalid action (wrong game phase)
+            }
+            catch(PickedComponentException e){
+                return -2;      //already picked one component
+            }
+        }
+    }
     //invoked when a player wants to reserve the component that it has picked for its ship board
-    public void reserveComponent(String nickname){}
+    public int reserveComponent(String nickname){
+        synchronized (model) {
+            try{
+                model.reserveComponent(nickname);
+                return 0;       //successful reserved component
+            }
+            catch(InvalidActionException e){
+                return -1;      //invalid action (wrong game phase)
+            }
+            catch(PickedComponentException e){
+                return -2;      //no picked component to reserve
+            }
+            catch(ReservedComponentException e){
+                return -3;      //too many reserved components
+            }
+        }
+    }
     //invoked when a player wants to pick one of the components that it has reserved for its ship board
-    public void pickReservedComponent(String nickname, int position)  {}
+    public int pickReservedComponent(String nickname, int position)  {
+        synchronized (model) {
+            try{
+                model.pickReservedComponent(nickname, position);
+                return 0;       //successful picked component
+            }
+            catch(InvalidActionException e){
+                return -1;      //invalid action (wrong game phase)
+            }
+            catch(PickedComponentException e){
+                return -2;      //already picked component
+            }
+            catch(ReservedComponentException e){
+                return -3;      //no reserved component in this position
+            }
+        }
+    }
     //invoked when a player wants to release (therefore, place face up) the component that it has picked
-    public void putShown(String nickname)  {}
+    public int putShown(String nickname)  {
+        synchronized (model) {
+            try{
+                model.putShown(nickname);
+                return 0;       //successful released component
+            }
+            catch(InvalidActionException e){
+                return -1;      //invalid action (wrong game phase)
+            }
+            catch(PickedComponentException e){
+                return -2;      //no picked component to release
+            }
+        }
+    }
     //invoked when a player wants to assemble on the ship board the component that it has picked
-    public void assembleComponent(String nickname, int x, int y)  {}
+    public int assembleComponent(String nickname, int x, int y)  {
+        synchronized (model) {
+            try{
+                model.assembleComponent(nickname, x, y);
+                return 0;       //successful assembled component
+            }
+            catch(InvalidActionException e){
+                return -1;      //invalid action (wrong game phase)
+            }
+            catch(PickedComponentException e){
+                return -2;      //no picked component to assemble
+            }
+            catch (AssembledComponentException e){
+                return -3;      //already assembled component
+            }
+        }
+    }
     //invoked when a player wants to change the orientation of the component that it has picked
-    public void rotatePickedComponent(String nickname) {}
+    public int rotatePickedComponent(String nickname) {
+        synchronized (model) {
+            try{
+                model.rotatePickedComponent(nickname);
+                return 0;       //successful rotated component
+            }
+            catch(InvalidActionException e){
+                return -1;      //invalid action (wrong game phase)
+            }
+            catch(PickedComponentException e) {
+                return -2;      //no picked component to rotate
+            }
+        }
+    }
     //invoked when a player has finished the assembling phase and has to pick a free position on the flight board
-    public void setPosition(String nickname, int initCell)  {
+    public int setPosition(String nickname, int initCell)  {
+        synchronized (model) {
+            try{
+                model.setPosition(nickname, initCell);
+                if(model.getGameState() == State.SHIP_BUILDING){
+                    return 0;       //set initial position, waiting for other players to finish building
+                }
+                else{
+                    return 1;       //set initial position and assembling phase finished
+                }
+            }
+            catch(InvalidActionException e){
+                return -1;      //invalid action (wrong game phase)
+            }
+            catch(InvalidPositionException e) {
+                return -2;      //wrong initial position
+            }
+        }
+    }
+
+    //SHIP CONTROL PHASE
+
+    public int destroyComponent(String nickname, int x, int y)  {
+        synchronized (model) {
+            try{
+                model.destroyComponent( nickname, x, y);
+                if(model.getGameState() == State.SHIP_CONTROL){
+                    return 0;       //component destroyed, but still other components must be destroyed, belonging
+                                    //to the player's ship or to one of other players.
+                }else{
+                    return 1;       //component destroyed, all the ships are ok and the game can start
+                }
+            }
+            catch(InvalidActionException e){
+                return -1;          //invalid action (wrong game phase)
+            }
+        }
     }
 
 
