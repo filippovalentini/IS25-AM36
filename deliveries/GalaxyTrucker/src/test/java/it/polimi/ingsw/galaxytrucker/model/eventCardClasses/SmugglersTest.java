@@ -2,6 +2,7 @@ package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,7 @@ class SmugglersTest {
         gameState.addPlayer(nickname2, Color.RED);
         gameState.setPosition(nickname, 0);
         gameState.setPosition(nickname2, 1);
+        gameState.
         gameState.setGameState(State.CARD_SOLVING);
     }
 
@@ -48,7 +50,14 @@ class SmugglersTest {
     void testShouldNotAttackIfDefeated() {
         int usedBatteries = 4;
         boolean looseDays = true;
-        smugglers.defeat(gameState, nickname, usedBatteries, looseDays);
-        assertDoesNotThrow(() -> smugglers.defeat(gameState, nickname, usedBatteries, looseDays));
+        smugglers.setDefeated();
+        assertThrows(InvalidActionException.class, () -> smugglers.defeat(gameState, nickname, usedBatteries, looseDays));
+    }
+    @Test
+    void testShouldNotAttackIfNotEnoughBatteries() {
+        int usedBatteries = 5;
+        gameState.getNumberBatteries(nick);
+        boolean looseDays = true;
+        assertThrows(InvalidActionException.class, () -> smugglers.defeat(gameState, nickname, usedBatteries, looseDays));
     }
 }
