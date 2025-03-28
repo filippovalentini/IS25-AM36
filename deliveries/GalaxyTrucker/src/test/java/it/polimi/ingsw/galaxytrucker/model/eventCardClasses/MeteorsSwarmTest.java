@@ -73,4 +73,5 @@ class MeteorsSwarmTest {
         assertDoesNotThrow(() -> meteorsSwarm.hitShip(gameState, player2, diceResult, false, false));
         assertDoesNotThrow(() -> meteorsSwarm.hitShip(gameState, player2, diceResult, false, false));
     }
+
 }
