@@ -1,6 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,11 +36,16 @@ class CombatZoneTest {
         combatZoneLV1.specialEffect(gameState);
         assertEquals(0, gameState.getPlayersPos().get(player2).getCell()); //player2 should have lost 3 position
     }
+    @Test
+    void testSpecialEffectLV1WrongPhase() {
+        combatZoneLV1.specialEffect(gameState);
+        assertThrows(InvalidActionException.class, () -> combatZoneLV1.specialEffect(gameState));
+    }
 
     @Test
     void testSpecialEffectLV2() {
         combatZoneLV2.specialEffect(gameState);
-        //
+
     }
 
     @Test
