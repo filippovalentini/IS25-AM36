@@ -11,6 +11,7 @@ import it.polimi.ingsw.galaxytrucker.model.gameClasses.Position;
 import it.polimi.ingsw.galaxytrucker.virtualView.VirtualView;
 
 import java.util.Collections;
+import java.util.List;
 
 public class GameController {
     private final GameState model;
@@ -198,8 +199,38 @@ public class GameController {
             catch(InvalidActionException e){
                 return -1;          //invalid action (wrong game phase)
             }
+            catch(AssembledComponentException e){
+                return -2;          //no assembled component to destroy
+            }
         }
     }
+
+    //FLIGHT PHASE
+
+    //this method is invoked when a player has to leave the game
+    public int quitGame(String nickname)  {
+        synchronized (model) {
+            model.quitGame(nickname);
+            return 0;           //player has correctly left the game
+        }
+    }
+    //invoked when the leader draws a new card from the deck (during the game), which must be solved
+    public int pickNextCard(String nickname) throws InvalidActionException {
+        synchronized (model) {
+            try{
+                model.pickNextCard(nickname);
+                if(model.getGameState() == State.CARD_SOLVING){
+                    return 0;       //card picked, it must be solved
+                }else{
+                    return 1;       //no card to pick, game over
+                }
+            }
+            catch(InvalidActionException e){
+                return -1;          //invalid action (wrong game phase)
+            }
+        }
+    }
+
 
 
 }
