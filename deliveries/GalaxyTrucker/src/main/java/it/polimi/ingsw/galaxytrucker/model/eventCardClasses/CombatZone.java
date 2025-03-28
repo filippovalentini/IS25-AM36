@@ -174,7 +174,7 @@ public class CombatZone extends EventCard{
 
 
 
-    }
+
 
 
 
