@@ -57,7 +57,6 @@ public class CombatZone extends EventCard{
                 throw new InvalidActionException("Wrong phase of the combat zone");
             } else {
                 String nickname = gameState.getCrewMinPlayer();
-                ;
                 gameState.updateTurns();
 
             }
@@ -155,10 +154,14 @@ public class CombatZone extends EventCard{
     //cannon shot
     public void hitShip(GameState gameState, String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException, NoBatteriesException {
 
-        if(activateShield && gameState.getNumberBatteries(nickname) == 0){
 
     }
 
 
 
-}
+
+    }
+
+
+
+
