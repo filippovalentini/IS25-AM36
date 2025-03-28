@@ -6,6 +6,8 @@ import it.polimi.ingsw.galaxytrucker.model.componentClasses.Engine;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
+import it.polimi.ingsw.galaxytrucker.model.gameClasses.LevelTwoPosition;
+import it.polimi.ingsw.galaxytrucker.model.gameClasses.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +23,7 @@ class OpenSpaceTest {
     private String player2;
     private Engine engine2;
     private List<Connector> sides;
-
+    private Position position;
     @BeforeEach
     void init() {
         os = new OpenSpace(2);
@@ -32,19 +34,21 @@ class OpenSpaceTest {
         gameState.addPlayer(player2, Color.GREEN);
         gameState.setPosition(player1, 6);
         gameState.setPosition(player2, 3);
+        gameState.updateTurns();
         sides = new ArrayList<>();
-        sides.add(Connector.SMOOTH);
-        sides.add(Connector.DOUBLE);
+        sides.add(Connector.UNIVERSAL);
         sides.add(Connector.UNIVERSAL);
         sides.add(Connector.SMOOTH);
-        engine2= new Engine(false,1, sides);
-        gameState.getPlayersPlay().get(player2).pickComponent(engine2);
-        gameState.getPlayersPlay().get(player2).assembleComponent(1, 1);
+        sides.add(Connector.UNIVERSAL);
+        engine2= new Engine(false,24244, sides);
+        gameState.assembleComponent(player1, engine2,1,3);
+        position= new LevelTwoPosition(gameState.getPlayersPos().get(player1).getCell());
     }
 
     @Test
     void testFly(){
         os.fly(gameState,player1,0);
         assertEquals(player2, gameState.getTurnPlayer(), "The leader should be player2 (thomas)");
+        assertEquals(position.getCell()+1, gameState.getPlayersPos().get(player1).getCell(), "The leader should be the lap");
     }
 }
