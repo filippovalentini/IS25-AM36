@@ -21,7 +21,7 @@ class CabinTest {
         sides.add(Connector.SMOOTH);
         sides.add(Connector.DOUBLE);
         sides.add(Connector.UNIVERSAL);
-        cabin = new Cabin(0, sides);
+        cabin = new Cabin(24748, sides);
     }
 
     @Test
@@ -32,6 +32,7 @@ class CabinTest {
 
     @Test
     void testAddAlienWithSpace() {
+        cabin.removeCrew(2);
         cabin.addAlien(true);
         assertTrue(cabin.isPurpleAlien());
         assertFalse(cabin.isBrownAlien());
@@ -45,12 +46,14 @@ class CabinTest {
 
     @Test
     void testAddAlienWithoutSpaceAlien(){
+        cabin.removeCrew(2);
         cabin.addAlien(true);
         assertThrows(FullCabinException.class, () -> cabin.addAlien(false));
     }
 
     @Test
     void testRemoveCrewNoCrew() {
+        cabin.removeCrew(2);
         assertThrows(NoCrewException.class, () -> cabin.removeCrew(1));
     }
 
@@ -63,6 +66,7 @@ class CabinTest {
 
     @Test
     void testRemoveAlien(){
+        cabin.removeCrew(2);
         cabin.addAlien(true);
         cabin.removeAlien(true);
         assertFalse(cabin.isPurpleAlien());
