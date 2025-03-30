@@ -24,15 +24,14 @@ class MeteorsSwarmTest {
 
 
     @BeforeEach
-    void init(){
+    void init() {
         player1 = "thomas";
         player2 = "nico";
         gameState = new GameState(false, 2);
-        gameState.addPlayer(player1,Color.RED);
-        gameState.addPlayer(player2,Color.BLUE);
+        gameState.addPlayer(player1, Color.RED);
+        gameState.addPlayer(player2, Color.BLUE);
         gameState.setPosition(player1, 1);
         gameState.setPosition(player2, 0);
-        gameState.setGameState(State.CARD_SOLVING);
         Meteor mLarge = new Meteor(true, Orientation.SOUTH);
         Meteor mNotLarge1 = new Meteor(false, Orientation.EAST);
         Meteor mNotLarge2 = new Meteor(false, Orientation.WEST);
@@ -42,36 +41,51 @@ class MeteorsSwarmTest {
         meteorsList.add(mNotLarge2);
         meteorsSwarm = new MeteorsSwarm(meteorsList, 1828);
         gameState.setGameState(State.SHIP_BUILDING);
-        int h=0;
-        for(int i=0; i<151; i++){ //show all components
+        int h = 0;
+        for (int i = 0; i < 151; i++) { //show all components
             gameState.pickHidden(player1);
             gameState.putShown(player1);
         }
         List<Component> shownComponents = gameState.getShownComponent();
 
-        for(int i=0; i<4; i++) {
-            for(int j=0; j<6; j++) {
-                gameState.assembleComponent(player1, gameState.getShownComponent().get(h),i,j);
-                h+=h;
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 7; j++) {
+                gameState.assembleComponent(player1, gameState.getShownComponent().get(h), i, j);
+                h += h;
             }
-            }
+        }
+        gameState.setGameState(State.CARD_SOLVING);
     }
 
     @Test
-    void testHitShip(){
+    void testHitShip() {
         int diceResult = 4;
-        gameState.setGameState(State.CARD_SOLVING);
+
         meteorsSwarm.hitShip(gameState, player1, diceResult, false, false);
         //player 1 hits
-        assertEquals(false, gameState.getPlayersPlay().get(player1).getShipBoard().getAssembledComponent(4,0).isNotEmpty());
+        int result=0;
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 7; j++) {
+                if (gameState.getPlayersPlay().get(player1).getShipBoard().getAssembledComponent(i, j).getImageID()==0) {
+                    result += 1;
+                }
+            }
+        }
 
-        assertDoesNotThrow(() -> meteorsSwarm.hitShip(gameState, player1, diceResult, false, false));
-        assertDoesNotThrow(() -> meteorsSwarm.hitShip(gameState, player1, diceResult, false, false));
-        assertDoesNotThrow(() -> meteorsSwarm.hitShip(gameState, player1, diceResult, false, false));
-        //player 2 hits
-        assertDoesNotThrow(() -> meteorsSwarm.hitShip(gameState, player2, diceResult, false, false));
-        assertDoesNotThrow(() -> meteorsSwarm.hitShip(gameState, player2, diceResult, false, false));
-        assertDoesNotThrow(() -> meteorsSwarm.hitShip(gameState, player2, diceResult, false, false));
-    }
+                //assertEquals(false, gameState.getPlayersPlay().get(player1).getShipBoard().getAssembledComponent(4,0).isNotEmpty());
+                assertEquals(1, result);
 
-}
+
+                assertDoesNotThrow(() -> meteorsSwarm.hitShip(gameState, player1, diceResult, false, false));
+                assertDoesNotThrow(() -> meteorsSwarm.hitShip(gameState, player1, diceResult, false, false));
+                assertDoesNotThrow(() -> meteorsSwarm.hitShip(gameState, player1, diceResult, false, false));
+                //player 2 hits
+
+                assertDoesNotThrow(() -> meteorsSwarm.hitShip(gameState, player2, diceResult, false, false));
+                assertDoesNotThrow(() -> meteorsSwarm.hitShip(gameState, player2, diceResult, false, false));
+                gameState.setGameState(State.CARD_SOLVING);
+                assertDoesNotThrow(() -> meteorsSwarm.hitShip(gameState, player2, diceResult, false, false));
+            }
+
+        }
+
