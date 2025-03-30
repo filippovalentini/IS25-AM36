@@ -63,17 +63,9 @@ class MeteorsSwarmTest {
 
         meteorsSwarm.hitShip(gameState, player1, diceResult, false, false);
         //player 1 hits
-        int result=0;
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 7; j++) {
-                if (gameState.getPlayersPlay().get(player1).getShipBoard().getAssembledComponent(i, j).getImageID()==0) {
-                    result += 1;
-                }
-            }
-        }
 
                 //assertEquals(false, gameState.getPlayersPlay().get(player1).getShipBoard().getAssembledComponent(4,0).isNotEmpty());
-                assertEquals(1, result);
+                assertEquals(true, gameState.getPlayersPlay().get(player1).getShipBoard().getAssembledComponent(4, 0).getImageID()==0);
 
 
                 assertDoesNotThrow(() -> meteorsSwarm.hitShip(gameState, player1, diceResult, false, false));
