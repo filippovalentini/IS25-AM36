@@ -34,7 +34,7 @@ public class Component {
     @Override
     public boolean equals(Object component) {
         if(this == component) return true;
-        if(component == null || getClass() != component.getClass()) return false;
+        if(component == null) return false;
         return this.imageID == ((Component) component).getImageID();
     }
 
