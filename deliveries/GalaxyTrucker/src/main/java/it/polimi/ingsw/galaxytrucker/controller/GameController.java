@@ -1,16 +1,9 @@
 package it.polimi.ingsw.galaxytrucker.controller;
 
-import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
-import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
-import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
-import it.polimi.ingsw.galaxytrucker.model.gameClasses.LevelOnePosition;
-import it.polimi.ingsw.galaxytrucker.model.gameClasses.LevelTwoPosition;
-import it.polimi.ingsw.galaxytrucker.model.gameClasses.Position;
-import it.polimi.ingsw.galaxytrucker.virtualView.VirtualView;
-
-import java.util.Collections;
+import java.util.List;
 
 public class GameController {
     private final GameState model;
@@ -198,8 +191,174 @@ public class GameController {
             catch(InvalidActionException e){
                 return -1;          //invalid action (wrong game phase)
             }
+            catch(AssembledComponentException e){
+                return -2;          //no assembled component to destroy
+            }
         }
     }
+
+    //FLIGHT PHASE
+
+    //this method is invoked when a player has to leave the game
+    public int quitGame(String nickname)  {
+        synchronized (model) {
+            model.quitGame(nickname);
+            return 0;           //player has correctly left the game
+        }
+    }
+    //invoked when the leader draws a new card from the deck (during the game), which must be solved
+    public int pickNextCard(String nickname) {
+        synchronized (model) {
+            try{
+                model.pickNextCard(nickname);
+                if(model.getGameState() == State.CARD_SOLVING){
+                    return 0;       //card picked, it must be solved
+                }else{
+                    return 1;       //no card to pick, game over
+                }
+            }
+            catch(InvalidActionException e){
+                return -1;          //invalid action (wrong game phase)
+            }
+        }
+    }
+    //invoked when a player decides to land on a planet in order to gain goods
+    public int planetLanding(String nickname, int numberPlanet) {
+        synchronized (model) {
+            try {
+                model.planetLanding(nickname, numberPlanet);
+                if(model.getGameState() == State.CARD_SOLVING){
+                    return 0;       //player has finished but other player have to solve the card
+                }
+                else {
+                    return 1;       //player has finished and a new card has to be picked
+                }
+            }
+            catch(InvalidActionException e){
+                return -1;          //invalid action (wrong game phase)
+            }
+        }
+    }
+    //invoked when a player's ship has to be hit by a meteor/cannon shot; the player can decide whether to
+    //activate a shield or a cannon to defend its ship
+    public int hit(String nickname, int diceResult, boolean activateShield, boolean activateCannon) {
+        synchronized (model) {
+            try {
+                model.hit(nickname, diceResult, activateShield, activateCannon);
+                if(model.getGameState() == State.CARD_SOLVING){
+                    return 0;       //player has finished but other player have to solve the card
+                }
+                else {
+                    return 1;       //player has finished and a new card has to be picked
+                }
+            }
+            catch(InvalidActionException e){
+                return -1;          //invalid action (wrong game phase)
+            }
+            catch(NoBatteriesException e) {
+                return -2;          //player doesn't have enough batteries
+            }
+        }
+    }
+    //invoked when a player decides to land on an abandoned station/ship
+    public int landing(String nickname, List<Integer> x, List<Integer> y, List<Integer> z) {
+        synchronized (model) {
+            try {
+                model.landing(nickname, x, y, z);
+                if(model.getGameState() == State.CARD_SOLVING){
+                    return 0;       //player has finished but other player have to solve the card
+                }
+                else {
+                    return 1;       //player has finished and a new card has to be picked
+                }
+            }
+            catch(InvalidActionException e){
+                return -1;          //invalid action (wrong game phase)
+            }
+            catch(NoCrewException e) {
+                return -2;          //player doesn't have enough crew
+            }
+        }
+    }
+    //invoked when a player wants to defeat an enemy; the player can decide whether to lose flight days
+    //to gain credits/goods or not
+    public int defeat(String nickname, int usedBatteries, boolean loseDays) {
+        synchronized (model) {
+            try {
+                model.defeat(nickname, usedBatteries, loseDays);
+                if(model.getGameState() == State.CARD_SOLVING){
+                    return 0;       //player has finished but other player have to solve the card
+                }
+                else {
+                    return 1;       //player has finished and a new card has to be picked
+                }
+            }
+            catch(InvalidActionException e){
+                return -1;          //invalid action (wrong game phase)
+            }
+            catch(NoBatteriesException e) {
+                return -2;          //player doesn't have enough batteries
+            }
+        }
+    }
+    //invoked when a player wants to fly across the flight board exploiting its engine strength
+    public int fly(String nickname, int usedBatteries)  {
+        synchronized (model) {
+            try {
+                model.fly(nickname, usedBatteries);
+                if(model.getGameState() == State.CARD_SOLVING){
+                    return 0;       //player has finished but other player have to solve the card
+                }
+                else {
+                    return 1;       //player has finished and a new card has to be picked
+                }
+            }
+            catch(InvalidActionException e){
+                return -1;          //invalid action (wrong game phase)
+            }
+            catch(NoBatteriesException e) {
+                return -2;          //player doesn't have enough batteries
+            }
+        }
+    }
+    //invoked when a player wants to use batteries to have an advantage while solving a card
+    public int useBatteries(String nickname, int usedBatteries)  {
+        synchronized (model) {
+            try {
+                model.useBatteries(nickname, usedBatteries);
+                if(model.getGameState() == State.CARD_SOLVING){
+                    return 0;       //player has finished but other player have to solve the card
+                }
+                else {
+                    return 1;       //player has finished and a new card has to be picked
+                }
+            }
+            catch(InvalidActionException e){
+                return -1;          //invalid action (wrong game phase)
+            }
+            catch(NoBatteriesException e) {
+                return -2;          //player doesn't have enough batteries
+            }
+        }
+    }
+    //invoked when a player doesn't want to exploit the benefits of a card and therefore skips the turn
+    public int skip(String nickname)  {
+        synchronized (model) {
+            try {
+                model.skip(nickname);
+                if(model.getGameState() == State.CARD_SOLVING){
+                    return 0;       //player has finished but other player have to solve the card
+                }
+                else {
+                    return 1;       //player has finished and a new card has to be picked
+                }
+            }
+            catch(InvalidActionException e){
+                return -1;          //invalid action (wrong game phase)
+            }
+        }
+    }
+
 
 
 }

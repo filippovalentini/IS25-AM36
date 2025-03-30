@@ -1,13 +1,17 @@
 package it.polimi.ingsw.galaxytrucker.model.gameClasses;
 
+import it.polimi.ingsw.galaxytrucker.model.componentClasses.Battery;
+import it.polimi.ingsw.galaxytrucker.model.componentClasses.Shield;
 import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -58,5 +62,27 @@ public class LevelTwoShipBoardTest {
         levelTwoShipBoard.destroyComponent(1, 3);
         assertEquals(1, levelTwoShipBoard.getLostComponents());
         assertTrue(levelTwoShipBoard.isEmptyComponent(1, 3));
+    }
+
+    @Test
+    public void testDestroyNorth(){
+        assertEquals(320, levelTwoShipBoard.getAssembledComponent(2,3).getImageID());
+        levelTwoShipBoard.destroyNorth(3);
+        assertEquals(0, levelTwoShipBoard.getAssembledComponent(2,3).getImageID());
+    }
+
+    @Test
+    public void testSmoothSide() {
+        Component shield = new Shield(44, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL, Connector.UNIVERSAL)));
+        levelTwoShipBoard.pickComponent(shield);
+        levelTwoShipBoard.rotatePickedComponent();
+        levelTwoShipBoard.rotatePickedComponent();
+        levelTwoShipBoard.assembleComponent(1, 3);
+        Component battery = new Battery(true, 45, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
+        levelTwoShipBoard.pickComponent(battery);
+        levelTwoShipBoard.assembleComponent(2,2);
+
+        boolean smooth = levelTwoShipBoard.smoothSide(Orientation.WEST, 1);
+        assertTrue(smooth);
     }
 }
