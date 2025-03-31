@@ -54,6 +54,7 @@ public class ShipBoard {
 
     public void assembleComponent(Component component, int x, int y) {
         assembledComponents.get(x).set(y, component);
+        updateCorrectness();
     }
 
 

@@ -1,15 +1,18 @@
 package it.polimi.ingsw.galaxytrucker.model.gameClasses;
 
+import it.polimi.ingsw.galaxytrucker.model.componentClasses.Battery;
+import it.polimi.ingsw.galaxytrucker.model.componentClasses.Cabin;
+import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidPositionException;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.UniqueNicknameException;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.UniquePlayerColorException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -32,13 +35,17 @@ public class GameStateFirstFlightTest {
 
     @Test
     public void testAddPlayer() {
-        GameState gameStateAddPlayers = new GameState(true, 4);
+        GameState gs = new GameState(true, 2);
         player1 = "truck3r";
         player2 = "4lien";
-        gameStateAddPlayers.addPlayer(player1, Color.RED);
-        gameStateAddPlayers.addPlayer(player2, Color.BLUE);
-        assertEquals(Color.RED, gameStateAddPlayers.getPlayersPlay().get(player1).getShipBoard().getColor());
-        assertEquals(Color.BLUE, gameStateAddPlayers.getPlayersPlay().get(player2).getShipBoard().getColor());
+        String player3 = "carg0";
+        gs.addPlayer(player1, Color.RED);
+        assertEquals(Color.RED, gs.getPlayersPlay().get(player1).getShipBoard().getColor());
+        assertEquals(State.WAITING_FOR_PLAYERS, gs.getGameState());
+        gs.addPlayer(player2, Color.BLUE);
+        assertEquals(Color.BLUE, gs.getPlayersPlay().get(player2).getShipBoard().getColor());
+        assertEquals(State.SHIP_BUILDING, gs.getGameState());
+        assertThrows(InvalidActionException.class, () -> gs.addPlayer(player3, Color.YELLOW));
     }
 
     @Test
@@ -84,9 +91,9 @@ public class GameStateFirstFlightTest {
 
     @Test
     public void testPutShown() {
-        gameState.pickShown(player1, 0);
+        gameState.pickHidden(player1);
         gameState.putShown(player1);
-        assertEquals(null, gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
+        assertNull(gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
     }
 
     @Test
@@ -97,20 +104,22 @@ public class GameStateFirstFlightTest {
 
     @Test
     public void testPickShown() {
+        gameState.pickHidden(player1);
+        gameState.putShown(player1);
         gameState.pickShown(player1, 0);
         assertNotNull(gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
     }
 
     @Test
     public void testReserveComponent() {
-        gameState.pickShown(player1, 0);
+        gameState.pickHidden(player1);
         gameState.reserveComponent(player1);
         assertNull(gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
     }
 
     @Test
     public void testPickReservedComponent() {
-        gameState.pickShown(player1, 0);
+        gameState.pickHidden(player1);
         gameState.reserveComponent(player1);
         gameState.pickReservedComponent(player1, 0);
         assertNotNull(gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
@@ -118,55 +127,60 @@ public class GameStateFirstFlightTest {
 
     @Test
     public void testAssembleComponent() {
-        gameState.pickShown(player1, 0);
-        gameState.assembleComponent(player1, 0, 0);
+        gameState.pickHidden(player1);
+        gameState.assembleComponent(player1, 0, 3);
         assertNull(gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
+        gameState.pickHidden(player1);
+        assertThrows(AssembledComponentException.class, () -> gameState.assembleComponent(player1, 0, 3));
     }
 
     @Test
     public void testRotatePickedComponent() {
-        gameState.pickShown(player1, 0);
+        gameState.pickHidden(player1);
+        Orientation o1 = gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent().getOrientation();
         gameState.rotatePickedComponent(player1);
+        Orientation o2 = gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent().getOrientation();
         assertNotNull(gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
+        assertNotEquals(o1, o2);
     }
 
     @Test
     public void testDestroyComponent() {
-        gameState.pickShown(player1, 0);
-        gameState.assembleComponent(player1, 0, 0);
-        gameState.destroyComponent(player1, 0, 0);
-        assertNull(gameState.getPlayersPlay().get(player1).getShipBoard().getAssembledComponent(0, 0));
-    }
-
-    @Test
-    public void testCheckShipBoards() {
-        gameState.pickShown(player1, 0);
-        gameState.assembleComponent(player1, 0, 0);
-        gameState.pickShown(player2, 0);
-        gameState.assembleComponent(player2, 0, 0);
-        gameState.checkShipBoards();
+        gameState.pickHidden(player1);
+        Component battery = new Battery(true, 1000, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
+        gameState.assembleComponent(player1, battery, 2, 2);
+        gameState.setPosition(player1, 0);
+        assertEquals(State.SHIP_BUILDING, gameState.getGameState());
+        gameState.setPosition(player2, 1);
+        assertEquals(State.SHIP_CONTROL, gameState.getGameState());
+        gameState.destroyComponent(player1, 2, 2);
         assertEquals(State.CARD_PICKING, gameState.getGameState());
     }
 
     @Test
     public void testPickNextCard() {
-        gameState.pickShown(player1, 0);
-        gameState.assembleComponent(player1, 0, 0);
+        gameState.pickHidden(player1);
+        gameState.putShown(player1);
+        gameState.pickHidden(player1);
+        gameState.assembleComponent(player1, 0, 3);
         gameState.pickShown(player2, 0);
-        gameState.assembleComponent(player2, 0, 0);
-        gameState.checkShipBoards();
-        gameState.pickNextCard(player1);
+        gameState.assembleComponent(player2, 0, 3);
+        gameState.setPosition(player2, 1);
+        gameState.setPosition(player1, 0);
+        assertEquals(player2, gameState.getTurnPlayer());
+        gameState.pickNextCard(player2);
         assertEquals(State.CARD_SOLVING, gameState.getGameState());
     }
 
     @Test
     public void testPickNextCardNotLeader() {
-        gameState.pickShown(player1, 0);
-        gameState.assembleComponent(player1, 0, 0);
-        gameState.pickShown(player2, 0);
-        gameState.assembleComponent(player2, 0, 0);
-        gameState.checkShipBoards();
-        assertThrows(InvalidActionException.class, () -> gameState.pickNextCard(player2));
+        gameState.pickHidden(player1);
+        gameState.assembleComponent(player1, 0, 3);
+        gameState.pickHidden(player2);
+        gameState.assembleComponent(player2, 0, 3);
+        gameState.setPosition(player2, 1);
+        gameState.setPosition(player1, 0);
+        assertThrows(InvalidActionException.class, () -> gameState.pickNextCard(player1));
     }
 
     @Test
@@ -177,26 +191,45 @@ public class GameStateFirstFlightTest {
 
     @Test
     public void testGetCrewCount() {
-        assertEquals(0, gameState.getCrewCount(player1));
+        assertEquals(2, gameState.getCrewCount(player1));
+    }
+
+    @Test
+    public void testGetCrewMinPlayer() {
+        Component cabin = new Cabin(1000, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
+        gameState.assembleComponent(player1, cabin, 2, 2);
+        gameState.setPosition(player1, 0);
+        assertEquals(State.SHIP_BUILDING, gameState.getGameState());
+        gameState.setPosition(player2, 1);
+        assertEquals(State.CARD_PICKING, gameState.getGameState());
+        assertEquals(4, gameState.getCrewCount(player1));
+        assertEquals(2, gameState.getCrewCount(player2));
+        assertEquals(player2, gameState.getCrewMinPlayer());
     }
 
     @Test
     public void testRemovedCrewMember() {
-        List<Integer> x = new ArrayList<>();
-        List<Integer> y = new ArrayList<>();
-        List<Integer> eachCabinCrew = new ArrayList<>();
-        gameState.removedCrewMember(player1, x, y, eachCabinCrew, 1);
+        List<Integer> x = new ArrayList<>(Arrays.asList(2));
+        List<Integer> y = new ArrayList<>(Arrays.asList(3));
+        List<Integer> eachCabinCrew = new ArrayList<>(Arrays.asList(2));
+        gameState.removedCrewMember(player1, x, y, eachCabinCrew, 2);
         assertEquals(0, gameState.getCrewCount(player1));
     }
 
     @Test
     public void testAddPlayerDuplicateNickname() {
-        assertThrows(UniqueNicknameException.class, () -> gameState.addPlayer(player1, Color.GREEN));
+        GameState gs = new GameState(true, 2);
+        player1 = "truck3r";
+        gs.addPlayer(player1, Color.RED);
+        assertThrows(UniqueNicknameException.class, () -> gs.addPlayer(player1, Color.GREEN));
     }
 
     @Test
     public void testAddPlayerDuplicateColor() {
-        assertThrows(UniquePlayerColorException.class, () -> gameState.addPlayer("newPlayer", Color.RED));
+        GameState gs = new GameState(true, 2);
+        player1 = "truck3r";
+        gs.addPlayer(player1, Color.RED);
+        assertThrows(UniquePlayerColorException.class, () -> gs.addPlayer("newPlayer", Color.RED));
     }
 
     @Test
@@ -206,23 +239,21 @@ public class GameStateFirstFlightTest {
 
     @Test
     public void testSetPositionDuplicateCell() {
-        gameState.setPosition(player1, 5);
-        assertThrows(InvalidPositionException.class, () -> gameState.setPosition(player2, 5));
+        gameState.setPosition(player1, 1);
+        assertThrows(InvalidPositionException.class, () -> gameState.setPosition(player2, 1));
     }
 
     @Test
     public void testPickShownInvalidAction() {
-        gameState.setPosition(player1, 5);
-        gameState.setPosition(player2, 10);
-        gameState.checkShipBoards();
+        gameState.setPosition(player1, 1);
+        gameState.setPosition(player2, 4);
         assertThrows(InvalidActionException.class, () -> gameState.pickShown(player1, 0));
     }
 
     @Test
     public void testAssembleComponentInvalidAction() {
-        gameState.setPosition(player1, 5);
-        gameState.setPosition(player2, 10);
-        gameState.checkShipBoards();
+        gameState.setPosition(player1, 1);
+        gameState.setPosition(player2, 4);
         assertThrows(InvalidActionException.class, () -> gameState.assembleComponent(player1, 0, 0));
     }
 }
