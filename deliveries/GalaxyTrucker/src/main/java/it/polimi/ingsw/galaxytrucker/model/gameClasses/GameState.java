@@ -116,8 +116,8 @@ public class GameState {
         playersPlay.get(nickname).updateCredits(update);
     }
     //substitutes (or adds) a good in a specific container of a player's cargo hold
-    public void substitutePlayerGood(String nickname, int cargo_row, int cargo_col, Color good, int pos){
-        playersPlay.get(nickname).substituteShipboardCargoGood(cargo_row, cargo_col, good, pos);
+    public void substituteGoods(String nickname, int cargo_row, int cargo_col, Color good, int pos){
+        playersPlay.get(nickname).substituteGoods(cargo_row, cargo_col, good, pos);
     }
 
     //
@@ -597,8 +597,11 @@ public class GameState {
     public void setTurnPlayer(String nickname){
         this.turnPlayer = nickname;
     }
-    //this method is invoked when a player has to leave the game
-    public void quitGame(String nickname){
+    //this method is invoked when a player wants to leave the game
+    public void quitGame(String nickname) throws InvalidActionException {
+        if(state != State.CARD_PICKING){
+            throw new InvalidActionException("Invalid action");
+        }
         playersPos.remove(nickname);
         playersPlay.get(nickname).quitGame();
     }
@@ -626,6 +629,10 @@ public class GameState {
             throw new InvalidActionException("Card must be picked first");
         }
         playersPlay.get(nickname).epidemicEffect();
+    }
+    //this method is invoked when a player has/wants to remove crew members from its ship board
+    public void removedCrewMember(String nickname, List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) {
+        playersPlay.get(nickname).removeCrewMembers(x, y, eachCabinCrew, numberCrewToRemove);
     }
     //invoked when a meteor hits a player's ship board
     public void meteorAttack(String nickname, Meteor meteor, int direction, boolean activateShield, boolean activateCannon) throws InvalidActionException {
@@ -785,9 +792,6 @@ public class GameState {
 
 
 
-    public void removedCrewMember(String nickname, List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) {
-        playersPlay.get(nickname).removeShipBoardCrew(x, y, eachCabinCrew, numberCrewToRemove);
-    }
 
 
 

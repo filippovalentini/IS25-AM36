@@ -437,6 +437,30 @@ public class ShipBoard {
             }
         }
     }
+    //remove the specified crew members from the specified cabins in the ship board
+    public void removeCrewMembers(List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) throws NoCrewException {
+        int sumRemovedCrewMembers = 0;
+        for(int i=0; i<x.size(); i++){
+            if(assembledComponents.get(x.get(i)).get(y.get(i)).getClass() != Cabin.class){
+                throw new NoCrewException("Invalid component, it must be a cabin");
+            }
+            else {
+                ((Cabin) assembledComponents.get(x.get(i)).get(y.get(i))).removeCrew(eachCabinCrew.get(i));
+                sumRemovedCrewMembers += eachCabinCrew.get(i);
+            }
+        }
+        if(sumRemovedCrewMembers != numberCrewToRemove){
+            throw new NoCrewException("Wrong number of crew members to remove");
+        }
+    }
+    //substitutes the cargo good at the given coordinates with the good given in input
+    public void substituteGoods(int cargo_row, int cargo_col, Color good, int pos){
+        if(good==Color.RED){ //special cargo needed
+            ((CargoSpecial)(assembledComponents).get(cargo_row).get(cargo_col)).substituteGood(good, pos);
+        }else {
+            ((CargoHold) (assembledComponents.get(cargo_row).get(cargo_col))).substituteGood(good, pos);
+        }
+    }
     //invoked when a meteor/cannon shot hits the ship board
     public void meteorAttack(Meteor meteor, int direction, boolean activateShield, boolean activateCannon){
         Orientation orientation = meteor.getOrientation();
@@ -522,23 +546,24 @@ public class ShipBoard {
     }
     //removes batteries from the ship board
     public void removeBatteries(int batteries) throws NoBatteriesException{
+        int toRemove = batteries;
         int componentBatteries;
         for (List<Component> componentRow : assembledComponents) {
             for (Component component : componentRow) {
                 componentBatteries = component.getNumberBatteries();
                 if(componentBatteries > 0){
-                    if(componentBatteries >= batteries){
-                        component.useBatteries(batteries);
-                        batteries = 0;
+                    if(componentBatteries >= toRemove){
+                        component.useBatteries(toRemove);
+                        toRemove = 0;
                         break;
                     }
                     else{
                         component.useBatteries(componentBatteries);
-                        batteries-=componentBatteries;
+                        toRemove-=componentBatteries;
                     }
                 }
             }
-            if(batteries ==0){
+            if(toRemove ==0){
                 break;
             }
         }
@@ -642,30 +667,4 @@ public class ShipBoard {
         return goodsPrice;
     }
 
-
-
-    //remove the specified crew members from each cabin in the ship board
-    public void removeCrewMembers(List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) throws NoCrewException {
-        int sumRemovedCrewMembers = 0;
-        for(int i=0; i<x.size(); i++){
-            if(assembledComponents.get(x.get(i)).get(y.get(i)).getClass() != Cabin.class){
-                throw new NoCrewException("Invalid component, it must be a cabin");
-            }
-            else {
-                ((Cabin) assembledComponents.get(x.get(i)).get(y.get(i))).removeCrew(eachCabinCrew.get(i));
-                sumRemovedCrewMembers += eachCabinCrew.get(i);
-            }
-        }
-        if(sumRemovedCrewMembers != numberCrewToRemove){
-            throw new NoCrewException("Wrong number of crew members to remove");
-        }
-    }
-    //substitute cargo goods at the given coordinates with the goods given in input
-    public void substituteCargoGoodGivenGood(int cargo_row, int cargo_col, Color good, int pos){
-        if(good==Color.RED){ //special cargo needed
-            ((CargoSpecial)(assembledComponents).get(cargo_row).get(cargo_col)).substituteGood(good, pos);
-        }else {
-            ((CargoHold) (assembledComponents.get(cargo_row).get(cargo_col))).substituteGood(good, pos);
-        }
-    }
 }
