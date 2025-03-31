@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GameStateFirstFlightTest {
 
-    private GameState gameState;
+    private static GameState gameState;
     private String player1;
     private String player2;
 
@@ -161,10 +161,10 @@ public class GameStateFirstFlightTest {
     public void testPickNextCard() {
         gameState.pickHidden(player1);
         gameState.putShown(player1);
-        gameState.pickHidden(player1);
-        gameState.assembleComponent(player1, 0, 3);
-        gameState.pickShown(player2, 0);
-        gameState.assembleComponent(player2, 0, 3);
+        //gameState.pickHidden(player1);
+        //gameState.assembleComponent(player1, 0, 3);
+        //gameState.pickShown(player2, 0);
+        //gameState.assembleComponent(player2, 0, 3);
         gameState.setPosition(player2, 1);
         gameState.setPosition(player1, 0);
         assertEquals(player2, gameState.getTurnPlayer());

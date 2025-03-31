@@ -1,7 +1,9 @@
 package it.polimi.ingsw.galaxytrucker.controller;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
+import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.EventCard;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
+import it.polimi.ingsw.galaxytrucker.model.gameClasses.Deck;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import java.util.List;
 
@@ -359,6 +361,22 @@ public class GameController {
         }
     }
 
+    //[method for testing]
+    public State getModelState(){
+        return model.getGameState();
+    }
+    //[method for testing]
+    public void setModelDeck(Deck customDeck){
+        model.setGameDeck(customDeck);
+    }
 
+    //[method for testing]
+    public void getModelDeck(Deck customDeck){
+        model.setGameDeck(customDeck);
+    }
 
+    //[method for testing]
+    public EventCard getModelCurrentCard(){
+        return model.getCurrentCard();
+    }
 }

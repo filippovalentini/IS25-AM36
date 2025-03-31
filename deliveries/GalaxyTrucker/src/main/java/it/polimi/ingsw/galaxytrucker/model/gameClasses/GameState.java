@@ -5,6 +5,8 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.*;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.model.shotClasses.*;
+
+import javax.smartcardio.Card;
 import java.util.*;
 
 //this class describes the entire status of the game, the controller will invoke its methods in order to modify the
@@ -38,6 +40,16 @@ public class GameState {
      //METODO DA TOGLIERE!!!!!!!!!!
     public void assembleComponent(String nickname, Component component, int x, int y){
         playersPlay.get(nickname).assembleComponent(component, x, y);
+    }
+
+    //[method for testing] set a custom deck
+    public void setGameDeck(Deck deck){
+        gameDeck = deck;
+    }
+
+    //[method for testing]
+    public EventCard getCurrentCard(){
+        return this.currentCard;
     }
 
     public void setGameState(State state) {

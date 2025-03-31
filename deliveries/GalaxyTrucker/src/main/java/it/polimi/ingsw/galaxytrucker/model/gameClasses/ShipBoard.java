@@ -208,10 +208,55 @@ public class ShipBoard {
                 break;
             }
         }
-
-        correct = correctness;
+        if(this.hasMultipleRegions()){
+            correct = false;
+        }else {
+            correct = correctness;
+        }
 
     }
+
+    //checks if the ship board has multiple regions (floating group of components)
+    private boolean hasMultipleRegions(){
+        boolean[][] visitedComponents = new boolean[assembledComponents.size()][assembledComponents.get(0).size()];
+        int regionCount = 0;
+        for(int i=0; i<assembledComponents.size(); i++){
+            for(int j=0; j<assembledComponents.get(i).size(); j++){
+                Component analyzedComponent = assembledComponents.get(i).get(j);
+                if(!analyzedComponent.isNotEmpty() || !analyzedComponent.belongsToShip()){
+                    continue;
+                }
+                if(!visitedComponents[i][j]){
+                    if(regionCount >= 1){
+                        return true;
+                    }
+                    dfs(assembledComponents, i, j, visitedComponents);
+                    regionCount++;
+                }
+            }
+        }
+        return regionCount > 1;
+    }
+    //Deep-First-Search for multiple regions check
+    private static void dfs(List<List<Component>> components, int row, int col, boolean[][] visited){
+        if(row < 0 || col < 0 || row >= components.size() || col >= components.get(row).size()){
+            return;
+        }
+        Component analyzedComponent = components.get(row).get(col);
+        if(visited[row][col]){
+            return;
+        }
+        if(!analyzedComponent.isNotEmpty() || !analyzedComponent.belongsToShip()){ // empty and space are considered as wall
+            return;
+        }
+        visited[row][col] = true;
+        //all adjacent directions
+        dfs(components, row+1, col, visited);
+        dfs(components, row-1, col, visited);
+        dfs(components, row, col+1, visited);
+        dfs(components, row, col-1, visited);
+    }
+
     //counts the number of exposed connectors of the ship board
     public int countExposedConnectors() {
         int exposedConnectors = 0;
