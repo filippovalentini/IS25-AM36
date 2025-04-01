@@ -56,7 +56,7 @@ class ShipBoardTest {
     }
 
     @Test
-    public void testDestroyComponent() {
+    void testDestroyComponent() {
         shipBoard.pickComponent(component1);
         shipBoard.assembleComponent(1, 3); //above the initial cabin
         shipBoard.destroyComponent(1, 3);
@@ -65,7 +65,7 @@ class ShipBoardTest {
     }
 
     @Test
-    public void testUpdateCorrectnessFloatingComponents(){
+    void testUpdateCorrectnessFloatingComponents(){
         assertTrue(shipBoard.isCorrect());
         List<Connector> connectorList1 = new ArrayList<>();
         connectorList1.add(Connector.SINGLE);
@@ -80,14 +80,14 @@ class ShipBoardTest {
     }
 
     @Test
-    public void testDestroyNorth(){
+    void testDestroyNorth(){
         assertEquals(320, shipBoard.getAssembledComponent(2,3).getImageID());
         shipBoard.destroyNorth(3);
         assertEquals(0, shipBoard.getAssembledComponent(2,3).getImageID());
     }
 
     @Test
-    public void testSmoothSide() {
+    void testSmoothSide() {
         Component shield = new Shield(44, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL, Connector.UNIVERSAL)));
         shipBoard.pickComponent(shield);
         shipBoard.rotatePickedComponent();
@@ -101,12 +101,12 @@ class ShipBoardTest {
     }
 
     @Test
-    public void testCountExposedConnectors(){
+    void testCountExposedConnectors(){
         assertEquals(4, shipBoard.countExposedConnectors()); // exposed connectors of initial cabin
     }
 
     @Test
-    public void testEpidemicEffect(){
+    void testEpidemicEffect(){
         List<Connector> universalConnectorList = new ArrayList<>();
         universalConnectorList.add(Connector.UNIVERSAL);
         universalConnectorList.add(Connector.UNIVERSAL);

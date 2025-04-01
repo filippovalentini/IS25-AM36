@@ -51,7 +51,7 @@ class LevelOneShipBoardTest {
     }
 
     @Test
-    public void testDestroyComponent() {
+    void testDestroyComponent() {
         levelOneShipBoard.pickComponent(component1);
         levelOneShipBoard.assembleComponent(1, 2); //above the initial cabin
         levelOneShipBoard.destroyComponent(1, 2);

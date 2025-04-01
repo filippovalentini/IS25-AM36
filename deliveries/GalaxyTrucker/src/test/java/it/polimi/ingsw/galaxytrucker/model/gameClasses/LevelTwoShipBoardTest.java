@@ -56,7 +56,7 @@ public class LevelTwoShipBoardTest {
     }
 
     @Test
-    public void testDestroyComponent() {
+    void testDestroyComponent() {
         levelTwoShipBoard.pickComponent(component1);
         levelTwoShipBoard.assembleComponent(1, 3); //above the initial cabin
         levelTwoShipBoard.destroyComponent(1, 3);
@@ -65,14 +65,14 @@ public class LevelTwoShipBoardTest {
     }
 
     @Test
-    public void testDestroyNorth(){
+    void testDestroyNorth(){
         assertEquals(320, levelTwoShipBoard.getAssembledComponent(2,3).getImageID());
         levelTwoShipBoard.destroyNorth(3);
         assertEquals(0, levelTwoShipBoard.getAssembledComponent(2,3).getImageID());
     }
 
     @Test
-    public void testSmoothSide() {
+    void testSmoothSide() {
         Component shield = new Shield(44, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.UNIVERSAL, Connector.UNIVERSAL)));
         levelTwoShipBoard.pickComponent(shield);
         levelTwoShipBoard.rotatePickedComponent();

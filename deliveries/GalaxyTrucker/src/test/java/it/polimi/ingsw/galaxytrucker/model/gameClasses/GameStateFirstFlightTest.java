@@ -25,7 +25,7 @@ public class GameStateFirstFlightTest {
     private String player2;
 
     @BeforeEach
-    public void initFirstFlight() {
+    void initFirstFlight() {
         gameState = new GameState(true, 2);
         player1 = "truck3r";
         player2 = "4lien";
@@ -34,7 +34,7 @@ public class GameStateFirstFlightTest {
     }
 
     @Test
-    public void testAddPlayer() {
+    void testAddPlayer() {
         GameState gs = new GameState(true, 2);
         player1 = "truck3r";
         player2 = "4lien";
@@ -49,7 +49,7 @@ public class GameStateFirstFlightTest {
     }
 
     @Test
-    public void testUpdateTurnsWithMaxPlayers(){
+    void testUpdateTurnsWithMaxPlayers(){
         gameState = new GameState(true, 4);
         player1 = "truck3r";
         player2 = "4lien";
@@ -72,7 +72,7 @@ public class GameStateFirstFlightTest {
     }
 
     @Test
-    public void testSetPosition() {
+    void testSetPosition() {
         gameState.setPosition(player1, 0);
         gameState.setPosition(player2, 1);
         assertEquals(0, gameState.getPlayersPos().get(player1).getCell());
@@ -80,7 +80,7 @@ public class GameStateFirstFlightTest {
     }
 
     @Test
-    public void testChangePlayerPosition() {
+    void testChangePlayerPosition() {
         gameState.setPosition(player1, 0);
         gameState.setPosition(player2, 1);
         gameState.changePlayerPosition(player1, 3);
@@ -90,20 +90,20 @@ public class GameStateFirstFlightTest {
     }
 
     @Test
-    public void testPutShown() {
+    void testPutShown() {
         gameState.pickHidden(player1);
         gameState.putShown(player1);
         assertNull(gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
     }
 
     @Test
-    public void testPickHidden() {
+    void testPickHidden() {
         gameState.pickHidden(player1);
         assertNotNull(gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
     }
 
     @Test
-    public void testPickShown() {
+    void testPickShown() {
         gameState.pickHidden(player1);
         gameState.putShown(player1);
         gameState.pickShown(player1, 0);
@@ -111,14 +111,14 @@ public class GameStateFirstFlightTest {
     }
 
     @Test
-    public void testReserveComponent() {
+    void testReserveComponent() {
         gameState.pickHidden(player1);
         gameState.reserveComponent(player1);
         assertNull(gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
     }
 
     @Test
-    public void testPickReservedComponent() {
+    void testPickReservedComponent() {
         gameState.pickHidden(player1);
         gameState.reserveComponent(player1);
         gameState.pickReservedComponent(player1, 0);
@@ -126,7 +126,7 @@ public class GameStateFirstFlightTest {
     }
 
     @Test
-    public void testAssembleComponent() {
+    void testAssembleComponent() {
         gameState.pickHidden(player1);
         gameState.assembleComponent(player1, 0, 3);
         assertNull(gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
@@ -135,7 +135,7 @@ public class GameStateFirstFlightTest {
     }
 
     @Test
-    public void testRotatePickedComponent() {
+    void testRotatePickedComponent() {
         gameState.pickHidden(player1);
         Orientation o1 = gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent().getOrientation();
         gameState.rotatePickedComponent(player1);
@@ -145,7 +145,7 @@ public class GameStateFirstFlightTest {
     }
 
     @Test
-    public void testDestroyComponent() {
+    void testDestroyComponent() {
         gameState.pickHidden(player1);
         Component battery = new Battery(true, 1000, new ArrayList<>(Arrays.asList(Connector.SINGLE, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
         gameState.assembleComponent(player1, battery, 2, 2);
@@ -158,7 +158,7 @@ public class GameStateFirstFlightTest {
     }
 
     @Test
-    public void testPickNextCard() {
+    void testPickNextCard() {
         gameState.pickHidden(player1);
         gameState.putShown(player1);
         //gameState.pickHidden(player1);
@@ -173,7 +173,7 @@ public class GameStateFirstFlightTest {
     }
 
     @Test
-    public void testPickNextCardNotLeader() {
+    void testPickNextCardNotLeader() {
         gameState.pickHidden(player1);
         gameState.assembleComponent(player1, 0, 3);
         gameState.pickHidden(player2);
@@ -184,18 +184,18 @@ public class GameStateFirstFlightTest {
     }
 
     @Test
-    public void testUpdatePlayerCredits() {
+    void testUpdatePlayerCredits() {
         gameState.updatePlayerCredits(player1, 5);
         assertEquals(5, gameState.getPlayersPlay().get(player1).getCredits());
     }
 
     @Test
-    public void testGetCrewCount() {
+    void testGetCrewCount() {
         assertEquals(2, gameState.getCrewCount(player1));
     }
 
     @Test
-    public void testGetCrewMinPlayer() {
+    void testGetCrewMinPlayer() {
         Component cabin = new Cabin(1000, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
         gameState.assembleComponent(player1, cabin, 2, 2);
         gameState.setPosition(player1, 0);
@@ -208,7 +208,7 @@ public class GameStateFirstFlightTest {
     }
 
     @Test
-    public void testRemovedCrewMember() {
+    void testRemovedCrewMember() {
         List<Integer> x = new ArrayList<>(Arrays.asList(2));
         List<Integer> y = new ArrayList<>(Arrays.asList(3));
         List<Integer> eachCabinCrew = new ArrayList<>(Arrays.asList(2));
@@ -217,7 +217,7 @@ public class GameStateFirstFlightTest {
     }
 
     @Test
-    public void testAddPlayerDuplicateNickname() {
+    void testAddPlayerDuplicateNickname() {
         GameState gs = new GameState(true, 2);
         player1 = "truck3r";
         gs.addPlayer(player1, Color.RED);
@@ -225,7 +225,7 @@ public class GameStateFirstFlightTest {
     }
 
     @Test
-    public void testAddPlayerDuplicateColor() {
+    void testAddPlayerDuplicateColor() {
         GameState gs = new GameState(true, 2);
         player1 = "truck3r";
         gs.addPlayer(player1, Color.RED);
@@ -233,25 +233,25 @@ public class GameStateFirstFlightTest {
     }
 
     @Test
-    public void testSetPositionInvalidCell() {
+    void testSetPositionInvalidCell() {
         assertThrows(InvalidPositionException.class, () -> gameState.setPosition(player1, 100));
     }
 
     @Test
-    public void testSetPositionDuplicateCell() {
+     void testSetPositionDuplicateCell() {
         gameState.setPosition(player1, 1);
         assertThrows(InvalidPositionException.class, () -> gameState.setPosition(player2, 1));
     }
 
     @Test
-    public void testPickShownInvalidAction() {
+    void testPickShownInvalidAction() {
         gameState.setPosition(player1, 1);
         gameState.setPosition(player2, 4);
         assertThrows(InvalidActionException.class, () -> gameState.pickShown(player1, 0));
     }
 
     @Test
-    public void testAssembleComponentInvalidAction() {
+    void testAssembleComponentInvalidAction() {
         gameState.setPosition(player1, 1);
         gameState.setPosition(player2, 4);
         assertThrows(InvalidActionException.class, () -> gameState.assembleComponent(player1, 0, 0));
