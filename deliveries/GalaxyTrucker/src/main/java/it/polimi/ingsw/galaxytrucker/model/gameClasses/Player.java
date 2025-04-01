@@ -109,6 +109,14 @@ public class Player {
     public int getNumberBatteries() {
         return shipBoard.getNumberBatteries();
     }
+    //returns the number of goods on the player's ship board
+    public int getNumberGoods() {
+        return shipBoard.getNumberGoods();
+    }
+    //this method removes the numberGoods-most precious goods from the player's ship board
+    public void losePreciousGoods(int numberGoods){
+        shipBoard.losePreciousGoods(numberGoods);
+    }
     //returns the cannon strength of a player, removing the given batteries from its ship board in order to activate double cannons
     public double getCannonStrength(int usedBatteries){
         return shipBoard.getCannonStrength(usedBatteries);

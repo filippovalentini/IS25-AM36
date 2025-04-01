@@ -7,8 +7,6 @@ import it.polimi.ingsw.galaxytrucker.model.exceptions.UnsupportedCargoColorExcep
 
 import java.util.*;
 
-import static it.polimi.ingsw.galaxytrucker.model.enumerations.Color.RED;
-
 public class CargoHold extends ConfigurableComponent {
     protected List<Color> goods;        //list of goods stored in the cargo hold
     //protected int numberGoods;      //number of goods stored in the cargo hold (can be inferred from the list)
@@ -20,9 +18,6 @@ public class CargoHold extends ConfigurableComponent {
     }
     public List<Color> getGoods() { //return a copy of the listed goods
         return new ArrayList<>(this.goods);
-    }
-    public int getNumberGoods() {
-        return goods.size();
     }
 
     public void addGood(Color good) throws FullCargoHoldException, UnsupportedCargoColorException {     //adds one good to the cargo hold (it can't be red)
@@ -69,4 +64,20 @@ public class CargoHold extends ConfigurableComponent {
         }
         return price;
     }
+    @Override
+    public int getNumberGoods(){
+        return goods.size();
+    }
+    @Override
+    public int getNumberGoods(Color color){
+        int numberGoods = 0;
+        for(Color good : goods){
+            if(good==color){
+                numberGoods++;
+            }
+        }
+        return numberGoods;
+    }
+    @Override
+    public void removeSpecificGoods(Color color, int numberGoods){}
 }
