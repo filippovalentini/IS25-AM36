@@ -204,8 +204,13 @@ public class GameController {
     //this method is invoked when a player has to leave the game
     public int quitGame(String nickname)  {
         synchronized (model) {
-            model.quitGame(nickname);
-            return 0;           //player has correctly left the game
+            try{
+                model.quitGame(nickname);
+                return 0;           //player has correctly left the game
+            }
+            catch(InvalidActionException e){
+                return -1;          //invalid action (wrong game phase)
+            }
         }
     }
     //invoked when the leader draws a new card from the deck (during the game), which must be solved
@@ -369,12 +374,10 @@ public class GameController {
     public void setModelDeck(Deck customDeck){
         model.setGameDeck(customDeck);
     }
-
     //[method for testing]
     public void getModelDeck(Deck customDeck){
         model.setGameDeck(customDeck);
     }
-
     //[method for testing]
     public EventCard getModelCurrentCard(){
         return model.getCurrentCard();

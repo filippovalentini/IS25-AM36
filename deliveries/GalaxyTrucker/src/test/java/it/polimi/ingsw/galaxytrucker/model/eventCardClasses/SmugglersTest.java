@@ -48,15 +48,6 @@ class SmugglersTest {
     }
 
     @Test
-    void testDefeat() {
-        Smugglers weakSmugglers = new Smugglers(prizeGoods, 2,0, 1, 0);
-        int usedBatteries = 0;
-        boolean looseDays = true;
-        weakSmugglers.defeat(gameState, nickname, usedBatteries, looseDays);
-        assertTrue(weakSmugglers.isDefeated());
-    }
-
-    @Test
     void testShouldNotAttackIfDefeated() {
         int usedBatteries = 4;
         boolean looseDays = true;

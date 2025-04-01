@@ -97,6 +97,14 @@ public class GameState {
     public int getNumberBatteries(String nickname){
         return playersPlay.get(nickname).getNumberBatteries();
     }
+    //returns the number of goods on a player's ship board
+    public int getNumberGoods(String nickname){
+        return playersPlay.get(nickname).getNumberGoods();
+    }
+    //this method removes the numberGoods-most precious goods from a player's ship board
+    public void losePreciousGoods(String nickname, int numberGoods){
+        playersPlay.get(nickname).losePreciousGoods(numberGoods);
+    }
     //this method returns the nickname of the player with fewer crew members
     public String getCrewMinPlayer() {
         int numberCrew;

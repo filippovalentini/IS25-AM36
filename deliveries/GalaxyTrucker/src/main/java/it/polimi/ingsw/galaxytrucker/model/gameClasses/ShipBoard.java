@@ -614,6 +614,54 @@ public class ShipBoard {
             }
         }
     }
+    //returns the number of goods on the ship board
+    public int getNumberGoods() {
+        int numberGoods = 0;
+        for (List<Component> componentRow : assembledComponents) {
+            for (Component component : componentRow) {
+                numberGoods += component.getNumberGoods();
+            }
+        }
+        return numberGoods;
+    }
+    //this method removes numberGoods goods of a specific color from the ship board; if there aren't enough
+    //goods of that color, it returns the number of missing goods, otherwise it returns 0
+    public int removeSpecificGoods(Color color, int numberGoods){
+        int toRemove = numberGoods;
+        int componentGoods;
+        for (List<Component> componentRow : assembledComponents) {
+            for (Component component : componentRow) {
+                componentGoods = component.getNumberGoods(color);
+                if(componentGoods > 0){
+                    if(componentGoods >= toRemove){
+                        component.removeSpecificGoods(color, toRemove);
+                        toRemove = 0;
+                        break;
+                    }
+                    else{
+                        component.removeSpecificGoods(color, componentGoods);
+                        toRemove-= componentGoods;
+                    }
+                }
+            }
+            if(toRemove ==0){
+                break;
+            }
+        }
+        return toRemove;
+    }
+    //this method removes the numberGoods-most precious goods from the  ship board
+    public void losePreciousGoods(int numberGoods){
+        int toRemove = numberGoods;
+        int componentGoods;
+        toRemove = removeSpecificGoods(Color.RED, toRemove);
+        toRemove = removeSpecificGoods(Color.YELLOW, toRemove);
+        toRemove = removeSpecificGoods(Color.GREEN, toRemove);
+        toRemove = removeSpecificGoods(Color.BLUE, toRemove);
+        if(toRemove > 0){
+            removeBatteries(toRemove);
+        }
+    }
     //returns the number of double engines on the ship board
     public int getNumberDoubleEngines() {
         int numberDoubleEngines = 0;
