@@ -215,7 +215,10 @@ public class ShipBoard {
         }
 
     }
-
+    //increases the number of lost components for the number of unused reserved components
+    public void loseReservedComponents(){
+        lostComponents+=reservedComponents.size();
+    }
     //checks if the ship board has multiple regions (floating group of components)
     private boolean hasMultipleRegions(){
         boolean[][] visitedComponents = new boolean[assembledComponents.size()][assembledComponents.get(0).size()];
@@ -256,7 +259,6 @@ public class ShipBoard {
         dfs(components, row, col+1, visited);
         dfs(components, row, col-1, visited);
     }
-
     //counts the number of exposed connectors of the ship board
     public int countExposedConnectors() {
         int exposedConnectors = 0;

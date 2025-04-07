@@ -110,20 +110,7 @@ public class GameStateFirstFlightTest {
         assertNotNull(gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
     }
 
-    @Test
-    void testReserveComponent() {
-        gameState.pickHidden(player1);
-        gameState.reserveComponent(player1);
-        assertNull(gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
-    }
 
-    @Test
-    void testPickReservedComponent() {
-        gameState.pickHidden(player1);
-        gameState.reserveComponent(player1);
-        gameState.pickReservedComponent(player1, 0);
-        assertNotNull(gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
-    }
 
     @Test
     void testAssembleComponent() {

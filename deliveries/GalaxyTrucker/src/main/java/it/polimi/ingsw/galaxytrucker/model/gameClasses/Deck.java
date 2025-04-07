@@ -34,6 +34,12 @@ public class Deck {
         }
         this.picked = true;
     }
+    public void setNotPicked() throws PickedDeckException{       //invoked when a player releases a deck
+        if(!picked){
+            throw new PickedDeckException("The deck has been picked by another player");
+        }
+        this.picked = false;
+    }
 
     public EventCard drawCard() throws EmptyDeckException {     //removes and returns the last card of the deck
         if (cards.isEmpty()) {
