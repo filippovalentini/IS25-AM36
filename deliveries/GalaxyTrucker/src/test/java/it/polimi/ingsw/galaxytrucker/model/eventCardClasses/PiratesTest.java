@@ -1,5 +1,6 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
+import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
@@ -21,6 +22,7 @@ class PiratesTest {
     String nickname2;
     List<CannonShot> cannonShots;
 
+
     @BeforeEach
     void init(){
         gameState = new GameState(false, 2);
@@ -38,6 +40,19 @@ class PiratesTest {
         cannonShots.add(cShotNotLarge1);
         cannonShots.add(cShotNotLarge2);
         pirates = new Pirates(4, 0, cannonShots, 1, 0);
+        gameState.setGameState(State.SHIP_BUILDING);
+        int c=0;
+        for (int i = 0; i < 151; i++) { //show all components
+            gameState.pickHidden(nickname);
+            gameState.putShown(nickname);
+        }
+        List<Component> shownComponents = gameState.getShownComponent();
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 7; j++) {
+                gameState.assembleComponent(nickname,gameState.getShownComponent().get(c), i, j);
+                c += c;
+            }
+        }
         gameState.setGameState(State.CARD_SOLVING);
     }
 
@@ -61,6 +76,8 @@ class PiratesTest {
         int diceResult = 4;
         boolean activateShield = false;
         boolean activateCannon = false;
+        pirates.hitShip(gameState, nickname, diceResult, activateShield, activateCannon);
+        assertEquals(true, gameState.getPlayersPlay().get(nickname).getShipBoard().getAssembledComponent(4, 0).getImageID()==0);
         assertDoesNotThrow(() -> pirates.hitShip(gameState, nickname, diceResult, activateShield, activateCannon));
     }
 
