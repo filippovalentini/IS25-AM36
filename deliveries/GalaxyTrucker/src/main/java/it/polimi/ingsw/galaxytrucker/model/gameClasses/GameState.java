@@ -1,5 +1,6 @@
 package it.polimi.ingsw.galaxytrucker.model.gameClasses;
 
+import it.polimi.ingsw.galaxytrucker.ServerRMI.VirtualViewRMI;
 import it.polimi.ingsw.galaxytrucker.model.componentClasses.*;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.*;
@@ -22,6 +23,7 @@ public class GameState {
     private List<Component> hiddenComponents;       //components turned face down during the assembling phase
     private List<Component> shownComponents;        //components turned face up during the assembling phase
     private State state;            //current state of the game
+    final List<VirtualViewRMI> clients = new ArrayList<>();     //list of all clients
 
     public GameState(boolean firstFlight, int numPlayers) {     //constructor, creates the deck(s) of cards and instantiates the components
         this.firstFlight = firstFlight;
