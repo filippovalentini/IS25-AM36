@@ -21,6 +21,7 @@ class PiratesTest {
     String nickname2;
     List<CannonShot> cannonShots;
 
+
     @BeforeEach
     void init(){
         gameState = new GameState(false, 2);
