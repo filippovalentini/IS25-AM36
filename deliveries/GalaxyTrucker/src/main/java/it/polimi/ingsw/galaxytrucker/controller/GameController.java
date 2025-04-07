@@ -1,4 +1,4 @@
-package it.polimi.ingsw.galaxytrucker.controller;
+vpackage it.polimi.ingsw.galaxytrucker.controller;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.*;
@@ -16,7 +16,7 @@ public class GameController {
     //STARTING PHASE
 
     //invoked when one of the players decides to start the assembling phase
-    public void addPlayer(VirtualViewRMI client, String nickname, Color color) throws UniqueNicknameException, UniquePlayerColorException, InvalidActionException{
+    public void addPlayer(String nickname, Color color) throws UniqueNicknameException, UniquePlayerColorException, InvalidActionException {
         synchronized (model) {
             model.addPlayer(nickname, color);
         }
@@ -25,343 +25,162 @@ public class GameController {
     //ASSEMBLING PHASE
 
     //invoked when a player wants to pick a component among the one placed face down (assembling phase)
-    public void pickHidden(String nickname)throws PickedComponentException, InvalidActionException{
+    public void pickHidden(String nickname) throws PickedComponentException, InvalidActionException {
         synchronized (model) {
             model.pickHidden(nickname);
         }
     }
+
     //invoked when a player wants to pick a specific component among the one placed face up (assembling phase)
-    public int pickShown(String nickname, int index) throws PickedComponentException, InvalidActionException{
+    public void pickShown(String nickname, int index) throws PickedComponentException, InvalidActionException {
         synchronized (model) {
             model.pickShown(nickname, index);
         }
     }
-    //invoked when a player wants to reserve the component that it has picked for its ship board
-    public int reserveComponent(String nickname){
-        synchronized (model) {
 
+    //invoked when a player wants to reserve the component that it has picked for its ship board
+    public void reserveComponent(String nickname) throws PickedComponentException, ReservedComponentException, InvalidActionException {
+        synchronized (model) {
+            model.reserveComponent(nickname);
         }
     }
+
     //invoked when a player wants to pick one of the components that it has reserved for its ship board
-    public int pickReservedComponent(String nickname, int position)  {
+    public void pickReservedComponent(String nickname, int position) throws ReservedComponentException, PickedComponentException, InvalidActionException {
         synchronized (model) {
-            try{
-                model.pickReservedComponent(nickname, position);
-                return 0;       //successful picked component
-            }
-            catch(InvalidActionException e){
-                return -1;      //invalid action (wrong game phase)
-            }
-            catch(PickedComponentException e){
-                return -2;      //already picked component
-            }
-            catch(ReservedComponentException e){
-                return -3;      //no reserved component in this position
-            }
+            model.pickReservedComponent(nickname, position);
         }
     }
+
     //invoked when a player wants to release (therefore, place face up) the component that it has picked
-    public int putShown(String nickname)  {
+    public void putShown(String nickname) throws PickedComponentException, InvalidActionException {
         synchronized (model) {
-            try{
-                model.putShown(nickname);
-                return 0;       //successful released component
-            }
-            catch(InvalidActionException e){
-                return -1;      //invalid action (wrong game phase)
-            }
-            catch(PickedComponentException e){
-                return -2;      //no picked component to release
-            }
+            model.putShown(nickname);
         }
     }
+
     //invoked when a player wants to assemble on the ship board the component that it has picked
-    public int assembleComponent(String nickname, int x, int y)  {
+    public void assembleComponent(String nickname, int x, int y) throws AssembledComponentException, PickedComponentException, InvalidActionException {
         synchronized (model) {
-            try{
-                model.assembleComponent(nickname, x, y);
-                return 0;       //successful assembled component
-            }
-            catch(InvalidActionException e){
-                return -1;      //invalid action (wrong game phase)
-            }
-            catch(PickedComponentException e){
-                return -2;      //no picked component to assemble
-            }
-            catch (AssembledComponentException e){
-                return -3;      //already assembled component
-            }
+            model.assembleComponent(nickname, x, y);
         }
     }
+
     //invoked when a player wants to change the orientation of the component that it has picked
-    public int rotatePickedComponent(String nickname) {
+    public void rotatePickedComponent(String nickname) throws InvalidActionException, PickedComponentException {
         synchronized (model) {
-            try{
-                model.rotatePickedComponent(nickname);
-                return 0;       //successful rotated component
-            }
-            catch(InvalidActionException e){
-                return -1;      //invalid action (wrong game phase)
-            }
-            catch(PickedComponentException e) {
-                return -2;      //no picked component to rotate
-            }
+            model.rotatePickedComponent(nickname);
         }
     }
+
     //invoked when a player wants to pick a deck during the assembling phase to see its content
-    public int pickDeck(String nickname, int deckNumber)  {
+    public void pickDeck (String nickname, int deckNumber) throws PickedDeckException, InvalidActionException {
         synchronized (model) {
-            try{
-                model.pickDeck(nickname, deckNumber);
-                return 0;
-            }
-            catch(InvalidActionException e){
-                return -1;
-            }
-            catch(PickedDeckException e) {
-                return -2;
-            }
+            model.pickDeck(nickname, deckNumber);
         }
     }
+
     //invoked when a player wants to release the deck it has picked, during the assembling phase
-    public int releaseDeck(String nickname)  {
+    public void releaseDeck(String nickname) throws InvalidActionException, PickedDeckException {
         synchronized (model) {
-            try{
-                model.releaseDeck(nickname);
-                return 0;
-            }
-            catch(InvalidActionException e){
-                return -1;
-            }
-            catch(PickedDeckException e) {
-                return -2;
-            }
+            model.releaseDeck(nickname);
         }
     }
+
     //invoked when a player has finished the assembling phase and has to pick a free position on the flight board
-    public int setPosition(String nickname, int initCell)  {
+    public void setPosition(String nickname, int initCell) throws InvalidActionException, PickedDeckException{
         synchronized (model) {
-            try{
-                model.setPosition(nickname, initCell);
-                if(model.getGameState() == State.SHIP_BUILDING){
-                    return 0;       //set initial position, waiting for other players to finish building
-                }
-                else{
-                    return 1;       //set initial position and assembling phase finished
-                }
-            }
-            catch(InvalidActionException e){
-                return -1;      //invalid action (wrong game phase)
-            }
-            catch(InvalidPositionException e) {
-                return -2;      //wrong initial position
-            }
+            model.setPosition(nickname, initCell);
         }
     }
 
     //SHIP CONTROL PHASE
 
-    public int destroyComponent(String nickname, int x, int y)  {
+    public void destroyComponent(String nickname, int x, int y) throws AssembledComponentException, InvalidActionException {
         synchronized (model) {
-            try{
-                model.destroyComponent( nickname, x, y);
-                if(model.getGameState() == State.SHIP_CONTROL){
-                    return 0;       //component destroyed, but still other components must be destroyed, belonging
-                                    //to the player's ship or to one of other players.
-                }else{
-                    return 1;       //component destroyed, all the ships are ok and the game can start
-                }
-            }
-            catch(InvalidActionException e){
-                return -1;          //invalid action (wrong game phase)
-            }
-            catch(AssembledComponentException e){
-                return -2;          //no assembled component to destroy
-            }
+            model.destroyComponent(nickname, x, y);
         }
     }
 
     //FLIGHT PHASE
 
     //this method is invoked when a player has to leave the game
-    public int quitGame(String nickname)  {
+    public void quitGame(String nickname) throws InvalidActionException{
         synchronized (model) {
-            try{
-                model.quitGame(nickname);
-                return 0;           //player has correctly left the game
-            }
-            catch(InvalidActionException e){
-                return -1;          //invalid action (wrong game phase)
-            }
+            model.quitGame(nickname);
         }
     }
+
     //invoked when the leader draws a new card from the deck (during the game), which must be solved
-    public int pickNextCard(String nickname) {
+    public void pickNextCard(String nickname) throws InvalidActionException {
         synchronized (model) {
-            try{
-                model.pickNextCard(nickname);
-                if(model.getGameState() == State.CARD_SOLVING){
-                    return 0;       //card picked, it must be solved
-                }else{
-                    return 1;       //no card to pick, game over
-                }
-            }
-            catch(InvalidActionException e){
-                return -1;          //invalid action (wrong game phase)
-            }
+            model.pickNextCard(nickname);
         }
     }
+
     //invoked when a player decides to land on a planet in order to gain goods
-    public int planetLanding(String nickname, int numberPlanet) {
+    public void planetLanding(String nickname, int numberPlanet) throws InvalidActionException {
         synchronized (model) {
-            try {
-                model.planetLanding(nickname, numberPlanet);
-                if(model.getGameState() == State.CARD_SOLVING){
-                    return 0;       //player has finished but other player have to solve the card
-                }
-                else {
-                    return 1;       //player has finished and a new card has to be picked
-                }
-            }
-            catch(InvalidActionException e){
-                return -1;          //invalid action (wrong game phase)
-            }
+            model.planetLanding(nickname, numberPlanet);
         }
     }
+
     //invoked when a player's ship has to be hit by a meteor/cannon shot; the player can decide whether to
     //activate a shield or a cannon to defend its ship
-    public int hit(String nickname, int diceResult, boolean activateShield, boolean activateCannon) {
+    public void hit(String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException, NoBatteriesException {
         synchronized (model) {
-            try {
-                model.hit(nickname, diceResult, activateShield, activateCannon);
-                if(model.getGameState() == State.CARD_SOLVING){
-                    return 0;       //player has finished but other player have to solve the card
-                }
-                else {
-                    return 1;       //player has finished and a new card has to be picked
-                }
-            }
-            catch(InvalidActionException e){
-                return -1;          //invalid action (wrong game phase)
-            }
-            catch(NoBatteriesException e) {
-                return -2;          //player doesn't have enough batteries
-            }
+            model.hit(nickname, diceResult, activateShield, activateCannon);
         }
     }
+
     //invoked when a player decides to land on an abandoned station/ship
-    public int landing(String nickname, List<Integer> x, List<Integer> y, List<Integer> z) {
+    public void landing(String nickname, List<Integer> x, List<Integer> y, List<Integer> z) throws InvalidActionException, NoCrewException {
         synchronized (model) {
-            try {
-                model.landing(nickname, x, y, z);
-                if(model.getGameState() == State.CARD_SOLVING){
-                    return 0;       //player has finished but other player have to solve the card
-                }
-                else {
-                    return 1;       //player has finished and a new card has to be picked
-                }
-            }
-            catch(InvalidActionException e){
-                return -1;          //invalid action (wrong game phase)
-            }
-            catch(NoCrewException e) {
-                return -2;          //player doesn't have enough crew
-            }
+            model.landing(nickname, x, y, z);
         }
     }
+
     //invoked when a player wants to defeat an enemy; the player can decide whether to lose flight days
     //to gain credits/goods or not
-    public int defeat(String nickname, int usedBatteries, boolean loseDays) {
+    public void defeat(String nickname, int usedBatteries, boolean loseDays) throws InvalidActionException, NoBatteriesException {
         synchronized (model) {
-            try {
-                model.defeat(nickname, usedBatteries, loseDays);
-                if(model.getGameState() == State.CARD_SOLVING){
-                    return 0;       //player has finished but other player have to solve the card
-                }
-                else {
-                    return 1;       //player has finished and a new card has to be picked
-                }
-            }
-            catch(InvalidActionException e){
-                return -1;          //invalid action (wrong game phase)
-            }
-            catch(NoBatteriesException e) {
-                return -2;          //player doesn't have enough batteries
-            }
+            model.defeat(nickname, usedBatteries, loseDays);
         }
     }
+
     //invoked when a player wants to fly across the flight board exploiting its engine strength
-    public int fly(String nickname, int usedBatteries)  {
+    public void fly(String nickname, int usedBatteries) throws InvalidActionException, NoBatteriesException {
         synchronized (model) {
-            try {
-                model.fly(nickname, usedBatteries);
-                if(model.getGameState() == State.CARD_SOLVING){
-                    return 0;       //player has finished but other player have to solve the card
-                }
-                else {
-                    return 1;       //player has finished and a new card has to be picked
-                }
-            }
-            catch(InvalidActionException e){
-                return -1;          //invalid action (wrong game phase)
-            }
-            catch(NoBatteriesException e) {
-                return -2;          //player doesn't have enough batteries
-            }
+            model.fly(nickname, usedBatteries);
         }
     }
+
     //invoked when a player wants to use batteries to have an advantage while solving a card
-    public int useBatteries(String nickname, int usedBatteries)  {
+    public void useBatteries(String nickname, int usedBatteries) throws InvalidActionException, NoBatteriesException {
         synchronized (model) {
-            try {
-                model.useBatteries(nickname, usedBatteries);
-                if(model.getGameState() == State.CARD_SOLVING){
-                    return 0;       //player has finished but other player have to solve the card
-                }
-                else {
-                    return 1;       //player has finished and a new card has to be picked
-                }
-            }
-            catch(InvalidActionException e){
-                return -1;          //invalid action (wrong game phase)
-            }
-            catch(NoBatteriesException e) {
-                return -2;          //player doesn't have enough batteries
-            }
+            model.useBatteries(nickname, usedBatteries);
         }
     }
+
     //invoked when a player doesn't want to exploit the benefits of a card and therefore skips the turn
-    public int skip(String nickname)  {
+    public void skip(String nickname) throws InvalidActionException {
         synchronized (model) {
-            try {
-                model.skip(nickname);
-                if(model.getGameState() == State.CARD_SOLVING){
-                    return 0;       //player has finished but other player have to solve the card
-                }
-                else {
-                    return 1;       //player has finished and a new card has to be picked
-                }
-            }
-            catch(InvalidActionException e){
-                return -1;          //invalid action (wrong game phase)
-            }
+            model.skip(nickname);
         }
     }
 
     //[method for testing]
-    public State getModelState(){
+    public State getModelState() {
         return model.getGameState();
     }
+
     //[method for testing]
-    public void setModelDeck(Deck customDeck){
+    public void setModelDeck(Deck customDeck) {
         model.setGameDeck(customDeck);
     }
+
     //[method for testing]
-    public void getModelDeck(Deck customDeck){
-        model.setGameDeck(customDeck);
-    }
-    //[method for testing]
-    public EventCard getModelCurrentCard(){
+    public EventCard getModelCurrentCard() {
         return model.getCurrentCard();
     }
 }
