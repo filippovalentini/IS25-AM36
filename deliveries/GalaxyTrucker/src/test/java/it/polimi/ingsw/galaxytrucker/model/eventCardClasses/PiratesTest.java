@@ -23,6 +23,7 @@ class PiratesTest {
     List<CannonShot> cannonShots;
 
 
+
     @BeforeEach
     void init(){
         gameState = new GameState(false, 2);
