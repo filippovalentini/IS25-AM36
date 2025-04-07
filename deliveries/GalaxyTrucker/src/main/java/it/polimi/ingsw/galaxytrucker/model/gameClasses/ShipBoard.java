@@ -54,6 +54,7 @@ public class ShipBoard {
 
     public void assembleComponent(Component component, int x, int y) {
         assembledComponents.get(x).set(y, component);
+        updateCorrectness();
     }
 
 
@@ -207,10 +208,55 @@ public class ShipBoard {
                 break;
             }
         }
-
-        correct = correctness;
+        if(this.hasMultipleRegions()){
+            correct = false;
+        }else {
+            correct = correctness;
+        }
 
     }
+
+    //checks if the ship board has multiple regions (floating group of components)
+    private boolean hasMultipleRegions(){
+        boolean[][] visitedComponents = new boolean[assembledComponents.size()][assembledComponents.get(0).size()];
+        int regionCount = 0;
+        for(int i=0; i<assembledComponents.size(); i++){
+            for(int j=0; j<assembledComponents.get(i).size(); j++){
+                Component analyzedComponent = assembledComponents.get(i).get(j);
+                if(!analyzedComponent.isNotEmpty() || !analyzedComponent.belongsToShip()){
+                    continue;
+                }
+                if(!visitedComponents[i][j]){
+                    if(regionCount >= 1){
+                        return true;
+                    }
+                    dfs(assembledComponents, i, j, visitedComponents);
+                    regionCount++;
+                }
+            }
+        }
+        return regionCount > 1;
+    }
+    //Deep-First-Search for multiple regions check
+    private static void dfs(List<List<Component>> components, int row, int col, boolean[][] visited){
+        if(row < 0 || col < 0 || row >= components.size() || col >= components.get(row).size()){
+            return;
+        }
+        Component analyzedComponent = components.get(row).get(col);
+        if(visited[row][col]){
+            return;
+        }
+        if(!analyzedComponent.isNotEmpty() || !analyzedComponent.belongsToShip()){ // empty and space are considered as wall
+            return;
+        }
+        visited[row][col] = true;
+        //all adjacent directions
+        dfs(components, row+1, col, visited);
+        dfs(components, row-1, col, visited);
+        dfs(components, row, col+1, visited);
+        dfs(components, row, col-1, visited);
+    }
+
     //counts the number of exposed connectors of the ship board
     public int countExposedConnectors() {
         int exposedConnectors = 0;
@@ -437,6 +483,30 @@ public class ShipBoard {
             }
         }
     }
+    //remove the specified crew members from the specified cabins in the ship board
+    public void removeCrewMembers(List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) throws NoCrewException {
+        int sumRemovedCrewMembers = 0;
+        for(int i=0; i<x.size(); i++){
+            if(assembledComponents.get(x.get(i)).get(y.get(i)).getClass() != Cabin.class){
+                throw new NoCrewException("Invalid component, it must be a cabin");
+            }
+            else {
+                ((Cabin) assembledComponents.get(x.get(i)).get(y.get(i))).removeCrew(eachCabinCrew.get(i));
+                sumRemovedCrewMembers += eachCabinCrew.get(i);
+            }
+        }
+        if(sumRemovedCrewMembers != numberCrewToRemove){
+            throw new NoCrewException("Wrong number of crew members to remove");
+        }
+    }
+    //substitutes the cargo good at the given coordinates with the good given in input
+    public void substituteGoods(int cargo_row, int cargo_col, Color good, int pos){
+        if(good==Color.RED){ //special cargo needed
+            ((CargoSpecial)(assembledComponents).get(cargo_row).get(cargo_col)).substituteGood(good, pos);
+        }else {
+            ((CargoHold) (assembledComponents.get(cargo_row).get(cargo_col))).substituteGood(good, pos);
+        }
+    }
     //invoked when a meteor/cannon shot hits the ship board
     public void meteorAttack(Meteor meteor, int direction, boolean activateShield, boolean activateCannon){
         Orientation orientation = meteor.getOrientation();
@@ -522,25 +592,74 @@ public class ShipBoard {
     }
     //removes batteries from the ship board
     public void removeBatteries(int batteries) throws NoBatteriesException{
+        int toRemove = batteries;
         int componentBatteries;
         for (List<Component> componentRow : assembledComponents) {
             for (Component component : componentRow) {
                 componentBatteries = component.getNumberBatteries();
                 if(componentBatteries > 0){
-                    if(componentBatteries >= batteries){
-                        component.useBatteries(batteries);
-                        batteries = 0;
+                    if(componentBatteries >= toRemove){
+                        component.useBatteries(toRemove);
+                        toRemove = 0;
                         break;
                     }
                     else{
                         component.useBatteries(componentBatteries);
-                        batteries-=componentBatteries;
+                        toRemove-=componentBatteries;
                     }
                 }
             }
-            if(batteries ==0){
+            if(toRemove ==0){
                 break;
             }
+        }
+    }
+    //returns the number of goods on the ship board
+    public int getNumberGoods() {
+        int numberGoods = 0;
+        for (List<Component> componentRow : assembledComponents) {
+            for (Component component : componentRow) {
+                numberGoods += component.getNumberGoods();
+            }
+        }
+        return numberGoods;
+    }
+    //this method removes numberGoods goods of a specific color from the ship board; if there aren't enough
+    //goods of that color, it returns the number of missing goods, otherwise it returns 0
+    public int removeSpecificGoods(Color color, int numberGoods){
+        int toRemove = numberGoods;
+        int componentGoods;
+        for (List<Component> componentRow : assembledComponents) {
+            for (Component component : componentRow) {
+                componentGoods = component.getNumberGoods(color);
+                if(componentGoods > 0){
+                    if(componentGoods >= toRemove){
+                        component.removeSpecificGoods(color, toRemove);
+                        toRemove = 0;
+                        break;
+                    }
+                    else{
+                        component.removeSpecificGoods(color, componentGoods);
+                        toRemove-= componentGoods;
+                    }
+                }
+            }
+            if(toRemove ==0){
+                break;
+            }
+        }
+        return toRemove;
+    }
+    //this method removes the numberGoods-most precious goods from the  ship board
+    public void losePreciousGoods(int numberGoods){
+        int toRemove = numberGoods;
+        int componentGoods;
+        toRemove = removeSpecificGoods(Color.RED, toRemove);
+        toRemove = removeSpecificGoods(Color.YELLOW, toRemove);
+        toRemove = removeSpecificGoods(Color.GREEN, toRemove);
+        toRemove = removeSpecificGoods(Color.BLUE, toRemove);
+        if(toRemove > 0){
+            removeBatteries(toRemove);
         }
     }
     //returns the number of double engines on the ship board
@@ -642,30 +761,4 @@ public class ShipBoard {
         return goodsPrice;
     }
 
-
-
-    //remove the specified crew members from each cabin in the ship board
-    public void removeCrewMembers(List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) throws NoCrewException {
-        int sumRemovedCrewMembers = 0;
-        for(int i=0; i<x.size(); i++){
-            if(assembledComponents.get(x.get(i)).get(y.get(i)).getClass() != Cabin.class){
-                throw new NoCrewException("Invalid component, it must be a cabin");
-            }
-            else {
-                ((Cabin) assembledComponents.get(x.get(i)).get(y.get(i))).removeCrew(eachCabinCrew.get(i));
-                sumRemovedCrewMembers += eachCabinCrew.get(i);
-            }
-        }
-        if(sumRemovedCrewMembers != numberCrewToRemove){
-            throw new NoCrewException("Wrong number of crew members to remove");
-        }
-    }
-    //substitute cargo goods at the given coordinates with the goods given in input
-    public void substituteCargoGoodGivenGood(int cargo_row, int cargo_col, Color good, int pos){
-        if(good==Color.RED){ //special cargo needed
-            ((CargoSpecial)(assembledComponents).get(cargo_row).get(cargo_col)).substituteGood(good, pos);
-        }else {
-            ((CargoHold) (assembledComponents.get(cargo_row).get(cargo_col))).substituteGood(good, pos);
-        }
-    }
 }

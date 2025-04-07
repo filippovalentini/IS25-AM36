@@ -34,7 +34,7 @@ public class Component {
     @Override
     public boolean equals(Object component) {
         if(this == component) return true;
-        if(component == null || getClass() != component.getClass()) return false;
+        if(component == null) return false;
         return this.imageID == ((Component) component).getImageID();
     }
 
@@ -122,6 +122,9 @@ public class Component {
         return 0;
     }
     public int getNumberBatteries(){ return 0;}
+    public int getNumberGoods() { return 0;}
+    public int getNumberGoods(Color color){ return 0;}
+    public void removeSpecificGoods(Color color, int numberGoods){}
     public void useBatteries(int batteriesToUse) throws NoBatteriesException{}
     public boolean protects(Orientation orientation){ return false;}
     public boolean pointsForward(){ return false;}

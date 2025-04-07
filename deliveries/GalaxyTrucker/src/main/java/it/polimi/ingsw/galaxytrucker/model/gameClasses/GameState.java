@@ -5,6 +5,8 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.*;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.model.shotClasses.*;
+
+import javax.smartcardio.Card;
 import java.util.*;
 
 //this class describes the entire status of the game, the controller will invoke its methods in order to modify the
@@ -38,6 +40,16 @@ public class GameState {
      //METODO DA TOGLIERE!!!!!!!!!!
     public void assembleComponent(String nickname, Component component, int x, int y){
         playersPlay.get(nickname).assembleComponent(component, x, y);
+    }
+
+    //[method for testing] set a custom deck
+    public void setGameDeck(Deck deck){
+        gameDeck = deck;
+    }
+
+    //[method for testing]
+    public EventCard getCurrentCard(){
+        return this.currentCard;
     }
 
     public void setGameState(State state) {
@@ -85,6 +97,14 @@ public class GameState {
     public int getNumberBatteries(String nickname){
         return playersPlay.get(nickname).getNumberBatteries();
     }
+    //returns the number of goods on a player's ship board
+    public int getNumberGoods(String nickname){
+        return playersPlay.get(nickname).getNumberGoods();
+    }
+    //this method removes the numberGoods-most precious goods from a player's ship board
+    public void losePreciousGoods(String nickname, int numberGoods){
+        playersPlay.get(nickname).losePreciousGoods(numberGoods);
+    }
     //this method returns the nickname of the player with fewer crew members
     public String getCrewMinPlayer() {
         int numberCrew;
@@ -116,8 +136,8 @@ public class GameState {
         playersPlay.get(nickname).updateCredits(update);
     }
     //substitutes (or adds) a good in a specific container of a player's cargo hold
-    public void substitutePlayerGood(String nickname, int cargo_row, int cargo_col, Color good, int pos){
-        playersPlay.get(nickname).substituteShipboardCargoGood(cargo_row, cargo_col, good, pos);
+    public void substituteGoods(String nickname, int cargo_row, int cargo_col, Color good, int pos){
+        playersPlay.get(nickname).substituteGoods(cargo_row, cargo_col, good, pos);
     }
 
     //
@@ -597,8 +617,11 @@ public class GameState {
     public void setTurnPlayer(String nickname){
         this.turnPlayer = nickname;
     }
-    //this method is invoked when a player has to leave the game
-    public void quitGame(String nickname){
+    //this method is invoked when a player wants to leave the game
+    public void quitGame(String nickname) throws InvalidActionException {
+        if(state != State.CARD_PICKING){
+            throw new InvalidActionException("Invalid action");
+        }
         playersPos.remove(nickname);
         playersPlay.get(nickname).quitGame();
     }
@@ -626,6 +649,10 @@ public class GameState {
             throw new InvalidActionException("Card must be picked first");
         }
         playersPlay.get(nickname).epidemicEffect();
+    }
+    //this method is invoked when a player has/wants to remove crew members from its ship board
+    public void removedCrewMember(String nickname, List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) {
+        playersPlay.get(nickname).removeCrewMembers(x, y, eachCabinCrew, numberCrewToRemove);
     }
     //invoked when a meteor hits a player's ship board
     public void meteorAttack(String nickname, Meteor meteor, int direction, boolean activateShield, boolean activateCannon) throws InvalidActionException {
@@ -785,9 +812,6 @@ public class GameState {
 
 
 
-    public void removedCrewMember(String nickname, List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) {
-        playersPlay.get(nickname).removeShipBoardCrew(x, y, eachCabinCrew, numberCrewToRemove);
-    }
 
 
 

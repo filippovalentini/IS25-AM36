@@ -24,7 +24,7 @@ public class EventCard  {
     }
     //invoked when a player's ship has to be hit by a meteor/cannon shot; the player can decide whether to
     //activate a shield or a cannon to defend its ship
-    public void hitShip(GameState gameState, String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException {
+    public void hitShip(GameState gameState, String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException, NoBatteriesException {
         throw new InvalidActionException("Invalid action");
     }
     //invoked when a player decides to land on an abandoned station/ship
@@ -34,7 +34,7 @@ public class EventCard  {
     //invoked when a card is picked from the deck during the solving phase; it has an effect on all the players of
     //the game without requiring user actions
     public void specialEffect(GameState gameState) throws InvalidActionException {
-        throw new InvalidActionException("Invalid action");
+        return;
     }
     //invoked when a player wants to defeat an enemy; the player can decide whether to lose flight days
     //to gain credits/goods or not

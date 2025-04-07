@@ -47,9 +47,6 @@ public class Player {
     public Color getColor(){
         return shipBoard.getColor();
     }
-    public void removeShipBoardCrew(List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) {
-        shipBoard.removeCrewMembers(x, y, eachCabinCrew, numberCrewToRemove);
-    }
 
     //invoked when the player of the ship board picks a component from the table
     public void pickComponent(Component component) throws PickedComponentException{
@@ -92,6 +89,10 @@ public class Player {
     public void epidemicEffect(){
         shipBoard.epidemicEffect();
     }
+    //this method is invoked when the player has/wants to remove crew members from its ship board
+    public void removeCrewMembers(List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) {
+        shipBoard.removeCrewMembers(x, y, eachCabinCrew, numberCrewToRemove);
+    }
     //invoked when a meteor/cannon shot hits a player's ship board
     public void meteorAttack(Meteor meteor, int direction, boolean activateShield, boolean activateCannon) {
         shipBoard.meteorAttack(meteor, direction, activateShield, activateCannon);
@@ -107,6 +108,14 @@ public class Player {
     //returns the number of batteries in the player's shipboard
     public int getNumberBatteries() {
         return shipBoard.getNumberBatteries();
+    }
+    //returns the number of goods on the player's ship board
+    public int getNumberGoods() {
+        return shipBoard.getNumberGoods();
+    }
+    //this method removes the numberGoods-most precious goods from the player's ship board
+    public void losePreciousGoods(int numberGoods){
+        shipBoard.losePreciousGoods(numberGoods);
     }
     //returns the cannon strength of a player, removing the given batteries from its ship board in order to activate double cannons
     public double getCannonStrength(int usedBatteries){
@@ -128,9 +137,9 @@ public class Player {
     public void updateCredits(int update) {     //updates teh cosmic credits pf a player
         this.credits += update;
     }
-
-    public void substituteShipboardCargoGood(int cargo_row, int cargo_col, Color good, int pos){
-        this.shipBoard.substituteCargoGoodGivenGood(cargo_row, cargo_col, good, pos);
+    //substitutes (in the player's ship) the cargo good at the given coordinates with the good given in input
+    public void substituteGoods(int cargo_row, int cargo_col, Color good, int pos){
+        this.shipBoard.substituteGoods(cargo_row, cargo_col, good, pos);
     }
 
 }

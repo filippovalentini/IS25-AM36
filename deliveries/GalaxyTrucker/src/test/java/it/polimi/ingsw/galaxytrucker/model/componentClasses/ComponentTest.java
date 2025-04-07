@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -77,4 +78,13 @@ class ComponentTest {
     void testIsWellOriented() {
         assertTrue(component.isWellOriented());
     }
+
+    @Test
+    void testIsNotEmpty(){
+        Component c1 = new Battery(false, 1, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.SMOOTH)));
+        assertTrue(c1.isNotEmpty());
+        Component c2 = new Battery(false, 0, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.SMOOTH)));
+        assertFalse(c2.isNotEmpty());
+    }
+
 }
