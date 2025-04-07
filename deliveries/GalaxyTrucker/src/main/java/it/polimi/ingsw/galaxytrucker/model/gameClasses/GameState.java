@@ -23,7 +23,7 @@ public class GameState {
     private List<Component> hiddenComponents;       //components turned face down during the assembling phase
     private List<Component> shownComponents;        //components turned face up during the assembling phase
     private State state;            //current state of the game
-    final List<VirtualViewRMI> clients = new ArrayList<>();     //list of all clients
+    final Map<String, VirtualViewRMI> clients = new HashMap<>();     //list of all clients
 
     public GameState(boolean firstFlight, int numPlayers) {     //constructor, creates the deck(s) of cards and instantiates the components
         this.firstFlight = firstFlight;
@@ -418,7 +418,7 @@ public class GameState {
         currentCard = null;
     }
     //adds a player to the game
-    public void addPlayer(String nickname, Color color) throws UniqueNicknameException, UniquePlayerColorException, InvalidActionException {
+    public void addPlayer(VirtualViewRMI client, String nickname, Color color) throws UniqueNicknameException, UniquePlayerColorException, InvalidActionException {
         if(state != State.WAITING_FOR_PLAYERS){
             throw new InvalidActionException("Game has already been started");
         }
@@ -432,8 +432,13 @@ public class GameState {
         }
         playersPlay.put(nickname, new Player(nickname, color, firstFlight));
         playersPos.put(nickname, null);
+        clients.put(nickname, client);
+        client.updateWaitingForPlayers();
         if(numPlayers == getCurrentPlayers()){
             startAssembling();
+            for(VirtualViewRMI view: clients.values()){
+                view.updateStartAssembling();
+            }
         }
     }
     //invoked when one of the players decides to start the assembling phase
