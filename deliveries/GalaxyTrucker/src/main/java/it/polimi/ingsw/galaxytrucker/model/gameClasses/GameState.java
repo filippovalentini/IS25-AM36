@@ -6,7 +6,6 @@ import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.*;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.model.shotClasses.*;
 
-import javax.smartcardio.Card;
 import java.util.*;
 
 //this class describes the entire status of the game, the controller will invoke its methods in order to modify the
@@ -32,25 +31,27 @@ public class GameState {
         this.numPlayers = numPlayers;
         this.state = State.WAITING_FOR_PLAYERS;
     }
+
+
+
+     //[method for testing]
+    public void assembleComponent(String nickname, Component component, int x, int y){
+        playersPlay.get(nickname).assembleComponent(component, x, y);
+    }
+    //[method for testing] set a custom deck
+    public void setGameDeck(Deck deck){
+        gameDeck = deck;
+    }
+    //[method for testing]
+    public EventCard getCurrentCard(){
+        return this.currentCard;
+    }
+
     //
     // GETTERS AND SETTERS
     // these methods don't belong to the model-controller interface, but are needed by the methods of
     // the EventCardClasses package in order to modify the model due to the effect of a card
     //
-     //METODO DA TOGLIERE!!!!!!!!!!
-    public void assembleComponent(String nickname, Component component, int x, int y){
-        playersPlay.get(nickname).assembleComponent(component, x, y);
-    }
-
-    //[method for testing] set a custom deck
-    public void setGameDeck(Deck deck){
-        gameDeck = deck;
-    }
-
-    //[method for testing]
-    public EventCard getCurrentCard(){
-        return this.currentCard;
-    }
 
     public void setGameState(State state) {
         this.state = state;
@@ -463,14 +464,14 @@ public class GameState {
     }
     //invoked when a player wants to reserve the component that it has picked for its ship board
     public void reserveComponent(String nickname) throws PickedComponentException, ReservedComponentException, InvalidActionException {
-        if(state != State.SHIP_BUILDING){
+        if(state != State.SHIP_BUILDING || firstFlight){
             throw new InvalidActionException("Assembling phase is finished");
         }
         playersPlay.get(nickname).reserveComponent();
     }
     //invoked when a player wants to pick one of the components that it has reserved for its ship board
     public void pickReservedComponent(String nickname, int position) throws ReservedComponentException, PickedComponentException, InvalidActionException {
-        if(state != State.SHIP_BUILDING){
+        if(state != State.SHIP_BUILDING || firstFlight){
             throw new InvalidActionException("Assembling phase is finished");
         }
         playersPlay.get(nickname).pickReservedComponent(position);
@@ -495,6 +496,28 @@ public class GameState {
             throw new InvalidActionException("Assembling phase is finished");
         }
         playersPlay.get(nickname).rotatePickedComponent();
+    }
+    //invoked when a player wants to pick a deck during the assembling phase to see its content
+    public void pickDeck(String nickname, int deckNumber) throws PickedDeckException, InvalidActionException {
+        if(state != State.SHIP_BUILDING || firstFlight){
+            throw new InvalidActionException("Invalid action");
+        }
+        if(deckNumber <= 0 || deckNumber >= decks.size()){
+            throw new InvalidActionException("Invalid deck number");
+        }
+        if(decks.get(deckNumber).isPicked()){
+            throw new PickedDeckException("Deck already picked");
+        }
+        playersPlay.get(nickname).pickDeck(deckNumber);
+        decks.get(deckNumber).setPicked();
+    }
+    //invoked when a player wants to release the deck it has picked, during the assembling phase
+    public void releaseDeck(String nickname) throws InvalidActionException, PickedDeckException {
+        if(state != State.SHIP_BUILDING || firstFlight){
+            throw new InvalidActionException("Invalid action");
+        }
+        int releasedDeckNumber = playersPlay.get(nickname).releaseDeck();
+        decks.get(releasedDeckNumber).setNotPicked();
     }
     //invoked when a player has finished the assembling phase and has to pick a free position on the flight board
     public void setPosition(String nickname, int initCell) throws InvalidPositionException, InvalidActionException {
@@ -521,6 +544,7 @@ public class GameState {
         }
         else{
             playersPos.put(nickname, new LevelTwoPosition(initCell));
+            playersPlay.get(nickname).loseReservedComponents();
         }
         if(!playersPos.containsValue(null)){
             state = State.SHIP_CONTROL;

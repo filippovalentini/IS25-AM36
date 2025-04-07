@@ -15,10 +15,12 @@ public class Player {
     private int credits;        //cosmic credits of the player
     private boolean hasAbandoned;       //true if the player has abandoned the game
     private ShipBoard shipBoard;        //ship board of the player
+    private int pickedDeckNumber;         //number of deck picked by the player (0 if no deck has been picked)
 
     public Player(String nickname, Color color, boolean levelOne) {       //constructor
         this.nickname = nickname;
         this.credits = 0;
+        this.pickedDeckNumber = 0;
         this.hasAbandoned = false;
         if(levelOne){
             shipBoard = new LevelOneShipBoard(color);
@@ -36,6 +38,9 @@ public class Player {
     }
     public int getCredits() {
         return credits;
+    }
+    public int getPickedDeckNumber() {
+        return pickedDeckNumber;
     }
     public boolean hasAbandoned() {
         return hasAbandoned;
@@ -75,6 +80,26 @@ public class Player {
     //invoked when a component of the player's ship board must be destroyed
     public void destroyComponent(int x, int y) throws AssembledComponentException{
         shipBoard.destroyComponent(x, y);
+    }
+    //invoked when a player wants to pick a deck during the assembling phase
+    public void pickDeck(int deckNumber) throws PickedDeckException{
+        if(pickedDeckNumber != 0){
+            throw new PickedDeckException("Can't pick another deck");
+        }
+        pickedDeckNumber = deckNumber;
+    }
+    //invoked when a player wants to release the deck it has picked
+    public int releaseDeck() throws PickedDeckException {
+        if(pickedDeckNumber == 0){
+            throw new PickedDeckException("No picked deck");
+        }
+        int releasedDeckNumber = pickedDeckNumber;
+        pickedDeckNumber = 0;
+        return releasedDeckNumber;
+    }
+    //increases the number of lost components for the number of unused reserved components
+    public void loseReservedComponents(){
+        shipBoard.loseReservedComponents();
     }
     //determines whether the player's ship board is correctly assembled
     public boolean hasCorrectShipBoard(){

@@ -1,10 +1,9 @@
 package it.polimi.ingsw.galaxytrucker.controller;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
-import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.EventCard;
+import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.*;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
-import it.polimi.ingsw.galaxytrucker.model.gameClasses.Deck;
-import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
+import it.polimi.ingsw.galaxytrucker.model.gameClasses.*;
 import java.util.List;
 
 public class GameController {
@@ -153,6 +152,36 @@ public class GameController {
             }
             catch(PickedComponentException e) {
                 return -2;      //no picked component to rotate
+            }
+        }
+    }
+    //invoked when a player wants to pick a deck during the assembling phase to see its content
+    public int pickDeck(String nickname, int deckNumber)  {
+        synchronized (model) {
+            try{
+                model.pickDeck(nickname, deckNumber);
+                return 0;
+            }
+            catch(InvalidActionException e){
+                return -1;
+            }
+            catch(PickedDeckException e) {
+                return -2;
+            }
+        }
+    }
+    //invoked when a player wants to release the deck it has picked, during the assembling phase
+    public int releaseDeck(String nickname)  {
+        synchronized (model) {
+            try{
+                model.releaseDeck(nickname);
+                return 0;
+            }
+            catch(InvalidActionException e){
+                return -1;
+            }
+            catch(PickedDeckException e) {
+                return -2;
             }
         }
     }
