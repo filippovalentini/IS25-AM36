@@ -16,59 +16,24 @@ public class GameController {
     //STARTING PHASE
 
     //invoked when one of the players decides to start the assembling phase
-    public int addPlayer(String nickname, Color color) {
+    public void addPlayer(String nickname, Color color) throws UniqueNicknameException, UniquePlayerColorException, InvalidActionException{
         synchronized (model) {
-            try{
-                model.addPlayer(nickname, color);
-                if(model.getGameState() == State.WAITING_FOR_PLAYERS){
-                    return 0;       //still waiting for players
-                }
-                else{
-                    return 1;       //start assembling phase
-                }
-            }
-            catch(InvalidActionException e){
-                return -1;           //game already started
-            }
-            catch(UniqueNicknameException e){
-                return -2;          //already existing name
-            }
-            catch(UniquePlayerColorException e){
-                return -3;          //already chosen color
-            }
+            model.addPlayer(nickname, color);
         }
     }
 
     //ASSEMBLING PHASE
 
     //invoked when a player wants to pick a component among the one placed face down (assembling phase)
-    public int pickHidden(String nickname){
+    public void pickHidden(String nickname)throws PickedComponentException, InvalidActionException{
         synchronized (model) {
-            try{
-                model.pickHidden(nickname);
-                return 0;       //successful picked component
-            }
-            catch(InvalidActionException e){
-                return -1;      //invalid action (wrong game phase)
-            }
-            catch(PickedComponentException e){
-                return -2;      //already picked one component
-            }
+            model.pickHidden(nickname);
         }
     }
     //invoked when a player wants to pick a specific component among the one placed face up (assembling phase)
-    public int pickShown(String nickname, int index){
+    public int pickShown(String nickname, int index) throws PickedComponentException, InvalidActionException{
         synchronized (model) {
-            try{
-                model.pickShown(nickname, index);
-                return 0;       //successful picked component
-            }
-            catch(InvalidActionException e){
-                return -1;      //invalid action (wrong game phase)
-            }
-            catch(PickedComponentException e){
-                return -2;      //already picked one component
-            }
+            model.pickShown(nickname, index);
         }
     }
     //invoked when a player wants to reserve the component that it has picked for its ship board
