@@ -1,6 +1,6 @@
 package it.polimi.ingsw.galaxytrucker.model.gameClasses;
 
-import it.polimi.ingsw.galaxytrucker.ServerRMI.VirtualViewRMI;
+import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
 import it.polimi.ingsw.galaxytrucker.model.componentClasses.*;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.*;

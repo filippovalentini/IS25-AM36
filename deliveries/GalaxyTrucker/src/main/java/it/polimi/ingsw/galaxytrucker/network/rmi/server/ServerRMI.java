@@ -1,18 +1,13 @@
-package it.polimi.ingsw.galaxytrucker.ServerRMI;
+package it.polimi.ingsw.galaxytrucker.network.rmi.server;
 
 import it.polimi.ingsw.galaxytrucker.controller.GameController;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.UniqueNicknameException;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.UniquePlayerColorException;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ServerRMI extends UnicastRemoteObject {
