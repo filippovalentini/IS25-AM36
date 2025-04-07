@@ -153,23 +153,30 @@ public class CombatZone extends EventCard{
     //invoked when the player with smaller cannon strength (level one) or crew (level two) has to be hit by a
     //cannon shot
     public void hitShip(GameState gameState, String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException {
-        if (activateShield && gameState.getNumberBatteries(nickname) == 0) {
-                throw new InvalidActionException("Too few batteries");
-        }
-        Orientation orientation = cannonShots.get(currentShot).getOrientation();
-        int direction = (orientation.isVertical() ? diceResult - 4 : diceResult - 5);
-        gameState.cannonFireAttack(nickname, cannonShots.get(currentShot), direction, activateShield);
-        if (currentShot == cannonShots.size() - 1) {
-            if (gameState.isLastInTurn(nickname)) {
-                gameState.setGameState(State.CARD_PICKING);
+        if(levelOne) {
+            if(phase==2) {
+                if (activateShield && gameState.getNumberBatteries(nickname) == 0) {
+                    throw new InvalidActionException("Too few batteries");
+                }
+                for (int i = 0; i < cannonShots.size(); i++){
+                Orientation orientation = cannonShots.get(i).getOrientation();
+                int direction = (orientation.isVertical() ? diceResult - 4 : diceResult - 5);
+                gameState.cannonFireAttack(nickname, cannonShots.get(i), direction, activateShield);
+                if (i == cannonShots.size() - 1) {
+                    if (gameState.isLastInTurn(nickname)) {
+                        gameState.setGameState(State.CARD_PICKING);
+                    }
+                    currentShot = 0;
+                    gameState.nextTurn();
+                }
+                }
+            }else {
+                currentShot++;
             }
-            currentShot = 0;
-            gameState.nextTurn();
-        } else {
-            currentShot++;
         }
     }
     }
+
 
 
 
