@@ -1,10 +1,12 @@
-vpackage it.polimi.ingsw.galaxytrucker.controller;
+package it.polimi.ingsw.galaxytrucker.controller;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.*;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.*;
 import java.util.List;
+
+
 
 public class GameController {
     private final GameState model;
