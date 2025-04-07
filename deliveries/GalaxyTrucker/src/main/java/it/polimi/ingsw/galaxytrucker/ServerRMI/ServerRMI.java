@@ -1,14 +1,23 @@
-package it.polimi.ingsw.galaxytrucker.rmi.server;
+package it.polimi.ingsw.galaxytrucker.ServerRMI;
 
 import it.polimi.ingsw.galaxytrucker.controller.GameController;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.UniqueNicknameException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.UniquePlayerColorException;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ServerRMI extends UnicastRemoteObject {
     private final GameController controller;
+    final Map<String, VirtualViewRMI> clients = new HashMap<>();
 
     public ServerRMI(boolean firstFlight, int numPlayers) throws RemoteException {
         super();
@@ -21,5 +30,15 @@ public class ServerRMI extends UnicastRemoteObject {
         Registry registry = LocateRegistry.createRegistry(1234);
         registry.rebind(serverName, server);
         System.out.println("Server bound");
+    }
+
+    public void addPlayer(VirtualViewRMI client, String nickname, Color color) {
+        try{
+            controller.addPlayer(client, nickname, color);
+            clients.put(nickname, client);
+        }
+        catch(Exception e){
+            client.notifyError(e.getMessage());
+        }
     }
 }
