@@ -455,6 +455,7 @@ public class ShipBoard {
             Component c = assembledComponents.get(i).get(column);
             if(c.isNotEmpty() && c.belongsToShip()){
                 destroyComponent(i,column);
+                break;
             }
         }
     }
@@ -464,6 +465,7 @@ public class ShipBoard {
             Component c = assembledComponents.get(i).get(column);
             if(c.isNotEmpty() && c.belongsToShip()){
                 destroyComponent(i,column);
+                break;
             }
         }
     }

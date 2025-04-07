@@ -74,19 +74,7 @@ public class GameController {
     //invoked when a player wants to reserve the component that it has picked for its ship board
     public int reserveComponent(String nickname){
         synchronized (model) {
-            try{
-                model.reserveComponent(nickname);
-                return 0;       //successful reserved component
-            }
-            catch(InvalidActionException e){
-                return -1;      //invalid action (wrong game phase)
-            }
-            catch(PickedComponentException e){
-                return -2;      //no picked component to reserve
-            }
-            catch(ReservedComponentException e){
-                return -3;      //too many reserved components
-            }
+
         }
     }
     //invoked when a player wants to pick one of the components that it has reserved for its ship board
