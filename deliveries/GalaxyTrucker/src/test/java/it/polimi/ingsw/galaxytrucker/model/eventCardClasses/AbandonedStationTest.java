@@ -7,6 +7,8 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
+import it.polimi.ingsw.galaxytrucker.network.rmi.client.ClientRMI;
+import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class AbandonedStationTest {
     private String player1;
     private String player2;
+    private VirtualViewRMI cl1;
+    private VirtualViewRMI cl2;
     private GameState gameState;
     private AbandonedStation abandonedStation;
     List<Integer> x_cargo;
@@ -29,8 +33,15 @@ class AbandonedStationTest {
         gameState = new GameState(false, 2);
         player1 = "player1";
         player2 = "player2";
-        gameState.addPlayer(player1, Color.RED);
-        gameState.addPlayer(player2, Color.BLUE);
+        try{
+            cl1 = new ClientRMI();
+            cl2 = new ClientRMI();
+        }
+        catch (Exception e){
+            System.exit(-1);
+        }
+        gameState.addPlayer(cl1, player1, Color.RED);
+        gameState.addPlayer(cl2, player2, Color.BLUE);
         gameState.setPosition(player1, 6);
         gameState.setPosition(player2, 3);
         gameState.setGameState(State.SHIP_BUILDING);

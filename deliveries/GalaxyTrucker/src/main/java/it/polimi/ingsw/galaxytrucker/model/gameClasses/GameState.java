@@ -7,6 +7,7 @@ import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.*;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.model.shotClasses.*;
 
+import java.rmi.RemoteException;
 import java.util.*;
 
 //this class describes the entire status of the game, the controller will invoke its methods in order to modify the
@@ -426,7 +427,7 @@ public class GameState {
         currentCard = null;
     }
     //adds a player to the game
-    public void addPlayer(VirtualViewRMI client, String nickname, Color color) throws UniqueNicknameException, UniquePlayerColorException, InvalidActionException {
+    public void addPlayer(VirtualViewRMI client, String nickname, Color color) throws UniqueNicknameException, UniquePlayerColorException, InvalidActionException, RemoteException {
         if(state != State.WAITING_FOR_PLAYERS){
             throw new InvalidActionException("Game has already been started");
         }
@@ -462,7 +463,7 @@ public class GameState {
     //
 
     //invoked when a player wants to pick a component among the one placed face down (assembling phase)
-    public void pickHidden(String nickname) throws PickedComponentException, InvalidActionException {
+    public void pickHidden(String nickname) throws PickedComponentException, InvalidActionException, RemoteException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Assembling phase is finished");
         }
@@ -473,7 +474,7 @@ public class GameState {
         clients.get(nickname).updatePickedComponent(c.getImageID(), false);
     }
     //invoked when a player wants to pick a specific component among the one placed face up (assembling phase)
-    public void pickShown(String nickname, int index) throws PickedComponentException, InvalidActionException {
+    public void pickShown(String nickname, int index) throws PickedComponentException, InvalidActionException, RemoteException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Assembling phase is finished");
         }
@@ -486,7 +487,7 @@ public class GameState {
         }
     }
     //invoked when a player wants to reserve the component that it has picked for its ship board
-    public void reserveComponent(String nickname) throws PickedComponentException, ReservedComponentException, InvalidActionException {
+    public void reserveComponent(String nickname) throws PickedComponentException, ReservedComponentException, InvalidActionException, RemoteException {
         if(state != State.SHIP_BUILDING || firstFlight){
             throw new InvalidActionException("Assembling phase is finished");
         }
@@ -498,7 +499,7 @@ public class GameState {
         }
     }
     //invoked when a player wants to pick one of the components that it has reserved for its ship board
-    public void pickReservedComponent(String nickname, int position) throws ReservedComponentException, PickedComponentException, InvalidActionException {
+    public void pickReservedComponent(String nickname, int position) throws ReservedComponentException, PickedComponentException, InvalidActionException, RemoteException {
         if(state != State.SHIP_BUILDING || firstFlight){
             throw new InvalidActionException("Assembling phase is finished");
         }
@@ -510,7 +511,7 @@ public class GameState {
         }
     }
     //invoked when a player wants to release (therefore, place face up) the component that it has picked
-    public void putShown(String nickname) throws PickedComponentException, InvalidActionException {
+    public void putShown(String nickname) throws PickedComponentException, InvalidActionException, RemoteException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Assembling phase is finished");
         }
@@ -523,7 +524,7 @@ public class GameState {
         }
     }
     //invoked when a player wants to assemble on the ship board the component that it has picked
-    public void assembleComponent(String nickname, int x, int y) throws AssembledComponentException, PickedComponentException, InvalidActionException {
+    public void assembleComponent(String nickname, int x, int y) throws AssembledComponentException, PickedComponentException, InvalidActionException, RemoteException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Assembling phase is finished");
         }
@@ -535,7 +536,7 @@ public class GameState {
         }
     }
     //invoked when a player wants to change the orientation of the component that it has picked
-    public void rotatePickedComponent(String nickname) throws InvalidActionException, PickedComponentException {
+    public void rotatePickedComponent(String nickname) throws InvalidActionException, PickedComponentException, RemoteException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Assembling phase is finished");
         }
@@ -544,7 +545,7 @@ public class GameState {
         clients.get(nickname).updateRotatePickedComponent();
     }
     //invoked when a player wants to pick a deck during the assembling phase to see its content
-    public void pickDeck(String nickname, int deckNumber) throws PickedDeckException, InvalidActionException {
+    public void pickDeck(String nickname, int deckNumber) throws PickedDeckException, InvalidActionException, RemoteException {
         if(state != State.SHIP_BUILDING || firstFlight){
             throw new InvalidActionException("Invalid action");
         }
@@ -561,7 +562,7 @@ public class GameState {
         clients.get(nickname).updatePickedDeck(deckIDs);
     }
     //invoked when a player wants to release the deck it has picked, during the assembling phase
-    public void releaseDeck(String nickname) throws InvalidActionException, PickedDeckException {
+    public void releaseDeck(String nickname) throws InvalidActionException, PickedDeckException, RemoteException {
         if(state != State.SHIP_BUILDING || firstFlight){
             throw new InvalidActionException("Invalid action");
         }
@@ -571,7 +572,7 @@ public class GameState {
         clients.get(nickname).updateReleasedDeck();
     }
     //invoked when a player has finished the assembling phase and has to pick a free position on the flight board
-    public void setPosition(String nickname, int initCell) throws InvalidPositionException, InvalidActionException {
+    public void setPosition(String nickname, int initCell) throws InvalidPositionException, InvalidActionException, RemoteException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Assembling phase is finished");
         }

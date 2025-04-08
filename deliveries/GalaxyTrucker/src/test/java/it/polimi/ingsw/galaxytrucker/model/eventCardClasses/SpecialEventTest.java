@@ -8,6 +8,8 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.SpecialEventType;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
+import it.polimi.ingsw.galaxytrucker.network.rmi.client.ClientRMI;
+import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,14 +23,23 @@ class SpecialEventTest {
     private GameState gameState;
     private String player1;
     private String player2;
+    private VirtualViewRMI cl1;
+    private VirtualViewRMI cl2;
 
     @BeforeEach
     void init() {
         gameState = new GameState(false, 2);
         player1 = "a";
         player2 = "b";
-        gameState.addPlayer(player1, Color.RED);
-        gameState.addPlayer(player2, Color.YELLOW);
+        try{
+            cl1 = new ClientRMI();
+            cl2 = new ClientRMI();
+        }
+        catch (Exception e){
+            System.exit(-1);
+        }
+        gameState.addPlayer(cl1, player1, Color.RED);
+        gameState.addPlayer(cl2, player2, Color.YELLOW);
         gameState.setPosition(player1, 0);
         gameState.setPosition(player2, 6);
         List<Component> shownComponents = gameState.getShownComponent();

@@ -7,6 +7,8 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import it.polimi.ingsw.galaxytrucker.model.shotClasses.CannonShot;
+import it.polimi.ingsw.galaxytrucker.network.rmi.client.ClientRMI;
+import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +22,8 @@ class PiratesTest {
     private GameState gameState;
     String nickname;
     String nickname2;
+    private VirtualViewRMI cl1;
+    private VirtualViewRMI cl2;
     List<CannonShot> cannonShots;
 
 
@@ -29,8 +33,15 @@ class PiratesTest {
         gameState = new GameState(false, 2);
         nickname = "player1";
         nickname2 = "player2";
-        gameState.addPlayer(nickname, Color.RED);
-        gameState.addPlayer(nickname2, Color.BLUE);
+        try{
+            cl1 = new ClientRMI();
+            cl2 = new ClientRMI();
+        }
+        catch (Exception e){
+            System.exit(-1);
+        }
+        gameState.addPlayer(cl1, nickname, Color.RED);
+        gameState.addPlayer(cl2, nickname2, Color.BLUE);
         gameState.setPosition(nickname, 0);
         gameState.setPosition(nickname2, 1);
         CannonShot cShotLarge = new CannonShot(true, Orientation.SOUTH);

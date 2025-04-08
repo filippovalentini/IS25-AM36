@@ -2,6 +2,7 @@ package it.polimi.ingsw.galaxytrucker.network.rmi.server;
 
 import it.polimi.ingsw.galaxytrucker.controller.GameController;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.network.rmi.client.VirtualServerRMI;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -9,7 +10,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
-public class ServerRMI extends UnicastRemoteObject {
+public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
     private final GameController controller;
     final Map<String, VirtualViewRMI> clients = new HashMap<>();    //maps each client with the nickname of the respective player
 
@@ -44,6 +45,7 @@ public class ServerRMI extends UnicastRemoteObject {
 
     //invoked when one of the players decides enter the game; the remote client view is added to the list
     //of connected clients
+    @Override
     public void addPlayer(VirtualViewRMI client, String nickname, Color color) throws RemoteException {
         try{
             controller.addPlayer(client, nickname, color);
@@ -55,6 +57,7 @@ public class ServerRMI extends UnicastRemoteObject {
     }
 
     //invoked when a player wants to pick a component among the one placed face down (assembling phase)
+    @Override
     public void pickHidden(String nickname) throws RemoteException{
         try{
             controller.pickHidden(nickname);
@@ -65,6 +68,7 @@ public class ServerRMI extends UnicastRemoteObject {
     }
 
     //invoked when a player wants to pick a specific component among the one placed face up (assembling phase)
+    @Override
     public void pickShown(String nickname, int index) throws RemoteException{
         try{
             controller.pickShown(nickname, index);
@@ -75,6 +79,7 @@ public class ServerRMI extends UnicastRemoteObject {
     }
 
     //invoked when a player wants to release (therefore, place face up) the component that it has picked
+    @Override
     public void putShown(String nickname) throws RemoteException{
         try{
             controller.putShown(nickname);
@@ -85,6 +90,7 @@ public class ServerRMI extends UnicastRemoteObject {
     }
 
     //invoked when a player wants to reserve the component that it has picked for its ship board
+    @Override
     public void reserveComponent(String nickname) throws RemoteException{
         try{
             controller.reserveComponent(nickname);
@@ -95,6 +101,7 @@ public class ServerRMI extends UnicastRemoteObject {
     }
 
     //invoked when a player wants to pick one of the components that it has reserved for its ship board
+    @Override
     public void pickReservedComponent(String nickname, int position) throws RemoteException{
         try{
             controller.pickReservedComponent(nickname, position);
@@ -105,6 +112,7 @@ public class ServerRMI extends UnicastRemoteObject {
     }
 
     //invoked when a player wants to change the orientation of the component that it has picked
+    @Override
     public void rotatePickedComponent(String nickname) throws RemoteException{
         try{
             controller.rotatePickedComponent(nickname);
@@ -115,6 +123,7 @@ public class ServerRMI extends UnicastRemoteObject {
     }
 
     //invoked when a player wants to assemble on the ship board the component that it has picked
+    @Override
     public void assembledComponent(String nickname, int x, int y) throws RemoteException{
         try{
             controller.assembleComponent(nickname, x, y);
@@ -125,6 +134,7 @@ public class ServerRMI extends UnicastRemoteObject {
     }
 
     //invoked when a player wants to pick a deck during the assembling phase to see its content
+    @Override
     public void pickDeck(String nickname, int deckNumber) throws RemoteException{
         try{
             controller.pickDeck(nickname, deckNumber);
@@ -135,6 +145,7 @@ public class ServerRMI extends UnicastRemoteObject {
     }
 
     //invoked when a player wants to release the deck it has picked, during the assembling phase
+    @Override
     public void releaseDeck(String nickname) throws RemoteException{
         try{
             controller.releaseDeck(nickname);
@@ -145,6 +156,7 @@ public class ServerRMI extends UnicastRemoteObject {
     }
 
     //invoked when a player has finished the assembling phase and has to pick a free position on the flight board
+    @Override
     public void setPosition(String nickname, int initCell) throws RemoteException{
         try{
             controller.setPosition(nickname, initCell);

@@ -7,6 +7,8 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.NoBatteriesException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
+import it.polimi.ingsw.galaxytrucker.network.rmi.client.ClientRMI;
+import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +22,8 @@ class SmugglersTest {
     private GameState gameState;
     String nickname;
     String nickname2;
+    private VirtualViewRMI cl1;
+    private VirtualViewRMI cl2;
     List<Color> prizeGoods;
 
     @BeforeEach
@@ -37,8 +41,15 @@ class SmugglersTest {
         gameState = new GameState(false, 2);
         nickname = "a";
         nickname2 = "b";
-        gameState.addPlayer(nickname, Color.BLUE);
-        gameState.addPlayer(nickname2, Color.RED);
+        try{
+            cl1 = new ClientRMI();
+            cl2 = new ClientRMI();
+        }
+        catch (Exception e){
+            System.exit(-1);
+        }
+        gameState.addPlayer(cl1, nickname, Color.BLUE);
+        gameState.addPlayer(cl2, nickname2, Color.RED);
         gameState.setPosition(nickname, 0);
         gameState.setPosition(nickname2, 1);
         Battery battery = new Battery(true,4, sides);

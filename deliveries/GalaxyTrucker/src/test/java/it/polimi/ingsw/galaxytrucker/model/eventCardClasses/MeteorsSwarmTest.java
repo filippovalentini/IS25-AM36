@@ -8,6 +8,8 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import it.polimi.ingsw.galaxytrucker.model.shotClasses.Meteor;
+import it.polimi.ingsw.galaxytrucker.network.rmi.client.ClientRMI;
+import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +22,8 @@ class MeteorsSwarmTest {
     private MeteorsSwarm meteorsSwarm;
     private String player1;
     private String player2;
+    private VirtualViewRMI cl1;
+    private VirtualViewRMI cl2;
     private GameState gameState;
 
 
@@ -27,9 +31,16 @@ class MeteorsSwarmTest {
     void init() {
         player1 = "thomas";
         player2 = "nico";
+        try{
+            cl1 = new ClientRMI();
+            cl2 = new ClientRMI();
+        }
+        catch (Exception e){
+            System.exit(-1);
+        }
         gameState = new GameState(false, 2);
-        gameState.addPlayer(player1, Color.RED);
-        gameState.addPlayer(player2, Color.BLUE);
+        gameState.addPlayer(cl1, player1, Color.RED);
+        gameState.addPlayer(cl2, player2, Color.BLUE);
         gameState.setPosition(player1, 1);
         gameState.setPosition(player2, 0);
         Meteor mLarge = new Meteor(true, Orientation.SOUTH);

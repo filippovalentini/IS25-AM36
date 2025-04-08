@@ -11,6 +11,8 @@ import it.polimi.ingsw.galaxytrucker.model.exceptions.NoCrewException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.Deck;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.LevelTwoPosition;
+import it.polimi.ingsw.galaxytrucker.network.rmi.client.ClientRMI;
+import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,6 +27,8 @@ class SlaversTest {
     private GameState gameState;
     String player1;
     String player2;
+    private VirtualViewRMI cl1;
+    private VirtualViewRMI cl2;
 
     @BeforeEach
     void init(){
@@ -33,8 +37,15 @@ class SlaversTest {
         gameState = new GameState(false, 2);
         player1="filippo";
         player2="thomas";
-        gameState.addPlayer(player1, Color.RED);
-        gameState.addPlayer(player2, Color.GREEN);
+        try{
+            cl1 = new ClientRMI();
+            cl2 = new ClientRMI();
+        }
+        catch (Exception e){
+            System.exit(-1);
+        }
+        gameState.addPlayer(cl1,player1, Color.RED);
+        gameState.addPlayer(cl2,player2, Color.GREEN);
         Component cab1 = new Cabin(301, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
         Component cab2 = new Cabin(302, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
         Component c1 = new Cannon(false, 201, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));

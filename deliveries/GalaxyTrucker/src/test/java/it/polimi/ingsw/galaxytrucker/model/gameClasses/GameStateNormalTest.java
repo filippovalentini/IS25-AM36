@@ -8,6 +8,8 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
+import it.polimi.ingsw.galaxytrucker.network.rmi.client.ClientRMI;
+import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,14 +23,23 @@ class GameStateNormalTest {
     private GameState gameState;
     private String player1;
     private String player2;
+    private VirtualViewRMI cl1;
+    private VirtualViewRMI cl2;
 
     @BeforeEach
     void initLV2Flight() {
         gameState = new GameState(false, 2);
         player1 = "truck3r";
         player2 = "4lien";
-        gameState.addPlayer(player1, Color.RED);
-        gameState.addPlayer(player2, Color.BLUE);
+        try{
+            cl1 = new ClientRMI();
+            cl2 = new ClientRMI();
+        }
+        catch (Exception e){
+            System.exit(-1);
+        }
+        gameState.addPlayer(cl1, player1, Color.RED);
+        gameState.addPlayer(cl2, player2, Color.BLUE);
     }
 
     @Test
@@ -37,13 +48,13 @@ class GameStateNormalTest {
         player1 = "truck3r";
         player2 = "4lien";
         String player3 = "carg0";
-        gs.addPlayer(player1, Color.RED);
+        gs.addPlayer(cl1, player1, Color.RED);
         assertEquals(Color.RED, gs.getPlayersPlay().get(player1).getShipBoard().getColor());
         assertEquals(State.WAITING_FOR_PLAYERS, gs.getGameState());
-        gs.addPlayer(player2, Color.BLUE);
+        gs.addPlayer(cl2, player2, Color.BLUE);
         assertEquals(Color.BLUE, gs.getPlayersPlay().get(player2).getShipBoard().getColor());
         assertEquals(State.SHIP_BUILDING, gs.getGameState());
-        assertThrows(InvalidActionException.class, () -> gs.addPlayer(player3, Color.YELLOW));
+        assertThrows(InvalidActionException.class, () -> gs.addPlayer(cl1, player3, Color.YELLOW));
     }
 
     @Test
@@ -53,10 +64,10 @@ class GameStateNormalTest {
         player2 = "4lien";
         String player3 = "cr3w";
         String player4 = "pir4t3";
-        gameState.addPlayer(player1, Color.RED);
-        gameState.addPlayer(player2, Color.BLUE);
-        gameState.addPlayer(player3, Color.YELLOW);
-        gameState.addPlayer(player4, Color.GREEN);
+        gameState.addPlayer(cl1, player1, Color.RED);
+        gameState.addPlayer(cl2, player2, Color.BLUE);
+        gameState.addPlayer(cl1, player3, Color.YELLOW);
+        gameState.addPlayer(cl2, player4, Color.GREEN);
         gameState.setPosition(player1, 0);
         gameState.setPosition(player2, 1);
         gameState.setPosition(player3, 2);
@@ -214,16 +225,16 @@ class GameStateNormalTest {
     void testAddPlayerDuplicateNickname() {
         GameState gs = new GameState(true, 2);
         player1 = "truck3r";
-        gs.addPlayer(player1, Color.RED);
-        assertThrows(UniqueNicknameException.class, () -> gs.addPlayer(player1, Color.GREEN));
+        gs.addPlayer(cl1, player1, Color.RED);
+        assertThrows(UniqueNicknameException.class, () -> gs.addPlayer(cl1, player1, Color.GREEN));
     }
 
     @Test
     void testAddPlayerDuplicateColor() {
         GameState gs = new GameState(true, 2);
         player1 = "truck3r";
-        gs.addPlayer(player1, Color.RED);
-        assertThrows(UniquePlayerColorException.class, () -> gs.addPlayer("newPlayer", Color.RED));
+        gs.addPlayer(cl1, player1, Color.RED);
+        assertThrows(UniquePlayerColorException.class, () -> gs.addPlayer(cl2,"newPlayer", Color.RED));
     }
 
     @Test
