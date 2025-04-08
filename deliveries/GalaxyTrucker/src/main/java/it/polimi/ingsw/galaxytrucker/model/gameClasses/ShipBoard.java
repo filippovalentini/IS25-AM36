@@ -101,7 +101,7 @@ public class ShipBoard {
         }
     }
     //the picked component is added to the reserved components for the ship board
-    public void reserveComponent() throws PickedComponentException, ReservedComponentException {
+    public Component reserveComponent() throws PickedComponentException, ReservedComponentException {
         if(pickedComponent==null){
             throw new PickedComponentException("No picked component");
         }
@@ -111,12 +111,14 @@ public class ShipBoard {
             }
             else {
                 reservedComponents.add(pickedComponent);
+                Component c = pickedComponent;
                 pickedComponent = null;
+                return c;
             }
         }
     }
     //invoked when a player picks a specific component among the ones reserved for its ship board
-    public void pickReservedComponent(int position) throws ReservedComponentException, PickedComponentException {
+    public Component pickReservedComponent(int position) throws ReservedComponentException, PickedComponentException {
         if(position < 0 || position >= reservedComponents.size()){
             throw new ReservedComponentException("Invalid reserved component position");
         }
@@ -125,10 +127,12 @@ public class ShipBoard {
         }
         else {
             pickedComponent = reservedComponents.remove(position);
+            return pickedComponent;
         }
     }
     //assembles the component picked by a player in the specified cell (x,y) of its ship board
-    public void assembleComponent(int x, int y) throws AssembledComponentException, PickedComponentException {
+    public Component assembleComponent(int x, int y) throws AssembledComponentException, PickedComponentException {
+        Component c;
         Component emptySpace = new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
         if(!assembledComponents.get(x).get(y).equals(emptySpace)){
             throw new AssembledComponentException("Already assembled component");
@@ -138,9 +142,11 @@ public class ShipBoard {
         }
         else {
             assembledComponents.get(x).set(y, pickedComponent);
+            c = pickedComponent;
             pickedComponent = null;
         }
         updateCorrectness();
+        return c;
 
     }
     //rotates the picked component left

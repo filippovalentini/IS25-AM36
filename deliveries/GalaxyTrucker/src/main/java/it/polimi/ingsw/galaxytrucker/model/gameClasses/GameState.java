@@ -88,6 +88,14 @@ public class GameState {
     public Color getColor(String nickname){
         return playersPlay.get(nickname).getColor();
     }
+    //returns a list of image IDs of the cards contained in the deck
+    public List<Integer> convertDeck(Deck deck){
+        List<Integer> IDs = new ArrayList<>();
+        for(EventCard card : deck.getCards()){
+            IDs.add(card.getImageID());
+        }
+        return IDs;
+    }
     //returns teh number of exposed connectors on a player's ship board
     public int countExposedConnectors(String nickname){
         return playersPlay.get(nickname).countExposedConnectors();
@@ -432,8 +440,9 @@ public class GameState {
         }
         playersPlay.put(nickname, new Player(nickname, color, firstFlight));
         playersPos.put(nickname, null);
+
         clients.put(nickname, client);
-        client.updateWaitingForPlayers();
+        client.updateWaitingForPlayers(this.firstFlight);
         if(numPlayers == getCurrentPlayers()){
             startAssembling();
             for(VirtualViewRMI view: clients.values()){
@@ -460,6 +469,8 @@ public class GameState {
         Collections.shuffle(hiddenComponents);
         Component c = hiddenComponents.removeFirst();
         playersPlay.get(nickname).pickComponent(c);
+
+        clients.get(nickname).updatePickedComponent(c.getImageID(), false);
     }
     //invoked when a player wants to pick a specific component among the one placed face up (assembling phase)
     public void pickShown(String nickname, int index) throws PickedComponentException, InvalidActionException {
@@ -468,34 +479,60 @@ public class GameState {
         }
         Component c = shownComponents.remove(index);
         playersPlay.get(nickname).pickComponent(c);
+
+        clients.get(nickname).updatePickedComponent(c.getImageID(), false);
+        for(VirtualViewRMI view: clients.values()){
+            view.updateShownComponent(c.getImageID(), false);
+        }
     }
     //invoked when a player wants to reserve the component that it has picked for its ship board
     public void reserveComponent(String nickname) throws PickedComponentException, ReservedComponentException, InvalidActionException {
         if(state != State.SHIP_BUILDING || firstFlight){
             throw new InvalidActionException("Assembling phase is finished");
         }
-        playersPlay.get(nickname).reserveComponent();
+        Component c = playersPlay.get(nickname).reserveComponent();
+
+        clients.get(nickname).updatePickedComponent(c.getImageID(), true);
+        for(VirtualViewRMI view: clients.values()){
+            view.updateReservedComponent(nickname, c.getImageID(), true);
+        }
     }
     //invoked when a player wants to pick one of the components that it has reserved for its ship board
     public void pickReservedComponent(String nickname, int position) throws ReservedComponentException, PickedComponentException, InvalidActionException {
         if(state != State.SHIP_BUILDING || firstFlight){
             throw new InvalidActionException("Assembling phase is finished");
         }
-        playersPlay.get(nickname).pickReservedComponent(position);
+        Component c = playersPlay.get(nickname).pickReservedComponent(position);
+
+        clients.get(nickname).updatePickedComponent(c.getImageID(), false);
+        for(VirtualViewRMI view: clients.values()){
+            view.updateReservedComponent(nickname, c.getImageID(), false);
+        }
     }
     //invoked when a player wants to release (therefore, place face up) the component that it has picked
     public void putShown(String nickname) throws PickedComponentException, InvalidActionException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Assembling phase is finished");
         }
-        shownComponents.add(playersPlay.get(nickname).releaseComponent());
+        Component c = playersPlay.get(nickname).releaseComponent();
+        shownComponents.add(c);
+
+        clients.get(nickname).updatePickedComponent(c.getImageID(), true);
+        for(VirtualViewRMI view: clients.values()){
+            view.updateShownComponent(c.getImageID(), true);
+        }
     }
     //invoked when a player wants to assemble on the ship board the component that it has picked
     public void assembleComponent(String nickname, int x, int y) throws AssembledComponentException, PickedComponentException, InvalidActionException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Assembling phase is finished");
         }
-        playersPlay.get(nickname).assembleComponent(x,y);
+        Component c = playersPlay.get(nickname).assembleComponent(x,y);
+
+        clients.get(nickname).updatePickedComponent(c.getImageID(), true);
+        for(VirtualViewRMI view: clients.values()){
+            view.updateAssembledComponent(nickname, c.getImageID(), c.getOrientation(), x, y);
+        }
     }
     //invoked when a player wants to change the orientation of the component that it has picked
     public void rotatePickedComponent(String nickname) throws InvalidActionException, PickedComponentException {
@@ -503,6 +540,8 @@ public class GameState {
             throw new InvalidActionException("Assembling phase is finished");
         }
         playersPlay.get(nickname).rotatePickedComponent();
+
+        clients.get(nickname).updateRotatePickedComponent();
     }
     //invoked when a player wants to pick a deck during the assembling phase to see its content
     public void pickDeck(String nickname, int deckNumber) throws PickedDeckException, InvalidActionException {
@@ -517,6 +556,9 @@ public class GameState {
         }
         playersPlay.get(nickname).pickDeck(deckNumber);
         decks.get(deckNumber).setPicked();
+
+        List<Integer> deckIDs = convertDeck(decks.get(deckNumber));
+        clients.get(nickname).updatePickedDeck(deckIDs);
     }
     //invoked when a player wants to release the deck it has picked, during the assembling phase
     public void releaseDeck(String nickname) throws InvalidActionException, PickedDeckException {
@@ -525,6 +567,8 @@ public class GameState {
         }
         int releasedDeckNumber = playersPlay.get(nickname).releaseDeck();
         decks.get(releasedDeckNumber).setNotPicked();
+
+        clients.get(nickname).updateReleasedDeck();
     }
     //invoked when a player has finished the assembling phase and has to pick a free position on the flight board
     public void setPosition(String nickname, int initCell) throws InvalidPositionException, InvalidActionException {
@@ -553,8 +597,14 @@ public class GameState {
             playersPos.put(nickname, new LevelTwoPosition(initCell));
             playersPlay.get(nickname).loseReservedComponents();
         }
+
+        clients.get(nickname).updateFinishAssembling();
+
         if(!playersPos.containsValue(null)){
             state = State.SHIP_CONTROL;
+            for(VirtualViewRMI view: clients.values()){
+                view.updateShipControl();
+            }
             checkShipBoards();
         }
     }

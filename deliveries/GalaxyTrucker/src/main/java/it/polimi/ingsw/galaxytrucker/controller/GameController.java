@@ -19,7 +19,7 @@ public class GameController {
 
     //STARTING PHASE
 
-    //invoked when one of the players decides to start the assembling phase
+    //invoked when one of the players decides enter the game
     public void addPlayer(VirtualViewRMI client, String nickname, Color color) throws UniqueNicknameException, UniquePlayerColorException, InvalidActionException {
         synchronized (model) {
             model.addPlayer(client, nickname, color);

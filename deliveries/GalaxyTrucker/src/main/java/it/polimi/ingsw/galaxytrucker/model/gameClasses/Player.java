@@ -58,20 +58,20 @@ public class Player {
         shipBoard.pickComponent(component);
     }
     //invoked when the player wants to reserve the component that it has picked for its ship board
-    public void reserveComponent() throws PickedComponentException{
-        shipBoard.reserveComponent();
+    public Component reserveComponent() throws PickedComponentException{
+        return shipBoard.reserveComponent();
     }
     //invoked when the player wants to pick one of the components that it has reserved for its ship board
-    public void pickReservedComponent(int position) throws ReservedComponentException, PickedComponentException{
-        shipBoard.pickReservedComponent(position);
+    public Component pickReservedComponent(int position) throws ReservedComponentException, PickedComponentException{
+        return shipBoard.pickReservedComponent(position);
     }
     //invoked when the player wants to release (therefore, place face up) the component that it has picked
     public Component releaseComponent() throws PickedComponentException{
         return shipBoard.releaseComponent();
     }
     //invoked when the player wants to assemble on the ship board the component that it has picked
-    public void assembleComponent(int x, int y) throws AssembledComponentException, PickedComponentException{
-        shipBoard.assembleComponent(x, y);
+    public Component assembleComponent(int x, int y) throws AssembledComponentException, PickedComponentException{
+        return shipBoard.assembleComponent(x, y);
     }
     //invoked when the player wants to change the orientation of the component that it has picked
     public void rotatePickedComponent() throws PickedComponentException{

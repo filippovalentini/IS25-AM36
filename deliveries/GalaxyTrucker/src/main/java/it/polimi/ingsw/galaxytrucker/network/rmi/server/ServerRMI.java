@@ -7,33 +7,150 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ServerRMI extends UnicastRemoteObject {
     private final GameController controller;
-    final Map<String, VirtualViewRMI> clients = new HashMap<>();
+    final Map<String, VirtualViewRMI> clients = new HashMap<>();    //maps each client with the nickname of the respective player
 
+    //constructor, initializes the game controller
     public ServerRMI(boolean firstFlight, int numPlayers) throws RemoteException {
         super();
         this.controller = new GameController(firstFlight, numPlayers);
     }
 
+    //launches the server and receives in input for the user the number of players and the type of game
+    //(standard game or first flight), in order to set up the server correctly
     public static void main(String[] args) throws RemoteException {
+        int numPlayers;
+        String ff;
+        boolean firstFlight;
+        Scanner inputScanner = new Scanner(System.in);
+        do{
+            System.out.println("Number of players (from 1 to 4): ");
+            numPlayers = Integer.parseInt(inputScanner.nextLine());
+        }while(numPlayers>4 || numPlayers<1);
+        do{
+            System.out.println("Standard game (S) or first flight (F): ");
+            ff = inputScanner.nextLine();
+        }while(!ff.equals("F") && !ff.equals("S"));
+        firstFlight = (ff.equals("F"));
+        ServerRMI server = new ServerRMI(firstFlight, numPlayers);
         final String serverName = "GalaxyTruckerServer";
-        ServerRMI server = new ServerRMI(false, 4);
         Registry registry = LocateRegistry.createRegistry(1234);
         registry.rebind(serverName, server);
         System.out.println("Server bound");
     }
 
-    public void addPlayer(VirtualViewRMI client, String nickname, Color color) {
+    //invoked when one of the players decides enter the game; the remote client view is added to the list
+    //of connected clients
+    public void addPlayer(VirtualViewRMI client, String nickname, Color color) throws RemoteException {
         try{
             controller.addPlayer(client, nickname, color);
             clients.put(nickname, client);
         }
         catch(Exception e){
             client.notifyError(e.getMessage());
+        }
+    }
+
+    //invoked when a player wants to pick a component among the one placed face down (assembling phase)
+    public void pickHidden(String nickname) throws RemoteException{
+        try{
+            controller.pickHidden(nickname);
+        }
+        catch(Exception e){
+            clients.get(nickname).notifyError(e.getMessage());
+        }
+    }
+
+    //invoked when a player wants to pick a specific component among the one placed face up (assembling phase)
+    public void pickShown(String nickname, int index) throws RemoteException{
+        try{
+            controller.pickShown(nickname, index);
+        }
+        catch(Exception e){
+            clients.get(nickname).notifyError(e.getMessage());
+        }
+    }
+
+    //invoked when a player wants to release (therefore, place face up) the component that it has picked
+    public void putShown(String nickname) throws RemoteException{
+        try{
+            controller.putShown(nickname);
+        }
+        catch(Exception e){
+            clients.get(nickname).notifyError(e.getMessage());
+        }
+    }
+
+    //invoked when a player wants to reserve the component that it has picked for its ship board
+    public void reserveComponent(String nickname) throws RemoteException{
+        try{
+            controller.reserveComponent(nickname);
+        }
+        catch(Exception e){
+            clients.get(nickname).notifyError(e.getMessage());
+        }
+    }
+
+    //invoked when a player wants to pick one of the components that it has reserved for its ship board
+    public void pickReservedComponent(String nickname, int position) throws RemoteException{
+        try{
+            controller.pickReservedComponent(nickname, position);
+        }
+        catch(Exception e){
+            clients.get(nickname).notifyError(e.getMessage());
+        }
+    }
+
+    //invoked when a player wants to change the orientation of the component that it has picked
+    public void rotatePickedComponent(String nickname) throws RemoteException{
+        try{
+            controller.rotatePickedComponent(nickname);
+        }
+        catch(Exception e){
+            clients.get(nickname).notifyError(e.getMessage());
+        }
+    }
+
+    //invoked when a player wants to assemble on the ship board the component that it has picked
+    public void assembledComponent(String nickname, int x, int y) throws RemoteException{
+        try{
+            controller.assembleComponent(nickname, x, y);
+        }
+        catch(Exception e){
+            clients.get(nickname).notifyError(e.getMessage());
+        }
+    }
+
+    //invoked when a player wants to pick a deck during the assembling phase to see its content
+    public void pickDeck(String nickname, int deckNumber) throws RemoteException{
+        try{
+            controller.pickDeck(nickname, deckNumber);
+        }
+        catch(Exception e){
+            clients.get(nickname).notifyError(e.getMessage());
+        }
+    }
+
+    //invoked when a player wants to release the deck it has picked, during the assembling phase
+    public void releaseDeck(String nickname) throws RemoteException{
+        try{
+            controller.releaseDeck(nickname);
+        }
+        catch(Exception e){
+            clients.get(nickname).notifyError(e.getMessage());
+        }
+    }
+
+    //invoked when a player has finished the assembling phase and has to pick a free position on the flight board
+    public void setPosition(String nickname, int initCell) throws RemoteException{
+        try{
+            controller.setPosition(nickname, initCell);
+        }
+        catch(Exception e){
+            clients.get(nickname).notifyError(e.getMessage());
         }
     }
 }
