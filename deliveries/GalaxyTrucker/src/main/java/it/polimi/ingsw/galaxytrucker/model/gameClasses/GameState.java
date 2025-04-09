@@ -427,7 +427,7 @@ public class GameState {
         currentCard = null;
     }
     //adds a player to the game
-    public void addPlayer(VirtualViewRMI client, String nickname, Color color) throws UniqueNicknameException, UniquePlayerColorException, InvalidActionException, RemoteException {
+    public void addPlayer(VirtualViewRMI client, String nickname, Color color) throws UniqueNicknameException, UniquePlayerColorException, InvalidActionException {
         if(state != State.WAITING_FOR_PLAYERS){
             throw new InvalidActionException("Game has already been started");
         }
@@ -443,11 +443,13 @@ public class GameState {
         playersPos.put(nickname, null);
 
         clients.put(nickname, client);
-        client.updateWaitingForPlayers(this.firstFlight);
+        try{client.updateWaitingForPlayers(this.firstFlight);}
+        catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
         if(numPlayers == getCurrentPlayers()){
             startAssembling();
             for(VirtualViewRMI view: clients.values()){
-                view.updateStartAssembling();
+                try{view.updateStartAssembling();}
+                catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
             }
         }
     }
@@ -463,7 +465,7 @@ public class GameState {
     //
 
     //invoked when a player wants to pick a component among the one placed face down (assembling phase)
-    public void pickHidden(String nickname) throws PickedComponentException, InvalidActionException, RemoteException {
+    public void pickHidden(String nickname) throws PickedComponentException, InvalidActionException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Assembling phase is finished");
         }
@@ -471,81 +473,93 @@ public class GameState {
         Component c = hiddenComponents.removeFirst();
         playersPlay.get(nickname).pickComponent(c);
 
-        clients.get(nickname).updatePickedComponent(c.getImageID(), false);
+        try{clients.get(nickname).updatePickedComponent(c.getImageID(), false);}
+        catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
     }
     //invoked when a player wants to pick a specific component among the one placed face up (assembling phase)
-    public void pickShown(String nickname, int index) throws PickedComponentException, InvalidActionException, RemoteException {
+    public void pickShown(String nickname, int index) throws PickedComponentException, InvalidActionException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Assembling phase is finished");
         }
         Component c = shownComponents.remove(index);
         playersPlay.get(nickname).pickComponent(c);
 
-        clients.get(nickname).updatePickedComponent(c.getImageID(), false);
+        try{clients.get(nickname).updatePickedComponent(c.getImageID(), false);}
+        catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
         for(VirtualViewRMI view: clients.values()){
-            view.updateShownComponent(c.getImageID(), false);
+            try{view.updateShownComponent(c.getImageID(), false);}
+            catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
         }
     }
     //invoked when a player wants to reserve the component that it has picked for its ship board
-    public void reserveComponent(String nickname) throws PickedComponentException, ReservedComponentException, InvalidActionException, RemoteException {
+    public void reserveComponent(String nickname) throws PickedComponentException, ReservedComponentException, InvalidActionException {
         if(state != State.SHIP_BUILDING || firstFlight){
             throw new InvalidActionException("Assembling phase is finished");
         }
         Component c = playersPlay.get(nickname).reserveComponent();
 
-        clients.get(nickname).updatePickedComponent(c.getImageID(), true);
+        try{clients.get(nickname).updatePickedComponent(c.getImageID(), true);}
+        catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
         for(VirtualViewRMI view: clients.values()){
-            view.updateReservedComponent(nickname, c.getImageID(), true);
+            try{view.updateReservedComponent(nickname, c.getImageID(), true);}
+            catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
         }
     }
     //invoked when a player wants to pick one of the components that it has reserved for its ship board
-    public void pickReservedComponent(String nickname, int position) throws ReservedComponentException, PickedComponentException, InvalidActionException, RemoteException {
+    public void pickReservedComponent(String nickname, int position) throws ReservedComponentException, PickedComponentException, InvalidActionException {
         if(state != State.SHIP_BUILDING || firstFlight){
             throw new InvalidActionException("Assembling phase is finished");
         }
         Component c = playersPlay.get(nickname).pickReservedComponent(position);
 
-        clients.get(nickname).updatePickedComponent(c.getImageID(), false);
+        try{clients.get(nickname).updatePickedComponent(c.getImageID(), false);}
+        catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
         for(VirtualViewRMI view: clients.values()){
-            view.updateReservedComponent(nickname, c.getImageID(), false);
+            try{view.updateReservedComponent(nickname, c.getImageID(), false);}
+            catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
         }
     }
     //invoked when a player wants to release (therefore, place face up) the component that it has picked
-    public void putShown(String nickname) throws PickedComponentException, InvalidActionException, RemoteException {
+    public void putShown(String nickname) throws PickedComponentException, InvalidActionException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Assembling phase is finished");
         }
         Component c = playersPlay.get(nickname).releaseComponent();
         shownComponents.add(c);
 
-        clients.get(nickname).updatePickedComponent(c.getImageID(), true);
+        try{clients.get(nickname).updatePickedComponent(c.getImageID(), true);}
+        catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
         for(VirtualViewRMI view: clients.values()){
-            view.updateShownComponent(c.getImageID(), true);
+            try{view.updateShownComponent(c.getImageID(), true);}
+            catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
         }
     }
     //invoked when a player wants to assemble on the ship board the component that it has picked
-    public void assembleComponent(String nickname, int x, int y) throws AssembledComponentException, PickedComponentException, InvalidActionException, RemoteException {
+    public void assembleComponent(String nickname, int x, int y) throws AssembledComponentException, PickedComponentException, InvalidActionException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Assembling phase is finished");
         }
         Component c = playersPlay.get(nickname).assembleComponent(x,y);
 
-        clients.get(nickname).updatePickedComponent(c.getImageID(), true);
+        try{clients.get(nickname).updatePickedComponent(c.getImageID(), true);}
+        catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
         for(VirtualViewRMI view: clients.values()){
-            view.updateAssembledComponent(nickname, c.getImageID(), c.getOrientation(), x, y);
+            try{view.updateAssembledComponent(nickname, c.getImageID(), c.getOrientation(), x, y);}
+            catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
         }
     }
     //invoked when a player wants to change the orientation of the component that it has picked
-    public void rotatePickedComponent(String nickname) throws InvalidActionException, PickedComponentException, RemoteException {
+    public void rotatePickedComponent(String nickname) throws InvalidActionException, PickedComponentException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Assembling phase is finished");
         }
         playersPlay.get(nickname).rotatePickedComponent();
 
-        clients.get(nickname).updateRotatePickedComponent();
+        try{clients.get(nickname).updateRotatePickedComponent();}
+        catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
     }
     //invoked when a player wants to pick a deck during the assembling phase to see its content
-    public void pickDeck(String nickname, int deckNumber) throws PickedDeckException, InvalidActionException, RemoteException {
+    public void pickDeck(String nickname, int deckNumber) throws PickedDeckException, InvalidActionException {
         if(state != State.SHIP_BUILDING || firstFlight){
             throw new InvalidActionException("Invalid action");
         }
@@ -559,20 +573,22 @@ public class GameState {
         decks.get(deckNumber).setPicked();
 
         List<Integer> deckIDs = convertDeck(decks.get(deckNumber));
-        clients.get(nickname).updatePickedDeck(deckIDs);
+        try{clients.get(nickname).updatePickedDeck(deckIDs);}
+        catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
     }
     //invoked when a player wants to release the deck it has picked, during the assembling phase
-    public void releaseDeck(String nickname) throws InvalidActionException, PickedDeckException, RemoteException {
+    public void releaseDeck(String nickname) throws InvalidActionException, PickedDeckException {
         if(state != State.SHIP_BUILDING || firstFlight){
             throw new InvalidActionException("Invalid action");
         }
         int releasedDeckNumber = playersPlay.get(nickname).releaseDeck();
         decks.get(releasedDeckNumber).setNotPicked();
 
-        clients.get(nickname).updateReleasedDeck();
+        try{clients.get(nickname).updateReleasedDeck();}
+        catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
     }
     //invoked when a player has finished the assembling phase and has to pick a free position on the flight board
-    public void setPosition(String nickname, int initCell) throws InvalidPositionException, InvalidActionException, RemoteException {
+    public void setPosition(String nickname, int initCell) throws InvalidPositionException, InvalidActionException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Assembling phase is finished");
         }
@@ -599,12 +615,14 @@ public class GameState {
             playersPlay.get(nickname).loseReservedComponents();
         }
 
-        clients.get(nickname).updateFinishAssembling();
+        try{clients.get(nickname).updateFinishAssembling();}
+        catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
 
         if(!playersPos.containsValue(null)){
             state = State.SHIP_CONTROL;
             for(VirtualViewRMI view: clients.values()){
-                view.updateShipControl();
+                try{view.updateShipControl();}
+                catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
             }
             checkShipBoards();
         }

@@ -160,10 +160,6 @@ public class GameStateFirstFlightTest {
     void testPickNextCard() {
         gameState.pickHidden(player1);
         gameState.putShown(player1);
-        //gameState.pickHidden(player1);
-        //gameState.assembleComponent(player1, 0, 3);
-        //gameState.pickShown(player2, 0);
-        //gameState.assembleComponent(player2, 0, 3);
         gameState.setPosition(player2, 1);
         gameState.setPosition(player1, 0);
         assertEquals(player2, gameState.getTurnPlayer());
