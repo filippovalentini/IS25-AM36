@@ -100,6 +100,7 @@ public class GameState {
     //returns teh number of exposed connectors on a player's ship board
     public int countExposedConnectors(String nickname){
         return playersPlay.get(nickname).countExposedConnectors();
+
     }
     //returns the number of crew members in a player's ship board
     public int getCrewCount(String nickname) {
