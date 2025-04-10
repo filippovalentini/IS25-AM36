@@ -1,9 +1,13 @@
 package it.polimi.ingsw.galaxytrucker.network.rmi.client;
 
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 
@@ -12,6 +16,15 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
 
     public ClientRMI() throws RemoteException {
         super();
+    }
+
+    public static void main(String[] args) throws RemoteException, NotBoundException {
+        final String serverName = "GalaxyTruckerServer";
+        VirtualViewRMI client = new ClientRMI();
+        Registry registry = LocateRegistry.getRegistry(args[0], 1234);
+        VirtualServerRMI server = (VirtualServerRMI) registry.lookup(serverName);
+        System.out.println("Obtained remote object...");
+        server.addPlayer(client, "filippo", Color.BLUE);
     }
 
     //notifies a view about an error committed while executing a method on the remote server; the parameter
@@ -23,7 +36,9 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
     //the server is waiting for other players in order to start the assembling phase; the parameter firstFlight
     //in needed for the view to determine which type of ship board/flight board to show to the user
     @Override
-    public void updateWaitingForPlayers(boolean firstFlight) throws RemoteException {}
+    public void updateWaitingForPlayers(boolean firstFlight) throws RemoteException {
+        System.out.println("Waiting for players...");
+    }
 
 
     //notifies a view about the beginning of the assembling phase

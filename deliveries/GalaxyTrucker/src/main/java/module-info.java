@@ -10,4 +10,5 @@ module it.polimi.ingsw.galaxytrucker {
     exports it.polimi.ingsw.galaxytrucker.model.enumerations;
     exports it.polimi.ingsw.galaxytrucker.network.rmi.server to java.rmi;
     opens it.polimi.ingsw.galaxytrucker.model.enumerations to javafx.fxml;
+    opens it.polimi.ingsw.galaxytrucker.network.rmi.client to java.rmi;
 }

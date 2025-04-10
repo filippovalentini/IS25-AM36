@@ -40,7 +40,7 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
         final String serverName = "GalaxyTruckerServer";
         Registry registry = LocateRegistry.createRegistry(1234);
         registry.rebind(serverName, server);
-        System.out.println("Server bound");
+        System.out.println("Waiting for remote invocation...");
     }
 
     //invoked when one of the players decides enter the game; the remote client view is added to the list
