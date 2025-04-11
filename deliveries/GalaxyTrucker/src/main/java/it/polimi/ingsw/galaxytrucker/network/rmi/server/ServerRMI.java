@@ -2,7 +2,6 @@ package it.polimi.ingsw.galaxytrucker.network.rmi.server;
 
 import it.polimi.ingsw.galaxytrucker.controller.GameController;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
-import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 import it.polimi.ingsw.galaxytrucker.network.rmi.client.VirtualServerRMI;
 
 import java.rmi.RemoteException;

@@ -77,7 +77,8 @@ public interface VirtualViewRMI extends Remote, VirtualView {
     @Override
     void updateShipControl() throws RemoteException;
 
+    //runs a command line interface to send requests to the server
     @Override
-    void run(VirtualViewRMI client, String nickname, Color color, VirtualServerRMI server) throws RemoteException;
+    void runCli() throws RemoteException;
 
 }

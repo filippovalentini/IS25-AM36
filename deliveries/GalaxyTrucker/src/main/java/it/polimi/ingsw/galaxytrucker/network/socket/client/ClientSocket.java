@@ -37,7 +37,7 @@ public abstract class ClientSocket implements VirtualViewSocket {
         }
     }
 
-    private void runCli()  {
+    public void runCli()  {
         Scanner scan = new Scanner(System.in);
         while (true) {
             System.out.print("[INSERT_COMMAND]: ");

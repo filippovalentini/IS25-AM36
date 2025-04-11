@@ -63,5 +63,6 @@ public interface VirtualView {
     //enter the ship control phase
     void updateShipControl() throws Exception;
 
-    void run(VirtualViewRMI client, String nickname, Color color, VirtualServerRMI server) throws Exception;
+    //runs a command line interface to send requests to the server
+    void runCli() throws Exception;
 }
