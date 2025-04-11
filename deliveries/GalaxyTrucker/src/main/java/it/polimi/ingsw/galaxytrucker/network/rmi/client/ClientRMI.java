@@ -1,17 +1,13 @@
 package it.polimi.ingsw.galaxytrucker.network.rmi.client;
 
 import it.polimi.ingsw.galaxytrucker.client.TUI;
-import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
-import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
 
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
+import java.rmi.*;
+import java.rmi.registry.*;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
     private VirtualServerRMI server;
@@ -49,18 +45,19 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
     }
 
     public void printRules(){
-        System.out.println("Comandi disponibili:");
+        System.out.println("Available commands:");
         System.out.println("1 - pickHidden");
         System.out.println("2 - pickShown <index>");
-        System.out.println("3 - putShown");
-        System.out.println("4 - reserveComponent");
-        System.out.println("5 - pickReservedComponent <position>");
-        System.out.println("6 - rotatePickedComponent");
-        System.out.println("7 - assembleComponent <x> <y>");
+        System.out.println("3 - release");
+        System.out.println("4 - reserve");
+        System.out.println("5 - pickReserved <position>");
+        System.out.println("6 - rotate");
+        System.out.println("7 - assemble <x> <y>");
         System.out.println("8 - pickDeck <deckNumber>");
         System.out.println("9 - releaseDeck");
         System.out.println("10 - setPosition <initCell>");
-        System.out.println("0 - exit");
+        System.out.println("11 - rules");
+        System.out.println("12 - exit");
     }
 
 
@@ -78,79 +75,81 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
             if (tokens.length == 0) continue;
 
             try {
-                int command = Integer.parseInt(tokens[0]);
+                String command = tokens[0];
                 switch (command) {
-                    case 1:
+                    case "pickHidden":
                         server.pickHidden(nickname);
                         break;
-                    case 2:
+                    case "pickShown":
                         if (tokens.length < 2) {
-                            System.out.println("Errore: inserire un indice.");
+                            System.out.println("Error: index required");
                             break;
                         }
                         int index = Integer.parseInt(tokens[1]);
                         server.pickShown(nickname, index);
                         break;
-                    case 3:
+                    case "release":
                         server.putShown(nickname);
                         break;
-                    case 4:
+                    case "reserve":
                         server.reserveComponent(nickname);
                         break;
-                    case 5:
+                    case "pickReserved":
                         if (tokens.length < 2) {
-                            System.out.println("Errore: inserire una posizione.");
+                            System.out.println("Error: index required");
                             break;
                         }
                         int pos = Integer.parseInt(tokens[1]);
                         server.pickReservedComponent(nickname, pos);
                         break;
-                    case 6:
+                    case "rotate":
                         server.rotatePickedComponent(nickname);
                         break;
-                    case 7:
+                    case "assemble":
                         if (tokens.length < 3) {
-                            System.out.println("Errore: inserire x e y.");
+                            System.out.println("Error: coordinates required");
                             break;
                         }
                         int x = Integer.parseInt(tokens[1]);
                         int y = Integer.parseInt(tokens[2]);
                         server.assembledComponent(nickname, x, y);
                         break;
-                    case 8:
+                    case "pickDeck":
                         if (tokens.length < 2) {
-                            System.out.println("Errore: inserire un numero di mazzo.");
+                            System.out.println("Error: index required");
                             break;
                         }
                         int deck = Integer.parseInt(tokens[1]);
                         server.pickDeck(nickname, deck);
                         break;
-                    case 9:
+                    case "releaseDeck":
                         server.releaseDeck(nickname);
                         break;
-                    case 10:
+                    case "setPosition":
                         if (tokens.length < 2) {
-                            System.out.println("Errore: inserire una posizione iniziale.");
+                            System.out.println("Error: position required");
                             break;
                         }
                         int initCell = Integer.parseInt(tokens[1]);
                         server.setPosition(nickname, initCell);
                         break;
-                    case 11:
+                    case "rules":
                         printRules();
                         break;
-                    case 0:
-                        System.out.println("Chiusura client...");
+                    case "view":
+                        tui.visualize();
+                        break;
+                    case "exit":
+                        System.out.println("Closing...");
                         return;
                     default:
-                        System.out.println("Comando non valido.");
+                        System.out.println("Error: unknown command");
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Formato numero non valido.");
+                System.out.println("Invalid number format");
             } catch (RemoteException e) {
-                System.out.println("Errore remoto: " + e.getMessage());
+                System.out.println("Remote error: " + e.getMessage());
             }
-            this.tui.visualize();
         }
     }
 
@@ -175,6 +174,19 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
     @Override
     public void updateStartAssembling() throws RemoteException {
         this.tui.updateStartAssembling();
+        new Thread(() -> {
+            try{
+                Thread.sleep(1000);
+                System.out.println(3);
+                Thread.sleep(1000);
+                System.out.println(2);
+                Thread.sleep(1000);
+                System.out.println(1);
+                Thread.sleep(1000);
+                System.out.println("START ASSEMBLING!!!");
+            }
+            catch (Exception e) {System.out.println("Error on wait");}
+        }).start();
     }
 
     //notifies the view about the fact that a component has been successfully picked/released (depending on
