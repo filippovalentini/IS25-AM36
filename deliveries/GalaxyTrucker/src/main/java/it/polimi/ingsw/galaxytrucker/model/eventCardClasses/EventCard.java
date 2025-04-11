@@ -1,5 +1,6 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 
@@ -53,6 +54,11 @@ public class EventCard  {
     public void skip(GameState gameState, String nickname) throws InvalidActionException {
         throw new InvalidActionException("Invalid action");
     }
+
+    public void switchGoods(GameState gamestate, String nickname, int cargo_row, int cargo_col, Color good, int pos)throws InvalidActionException{
+        throw new InvalidActionException("Invalid action");
+    }
+
 }
 
 

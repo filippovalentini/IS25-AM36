@@ -112,6 +112,7 @@ public class Component {
     public boolean isWellOriented(){        //determines if the component is oriented correctly (true by default, it will be overrided by subclasses for which the orientation is important)
         return true;
     }
+    public void addGood(Color good){}
     public boolean hasMembers(){ return false;}
     public boolean hasDoubleEngines() { return false;}
     public boolean hasSingleEngine() { return false;}
@@ -121,6 +122,7 @@ public class Component {
     public int getNumberCrew() {
         return 0;
     }
+    public List<Color> getGoods(){ return new ArrayList<>();}
     public int getNumberBatteries(){ return 0;}
     public int getNumberGoods() { return 0;}
     public int getNumberGoods(Color color){ return 0;}

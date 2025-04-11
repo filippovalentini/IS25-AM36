@@ -771,4 +771,50 @@ public class ShipBoard {
         return goodsPrice;
     }
 
-}
+
+    public void printShip() {
+                int righe = 5;
+                int colonne = 7;
+                int altezzaCella = 3; // altezza interna
+                int larghezzaCella = 10; // larghezza interna
+
+                for (int r = 0; r < righe; r++) {
+                    // Riga superiore delle celle
+                    for (int c = 0; c < colonne; c++) {
+                        System.out.print("┌");
+                        for (int i = 0; i < larghezzaCella; i++) {
+                            System.out.print("─");
+                        }
+                        System.out.print("┐");
+                    }
+                    System.out.println();
+
+                    // Parte centrale
+                    for (int i = 0; i < altezzaCella; i++) {
+                        for (int c = 0; c < colonne; c++) {
+                            System.out.print("│");
+                            for (int j = 0; j < larghezzaCella; j++) {
+                                System.out.print(" ");
+
+                            }
+                            System.out.print("│");
+                        }
+                        System.out.println();
+                    }
+
+                    // Riga inferiore delle celle
+                    for (int c = 0; c < colonne; c++) {
+                        System.out.print("└");
+                        for (int i = 0; i < larghezzaCella; i++) {
+                            System.out.print("─");
+                        }
+                        System.out.print("┘");
+                    }
+                    System.out.println();
+                }
+            }
+        }
+
+
+
+

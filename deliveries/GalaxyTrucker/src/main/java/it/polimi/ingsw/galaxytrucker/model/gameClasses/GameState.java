@@ -782,6 +782,16 @@ public class GameState {
         }
         currentCard.planetLanding(this, nickname, numberPlanet);
     }
+   //invoked when a player need to switch his goods in Planets effect
+    public void switchGoods(String nickname,int cargo_row, int cargo_col, Color good, int pos) throws InvalidActionException {
+        if(state != State.CARD_SOLVING){
+            throw new InvalidActionException("Card must be picked first");
+        }
+        if(!nickname.equals(turnPlayer)){
+            throw new InvalidActionException("Wait for the turn");
+        }
+        currentCard.switchGoods(this, nickname,cargo_row,cargo_col,good,pos);
+    }
     //invoked when a player's ship has to be hit by a meteor/cannon shot; the player can decide whether to
     //activate a shield or a cannon to defend its ship
     public void hit(String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException, NoBatteriesException {
@@ -846,7 +856,7 @@ public class GameState {
     }
 
     //
-     //GAME OVER
+    //GAME OVER
     //
 
 

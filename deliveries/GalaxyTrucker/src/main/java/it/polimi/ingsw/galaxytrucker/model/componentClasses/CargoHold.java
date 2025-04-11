@@ -16,10 +16,8 @@ public class CargoHold extends ConfigurableComponent {
         goods = new ArrayList<>();
         //numberGoods = 0;
     }
-    public List<Color> getGoods() { //return a copy of the listed goods
-        return new ArrayList<>(this.goods);
-    }
 
+    @Override
     public void addGood(Color good) throws FullCargoHoldException, UnsupportedCargoColorException {     //adds one good to the cargo hold (it can't be red)
         if(good==Color.RED){
           throw new UnsupportedCargoColorException("Unsupported Cargo type");
@@ -63,6 +61,10 @@ public class CargoHold extends ConfigurableComponent {
             }
         }
         return price;
+    }
+    @Override
+    public List<Color> getGoods() { //return a copy of the listed goods
+        return new ArrayList<>(this.goods);
     }
     @Override
     public int getNumberGoods(){

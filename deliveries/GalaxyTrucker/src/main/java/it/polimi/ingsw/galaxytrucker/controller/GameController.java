@@ -129,7 +129,14 @@ public class GameController {
         }
     }
 
-    //invoked when a player's ship has to be hit by a meteor/cannon shot; the player can decide whether to
+    public void switchGoods(String nickname,int cargo_row, int cargo_col, Color good, int pos) throws InvalidActionException {
+        synchronized (model) {
+            model.switchGoods(nickname, cargo_row, cargo_col, good, pos);
+        }
+    }
+
+
+        //invoked when a player's ship has to be hit by a meteor/cannon shot; the player can decide whether to
     //activate a shield or a cannon to defend its ship
     public void hit(String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException, NoBatteriesException {
         synchronized (model) {
@@ -172,6 +179,8 @@ public class GameController {
             model.skip(nickname);
         }
     }
+
+
 
     //[method for testing]
     public State getModelState() {
