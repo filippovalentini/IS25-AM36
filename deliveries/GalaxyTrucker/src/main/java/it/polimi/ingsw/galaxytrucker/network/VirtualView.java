@@ -1,6 +1,10 @@
 package it.polimi.ingsw.galaxytrucker.network;
 
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
+import it.polimi.ingsw.galaxytrucker.network.rmi.client.VirtualServerRMI;
+import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
+
 import java.util.List;
 
 //this interface defines the methods that are invoked by the model in order to notify/update the views after
@@ -58,4 +62,6 @@ public interface VirtualView {
     //notifies the view that all the players have concluded the assembling phase, which means that the players
     //enter the ship control phase
     void updateShipControl() throws Exception;
+
+    void run(VirtualViewRMI client, String nickname, Color color, VirtualServerRMI server) throws Exception;
 }

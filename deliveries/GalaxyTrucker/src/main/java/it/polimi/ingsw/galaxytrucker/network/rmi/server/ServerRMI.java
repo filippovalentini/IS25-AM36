@@ -2,6 +2,7 @@ package it.polimi.ingsw.galaxytrucker.network.rmi.server;
 
 import it.polimi.ingsw.galaxytrucker.controller.GameController;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 import it.polimi.ingsw.galaxytrucker.network.rmi.client.VirtualServerRMI;
 
 import java.rmi.RemoteException;
@@ -42,6 +43,7 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
         registry.rebind(serverName, server);
         System.out.println("Waiting for remote invocation...");
     }
+
 
     //invoked when one of the players decides enter the game; the remote client view is added to the list
     //of connected clients

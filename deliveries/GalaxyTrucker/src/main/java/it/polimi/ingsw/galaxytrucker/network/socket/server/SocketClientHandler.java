@@ -5,7 +5,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class SocketClientHandler implements VirtualViewSocket {
+public abstract class SocketClientHandler implements VirtualViewSocket {
     Socket socket;
 
     public SocketClientHandler(Socket socket) {

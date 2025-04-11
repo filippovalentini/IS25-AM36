@@ -4,7 +4,7 @@ import it.polimi.ingsw.galaxytrucker.network.rmi.client.VirtualServerRMI;
 
 import java.io.PrintWriter;
 
-public class SocketServerHandler implements VirtualServerSocket {
+public abstract class SocketServerHandler implements VirtualServerSocket {
     final PrintWriter output;
 
     public SocketServerHandler(PrintWriter output) {

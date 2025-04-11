@@ -7,7 +7,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServerSocket {
+public abstract class ServerSocket {
     private final java.net.ServerSocket listenSocket;
     private final GameController controller;
     final List<SocketClientHandler> clients = new ArrayList<>();
@@ -24,12 +24,12 @@ public class ServerSocket {
     private void runServer() throws IOException {
         Socket clientSocket = null;
         while ((clientSocket = this.listenSocket.accept()) != null && clients.size() < numPlayers) {
-            SocketClientHandler handler = new SocketClientHandler(clientSocket);
+            //SocketClientHandler handler = new SocketClientHandler(clientSocket);
             synchronized (this.clients){
-                clients.add(handler); // save the client in clients list
+                //clients.add(handler); // save the client in clients list
             }
             // start the actual server virtual view in the dedicated thread
-            (new Thread(handler::runVirtualView)).start();
+            //(new Thread(handler::runVirtualView)).start();
         }
     }
 
@@ -46,6 +46,6 @@ public class ServerSocket {
             throw new RuntimeException("Unknown gameType: " + gameType);
         }
         java.net.ServerSocket listenSocket = new java.net.ServerSocket(port);
-        new ServerSocket(listenSocket, firstFlight, players).runServer();
+        //new ServerSocket(listenSocket, firstFlight, players).runServer();
     }
 }

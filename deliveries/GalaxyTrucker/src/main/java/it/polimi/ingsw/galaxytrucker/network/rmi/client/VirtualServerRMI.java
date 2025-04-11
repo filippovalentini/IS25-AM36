@@ -55,4 +55,8 @@ public interface VirtualServerRMI extends Remote, VirtualServer {
     //invoked when a player has finished the assembling phase and has to pick a free position on the flight board
     @Override
     void setPosition(String nickname, int initCell) throws RemoteException;
+
+
+
+
 }

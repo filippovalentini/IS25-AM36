@@ -6,14 +6,14 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class ClientSocket implements VirtualViewSocket {
+public abstract class ClientSocket implements VirtualViewSocket {
     private Socket clientSocket;
     private Scanner input;
     private SocketServerHandler output;
     protected ClientSocket(Socket clientSocket) throws IOException {
         this.clientSocket = clientSocket;
         this.input = new Scanner(clientSocket.getInputStream());
-        this.output = new SocketServerHandler(new PrintWriter(clientSocket.getOutputStream()));
+        //this.output = new SocketServerHandler(new PrintWriter(clientSocket.getOutputStream()));
     }
 
     private void run() {
@@ -57,6 +57,6 @@ public class ClientSocket implements VirtualViewSocket {
         String host = args[0];
         int port = Integer.parseInt(args[1]);
         Socket serverSocket = new Socket(host, port);
-        new ClientSocket(serverSocket).run();
+        //new ClientSocket(serverSocket).run();
     }
 }

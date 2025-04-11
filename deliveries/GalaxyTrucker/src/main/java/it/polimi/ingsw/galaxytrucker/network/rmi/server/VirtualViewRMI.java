@@ -1,7 +1,9 @@
 package it.polimi.ingsw.galaxytrucker.network.rmi.server;
 
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.VirtualView;
+import it.polimi.ingsw.galaxytrucker.network.rmi.client.VirtualServerRMI;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -74,5 +76,8 @@ public interface VirtualViewRMI extends Remote, VirtualView {
     //enter the ship control phase
     @Override
     void updateShipControl() throws RemoteException;
+
+    @Override
+    void run(VirtualViewRMI client, String nickname, Color color, VirtualServerRMI server) throws RemoteException;
 
 }
