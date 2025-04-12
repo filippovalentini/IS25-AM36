@@ -2,6 +2,7 @@ package it.polimi.ingsw.galaxytrucker.model.componentClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LifeSupport extends Component {
@@ -13,5 +14,12 @@ public class LifeSupport extends Component {
     }
     public boolean isPurple() {
         return isPurple;
+    }
+
+    @Override
+    public Component clone() {//return a copy of the component
+        LifeSupport retComponent = new LifeSupport(isPurple, this.imageID, new ArrayList<>(this.sides));
+        retComponent.orientation = this.orientation;
+        return retComponent;
     }
 }

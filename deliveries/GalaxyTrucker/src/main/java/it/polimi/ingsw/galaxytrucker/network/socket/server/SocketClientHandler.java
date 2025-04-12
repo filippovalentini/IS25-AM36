@@ -10,29 +10,29 @@ public abstract class SocketClientHandler implements VirtualViewSocket {
 
     public SocketClientHandler(Socket socket) {
         this.socket = socket;
-    }
 
-    public void runVirtualView(){
-        try {
-            Scanner in = new Scanner(socket.getInputStream());
-            PrintWriter out = new PrintWriter(socket.getOutputStream());
-            while (true) {
-                String line = in.nextLine();
-                if (line.equals("exit")) { // object received to stop the virtual view
-                    break;
-                } else if (line.equals("test")){
-                    System.out.println("test request received from client!");
-                    new PrintWriter(socket.getOutputStream()).println("[SERVER]: test request received!");
-                }else{
-                    // serialization through JSON not implemented, yet
-                    // it must de-serialize JSON obj and then call the respective update
+        public void runVirtualView () {
+            try {
+                Scanner in = new Scanner(socket.getInputStream());
+                PrintWriter out = new PrintWriter(socket.getOutputStream());
+                while (true) {
+                    String line = in.nextLine();
+                    if (line.equals("exit")) { // object received to stop the virtual view
+                        break;
+                    } else if (line.equals("test")) {
+                        System.out.println("test request received from client!");
+                        new PrintWriter(socket.getOutputStream()).println("[SERVER]: test request received!");
+                    } else {
+                        // serialization through JSON not implemented, yet
+                        // it must de-serialize JSON obj and then call the respective update
+                    }
                 }
+                in.close();
+                out.close();
+                socket.close();
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
             }
-            in.close();
-            out.close();
-            socket.close();
-        }catch (IOException e){
-            System.err.println(e.getMessage());
         }
     }
 }

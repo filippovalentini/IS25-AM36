@@ -1,4 +1,4 @@
-package it.polimi.ingsw.galaxytrucker.network.socket.client;
+/*package it.polimi.ingsw.galaxytrucker.network.socket.client;
 
 import it.polimi.ingsw.galaxytrucker.network.rmi.client.VirtualServerRMI;
 
@@ -15,9 +15,10 @@ public abstract class SocketServerHandler implements VirtualServerSocket {
 
     /*
         ex. pickComponent() etc.
-     */
+
     public void test(){
         output.println("test"); // send "test" to server
         output.flush();
     }
 }
+*/

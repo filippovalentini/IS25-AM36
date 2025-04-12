@@ -1,4 +1,4 @@
-package it.polimi.ingsw.galaxytrucker.network.socket.client;
+/*package it.polimi.ingsw.galaxytrucker.network.socket.client;
 
 import it.polimi.ingsw.galaxytrucker.network.socket.server.VirtualViewSocket;
 
@@ -60,3 +60,4 @@ public abstract class ClientSocket implements VirtualViewSocket {
         //new ClientSocket(serverSocket).run();
     }
 }
+*/

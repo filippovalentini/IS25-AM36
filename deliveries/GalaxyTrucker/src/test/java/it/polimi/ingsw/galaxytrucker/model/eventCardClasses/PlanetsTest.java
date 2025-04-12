@@ -1,5 +1,6 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
+import it.polimi.ingsw.galaxytrucker.model.componentClasses.CargoHold;
 import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
@@ -10,6 +11,7 @@ import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,51 +26,54 @@ class PlanetsTest {
     private VirtualViewRMI cl2;
     int row;
     int column;
+    List<Color> planetOneGoods;
+    List<Color> planetTwoGoods;
+    List<List<Color>> allPlanetsGoods;
 
     @BeforeEach
-    void init(){
+    void init() throws RemoteException {
         gameState = new GameState(false, 2);
         nickname="filippo";
         nickname2="thomas";
-        try{
-            cl1 = new ClientRMI();
-            cl2 = new ClientRMI();
-        }
-        catch (Exception e){
-            System.exit(-1);
-        }
+        cl1 = new ClientRMI();
+        cl2 = new ClientRMI();
         gameState.addPlayer(cl1,nickname,Color.RED);
         gameState.addPlayer(cl2,nickname2,Color.BLUE);
-        List<Color> planetOneGoods = new ArrayList<>();
+        planetOneGoods = new ArrayList<>();
         planetOneGoods.add(Color.YELLOW);
         planetOneGoods.add(Color.GREEN);
         planetOneGoods.add(Color.BLUE);
         planetOneGoods.add(Color.BLUE);
-        List<Color> planetTwoGoods = new ArrayList<>();
+        planetTwoGoods = new ArrayList<>();
         planetTwoGoods.add(Color.YELLOW);
         planetTwoGoods.add(Color.YELLOW);
-        List<List<Color>> allPlanetsGoods = new ArrayList<>();
+        allPlanetsGoods = new ArrayList<>();
         allPlanetsGoods.add(planetOneGoods);
         allPlanetsGoods.add(planetTwoGoods);
-        planets = new Planets(allPlanetsGoods, 3, 0);
+        planets = new Planets(allPlanetsGoods, 3, 409);
         int h = 0;
         for (int i = 0; i < 151; i++) { //show all components
             gameState.pickHidden(nickname);
             gameState.putShown(nickname);
         }
         List<Component> shownComponents = gameState.getShownComponent();
-
+        int count =0;
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 7; j++) {
-                gameState.assembleComponent(nickname, gameState.getShownComponent().get(h), i, j);
-                h += 1;
-                if(gameState.getShownComponent().get(h).getImageID()>=501 && gameState.getShownComponent().get(h).getImageID()<=609){
+                count=0;
+                if(gameState.getShownComponent().get(h).getImageID()>=510 && gameState.getShownComponent().get(h).getImageID()<=515){
                     for(Color col: planetOneGoods){
+                        if(count>=3){
+                            break;
+                        }
+                        gameState.getShownComponent().get(h).addGood(col);
+                        count++;
                         row=i;
                         column=j;
-                        gameState.getShownComponent().get(h).addGood(col);
                     }
                 }
+                gameState.assembleComponent(nickname, gameState.getShownComponent().get(h), i, j);
+                h += 1;
             }
         }
         gameState.setGameState(State.CARD_SOLVING);
@@ -77,8 +82,9 @@ class PlanetsTest {
 
     @Test
     void testPlanetLanding() {
-        int numberPlanet = 0;
+       int numberPlanet = 0;
         assertDoesNotThrow(() -> planets.planetLanding(gameState, nickname, numberPlanet));
+
     }
 
     @Test
@@ -89,8 +95,10 @@ class PlanetsTest {
     }
    @Test
     void testSwitchGoods(){
-     planets.switchGoods(gameState, nickname,row,column,Color.RED,1 );
-    assertEquals(Color.RED,gameState.getPlayersPlay().get(nickname).getShipBoard().getAssembledComponent(row,column).getGoods().get(1));
+        int numberPlanet = 0;
+        planets.planetLanding(gameState, nickname, 1);
+        planets.switchGoods(gameState, nickname,row,column,Color.YELLOW,0 );
+        //assertEquals(CargoHold.class,gameState.getPlayersPlay().get(nickname).getShipBoard().getAssembledComponent(row,column).getClass());
+        assertEquals(Color.YELLOW,gameState.getPlayersPlay().get(nickname).getShipBoard().getAssembledComponent(row,column).getGoods().get(0));
     }
-
 }

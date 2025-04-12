@@ -3,6 +3,7 @@ package it.polimi.ingsw.galaxytrucker.model.componentClasses;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Shield extends Component {
@@ -28,5 +29,11 @@ public class Shield extends Component {
             return true;
         }
         return false;
+    }
+    @Override
+    public Component clone(){//return a copy of the component
+        Shield retComponent = new Shield(this.imageID, new ArrayList<>(this.sides));
+        retComponent.orientation = this.orientation;
+        return retComponent;
     }
 }

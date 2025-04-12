@@ -3,6 +3,7 @@ package it.polimi.ingsw.galaxytrucker.model.componentClasses;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.NoBatteriesException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Battery extends ConfigurableComponent {
@@ -28,5 +29,11 @@ public class Battery extends ConfigurableComponent {
             throw new NoBatteriesException("Not enough batteries");
         }
         numberBatteries -= batteriesToUse;
+    }
+    @Override
+    public Component clone(){//return a copy of the component
+        Battery retComponent = new Battery(isDouble,this.imageID, new ArrayList<>(this.sides));
+        retComponent.orientation = this.orientation;
+        return retComponent;
     }
 }

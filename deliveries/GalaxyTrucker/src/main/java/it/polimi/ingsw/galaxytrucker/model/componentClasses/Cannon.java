@@ -3,6 +3,7 @@ package it.polimi.ingsw.galaxytrucker.model.componentClasses;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Cannon extends ConfigurableComponent { //constructor
@@ -17,5 +18,11 @@ public class Cannon extends ConfigurableComponent { //constructor
     @Override
     public boolean pointsForward(){
         return this.orientation == Orientation.NORTH;
+    }
+    @Override
+    public Component clone(){//return a copy of the component
+        Cannon retComponent = new Cannon(isDouble,this.imageID, new ArrayList<>(this.sides));
+        retComponent.orientation = this.orientation;
+        return retComponent;
     }
 }

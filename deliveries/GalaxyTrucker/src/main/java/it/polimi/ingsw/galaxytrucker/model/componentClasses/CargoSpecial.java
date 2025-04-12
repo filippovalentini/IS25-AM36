@@ -5,6 +5,7 @@ import it.polimi.ingsw.galaxytrucker.model.exceptions.FullCargoHoldException;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.UnsupportedCargoColorException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CargoSpecial extends CargoHold {
@@ -32,5 +33,10 @@ public class CargoSpecial extends CargoHold {
         }else{ //full cargo (it will substitute)
             goods.set(pos, good);
         }
+    }
+
+    @Override
+    public List<Color> getGoods() { //return a copy of the listed goods
+        return new ArrayList<>(this.goods);
     }
 }

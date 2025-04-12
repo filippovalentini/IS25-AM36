@@ -63,8 +63,9 @@ public class CargoHold extends ConfigurableComponent {
         return price;
     }
     @Override
-    public List<Color> getGoods() { //return a copy of the listed goods
-        return new ArrayList<>(this.goods);
+    public List<Color> getGoods() {
+        List<Color> copia = this.goods;//return a copy of the listed goods
+        return copia;
     }
     @Override
     public int getNumberGoods(){
@@ -82,4 +83,12 @@ public class CargoHold extends ConfigurableComponent {
     }
     @Override
     public void removeSpecificGoods(Color color, int numberGoods){}
+
+    @Override
+    public Component clone(){//return a copy of the component
+        CargoHold retComponent = new CargoHold(isDouble,this.imageID, new ArrayList<>(this.sides));
+        retComponent.orientation = this.orientation;
+        retComponent.goods = this.goods;
+        return retComponent;
+    }
 }
