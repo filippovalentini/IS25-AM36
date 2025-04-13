@@ -35,8 +35,8 @@ class PlanetsTest {
         gameState = new GameState(false, 2);
         nickname="filippo";
         nickname2="thomas";
-        cl1 = new ClientRMI();
-        cl2 = new ClientRMI();
+        cl1 = new ClientRMI(nickname, Color.RED);
+        cl2 = new ClientRMI(nickname2, Color.BLUE);
         gameState.addPlayer(cl1,nickname,Color.RED);
         gameState.addPlayer(cl2,nickname2,Color.BLUE);
         planetOneGoods = new ArrayList<>();

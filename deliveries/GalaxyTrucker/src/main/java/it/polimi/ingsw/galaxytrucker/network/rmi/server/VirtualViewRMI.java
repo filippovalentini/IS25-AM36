@@ -79,6 +79,6 @@ public interface VirtualViewRMI extends Remote, VirtualView {
 
     //runs a command line interface to send requests to the server
     @Override
-    void runCli() throws RemoteException;
+    void runCli(VirtualServerRMI server) throws RemoteException;
 
 }

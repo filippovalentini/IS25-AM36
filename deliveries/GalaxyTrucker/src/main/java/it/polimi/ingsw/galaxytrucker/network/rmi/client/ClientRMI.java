@@ -10,14 +10,12 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
 public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
-    private VirtualServerRMI server;
     private TUI tui;
     private String nickname;
     private Color color;
 
-    public ClientRMI(VirtualServerRMI server, String nickname, Color color) throws RemoteException {
+    public ClientRMI(String nickname, Color color) throws RemoteException {
         super();
-        this.server = server;
         this.nickname = nickname;
         this.color = color;
     }
@@ -39,9 +37,9 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
             case "YELLOW" -> Color.YELLOW;
             default -> null;
         };
-        VirtualViewRMI client = new ClientRMI(server, nickname, colorEnum);
+        VirtualViewRMI client = new ClientRMI(nickname, colorEnum);
         server.addPlayer(client, nickname, colorEnum);
-        client.runCli();
+        client.runCli(server);
     }
 
     public void printRules(){
@@ -63,7 +61,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
 
     //runs a command line interface to send requests to the server
     @Override
-    public void runCli() throws RemoteException {
+    public void runCli(VirtualServerRMI server) throws RemoteException {
         Scanner scan = new Scanner(System.in);
 
         printRules();

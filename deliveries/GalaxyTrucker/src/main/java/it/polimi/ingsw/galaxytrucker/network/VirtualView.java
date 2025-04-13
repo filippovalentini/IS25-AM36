@@ -64,5 +64,5 @@ public interface VirtualView {
     void updateShipControl() throws Exception;
 
     //runs a command line interface to send requests to the server
-    void runCli() throws Exception;
+    void runCli(VirtualServerRMI server) throws Exception;
 }

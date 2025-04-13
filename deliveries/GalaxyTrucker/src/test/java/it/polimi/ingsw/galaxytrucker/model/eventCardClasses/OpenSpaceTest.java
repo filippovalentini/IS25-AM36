@@ -35,8 +35,8 @@ class OpenSpaceTest {
         player1="filippo";
         player2="thomas";
         try{
-            cl1 = new ClientRMI();
-            cl2 = new ClientRMI();
+            cl1 = new ClientRMI(player1, Color.RED);
+            cl2 = new ClientRMI(player2, Color.GREEN);
         }
         catch (Exception e){
             System.exit(-1);

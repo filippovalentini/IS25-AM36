@@ -11,7 +11,7 @@ public abstract class SocketClientHandler implements VirtualViewSocket {
     public SocketClientHandler(Socket socket) {
         this.socket = socket;
 
-        public void runVirtualView () {
+       /* public void runVirtualView() {
             try {
                 Scanner in = new Scanner(socket.getInputStream());
                 PrintWriter out = new PrintWriter(socket.getOutputStream());
@@ -34,5 +34,7 @@ public abstract class SocketClientHandler implements VirtualViewSocket {
                 System.err.println(e.getMessage());
             }
         }
+        */
+
     }
 }

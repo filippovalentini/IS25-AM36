@@ -30,8 +30,8 @@ class AbandonedShipTest {
         player1 = "truck3r";
         player2 = "4lien";
         try{
-            cl1 = new ClientRMI();
-            cl2 = new ClientRMI();
+            cl1 = new ClientRMI(player1, Color.RED);
+            cl2 = new ClientRMI(player2, Color.BLUE);
         }
         catch (Exception e){
             System.exit(-1);
