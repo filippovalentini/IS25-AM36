@@ -47,14 +47,17 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
     //invoked when one of the players decides enter the game; the remote client view is added to the list
     //of connected clients
     @Override
-    public void addPlayer(VirtualViewRMI client, String nickname, Color color) throws RemoteException {
+    public boolean addPlayer(VirtualViewRMI client, String nickname, Color color) throws RemoteException {
+        boolean addedToGame = false;
         try{
             controller.addPlayer(client, nickname, color);
             clients.put(nickname, client);
+            addedToGame = true;
         }
         catch(Exception e){
             client.notifyError(e.getMessage());
         }
+        return addedToGame;
     }
 
     //invoked when a player wants to pick a component among the one placed face down (assembling phase)

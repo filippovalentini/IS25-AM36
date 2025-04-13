@@ -2,11 +2,11 @@ package it.polimi.ingsw.galaxytrucker.client;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 
-public class Component {
+public class ViewComponent {
     private String imageID;
     private Orientation orientation;
 
-    public Component(String imageID) {
+    public ViewComponent(String imageID) {
         this.imageID = imageID;
         this.orientation = Orientation.NORTH;
     }

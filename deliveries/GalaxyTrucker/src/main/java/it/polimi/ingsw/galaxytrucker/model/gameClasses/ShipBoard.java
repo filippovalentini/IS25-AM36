@@ -133,8 +133,10 @@ public class ShipBoard {
     //assembles the component picked by a player in the specified cell (x,y) of its ship board
     public Component assembleComponent(int x, int y) throws AssembledComponentException, PickedComponentException {
         Component c;
-        Component emptySpace = new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
-        if(!assembledComponents.get(x).get(y).equals(emptySpace)){
+        if(!assembledComponents.get(x).get(y).belongsToShip()){
+            throw new AssembledComponentException("Can't assemble component outside the ship");
+        }
+        if(assembledComponents.get(x).get(y).isNotEmpty()){
             throw new AssembledComponentException("Already assembled component");
         }
         else if(pickedComponent==null){

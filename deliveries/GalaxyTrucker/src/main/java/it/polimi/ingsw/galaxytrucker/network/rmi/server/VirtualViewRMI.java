@@ -24,6 +24,10 @@ public interface VirtualViewRMI extends Remote, VirtualView {
     @Override
     void updateWaitingForPlayers(boolean firstFlight) throws RemoteException;
 
+    //notifies a view about the presence of another player in the game; this method is invoked before the
+    //beginning of the assembling phase, therefore just the nickname and color of the new player is required
+    @Override
+    void updateNewPlayer(String nickname, Color color) throws RemoteException;
 
     //notifies a view about the beginning of the assembling phase
     @Override
@@ -70,7 +74,7 @@ public interface VirtualViewRMI extends Remote, VirtualView {
     //notifies the view about the fact that the corresponding player has finished the assembling phase and is
     //correctly positioned on the flight board; still, other players have to finish building their ships
     @Override
-    void updateFinishAssembling() throws RemoteException;
+    void updateFinishAssembling(String nickname, int position) throws RemoteException;
 
     //notifies the view that all the players have concluded the assembling phase, which means that the players
     //enter the ship control phase
