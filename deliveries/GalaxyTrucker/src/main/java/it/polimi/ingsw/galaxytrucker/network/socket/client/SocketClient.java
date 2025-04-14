@@ -1,52 +1,68 @@
-package it.polimi.ingsw.galaxytrucker.network.socket.server;
+package it.polimi.ingsw.galaxytrucker.network.socket.client;
 
-import it.polimi.ingsw.galaxytrucker.controller.GameController;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
+import it.polimi.ingsw.galaxytrucker.network.socket.server.VirtualViewSocket;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.List;
 import java.util.Scanner;
 
-public class SocketClientHandler implements VirtualViewSocket {
-    Socket socket;
-    GameController controller;
-
-    public SocketClientHandler(Socket socket, GameController controller) {
-        this.socket = socket;
-        this.controller = controller;
+public class SocketClient implements VirtualViewSocket {
+    private Socket clientSocket;
+    private Scanner input;
+    private SocketServerHandler output;
+    protected SocketClient(Socket clientSocket) throws IOException {
+        this.clientSocket = clientSocket;
+        this.input = new Scanner(clientSocket.getInputStream());
+        this.output = new SocketServerHandler(new PrintWriter(clientSocket.getOutputStream()));
     }
 
-    public void runVirtualView() throws IOException {
-        /*try {
-            Scanner in = new Scanner(socket.getInputStream());
-            PrintWriter out = new PrintWriter(socket.getOutputStream());
-            while (true) {
-                String line = in.nextLine();
-                if (line.equals("exit")) { // object received to stop the virtual view
+    private void run() {
+        new Thread(() -> {
+            try {
+                runVirtualServer(); // run actual virtual server
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+        runCli();
+    }
+
+    // server to client messages
+    private void runVirtualServer() throws IOException {
+        String line;
+        while (input.hasNext()) {
+            line = input.nextLine();
+            System.out.println("message reveiveded: " + line);
+            // json de-serialization
+        }
+    }
+
+    public void runCli()  {
+        Scanner scan = new Scanner(System.in);
+        while (true) {
+            System.out.print("[INSERT_COMMAND]: ");
+            String command = scan.nextLine();
+            switch (command) {
+                case "test":{ // message test
+                    //this.output.test();
+                }
+                default:{
                     break;
-                } else if (line.equals("test")) {
-                    System.out.println("test request received from client!");
-                    new PrintWriter(socket.getOutputStream()).println("[SERVER]: test request received!");
-                } else {
-                    // serialization through JSON not implemented, yet
-                    // it must de-serialize JSON obj and then call the respective update
                 }
             }
-            in.close();
-            out.close();
-            socket.close();
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-        }*/
+        }
     }
 
-    //runs a command line interface to send requests to the server
-    @Override
-    public void runCli(VirtualServer server) throws Exception{}
+    public static void main(String[] args) throws IOException {
+        String host = args[0];
+        int port = Integer.parseInt(args[1]);
+        Socket serverSocket = new Socket(host, port);
+        new SocketClient(serverSocket).run();
+    }
 
     //notifies a view about an error committed while executing a method on the remote server; the parameter
     //errorMessage describes the type of error
@@ -116,4 +132,7 @@ public class SocketClientHandler implements VirtualViewSocket {
     @Override
     public void updateShipControl() throws Exception{}
 
+    //runs a command line interface to send requests to the server
+    @Override
+    public void runCli(VirtualServer server) throws Exception{}
 }
