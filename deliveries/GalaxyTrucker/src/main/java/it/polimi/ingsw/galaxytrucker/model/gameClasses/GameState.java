@@ -1,13 +1,12 @@
 package it.polimi.ingsw.galaxytrucker.model.gameClasses;
 
-import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
+import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 import it.polimi.ingsw.galaxytrucker.model.componentClasses.*;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.*;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.model.shotClasses.*;
 
-import java.rmi.RemoteException;
 import java.util.*;
 
 //this class describes the entire status of the game, the controller will invoke its methods in order to modify the
@@ -24,7 +23,7 @@ public class GameState {
     private List<Component> hiddenComponents;       //components turned face down during the assembling phase
     private List<Component> shownComponents;        //components turned face up during the assembling phase
     private State state;            //current state of the game
-    final Map<String, VirtualViewRMI> clients = new HashMap<>();     //list of all clients
+    final Map<String, VirtualView> clients = new HashMap<>();     //list of all clients
 
     public GameState(boolean firstFlight, int numPlayers) {     //constructor, creates the deck(s) of cards and instantiates the components
         this.firstFlight = firstFlight;
@@ -428,7 +427,7 @@ public class GameState {
         currentCard = null;
     }
     //adds a player to the game
-    public void addPlayer(VirtualViewRMI client, String nickname, Color color) throws UniqueNicknameException, UniquePlayerColorException, InvalidActionException {
+    public void addPlayer(VirtualView client, String nickname, Color color) throws UniqueNicknameException, UniquePlayerColorException, InvalidActionException {
         if(state != State.WAITING_FOR_PLAYERS){
             throw new InvalidActionException("Game has already started");
         }
@@ -453,12 +452,12 @@ public class GameState {
                 }
             }
         }
-        catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
+        catch(Exception e){System.out.println("Error during remote method invocation on client");}
         if(numPlayers == getCurrentPlayers()){
             startAssembling();
-            for(VirtualViewRMI view: clients.values()){
+            for(VirtualView view: clients.values()){
                 try{view.updateStartAssembling();}
-                catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
+                catch(Exception e){System.out.println("Error during remote method invocation on client");}
             }
         }
     }
@@ -483,7 +482,7 @@ public class GameState {
         playersPlay.get(nickname).pickComponent(c);
 
         try{clients.get(nickname).updatePickedComponent(c.getImageID(), false);}
-        catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
+        catch(Exception e){System.out.println("Error during remote method invocation on client");}
     }
     //invoked when a player wants to pick a specific component among the one placed face up (assembling phase)
     public void pickShown(String nickname, int index) throws PickedComponentException, InvalidActionException {
@@ -494,10 +493,10 @@ public class GameState {
         playersPlay.get(nickname).pickComponent(c);
 
         try{clients.get(nickname).updatePickedComponent(c.getImageID(), false);}
-        catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
-        for(VirtualViewRMI view: clients.values()){
+        catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        for(VirtualView view: clients.values()){
             try{view.updateShownComponent(c.getImageID(), false);}
-            catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
     }
     //invoked when a player wants to reserve the component that it has picked for its ship board
@@ -511,10 +510,10 @@ public class GameState {
         Component c = playersPlay.get(nickname).reserveComponent();
 
         try{clients.get(nickname).updatePickedComponent(c.getImageID(), true);}
-        catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
-        for(VirtualViewRMI view: clients.values()){
+        catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        for(VirtualView view: clients.values()){
             try{view.updateReservedComponent(nickname, c.getImageID(), true);}
-            catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
     }
     //invoked when a player wants to pick one of the components that it has reserved for its ship board
@@ -528,10 +527,10 @@ public class GameState {
         Component c = playersPlay.get(nickname).pickReservedComponent(position);
 
         try{clients.get(nickname).updatePickedComponent(c.getImageID(), false);}
-        catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
-        for(VirtualViewRMI view: clients.values()){
+        catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        for(VirtualView view: clients.values()){
             try{view.updateReservedComponent(nickname, c.getImageID(), false);}
-            catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
     }
     //invoked when a player wants to release (therefore, place face up) the component that it has picked
@@ -543,10 +542,10 @@ public class GameState {
         shownComponents.add(c);
 
         try{clients.get(nickname).updatePickedComponent(c.getImageID(), true);}
-        catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
-        for(VirtualViewRMI view: clients.values()){
+        catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        for(VirtualView view: clients.values()){
             try{view.updateShownComponent(c.getImageID(), true);}
-            catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
     }
     //invoked when a player wants to assemble on the ship board the component that it has picked
@@ -557,10 +556,10 @@ public class GameState {
         Component c = playersPlay.get(nickname).assembleComponent(x,y);
 
         try{clients.get(nickname).updatePickedComponent(c.getImageID(), true);}
-        catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
-        for(VirtualViewRMI view: clients.values()){
+        catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        for(VirtualView view: clients.values()){
             try{view.updateAssembledComponent(nickname, c.getImageID(), c.getOrientation(), x, y);}
-            catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
     }
     //invoked when a player wants to change the orientation of the component that it has picked
@@ -571,7 +570,7 @@ public class GameState {
         playersPlay.get(nickname).rotatePickedComponent();
 
         try{clients.get(nickname).updateRotatePickedComponent();}
-        catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
+        catch(Exception e){System.out.println("Error during remote method invocation on client");}
     }
     //invoked when a player wants to pick a deck during the assembling phase to see its content
     public void pickDeck(String nickname, int deckNumber) throws PickedDeckException, InvalidActionException {
@@ -592,7 +591,7 @@ public class GameState {
 
         List<Integer> deckIDs = convertDeck(decks.get(deckNumber));
         try{clients.get(nickname).updatePickedDeck(deckIDs);}
-        catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
+        catch(Exception e){System.out.println("Error during remote method invocation on client");}
     }
     //invoked when a player wants to release the deck it has picked, during the assembling phase
     public void releaseDeck(String nickname) throws InvalidActionException, PickedDeckException {
@@ -606,7 +605,7 @@ public class GameState {
         decks.get(releasedDeckNumber).setNotPicked();
 
         try{clients.get(nickname).updateReleasedDeck();}
-        catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
+        catch(Exception e){System.out.println("Error during remote method invocation on client");}
     }
     //invoked when a player has finished the assembling phase and has to pick a free position on the flight board
     public void setPosition(String nickname, int initCell) throws InvalidPositionException, InvalidActionException {
@@ -636,16 +635,16 @@ public class GameState {
             playersPlay.get(nickname).loseReservedComponents();
         }
 
-        for(VirtualViewRMI view: clients.values()){
+        for(VirtualView view: clients.values()){
             try{view.updateFinishAssembling(nickname, initCell);}
-            catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
 
         if(!playersPos.containsValue(null)){
             state = State.SHIP_CONTROL;
-            for(VirtualViewRMI view: clients.values()){
+            for(VirtualView view: clients.values()){
                 try{view.updateShipControl();}
-                catch(RemoteException e){System.out.println("Error during remote method invocation on client");}
+                catch(Exception e){System.out.println("Error during remote method invocation on client");}
             }
             checkShipBoards();
         }

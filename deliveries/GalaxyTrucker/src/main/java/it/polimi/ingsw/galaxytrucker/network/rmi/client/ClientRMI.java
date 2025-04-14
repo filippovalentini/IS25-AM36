@@ -2,6 +2,7 @@ package it.polimi.ingsw.galaxytrucker.network.rmi.client;
 
 import it.polimi.ingsw.galaxytrucker.client.View;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
+import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
 
 import java.rmi.*;
@@ -74,7 +75,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
 
     //runs a command line interface to send requests to the server
     @Override
-    public void runCli(VirtualServerRMI server) throws RemoteException {
+    public void runCli(VirtualServer server) throws RemoteException {
         Scanner scan = new Scanner(System.in);
 
         printCommands();
@@ -166,7 +167,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid number format");
-            } catch (RemoteException e) {
+            } catch (Exception e) {
                 System.out.println("Remote error: " + e.getMessage());
             }
         }

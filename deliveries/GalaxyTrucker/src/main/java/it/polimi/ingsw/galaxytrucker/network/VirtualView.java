@@ -1,9 +1,6 @@
 package it.polimi.ingsw.galaxytrucker.network;
 
-import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
-import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
-import it.polimi.ingsw.galaxytrucker.network.rmi.client.VirtualServerRMI;
-import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 
 import java.util.List;
 
@@ -67,5 +64,5 @@ public interface VirtualView {
     void updateShipControl() throws Exception;
 
     //runs a command line interface to send requests to the server
-    void runCli(VirtualServerRMI server) throws Exception;
+    void runCli(VirtualServer server) throws Exception;
 }

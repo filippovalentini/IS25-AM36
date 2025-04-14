@@ -9,7 +9,7 @@ import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
 public interface VirtualServer {
     //invoked when one of the players decides enter the game; the remote client view is added to the list
     //of connected clients
-    boolean addPlayer(VirtualViewRMI client, String nickname, Color color) throws Exception;
+    boolean addPlayer(VirtualView client, String nickname, Color color) throws Exception;
 
     //invoked when a player wants to pick a component among the one placed face down (assembling phase)
     void pickHidden(String nickname) throws Exception;

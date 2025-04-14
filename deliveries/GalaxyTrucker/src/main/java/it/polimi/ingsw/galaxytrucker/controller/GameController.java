@@ -4,7 +4,7 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.*;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.*;
-import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
+import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class GameController {
     //STARTING PHASE
 
     //invoked when one of the players decides enter the game
-    public void addPlayer(VirtualViewRMI client, String nickname, Color color) throws UniqueNicknameException, UniquePlayerColorException, InvalidActionException {
+    public void addPlayer(VirtualView client, String nickname, Color color) throws UniqueNicknameException, UniquePlayerColorException, InvalidActionException {
         synchronized (model) {
             model.addPlayer(client, nickname, color);
         }

@@ -2,7 +2,7 @@ package it.polimi.ingsw.galaxytrucker.network.rmi.client;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
-import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
+import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -14,7 +14,7 @@ public interface VirtualServerRMI extends Remote, VirtualServer {
     //invoked when one of the players decides enter the game; the remote client view is added to the list
     //of connected clients
     @Override
-    boolean addPlayer(VirtualViewRMI client, String nickname, Color color) throws RemoteException;
+    boolean addPlayer(VirtualView client, String nickname, Color color) throws RemoteException;
 
     //invoked when a player wants to pick a component among the one placed face down (assembling phase)
     @Override

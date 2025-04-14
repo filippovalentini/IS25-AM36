@@ -2,6 +2,7 @@ package it.polimi.ingsw.galaxytrucker.network.rmi.server;
 
 import it.polimi.ingsw.galaxytrucker.controller.GameController;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 import it.polimi.ingsw.galaxytrucker.network.rmi.client.VirtualServerRMI;
 
 import java.rmi.RemoteException;
@@ -47,15 +48,20 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
     //invoked when one of the players decides enter the game; the remote client view is added to the list
     //of connected clients
     @Override
-    public boolean addPlayer(VirtualViewRMI client, String nickname, Color color) throws RemoteException {
+    public boolean addPlayer(VirtualView client, String nickname, Color color) throws RemoteException {
         boolean addedToGame = false;
         try{
             controller.addPlayer(client, nickname, color);
-            clients.put(nickname, client);
+            clients.put(nickname, (VirtualViewRMI) client);
             addedToGame = true;
         }
         catch(Exception e){
-            client.notifyError(e.getMessage());
+            try{
+                client.notifyError(e.getMessage());
+            }
+            catch(Exception e1){
+                System.out.println("Error during remote method invocation on client");
+            }
         }
         return addedToGame;
     }
@@ -67,7 +73,12 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
             controller.pickHidden(nickname);
         }
         catch(Exception e){
-            clients.get(nickname).notifyError(e.getMessage());
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
         }
     }
 
@@ -78,7 +89,12 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
             controller.pickShown(nickname, index);
         }
         catch(Exception e){
-            clients.get(nickname).notifyError(e.getMessage());
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
         }
     }
 
@@ -89,7 +105,12 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
             controller.putShown(nickname);
         }
         catch(Exception e){
-            clients.get(nickname).notifyError(e.getMessage());
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
         }
     }
 
@@ -100,7 +121,12 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
             controller.reserveComponent(nickname);
         }
         catch(Exception e){
-            clients.get(nickname).notifyError(e.getMessage());
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
         }
     }
 
@@ -111,7 +137,12 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
             controller.pickReservedComponent(nickname, position);
         }
         catch(Exception e){
-            clients.get(nickname).notifyError(e.getMessage());
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
         }
     }
 
@@ -122,7 +153,12 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
             controller.rotatePickedComponent(nickname);
         }
         catch(Exception e){
-            clients.get(nickname).notifyError(e.getMessage());
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
         }
     }
 
@@ -133,7 +169,12 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
             controller.assembleComponent(nickname, x, y);
         }
         catch(Exception e){
-            clients.get(nickname).notifyError(e.getMessage());
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
         }
     }
 
@@ -144,7 +185,12 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
             controller.pickDeck(nickname, deckNumber);
         }
         catch(Exception e){
-            clients.get(nickname).notifyError(e.getMessage());
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
         }
     }
 
@@ -155,7 +201,12 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
             controller.releaseDeck(nickname);
         }
         catch(Exception e){
-            clients.get(nickname).notifyError(e.getMessage());
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
         }
     }
 
@@ -166,7 +217,12 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
             controller.setPosition(nickname, initCell);
         }
         catch(Exception e){
-            clients.get(nickname).notifyError(e.getMessage());
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
         }
     }
 }
