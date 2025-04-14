@@ -1,4 +1,4 @@
-package it.polimi.ingsw.galaxytrucker.client;
+package it.polimi.ingsw.galaxytrucker.view;
 
 public class ViewPosition {
     int lap;

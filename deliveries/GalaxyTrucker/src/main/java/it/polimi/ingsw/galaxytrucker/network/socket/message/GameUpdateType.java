@@ -1,0 +1,16 @@
+package it.polimi.ingsw.galaxytrucker.network.socket.message;
+
+public enum GameUpdateType {
+    WAITING_FOR_PLAYERS,
+    NEW_PLAYER,
+    START_ASSEMBLING,
+    PICKED_COMPONENT,
+    SHOWN_COMPONENT,
+    RESERVED_COMPONENT,
+    ROTATE_PICKED_COMPONENT,
+    ASSEMBLED_COMPONENT,
+    PICKED_DECK,
+    RELEASED_DECK,
+    FINISH_ASSEMBLING,
+    SHIP_CONTROL
+}

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.galaxytrucker.network.rmi.client;
 
-import it.polimi.ingsw.galaxytrucker.client.View;
+import it.polimi.ingsw.galaxytrucker.view.View;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;

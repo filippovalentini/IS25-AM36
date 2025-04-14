@@ -91,7 +91,7 @@ class PlanetsTest {
     void testShouldNotLandingIfPlanetNull() {
         int numberPlanet = 0;
         planets.planetLanding(gameState, nickname, numberPlanet);
-        assertThrows(InvalidActionException.class, () -> planets.planetLanding(gameState, nickname, numberPlanet));
+        assertThrows(InvalidActionException.class, () -> planets.planetLanding(gameState, nickname2, numberPlanet));
     }
    @Test
     void testSwitchGoods(){

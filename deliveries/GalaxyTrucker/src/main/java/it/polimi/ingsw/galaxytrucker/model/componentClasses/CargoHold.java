@@ -64,7 +64,7 @@ public class CargoHold extends ConfigurableComponent {
     }
     @Override
     public List<Color> getGoods() {
-        List<Color> copia = this.goods;//return a copy of the listed goods
+        List<Color> copia = new ArrayList<Color>(this.goods);//return a copy of the listed goods
         return copia;
     }
     @Override

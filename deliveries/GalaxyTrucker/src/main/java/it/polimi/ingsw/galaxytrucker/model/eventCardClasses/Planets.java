@@ -13,21 +13,30 @@ public class Planets extends DayLossCard{
     //that can be gained by landing on the corresponding planet
     //(each type of good corresponds to a color)
     private int landedPlanet;
+    private List<Boolean> alreadyLandedPlanets; //tracks the landed planets to block other players landing
 
     public Planets(List<List<Color>> planetGoods, int lostDays, int imageID) {     //constructor
         super(lostDays, imageID);
         this.planetGoods = planetGoods;
+        this.alreadyLandedPlanets = new ArrayList<>();
+        for(int i=0; i<planetGoods.size(); i++){
+            alreadyLandedPlanets.add(false);
+        }
     }
     @Override
     public void planetLanding(GameState gameState, String nickname, int numberPlanet) throws InvalidActionException {      //when a player lands on a planet, the corresponding element
         //is set to null, as the other players cannot land on it
         //and gain the goods
         landedPlanet = 1000;
-        if(planetGoods.get(numberPlanet)==null){
+        /*if(planetGoods.get(numberPlanet)==null){
+            throw new InvalidActionException("Planet number "+numberPlanet+" is already used");
+        }*/
+        if(alreadyLandedPlanets.get(numberPlanet)){
             throw new InvalidActionException("Planet number "+numberPlanet+" is already used");
         }
        // planetGoods.set(numberPlanet, );
         landedPlanet = numberPlanet;
+        alreadyLandedPlanets.set(numberPlanet, true);//set the planet as landed
     }
 
     @Override
