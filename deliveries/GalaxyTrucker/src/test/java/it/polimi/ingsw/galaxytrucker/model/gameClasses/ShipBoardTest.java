@@ -1,12 +1,12 @@
 package it.polimi.ingsw.galaxytrucker.model.gameClasses;
 
-import it.polimi.ingsw.galaxytrucker.model.componentClasses.Battery;
-import it.polimi.ingsw.galaxytrucker.model.componentClasses.Cabin;
-import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
-import it.polimi.ingsw.galaxytrucker.model.componentClasses.Shield;
+import it.polimi.ingsw.galaxytrucker.model.componentClasses.*;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.AssembledComponentException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.PickedComponentException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.ReservedComponentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ShipBoardTest {
     private ShipBoard shipBoard;
     private Component component1;
+    private Component component2;
 
     @BeforeEach
     void init(){
@@ -28,7 +29,36 @@ class ShipBoardTest {
         connectorList1.add(Connector.SINGLE);
         connectorList1.add(Connector.SINGLE);
         connectorList1.add(Connector.SMOOTH);
+        List<Connector> connectorList2 = new ArrayList<>();
+        connectorList1.add(Connector.SINGLE);
+        connectorList1.add(Connector.SINGLE);
+        connectorList1.add(Connector.SINGLE);
+        connectorList1.add(Connector.SMOOTH);
         component1 = new Component(9, connectorList1);
+        component2 = new Component(9, connectorList2);
+    }
+
+    @Test
+    void testShouldConstructShipBoardWithCorrespondingInitCabin(){
+        ShipBoard shipBoardBlue = new LevelTwoShipBoard(Color.BLUE);
+        assertEquals(Color.BLUE, shipBoardBlue.getColor());
+        Cabin blueCabin = new Cabin(318, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
+        assertEquals(shipBoardBlue.assembledComponents.get(2).get(3), blueCabin);
+
+        ShipBoard shipBoardGreen = new LevelTwoShipBoard(Color.GREEN);
+        assertEquals(Color.GREEN, shipBoardGreen.getColor());
+        Cabin greenCabin = new Cabin(319, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
+        assertEquals(shipBoardGreen.assembledComponents.get(2).get(3), greenCabin);
+
+        ShipBoard shipBoardRed = new LevelTwoShipBoard(Color.RED);
+        assertEquals(Color.RED, shipBoardRed.getColor());
+        Cabin redCabin = new Cabin(320, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
+        assertEquals(shipBoardRed.assembledComponents.get(2).get(3), redCabin);
+
+        ShipBoard shipBoardYellow = new LevelTwoShipBoard(Color.YELLOW);
+        assertEquals(Color.YELLOW, shipBoardYellow.getColor());
+        Cabin yellowCabin = new Cabin(321, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
+        assertEquals(shipBoardYellow.assembledComponents.get(2).get(3), yellowCabin);
     }
 
     @Test
@@ -41,11 +71,59 @@ class ShipBoardTest {
     }
 
     @Test
+    void testShouldNotPickComponentIfAlreadyPicked(){
+        shipBoard.pickComponent(component1);
+        assertEquals(component1, shipBoard.getPickedComponent());
+        assertThrows(PickedComponentException.class, () -> {shipBoard.pickComponent(component2);});
+    }
+
+    @Test
+    void testShouldNotReleaseComponentIfNotPicked(){
+        assertThrows(PickedComponentException.class, () -> {shipBoard.releaseComponent();});
+    }
+
+    @Test
+    void testShouldNotReserveNullComponent(){
+        assertThrows(PickedComponentException.class, () -> {shipBoard.reserveComponent();});
+    }
+
+    @Test
+    void testShouldNotReserveComponentIfReservedAreFull(){
+        List<Connector> connectorList3 = new ArrayList<>();
+        connectorList3.add(Connector.SINGLE);
+        connectorList3.add(Connector.SINGLE);
+        connectorList3.add(Connector.SINGLE);
+        connectorList3.add(Connector.SMOOTH);
+        Component component3 = new Component(9, connectorList3);
+        shipBoard.pickComponent(component1);
+        shipBoard.reserveComponent();
+        shipBoard.pickComponent(component2);
+        shipBoard.reserveComponent();
+        shipBoard.pickComponent(component3);
+        assertThrows(ReservedComponentException.class, () -> shipBoard.reserveComponent());
+    }
+
+    @Test
     void testPickReservedComponent() {
         shipBoard.pickComponent(component1);
         shipBoard.reserveComponent();
         shipBoard.pickReservedComponent(0);
         assertEquals(component1, shipBoard.getPickedComponent());
+    }
+
+    @Test
+    void testShouldNotPickReservedComponentIfInvalidPosition(){
+        shipBoard.pickComponent(component1);
+        shipBoard.reserveComponent();
+        assertThrows(ReservedComponentException.class, () -> {shipBoard.pickReservedComponent(1);});
+    }
+
+    @Test
+    void testShouldNotPickReservedComponentIfAlreadyPickedOne(){
+        shipBoard.pickComponent(component1);
+        shipBoard.reserveComponent();
+        shipBoard.pickComponent(component2);
+        assertThrows(PickedComponentException.class, () -> {shipBoard.pickReservedComponent(0);});
     }
 
     @Test
@@ -56,9 +134,38 @@ class ShipBoardTest {
     }
 
     @Test
+    void testShouldNotAssembleOutside(){
+        shipBoard.pickComponent(component1);
+        assertThrows(AssembledComponentException.class, () -> {shipBoard.assembleComponent(0,0);});
+    }
+
+    @Test
+    void testShouldNotAssembleOccupied(){
+        shipBoard.pickComponent(component1);
+        shipBoard.assembleComponent(1,3);
+        shipBoard.pickComponent(component2);
+        assertThrows(AssembledComponentException.class, () -> {shipBoard.assembleComponent(1,3);});
+    }
+
+    @Test
+    void testShouldNotAssembleIfNotPickedComponent(){
+        assertThrows(PickedComponentException.class, () -> {shipBoard.assembleComponent(1,3);});
+    }
+
+    @Test
+    void testAssembleComponentGivenInParam(){
+        Engine engineNorthUniversal = new Engine(false, 709, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.DOUBLE, Connector.SMOOTH, Connector.SMOOTH)));
+        assertEquals(709, engineNorthUniversal.getImageID());
+        shipBoard.assembleComponent(engineNorthUniversal,3,3);
+        assertEquals(engineNorthUniversal, shipBoard.assembledComponents.get(3).get(3));
+        assertTrue(shipBoard.isCorrect());
+    }
+
+    @Test
     void testDestroyComponent() {
         shipBoard.pickComponent(component1);
         shipBoard.assembleComponent(1, 3); //above the initial cabin
+        assertFalse(shipBoard.isEmptyComponent(1,3));
         shipBoard.destroyComponent(1, 3);
         assertEquals(1, shipBoard.getLostComponents());
         assertTrue(shipBoard.isEmptyComponent(1, 3));
@@ -80,10 +187,29 @@ class ShipBoardTest {
     }
 
     @Test
+    void testShouldNotRotateComponentIfNotPicked(){
+        assertThrows(PickedComponentException.class, () -> {shipBoard.rotatePickedComponent();});
+    }
+
+    @Test
     void testDestroyNorth(){
         assertEquals(320, shipBoard.getAssembledComponent(2,3).getImageID());
         shipBoard.destroyNorth(3);
         assertEquals(0, shipBoard.getAssembledComponent(2,3).getImageID());
+    }
+
+    @Test
+    void testShouldNotDestroyComponentIfEmpty(){
+        assertThrows(AssembledComponentException.class, () -> {shipBoard.destroyComponent(1,3);});
+    }
+
+    @Test
+    void testLoseReservedComponents(){
+        shipBoard.pickComponent(component1);
+        shipBoard.reserveComponent();
+        assertEquals(0, shipBoard.getLostComponents());
+        shipBoard.loseReservedComponents();
+        assertEquals(1, shipBoard.getLostComponents());
     }
 
     @Test
@@ -118,5 +244,36 @@ class ShipBoardTest {
         assertEquals(4, shipBoard.getNumberCrew());
         shipBoard.epidemicEffect();
         assertEquals(2, shipBoard.getNumberCrew());
+    }
+
+    @Test
+    void testProtectedShipBoardWithoutShields(){
+        Orientation orientationN = Orientation.NORTH;
+        assertFalse(shipBoard.protectedShipBoard(orientationN));
+    }
+
+    @Test
+    void testProtectedShipBoardWithShields(){
+        Orientation orientationN = Orientation.NORTH;
+        Shield shieldN = new Shield(901, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SINGLE, Connector.UNIVERSAL, Connector.SINGLE)));
+        shipBoard.pickComponent(shieldN);
+        shipBoard.assembleComponent(1,3); //above the init cabin
+        assertTrue(shipBoard.protectedShipBoard(orientationN));
+    }
+
+    @Test
+    void testArmedShipBoard(){
+        Orientation orientationN = Orientation.NORTH;
+        assertFalse(shipBoard.armedShipBoard(false, orientationN, 0));
+
+        Cannon cannonDouble = new Cannon(true, 428,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SINGLE, Connector.UNIVERSAL, Connector.SMOOTH)));
+        shipBoard.pickComponent(cannonDouble);
+        shipBoard.assembleComponent(2,2); //left to the init cabin
+        assertTrue(shipBoard.armedShipBoard(true, orientationN, 2));
+
+        Cannon cannonSingle = new Cannon(false, 401,  new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SINGLE, Connector.SMOOTH)));
+        shipBoard.pickComponent(cannonSingle);
+        shipBoard.assembleComponent(1,3); //above the init cabin
+        assertTrue(shipBoard.armedShipBoard(false, orientationN, 3));
     }
 }

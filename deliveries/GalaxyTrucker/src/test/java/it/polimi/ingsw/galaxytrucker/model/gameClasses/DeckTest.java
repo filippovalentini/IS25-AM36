@@ -30,6 +30,12 @@ class DeckTest {
     }
 
     @Test
+    void testGetCardsNull(){
+        Deck d = new Deck(null);
+        assertNull(d.getCards());
+    }
+
+    @Test
     void testDrawCardFromEmptyDeck() {
         List<EventCard> listOfEventCards = new ArrayList<>();
         Deck deck = new Deck(listOfEventCards);
@@ -92,5 +98,21 @@ class DeckTest {
         Deck deck = new Deck(listOfEventCards);
         deck.setPicked();
         assertThrows(PickedDeckException.class, deck::setPicked);
+    }
+
+    @Test
+    void testSetNotPickedDeck(){
+        Deck deck = new Deck(null);
+        deck.setPicked();
+        assertTrue(deck.isPicked());
+        deck.setNotPicked();
+        assertFalse(deck.isPicked());
+    }
+
+    @Test
+    void testShouldNotSetNotPickedDeckAlreadyNotPicked(){
+        Deck deck = new Deck(null);
+        assertFalse(deck.isPicked());
+        assertThrows(PickedDeckException.class, deck::setNotPicked);
     }
 }

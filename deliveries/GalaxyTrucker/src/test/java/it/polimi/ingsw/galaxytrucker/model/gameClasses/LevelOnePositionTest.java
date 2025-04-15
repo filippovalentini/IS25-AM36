@@ -32,5 +32,7 @@ class LevelOnePositionTest {
         position.changePosition(-1);
         assertEquals(17, position.getCell());
         assertEquals(0, position.getLap());
+        position.changePosition(-1);
+        assertEquals(16, position.getCell());
     }
 }
