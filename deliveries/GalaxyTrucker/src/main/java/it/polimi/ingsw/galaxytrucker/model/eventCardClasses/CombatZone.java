@@ -12,6 +12,7 @@ import it.polimi.ingsw.galaxytrucker.model.shotClasses.CannonShot;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 //COMBAT ZONE
 public class CombatZone extends EventCard{
@@ -21,7 +22,7 @@ public class CombatZone extends EventCard{
     private int worstEngineStrength;
     private String worstEnginePlayer;
     private String worstCannonPlayer;
-    private List<CannonShot> cannonShots;
+    private final List<CannonShot> cannonShots;
     private int currentShot;
 
     public CombatZone(boolean levelOne, int imageID) {     //constructor
@@ -58,16 +59,14 @@ public class CombatZone extends EventCard{
             } else {
                 String nickname = gameState.getCrewMinPlayer();
                 gameState.updateTurns();
-
             }
-
         }
     }
 
     @Override
     //invoked when a player wants to declare its cannon strength or engine strength
     public void useBatteries(GameState gameState, String nickname, int usedBatteries) throws InvalidActionException, NoBatteriesException {
-        if(usedBatteries < gameState.getNumberBatteries(nickname)){
+        if(usedBatteries > gameState.getNumberBatteries(nickname)){
             throw new NoBatteriesException("Player doesn't have enough batteries");
         }
         if(this.levelOne){
@@ -108,6 +107,12 @@ public class CombatZone extends EventCard{
                 }
                 if(gameState.isLastInTurn(nickname)){
                     gameState.setTurnPlayer(worstCannonPlayer);
+                    //gameState.changePlayerPosition(worstEnginePlayer, -4);
+                    //phase = 2; //next phase
+                    /*
+                        after the last in turn player has decided to use the batteries,
+                         the worst player can just lose the positions with changePlayerPos(...)
+                     */
                 }else{
                     gameState.nextTurn();
                 }
@@ -146,6 +151,22 @@ public class CombatZone extends EventCard{
             }
             phase = 3;
             gameState.updateTurns();
+        }else{ //level two
+            if(phase!=2){
+                throw new InvalidActionException("Wrong phase of the combat zone");
+            }
+            if(gameState.getNumberGoods(nickname)<= 3) {
+                //gameState.removeGoods(nickname, x, y, z, gameState.getCrewCount(nickname));
+                /*
+                    removeGoods should be a method similar to substituteGoods but instead
+                    of set/add does the list.remove() from the goods list in the cargo
+
+                 */
+            }else{
+                //gameState.removeGoods(nickname, x, y, z, 2);
+            }
+            phase = 3;
+            gameState.updateTurns();
         }
     }
 
@@ -159,19 +180,35 @@ public class CombatZone extends EventCard{
                     throw new InvalidActionException("Too few batteries");
                 }
                 for (int i = 0; i < cannonShots.size(); i++){
-                Orientation orientation = cannonShots.get(i).getOrientation();
-                int direction = (orientation.isVertical() ? diceResult - 4 : diceResult - 5);
-                gameState.cannonFireAttack(nickname, cannonShots.get(i), direction, activateShield);
-                if (i == cannonShots.size() - 1) {
-                    if (gameState.isLastInTurn(nickname)) {
-                        gameState.setGameState(State.CARD_PICKING);
+                    Orientation orientation = cannonShots.get(i).getOrientation();
+                    int direction = (orientation.isVertical() ? diceResult - 4 : diceResult - 5);
+                    gameState.cannonFireAttack(nickname, cannonShots.get(i), direction, activateShield);
+                    if (i == cannonShots.size() - 1) {
+                        if (gameState.isLastInTurn(nickname)) {
+                            gameState.setGameState(State.CARD_PICKING);
+                        }
+                        currentShot = 0;
+                        gameState.nextTurn();
                     }
-                    currentShot = 0;
-                    gameState.nextTurn();
-                }
                 }
             }else {
                 currentShot++;
+            }
+        }else{ //level two
+            if(phase==3){ //cannon shot from special effect
+                if(!gameState.getCrewMinPlayer().equals(nickname)){
+                    throw new InvalidActionException("This action must be invoked by crew min player");
+                }
+                Orientation orientation = cannonShots.get(currentShot).getOrientation();
+                int direction = (orientation.isVertical() ? diceResult - 4 : diceResult - 5); //different dice result for every cannon shot
+                gameState.cannonFireAttack(nickname, cannonShots.get(currentShot), direction, activateShield);
+                if (currentShot == cannonShots.size() - 1) {
+                    gameState.setGameState(State.CARD_PICKING);
+                    currentShot = 0;
+                    gameState.nextTurn();
+                }else {
+                    currentShot++;
+                }
             }
         }
     }

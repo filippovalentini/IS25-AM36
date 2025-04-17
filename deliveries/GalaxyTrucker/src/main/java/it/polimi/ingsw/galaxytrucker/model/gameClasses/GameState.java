@@ -741,7 +741,7 @@ public class GameState {
     }
     //this method is invoked when a player wants to leave the game
     public void quitGame(String nickname) throws InvalidActionException {
-        if(state != State.CARD_PICKING){
+        if(state != State.CARD_PICKING && state != State.CARD_SOLVING){
             throw new InvalidActionException("Invalid action");
         }
         playersPos.remove(nickname);
