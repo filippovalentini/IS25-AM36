@@ -21,11 +21,11 @@ public class SocketServer {
         Socket clientSocket;
         while ((clientSocket = this.listenSocket.accept()) != null) {
             System.out.println("Accepted connection from " + clientSocket.getInetAddress().getHostAddress());
-            SocketClientHandler handler = new SocketClientHandler(clientSocket, controller);
+            SocketClientHandler clientHandler = new SocketClientHandler(clientSocket, controller);
 
             new Thread(() -> {
                 try {
-                    handler.runVirtualView();
+                    clientHandler.manageClientMessages();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

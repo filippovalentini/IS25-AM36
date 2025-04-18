@@ -1,13 +1,15 @@
 package it.polimi.ingsw.galaxytrucker.network.socket.message;
 
-public class PlayerAction implements GameMessage {
+import java.util.List;
+
+public class PlayerActionMessage implements GameMessage {
     /*
         client-to-server messages related to players actions
      */
     private PlayerActionType gameAction; //action type
-    private String gameActionParams; //additional data related to action
+    private List<String> gameActionParams; //additional data related to action
 
-    public PlayerAction(PlayerActionType gameAction, String gameActionParams) {{
+    public PlayerActionMessage(PlayerActionType gameAction, List<String> gameActionParams) {{
         this.gameAction = gameAction;
         this.gameActionParams = gameActionParams;}
     }
@@ -16,7 +18,8 @@ public class PlayerAction implements GameMessage {
         return gameAction;
     }
 
-    public String getGameActionParams() {
-        return gameActionParams;
+    @Override
+    public String getGameParams(int paramIndex) {
+        return gameActionParams.get(paramIndex);
     }
 }

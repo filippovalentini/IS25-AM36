@@ -1,6 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.network.socket.message;
 
 public enum PlayerActionType {
+    ADD_PLAYER,
     //components
     PICK_HIDDEN,
     PICK_SHOWN,

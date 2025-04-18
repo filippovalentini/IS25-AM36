@@ -9,4 +9,14 @@ public enum Orientation {
     public boolean isHorizontal(){
         return this == EAST || this == WEST;
     }
+
+    @Override
+    public String toString() {
+        return switch (this) {
+            case NORTH -> "RED";
+            case SOUTH -> "SOUTH";
+            case EAST -> "EAST";
+            case WEST -> "WEST";
+        };
+    }
 }

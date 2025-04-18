@@ -1,12 +1,14 @@
 package it.polimi.ingsw.galaxytrucker.network.socket.message;
 
-public class GameUpdate implements GameMessage {
+import java.util.List;
+
+public class GameUpdateMessage implements GameMessage {
     /*
         server-to-client messages related to game updates
      */
     private GameUpdateType gameUpdateType;
-    private String gameUpdateParams; //additional game update params
-    public GameUpdate(GameUpdateType gameUpdateType, String gameUpdateParams) {
+    private List<String> gameUpdateParams; //additional game update params
+    public GameUpdateMessage(GameUpdateType gameUpdateType, List<String> gameUpdateParams) {
         this.gameUpdateType = gameUpdateType;
         this.gameUpdateParams = gameUpdateParams;
     }
@@ -15,7 +17,8 @@ public class GameUpdate implements GameMessage {
         return gameUpdateType;
     }
 
-    public String getGameUpdateParams() {
-        return gameUpdateParams;
+    @Override
+    public String getGameParams(int paramIndex) {
+        return gameUpdateParams.get(paramIndex);
     }
 }
