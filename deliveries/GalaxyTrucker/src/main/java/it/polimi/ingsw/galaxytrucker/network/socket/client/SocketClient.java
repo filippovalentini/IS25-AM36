@@ -12,36 +12,48 @@ import java.util.Scanner;
 
 public class SocketClient implements VirtualViewSocket {
     private Socket clientSocket;
-    private Scanner input;
-    private SocketServerHandler output;
+    private ObjectInputStream in;
+
     protected SocketClient(Socket clientSocket) throws IOException {
         this.clientSocket = clientSocket;
-        this.input = new Scanner(clientSocket.getInputStream());
-        this.output = new SocketServerHandler(new PrintWriter(clientSocket.getOutputStream()));
+        this.in = new ObjectInputStream(clientSocket.getInputStream());
     }
 
-    private void run() {
+
+    private void run() throws IOException {
         new Thread(() -> {
             try {
-                runVirtualServer(); // run actual virtual server
+                manageServerMessages(); // run actual virtual server
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }).start();
-        runCli();
+        runCli(new SocketServerHandler(new ObjectOutputStream(clientSocket.getOutputStream())));
     }
 
-    // server to client messages
-    private void runVirtualServer() throws IOException {
+    //this method creates a loop that waits for server's messages and (based on the type of message received)
+    //updates the model state by invoking a method on the game controller
+    private void manageServerMessages() throws IOException {
         String line;
-        while (input.hasNext()) {
-            line = input.nextLine();
-            System.out.println("message reveiveded: " + line);
+        while (true) {
+            //line = in.nextLine();
+            System.out.println("message reveiveded: ");
             // json de-serialization
         }
     }
 
-    public void runCli()  {
+
+
+    public static void main(String[] args) throws IOException {
+        String host = args[0];
+        int port = Integer.parseInt(args[1]);
+        Socket serverSocket = new Socket(host, port);
+        new SocketClient(serverSocket).run();
+    }
+
+    //runs a command line interface to send requests to the server
+    @Override
+    public void runCli(VirtualServer serverHandler)  {
         Scanner scan = new Scanner(System.in);
         while (true) {
             System.out.print("[INSERT_COMMAND]: ");
@@ -55,13 +67,6 @@ public class SocketClient implements VirtualViewSocket {
                 }
             }
         }
-    }
-
-    public static void main(String[] args) throws IOException {
-        String host = args[0];
-        int port = Integer.parseInt(args[1]);
-        Socket serverSocket = new Socket(host, port);
-        new SocketClient(serverSocket).run();
     }
 
     //notifies a view about an error committed while executing a method on the remote server; the parameter
@@ -131,8 +136,4 @@ public class SocketClient implements VirtualViewSocket {
     //enter the ship control phase
     @Override
     public void updateShipControl() throws IOException{}
-
-    //runs a command line interface to send requests to the server
-    @Override
-    public void runCli(VirtualServer server) throws IOException{}
 }
