@@ -10,11 +10,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+//this class contains the methods to create and send serialized messages to the server starting from given
+//parameters
 public class SocketServerHandler implements VirtualServerSocket {
     final ObjectOutputStream out;
 
     public SocketServerHandler(ObjectOutputStream out) {
         this.out = out;
+    }
+
+    //closes the client's output stream
+    public void close() throws IOException {
+        this.out.close();
     }
 
     //invoked when one of the players decides enter the game; the remote client view is added to the list

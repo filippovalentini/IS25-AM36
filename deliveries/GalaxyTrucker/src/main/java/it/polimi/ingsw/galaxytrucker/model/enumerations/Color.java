@@ -13,4 +13,15 @@ public enum Color {
             case YELLOW -> "YELLOW";
         };
     }
+
+    //converts a string in the respective Color object
+    public static Color convertToColor(String colorString) {
+        return switch (colorString) {
+            case "RED" -> Color.RED;
+            case "GREEN" -> Color.GREEN;
+            case "BLUE" -> Color.BLUE;
+            case "YELLOW" -> Color.YELLOW;
+            default -> null;
+        };
+    }
 }

@@ -19,8 +19,8 @@ public class SocketClientHandler implements VirtualViewSocket {
     public SocketClientHandler(Socket socket, GameController controller) throws IOException {
         this.socket = socket;
         this.controller = controller;
-        this.in = new ObjectInputStream(socket.getInputStream());
         this.out = new ObjectOutputStream(socket.getOutputStream());
+        this.in = new ObjectInputStream(socket.getInputStream());
     }
 
     //this method creates a loop that waits for client's messages and (based on the type of message received)
@@ -31,7 +31,7 @@ public class SocketClientHandler implements VirtualViewSocket {
                 PlayerActionMessage message = (PlayerActionMessage) in.readObject();
                 switch(message.getGameAction()){
                     case ADD_PLAYER:
-                        controller.addPlayer(this, message.getGameParams(0), convertToColor(message.getGameParams(1)));
+                        controller.addPlayer(this, message.getGameParams(0), Color.convertToColor(message.getGameParams(1)));
                         break;
                     case PICK_HIDDEN:
                         controller.pickHidden(message.getGameParams(0));
@@ -75,7 +75,7 @@ public class SocketClientHandler implements VirtualViewSocket {
                 break;
             } catch (Exception e) {
                 try{
-                    notifyError("Error: unknown command sent by client");
+                    notifyError(e.getMessage());
                 }
                 catch(Exception e1){
                     System.out.println("Error: failed I/O operation through socket");
@@ -86,17 +86,6 @@ public class SocketClientHandler implements VirtualViewSocket {
         in.close();
         out.close();
         socket.close();
-    }
-
-    //converts a string in the respective Color object
-    public Color convertToColor(String colorString) {
-        return switch (colorString) {
-            case "RED" -> Color.RED;
-            case "GREEN" -> Color.GREEN;
-            case "BLUE" -> Color.BLUE;
-            case "YELLOW" -> Color.YELLOW;
-            default -> null;
-        };
     }
 
     //runs a command line interface to send requests to the server

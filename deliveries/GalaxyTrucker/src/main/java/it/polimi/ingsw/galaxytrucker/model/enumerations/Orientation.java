@@ -13,10 +13,21 @@ public enum Orientation {
     @Override
     public String toString() {
         return switch (this) {
-            case NORTH -> "RED";
+            case NORTH -> "NORTH";
             case SOUTH -> "SOUTH";
             case EAST -> "EAST";
             case WEST -> "WEST";
+        };
+    }
+
+    //converts a string in the corresponding Orientation object
+    public static Orientation convertToOrientation(String orientation){
+        return switch (orientation) {
+            case "NORTH" -> Orientation.NORTH;
+            case "EAST" -> Orientation.EAST;
+            case "SOUTH" -> Orientation.SOUTH;
+            case "WEST" -> Orientation.WEST;
+            default -> null;
         };
     }
 }

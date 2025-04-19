@@ -21,4 +21,9 @@ public class GameUpdateMessage implements GameMessage {
     public String getGameParams(int paramIndex) {
         return gameUpdateParams.get(paramIndex);
     }
+
+    @Override
+    public List<String> getGameParams() {
+        return gameUpdateParams;
+    }
 }

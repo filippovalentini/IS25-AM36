@@ -55,7 +55,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
     }
 
     //prints the list of commands available for the CLI of the game
-    public void printCommands(){
+    public static void printCommands(){
         System.out.println("Available commands:");
         System.out.println("0 - commands (list of available commands)");
         System.out.println("1 - pickHidden (pick a hidden component)");

@@ -3,68 +3,265 @@ package it.polimi.ingsw.galaxytrucker.network.socket.client;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
+import it.polimi.ingsw.galaxytrucker.network.rmi.client.ClientRMI;
+import it.polimi.ingsw.galaxytrucker.network.socket.message.GameUpdateMessage;
+import it.polimi.ingsw.galaxytrucker.network.socket.message.GameUpdateType;
 import it.polimi.ingsw.galaxytrucker.network.socket.server.VirtualViewSocket;
+import it.polimi.ingsw.galaxytrucker.view.View;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+//this class contains all the logic needed to connect to the server through socket, manage the user interaction
+//and handle server responses
 public class SocketClient implements VirtualViewSocket {
-    private Socket clientSocket;
-    private ObjectInputStream in;
+    private View view;
+    private String nickname;
+    private Color color;
+    private final Socket clientSocket;
+    private final ObjectInputStream in;
+    private final SocketServerHandler serverHandler;
 
     protected SocketClient(Socket clientSocket) throws IOException {
         this.clientSocket = clientSocket;
+        this.serverHandler = new SocketServerHandler(new ObjectOutputStream(clientSocket.getOutputStream()));
         this.in = new ObjectInputStream(clientSocket.getInputStream());
     }
 
+    public static void main(String[] args) throws IOException  {
+        String host = args[0];
+        int port = Integer.parseInt(args[1]);
+        Socket clientSocket = new Socket(host, port);
+        System.out.println("Connected to server...");
+        new SocketClient(clientSocket).run();
+    }
 
+    //this method gets nickname and color from the user and tries to add the player to the game; in case of success
+    //it activates (in different threads) the methods to manage commands from the user (CLI) and messages from
+    //the server
     private void run() throws IOException {
+        GameUpdateMessage message;
+        String nickname;
+        String colorString;
+        Color color;
+        //nickname and color taken in input until they are both valid
+        while (true) {
+            System.out.println("Insert nickname: ");
+            Scanner inputScanner = new Scanner(System.in);
+            nickname = inputScanner.nextLine();
+            System.out.println("Insert color: ");
+            colorString = inputScanner.nextLine();
+            color = Color.convertToColor(colorString);
+            if (color == null) {
+                System.out.println("Invalid color");
+                continue;
+            }
+            this.nickname = nickname;
+            this.color = color;
+            serverHandler.addPlayer(null, nickname, color);
+            try{
+                message = (GameUpdateMessage) in.readObject();
+            }catch (ClassNotFoundException e){
+                System.out.println("Error: received invalid message from server");
+                continue;
+            }
+            if(message.getGameUpdateType() == GameUpdateType.ERROR){
+                notifyError(message.getGameParams(0));
+            }
+            else if (message.getGameUpdateType() == GameUpdateType.WAITING_FOR_PLAYERS){
+                updateWaitingForPlayers(Boolean.parseBoolean(message.getGameParams(0)));
+                break;
+            }
+        }
+        //start a thread to manage messages received by the server
         new Thread(() -> {
             try {
-                manageServerMessages(); // run actual virtual server
+                manageServerMessages();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }).start();
-        runCli(new SocketServerHandler(new ObjectOutputStream(clientSocket.getOutputStream())));
+        //manage commands sent by the user
+        runCli(serverHandler);
     }
 
     //this method creates a loop that waits for server's messages and (based on the type of message received)
-    //updates the model state by invoking a method on the game controller
+    //invokes a method on the view
     private void manageServerMessages() throws IOException {
-        String line;
         while (true) {
-            //line = in.nextLine();
-            System.out.println("message reveiveded: ");
-            // json de-serialization
+            try{
+                GameUpdateMessage message = (GameUpdateMessage) in.readObject();
+                switch(message.getGameUpdateType()){
+                    case ERROR:
+                        notifyError(message.getGameParams(0));
+                        break;
+                    case NEW_PLAYER:
+                        updateNewPlayer(message.getGameParams(0), Color.convertToColor(message.getGameParams(1)));
+                        break;
+                    case START_ASSEMBLING:
+                        updateStartAssembling();
+                        break;
+                    case PICKED_COMPONENT:
+                        updatePickedComponent(Integer.parseInt(message.getGameParams(0)), Boolean.parseBoolean(message.getGameParams(1)));
+                        break;
+                    case SHOWN_COMPONENT:
+                        updateShownComponent(Integer.parseInt(message.getGameParams(0)), Boolean.parseBoolean(message.getGameParams(1)));
+                        break;
+                    case RESERVED_COMPONENT:
+                        updateReservedComponent(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Boolean.parseBoolean(message.getGameParams(2)));
+                        break;
+                    case ROTATE_PICKED_COMPONENT:
+                        updateRotatePickedComponent();
+                        break;
+                    case ASSEMBLED_COMPONENT:
+                        updateAssembledComponent(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Orientation.convertToOrientation(message.getGameParams(2)), Integer.parseInt(message.getGameParams(3)), Integer.parseInt(message.getGameParams(4)));
+                        break;
+                    case PICKED_DECK:
+                        List<Integer> deckIDs = new ArrayList<>();
+                        for(String deckID : message.getGameParams()){
+                            deckIDs.add(Integer.parseInt(deckID));
+                        }
+                        updatePickedDeck(deckIDs);
+                        break;
+                    case RELEASED_DECK:
+                        updateReleasedDeck();
+                        break;
+                    case FINISH_ASSEMBLING:
+                        updateFinishAssembling(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)));
+                        break;
+                    case SHIP_CONTROL:
+                        updateShipControl();
+                        break;
+                    default:
+                        notifyError("Error: unknown command sent by client");
+                }
+            }
+            catch (IOException e) {
+                System.out.println("Error: failed I/O operation through socket");
+                break;
+            } catch (ClassNotFoundException e) {
+                System.err.println("Error: failed to deserialize class");
+                break;
+            } catch (Exception e) {
+                try{
+                    notifyError(e.getMessage());
+                }
+                catch(Exception e1){
+                    System.out.println("Error: failed I/O operation through socket");
+                    break;
+                }
+            }
         }
-    }
-
-
-
-    public static void main(String[] args) throws IOException {
-        String host = args[0];
-        int port = Integer.parseInt(args[1]);
-        Socket serverSocket = new Socket(host, port);
-        new SocketClient(serverSocket).run();
+        in.close();
+        serverHandler.close();
+        clientSocket.close();
     }
 
     //runs a command line interface to send requests to the server
     @Override
     public void runCli(VirtualServer serverHandler)  {
         Scanner scan = new Scanner(System.in);
+
+        ClientRMI.printCommands();
+
         while (true) {
-            System.out.print("[INSERT_COMMAND]: ");
-            String command = scan.nextLine();
-            switch (command) {
-                case "test":{ // message test
-                    //this.output.test();
+            try{
+                Thread.sleep(100);
+            }
+            catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+            System.out.print("> ");
+            String input = scan.nextLine().trim();
+            String[] tokens = input.split("\\s+");
+            if (tokens.length == 0) continue;
+
+            try {
+                String command = tokens[0];
+                switch (command) {
+                    case "pickHidden":
+                        serverHandler.pickHidden(nickname);
+                        break;
+                    case "pickShown":
+                        if (tokens.length < 2) {
+                            System.out.println("Error: index required");
+                            break;
+                        }
+                        int index = Integer.parseInt(tokens[1]);
+                        serverHandler.pickShown(nickname, index);
+                        break;
+                    case "release":
+                        serverHandler.putShown(nickname);
+                        break;
+                    case "reserve":
+                        serverHandler.reserveComponent(nickname);
+                        break;
+                    case "pickReserved":
+                        if (tokens.length < 2) {
+                            System.out.println("Error: index required");
+                            break;
+                        }
+                        int pos = Integer.parseInt(tokens[1]);
+                        serverHandler.pickReservedComponent(nickname, pos);
+                        break;
+                    case "rotate":
+                        serverHandler.rotatePickedComponent(nickname);
+                        break;
+                    case "assemble":
+                        if (tokens.length < 3) {
+                            System.out.println("Error: coordinates required");
+                            break;
+                        }
+                        int x = Integer.parseInt(tokens[1]);
+                        int y = Integer.parseInt(tokens[2]);
+                        serverHandler.assembledComponent(nickname, x, y);
+                        break;
+                    case "pickDeck":
+                        if (tokens.length < 2) {
+                            System.out.println("Error: index required");
+                            break;
+                        }
+                        int deck = Integer.parseInt(tokens[1]);
+                        serverHandler.pickDeck(nickname, deck);
+                        break;
+                    case "releaseDeck":
+                        serverHandler.releaseDeck(nickname);
+                        break;
+                    case "setPosition":
+                        if (tokens.length < 2) {
+                            System.out.println("Error: position required");
+                            break;
+                        }
+                        int initCell = Integer.parseInt(tokens[1]);
+                        serverHandler.setPosition(nickname, initCell);
+                        break;
+                    case "commands":
+                        ClientRMI.printCommands();
+                        break;
+                    case "shipBoard":
+                        if (tokens.length == 1) {
+                            view.visualizeShip();
+                        }
+                        else if(tokens.length == 2) {
+                            view.visualizeShip(tokens[1]);
+                        }
+                        else {
+                            System.out.println("Error: insert a nickname of another player");
+                        }
+                        break;
+                    case "flightBoard":
+                        view.visualizeFlightBoard();
+                        break;
+                    default:
+                        System.out.println("Error: unknown command");
                 }
-                default:{
-                    break;
-                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number format");
+            } catch (Exception e) {
+                System.out.println("Remote error: " + e.getMessage());
             }
         }
     }
@@ -72,68 +269,107 @@ public class SocketClient implements VirtualViewSocket {
     //notifies a view about an error committed while executing a method on the remote server; the parameter
     //errorMessage describes the type of error
     @Override
-    public void notifyError(String errorMessage) throws IOException{}
+    public void notifyError(String errorMessage) {
+        System.out.println(errorMessage);
+    }
 
     //notifies a view about the fact that the corresponding player has been correctly added to the game, but
     //the server is waiting for other players in order to start the assembling phase; the parameter firstFlight
     //in needed for the view to determine which type of ship board/flight board to show to the user
     @Override
-    public void updateWaitingForPlayers(boolean firstFlight) throws IOException{}
+    public void updateWaitingForPlayers(boolean firstFlight) {
+        this.view = new View(nickname, color, firstFlight);
+    }
 
     //notifies a view about the presence of another player in the game; this method is invoked before the
     //beginning of the assembling phase, therefore just the nickname and color of the new player is required
     @Override
-    public void updateNewPlayer(String nickname, Color color) throws IOException{}
+    public void updateNewPlayer(String nickname, Color color) {
+        this.view.updateNewPlayer(nickname, color);
+    }
 
     //notifies a view about the beginning of the assembling phase
     @Override
-    public void updateStartAssembling() throws IOException{}
+    public void updateStartAssembling() {
+        this.view.updateStartAssembling();
+        new Thread(() -> {
+            try{
+                Thread.sleep(1000);
+                System.out.println(3);
+                Thread.sleep(1000);
+                System.out.println(2);
+                Thread.sleep(1000);
+                System.out.println(1);
+                Thread.sleep(1000);
+                System.out.println("START ASSEMBLING!!!");
+            }
+            catch (Exception e) {System.out.println("Error on wait");}
+        }).start();
+    }
 
     //notifies the view about the fact that a component has been successfully picked/released (depending on
     //the value of the boolean parameter) by the corresponding player; the parameter imageID is needed for the
     //view in order to show the right component to the user
     @Override
-    public void updatePickedComponent(int imageID, boolean released) throws IOException{}
+    public void updatePickedComponent(int imageID, boolean released) {
+        this.view.updatePickedComponent(imageID, released);
+    }
 
     //notifies the view about the fact that a shown component has been picked/released (depending on the value
     //of the boolean parameter); the parameter imageID is needed for the view in order to show the right
     //component to the user
     @Override
-    public void updateShownComponent(int imageID, boolean released) throws IOException{}
+    public void updateShownComponent(int imageID, boolean released) {
+        this.view.updateShownComponent(imageID, released);
+    }
 
     //notifies the view about the fact that a player (identified by the nickname parameter) has picked a reserved
     //component/ reserved a component (depending on the value of the boolean parameter); the parameter imageID
     //is needed for the view in order to show the right component to the user
     @Override
-    public void updateReservedComponent(String nickname, int imageID, boolean released) throws IOException{}
+    public void updateReservedComponent(String nickname, int imageID, boolean released) {
+        this.view.updateReservedComponent(nickname, imageID, released);
+    }
 
     //notifies the view about the fact that the picked component of the corresponding player has been rotated
     @Override
-    public void updateRotatePickedComponent() throws IOException{}
+    public void updateRotatePickedComponent() {
+        this.view.updateRotatePickedComponent();
+    }
 
     //notifies the view about the fact that a player (identified by the nickname parameter) has assembled a
     //component in position (x,y) of its ship board; the parameter imageID is needed for the view in order
     //to show the right component to the user
     @Override
-    public void updateAssembledComponent(String nickname, int imageID, Orientation orientation, int x, int y) throws IOException{}
+    public void updateAssembledComponent(String nickname, int imageID, Orientation orientation, int x, int y) {
+        this.view.updateAssembledComponent(nickname, imageID, orientation, x, y);
+    }
 
     //notifies the view about the fact that the corresponding player has successfully picked a deck; the parameter
     //contains the list of image IDs of the cards contained in the deck, so that the view can show the
     //correct adventure cards to the user
     @Override
-    public void updatePickedDeck(List<Integer> deckIDs) throws IOException{}
+    public void updatePickedDeck(List<Integer> deckIDs) {
+        this.view.updatePickedDeck(deckIDs);
+    }
 
     //notifies the view about the fact that the corresponding player has successfully released a deck
     @Override
-    public void updateReleasedDeck() throws IOException{}
+    public void updateReleasedDeck() {
+        this.view.updateReleasedDeck();
+    }
 
     //notifies the view about the fact that the corresponding player has finished the assembling phase and is
     //correctly positioned on the flight board; still, other players have to finish building their ships
     @Override
-    public void updateFinishAssembling(String nickname, int position) throws IOException{}
+    public void updateFinishAssembling(String nickname, int position) {
+        this.view.updateFinishAssembling(nickname, position);
+    }
 
     //notifies the view that all the players have concluded the assembling phase, which means that the players
     //enter the ship control phase
     @Override
-    public void updateShipControl() throws IOException{}
+    public void updateShipControl() {
+        this.view.updateShipControl();
+    }
 }

@@ -6,6 +6,7 @@ import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
+//this class contains all the logic needed to instantiate the concurrent socket server and to handle client connections
 public class SocketServer {
     private final ServerSocket listenSocket;
     private final GameController controller;

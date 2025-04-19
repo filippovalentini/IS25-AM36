@@ -22,4 +22,9 @@ public class PlayerActionMessage implements GameMessage {
     public String getGameParams(int paramIndex) {
         return gameActionParams.get(paramIndex);
     }
+
+    @Override
+    public List<String> getGameParams() {
+        return gameActionParams;
+    }
 }
