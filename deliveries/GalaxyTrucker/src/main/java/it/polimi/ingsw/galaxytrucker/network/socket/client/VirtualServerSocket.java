@@ -51,4 +51,9 @@ public interface VirtualServerSocket extends VirtualServer {
     //invoked when a player has finished the assembling phase and has to pick a free position on the flight board
     @Override
     void setPosition(String nickname, int initCell) throws IOException;
+
+    //invoked when a player wants to destroy a component in order to validate its ship board or when a
+    //component is destroyed due to a cannon shot/meteor attack
+    @Override
+    void destroyComponent(String nickname, int x, int y) throws IOException;
 }

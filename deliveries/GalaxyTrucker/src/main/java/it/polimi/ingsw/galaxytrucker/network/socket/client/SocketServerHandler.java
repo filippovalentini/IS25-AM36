@@ -114,4 +114,11 @@ public class SocketServerHandler implements VirtualServerSocket {
         out.writeObject(message);
     }
 
+    @Override
+    public void destroyComponent(String nickname, int x, int y) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(x), String.valueOf(y)));
+        PlayerActionMessage message = new PlayerActionMessage(PlayerActionType.DESTROY, params);
+        out.writeObject(message);
+    }
+
 }

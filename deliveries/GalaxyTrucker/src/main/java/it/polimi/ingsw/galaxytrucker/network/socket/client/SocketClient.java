@@ -11,6 +11,7 @@ import it.polimi.ingsw.galaxytrucker.view.View;
 
 import java.io.*;
 import java.net.Socket;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -135,6 +136,15 @@ public class SocketClient implements VirtualViewSocket {
                     case SHIP_CONTROL:
                         updateShipControl();
                         break;
+                    case DESTROYED_COMPONENT:
+                        updateDestroyedComponent(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)));
+                        break;
+                    case CARD_PICKING:
+                        updateCardPicking();
+                        break;
+                    case NEXT_TURN:
+                        updateNextTurn(message.getGameParams(0));
+                        break;
                     default:
                         notifyError("Error: unknown command sent by client");
                 }
@@ -237,6 +247,15 @@ public class SocketClient implements VirtualViewSocket {
                         }
                         int initCell = Integer.parseInt(tokens[1]);
                         serverHandler.setPosition(nickname, initCell);
+                        break;
+                    case "destroy":
+                        if (tokens.length < 3) {
+                            System.out.println("Error: coordinates required");
+                            break;
+                        }
+                        int x2 = Integer.parseInt(tokens[1]);
+                        int y2 = Integer.parseInt(tokens[2]);
+                        serverHandler.destroyComponent(nickname, x2, y2);
                         break;
                     case "commands":
                         ClientRMI.printCommands();
@@ -371,5 +390,23 @@ public class SocketClient implements VirtualViewSocket {
     @Override
     public void updateShipControl() {
         this.view.updateShipControl();
+    }
+
+    //notifies the view that a component of a player's ship board has been destroyed
+    @Override
+    public void updateDestroyedComponent(String nickname, int x, int y) {
+        this.view.updateDestroyedComponent(nickname, x, y);
+    }
+
+    //notifies the view about the fact that a player has to pick a card in order to continue the game
+    @Override
+    public void updateCardPicking() {
+        this.view.updateCardPicking();
+    }
+
+    //notifies the view about the next player whose turn it is to perform an action
+    @Override
+    public void updateNextTurn(String nickname) {
+        this.view.updateNextTurn(nickname);
     }
 }

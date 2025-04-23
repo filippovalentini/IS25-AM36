@@ -2,11 +2,14 @@ package it.polimi.ingsw.galaxytrucker.view;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
+
+import java.rmi.RemoteException;
 import java.util.*;
 
 public class View {
     public boolean firstFlight;     //true if the view refers to a first flight game, false otherwise
     private String gameState;   //string describing the phase of the game
+    private String turnPlayer;
     private ViewFlightBoard flightBoard;    //current flight board state
     private ViewPlayer player;      //state of the player associated to the view
     private Map<String, ViewPlayer> otherPlayers = new HashMap<>();     //other player's state
@@ -20,6 +23,7 @@ public class View {
         this.firstFlight = firstFlight;
         this.pickedViewComponent = null;
         this.flightBoard = null;
+        this.turnPlayer = null;
     }
 
     //visualizes the state of the game and of the ship board of the player associated to the view
@@ -33,7 +37,11 @@ public class View {
         }
         System.out.println("╚════════════════════════════╝");
 
-        System.out.println("🚀 Game State: " + gameState);
+        System.out.print("🚀 Game State: " + gameState);
+        if(turnPlayer != null){
+            System.out.print("          IT'S " + turnPlayer + "'S TURN");
+        }
+        System.out.println();
         System.out.println("👨‍🚀 Player: " + player.getNickname() + " " + convertColor(player.getColor()));
         System.out.println("💰 Credits: " + player.getCredits());
         System.out.println("💣 Lost components: " + player.getLostComponents());
@@ -186,5 +194,25 @@ public class View {
     //invoked when the game switches to the ship control phase
     public void updateShipControl() {
         gameState = "SHIP CONTROL";
+    }
+
+    //notifies the view that a component of a player's ship board has been destroyed
+    public void updateDestroyedComponent(String nickname, int x, int y){
+        if(nickname.equals(this.player.getNickname())){
+            player.updateDestroyedComponent(nickname, x, y);
+            player.loseComponent();
+        }
+        else{
+            otherPlayers.get(nickname).updateDestroyedComponent(nickname, x, y);
+            otherPlayers.get(nickname).loseComponent();
+        }
+    }
+
+    //notifies the view about the fact that a player has to pick a card in order to continue the game
+    public void updateCardPicking() { gameState = "CARD PICKING"; }
+
+    //notifies the view about the next player whose turn it is to perform an action
+    public void updateNextTurn(String nickname){
+        this.turnPlayer = nickname;
     }
 }

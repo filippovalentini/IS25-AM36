@@ -163,8 +163,11 @@ public class ShipBoard {
     //removes an assembled component from the ship board
     public void destroyComponent(int x, int y) throws AssembledComponentException {
         Component emptySpace = new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
-        if(assembledComponents.get(x).get(y).equals(emptySpace)){
+        if(!assembledComponents.get(x).get(y).isNotEmpty()){
             throw new AssembledComponentException("No component to be destroyed");
+        }
+        if(!assembledComponents.get(x).get(y).belongsToShip()){
+            throw new AssembledComponentException("Can't destroy component outside the ship");
         }
         assembledComponents.get(x).set(y, emptySpace);
         lostComponents++;

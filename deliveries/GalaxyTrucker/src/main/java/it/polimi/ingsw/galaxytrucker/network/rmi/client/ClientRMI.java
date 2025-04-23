@@ -68,9 +68,10 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
         System.out.println("8 - pickDeck <deckNumber> (pick a deck)");
         System.out.println("9 - releaseDeck (release picked deck)");
         System.out.println("10 - setPosition <initCell> (set initial position on the flight board)");
-        System.out.println("11 - shipBoard (view your shipboard)");
-        System.out.println("12 - shipBoard <otherPlayerNickname> (view another player's shipboard)");
-        System.out.println("13 - flightBoard (view the flight board)");
+        System.out.println("11 - destroy <x> <y> (destroy a component)");
+        System.out.println("12 - shipBoard (view your shipboard)");
+        System.out.println("13 - shipBoard <otherPlayerNickname> (view another player's shipboard)");
+        System.out.println("14 - flightBoard (view the flight board)");
     }
 
     //runs a command line interface to send requests to the server
@@ -122,9 +123,9 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                             System.out.println("Error: coordinates required");
                             break;
                         }
-                        int x = Integer.parseInt(tokens[1]);
-                        int y = Integer.parseInt(tokens[2]);
-                        server.assembledComponent(nickname, x, y);
+                        int x1 = Integer.parseInt(tokens[1]);
+                        int y1 = Integer.parseInt(tokens[2]);
+                        server.assembledComponent(nickname, x1, y1);
                         break;
                     case "pickDeck":
                         if (tokens.length < 2) {
@@ -144,6 +145,15 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                         }
                         int initCell = Integer.parseInt(tokens[1]);
                         server.setPosition(nickname, initCell);
+                        break;
+                    case "destroy":
+                        if (tokens.length < 3) {
+                            System.out.println("Error: coordinates required");
+                            break;
+                        }
+                        int x2 = Integer.parseInt(tokens[1]);
+                        int y2 = Integer.parseInt(tokens[2]);
+                        server.destroyComponent(nickname, x2, y2);
                         break;
                     case "commands":
                         printCommands();
@@ -278,6 +288,24 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
     @Override
     public void updateShipControl() throws RemoteException {
         this.view.updateShipControl();
+    }
+
+    //notifies the view that a component of a player's ship board has been destroyed
+    @Override
+    public void updateDestroyedComponent(String nickname, int x, int y) throws RemoteException{
+        this.view.updateDestroyedComponent(nickname, x, y);
+    }
+
+    //notifies the view about the fact that a player has to pick a card in order to continue the game
+    @Override
+    public void updateCardPicking() throws RemoteException{
+        this.view.updateCardPicking();
+    }
+
+    //notifies the view about the next player whose turn it is to perform an action
+    @Override
+    public void updateNextTurn(String nickname) throws RemoteException{
+        this.view.updateNextTurn(nickname);
     }
 
 }

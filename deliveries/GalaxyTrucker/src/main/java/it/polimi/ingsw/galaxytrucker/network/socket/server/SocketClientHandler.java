@@ -63,6 +63,9 @@ public class SocketClientHandler implements VirtualViewSocket {
                     case SET_POSITION:
                         controller.setPosition(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)));
                         break;
+                    case DESTROY:
+                        controller.destroyComponent(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)));
+                        break;
                     default:
                         notifyError("Error: unknown command sent by client");
                 }
@@ -212,6 +215,30 @@ public class SocketClientHandler implements VirtualViewSocket {
     public void updateShipControl() throws IOException{
         List<String> params = new ArrayList<>();
         GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.SHIP_CONTROL, params);
+        out.writeObject(message);
+    }
+
+    //notifies the view that a component of a player's ship board has been destroyed
+    @Override
+    public void updateDestroyedComponent(String nickname, int x, int y) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(x), String.valueOf(y)));
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.DESTROYED_COMPONENT, params);
+        out.writeObject(message);
+    }
+
+    //notifies the view about the fact that a player has to pick a card in order to continue the game
+    @Override
+    public void updateCardPicking() throws IOException{
+        List<String> params = new ArrayList<>();
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.CARD_PICKING, params);
+        out.writeObject(message);
+    }
+
+    //notifies the view about the next player whose turn it is to perform an action
+    @Override
+    public void updateNextTurn(String nickname) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname));
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.NEXT_TURN, params);
         out.writeObject(message);
     }
 

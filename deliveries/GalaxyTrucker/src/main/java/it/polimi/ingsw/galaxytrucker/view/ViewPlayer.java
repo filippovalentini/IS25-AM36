@@ -156,8 +156,16 @@ public class ViewPlayer {
         assembledComponents.get(x).get(y).setOrientation(orientation);
     }
 
+    public void updateDestroyedComponent(String nickname, int x, int y) {
+        assembledComponents.get(x).set(y, new ViewComponent("000"));
+    }
+
     public void loseReservedComponents() {
         lostComponents+=reservedComponents.size();
+    }
+
+    public void loseComponent(){
+        lostComponents++;
     }
 
 }

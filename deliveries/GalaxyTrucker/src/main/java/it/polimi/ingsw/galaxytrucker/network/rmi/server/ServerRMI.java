@@ -225,4 +225,21 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
             }
         }
     }
+
+    //invoked when a player wants to destroy a component in order to validate its ship board or when a
+    //component is destroyed due to a cannon shot/meteor attack
+    @Override
+    public void destroyComponent(String nickname, int x, int y) throws RemoteException{
+        try{
+            controller.destroyComponent(nickname, x, y);
+        }
+        catch(Exception e){
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
+        }
+    }
 }

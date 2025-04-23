@@ -8,6 +8,9 @@ import java.util.List;
 //a change in the model
 
 public interface VirtualView {
+    //runs a command line interface to send requests to the server
+    void runCli(VirtualServer server) throws Exception;
+
     //notifies a view about an error committed while executing a method on the remote server; the parameter
     //errorMessage describes the type of error
     void notifyError(String errorMessage) throws Exception;
@@ -55,7 +58,7 @@ public interface VirtualView {
     //notifies the view about the fact that the corresponding player has successfully released a deck
     void updateReleasedDeck() throws Exception;
 
-    //notifies the view about the fact that the corresponding player has finished the assembling phase and is
+    //notifies the view about the fact that a player has finished the assembling phase and is
     //correctly positioned on the flight board; still, other players have to finish building their ships
     void updateFinishAssembling(String nickname, int position) throws Exception;
 
@@ -63,6 +66,12 @@ public interface VirtualView {
     //enter the ship control phase
     void updateShipControl() throws Exception;
 
-    //runs a command line interface to send requests to the server
-    void runCli(VirtualServer server) throws Exception;
+    //notifies the view that a component of a player's ship board has been destroyed
+    void updateDestroyedComponent(String nickname, int x, int y) throws Exception;
+
+    //notifies the view about the fact that a player has to pick a card in order to continue the game
+    void updateCardPicking() throws Exception;
+
+    //notifies the view about the next player whose turn it is to perform an action
+    void updateNextTurn(String nickname) throws Exception;
 }

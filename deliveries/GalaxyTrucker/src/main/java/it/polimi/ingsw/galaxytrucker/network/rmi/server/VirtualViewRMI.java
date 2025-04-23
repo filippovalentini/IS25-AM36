@@ -13,6 +13,10 @@ import java.util.List;
 //a change in the model; in particular, this interface is exploited if the chosen network technology is RMI
 
 public interface VirtualViewRMI extends Remote, VirtualView {
+    //runs a command line interface to send requests to the server
+    @Override
+    void runCli(VirtualServer server) throws RemoteException;
+
     //notifies a view about an error committed while executing a method on the remote server; the parameter
     //errorMessage describes the type of error
     @Override
@@ -81,8 +85,16 @@ public interface VirtualViewRMI extends Remote, VirtualView {
     @Override
     void updateShipControl() throws RemoteException;
 
-    //runs a command line interface to send requests to the server
+    //notifies the view that a component of a player's ship board has been destroyed
     @Override
-    void runCli(VirtualServer server) throws RemoteException;
+    void updateDestroyedComponent(String nickname, int x, int y) throws RemoteException;
+
+    //notifies the view about the fact that a player has to pick a card in order to continue the game
+    @Override
+    void updateCardPicking() throws RemoteException;
+
+    //notifies the view about the next player whose turn it is to perform an action
+    @Override
+    void updateNextTurn(String nickname) throws RemoteException;
 
 }

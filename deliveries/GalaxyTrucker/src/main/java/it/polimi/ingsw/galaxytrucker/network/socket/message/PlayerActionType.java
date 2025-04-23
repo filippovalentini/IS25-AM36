@@ -10,6 +10,7 @@ public enum PlayerActionType {
     PICK_RESERVED,
     ROTATE,
     ASSEMBLE,
+    DESTROY,
     //decks
     PICK_DECK,
     RELEASE_DECK,

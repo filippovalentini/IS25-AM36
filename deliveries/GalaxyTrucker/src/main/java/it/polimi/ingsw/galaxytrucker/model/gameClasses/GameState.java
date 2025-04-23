@@ -657,9 +657,15 @@ public class GameState {
     //invoked when a component of a player's ship board must be destroyed
     public void destroyComponent(String nickname, int x, int y) throws AssembledComponentException, InvalidActionException {
         if(state != State.SHIP_CONTROL){
-            throw new InvalidActionException("Assembling phase is finished");
+            throw new InvalidActionException("Wait for ship control phase");
         }
         playersPlay.get(nickname).destroyComponent(x,y);
+
+        for(VirtualView view: clients.values()){
+            try{view.updateDestroyedComponent(nickname, x, y);}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        }
+
         checkShipBoards();
     }
     //checks the correctness of all the ships in the game
@@ -674,6 +680,12 @@ public class GameState {
         if(correctShips){
             state = State.CARD_PICKING;
             createGameDeck();
+
+            for(VirtualView view: clients.values()){
+                try{view.updateCardPicking();}
+                catch(Exception e){System.out.println("Error during remote method invocation on client");}
+            }
+
             updateTurns();
         }
     }
@@ -681,6 +693,7 @@ public class GameState {
     public void changePlayerPosition(String nickname, int cells) {
         playersPos.get(nickname).changePosition(cells);
     }
+
     //creates the main deck for the game by unifying and shuffling the 4 decks used during the assembling phase;
     //this method is invoked after the assembling phase
     public void createGameDeck() {
@@ -706,6 +719,11 @@ public class GameState {
                     return pp2.higherThan(pp1) ? 1 : -1;
                 }).collect(LinkedHashMap::new, (map, entry) -> map.put(entry.getKey(), entry.getValue()), Map::putAll);
         turnPlayer = playersPos.keySet().iterator().next();
+
+        for(VirtualView view: clients.values()){
+            try{view.updateNextTurn(this.turnPlayer);}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        }
     }
     //this method updates turnPlayer with the nickname of the next player that has to perform an action
     public void nextTurn(){
