@@ -60,4 +60,12 @@ public interface VirtualServerRMI extends Remote, VirtualServer {
     //component is destroyed due to a cannon shot/meteor attack
     @Override
     void destroyComponent(String nickname, int x, int y) throws RemoteException;
+
+    //invoked when a player wants to pick a new card from the game deck
+    @Override
+    void pickNextCard(String nickname) throws RemoteException;
+
+    //invoked when a player wants to leave the game
+    @Override
+    void quitGame(String nickname) throws RemoteException;
 }

@@ -16,5 +16,7 @@ public enum GameUpdateType {
     SHIP_CONTROL,
     DESTROYED_COMPONENT,
     CARD_PICKING,
-    NEXT_TURN
+    NEXT_TURN,
+    PLAYER_QUIT,
+    CARD_SOLVING
 }

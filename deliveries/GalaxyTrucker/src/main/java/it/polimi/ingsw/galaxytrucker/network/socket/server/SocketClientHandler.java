@@ -66,6 +66,12 @@ public class SocketClientHandler implements VirtualViewSocket {
                     case DESTROY:
                         controller.destroyComponent(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)));
                         break;
+                    case PICK_CARD:
+                        controller.pickNextCard(message.getGameParams(0));
+                        break;
+                    case QUIT:
+                        controller.quitGame(message.getGameParams(0));
+                        break;
                     default:
                         notifyError("Error: unknown command sent by client");
                 }
@@ -239,6 +245,22 @@ public class SocketClientHandler implements VirtualViewSocket {
     public void updateNextTurn(String nickname) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname));
         GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.NEXT_TURN, params);
+        out.writeObject(message);
+    }
+
+    //notifies the view that a new card has been picked and must be solved
+    @Override
+    public void updateCardSolving(int imageID) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(String.valueOf(imageID)));
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.CARD_SOLVING, params);
+        out.writeObject(message);
+    }
+
+    //notifies the view that a player has quit the game
+    @Override
+    public void updatePlayerQuit(String nickname) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname));
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.PLAYER_QUIT, params);
         out.writeObject(message);
     }
 

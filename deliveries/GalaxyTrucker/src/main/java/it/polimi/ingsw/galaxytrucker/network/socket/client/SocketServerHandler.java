@@ -121,4 +121,20 @@ public class SocketServerHandler implements VirtualServerSocket {
         out.writeObject(message);
     }
 
+    //invoked when a player wants to pick a new card from the game deck
+    @Override
+    public void pickNextCard(String nickname) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname));
+        PlayerActionMessage message = new PlayerActionMessage(PlayerActionType.PICK_CARD, params);
+        out.writeObject(message);
+    }
+
+    //invoked when a player wants to leave the game
+    @Override
+    public void quitGame(String nickname) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname));
+        PlayerActionMessage message = new PlayerActionMessage(PlayerActionType.QUIT, params);
+        out.writeObject(message);
+    }
+
 }

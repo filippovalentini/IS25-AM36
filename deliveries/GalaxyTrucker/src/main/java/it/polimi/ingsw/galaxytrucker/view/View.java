@@ -3,19 +3,19 @@ package it.polimi.ingsw.galaxytrucker.view;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 
-import java.rmi.RemoteException;
 import java.util.*;
 
 public class View {
     public boolean firstFlight;     //true if the view refers to a first flight game, false otherwise
     private String gameState;   //string describing the phase of the game
-    private String turnPlayer;
+    private String turnPlayer;      //nickname of the player next in turn
     private ViewFlightBoard flightBoard;    //current flight board state
     private ViewPlayer player;      //state of the player associated to the view
     private Map<String, ViewPlayer> otherPlayers = new HashMap<>();     //other player's state
     private ViewComponent pickedViewComponent;  //component in the player's hand
     private List<Integer> pickedDeck = new ArrayList<>();   //set of cards in the player's hand
     private List<ViewComponent> shownComponents = new ArrayList<>();    //set of components placed face up
+    private Integer currentCard;        //current card to solve
 
     public View(String nickname, Color color, boolean firstFlight) {
         this.player = new ViewPlayer(nickname, color, firstFlight);
@@ -24,6 +24,7 @@ public class View {
         this.pickedViewComponent = null;
         this.flightBoard = null;
         this.turnPlayer = null;
+        this.currentCard = null;
     }
 
     //visualizes the state of the game and of the ship board of the player associated to the view
@@ -39,7 +40,10 @@ public class View {
 
         System.out.print("🚀 Game State: " + gameState);
         if(turnPlayer != null){
-            System.out.print("          IT'S " + turnPlayer + "'S TURN");
+            System.out.println(" --------- IT'S " + turnPlayer + "'S TURN");
+        }
+        if(currentCard != null){
+            System.out.println("🃏 Card to solve: " + currentCard + "\n");
         }
         System.out.println();
         System.out.println("👨‍🚀 Player: " + player.getNickname() + " " + convertColor(player.getColor()));
@@ -194,6 +198,10 @@ public class View {
     //invoked when the game switches to the ship control phase
     public void updateShipControl() {
         gameState = "SHIP CONTROL";
+        pickedViewComponent = null;
+        shownComponents.clear();
+        pickedDeck.clear();
+        player.updateShipControl();
     }
 
     //notifies the view that a component of a player's ship board has been destroyed
@@ -209,10 +217,29 @@ public class View {
     }
 
     //notifies the view about the fact that a player has to pick a card in order to continue the game
-    public void updateCardPicking() { gameState = "CARD PICKING"; }
+    public void updateCardPicking() {
+        gameState = "CARD PICKING";
+        currentCard = null;
+    }
 
     //notifies the view about the next player whose turn it is to perform an action
     public void updateNextTurn(String nickname){
         this.turnPlayer = nickname;
+    }
+
+    //notifies the view about the fact that a card has been picked
+    public void updateCardSolving(Integer cardID){
+        gameState = "CARD SOLVING";
+        currentCard = cardID;
+    }
+
+    //notifies the view about the fact that a player has quit the game
+    public void updatePlayerQuit(String nickname){
+        if(nickname.equals(this.player.getNickname())){
+            flightBoard.updatePlayerQuit(player);
+        }
+        else{
+            flightBoard.updatePlayerQuit(otherPlayers.get(nickname));
+        }
     }
 }

@@ -15,5 +15,7 @@ public enum PlayerActionType {
     PICK_DECK,
     RELEASE_DECK,
     //others
-    SET_POSITION
+    SET_POSITION,
+    QUIT,
+    PICK_CARD,
 }

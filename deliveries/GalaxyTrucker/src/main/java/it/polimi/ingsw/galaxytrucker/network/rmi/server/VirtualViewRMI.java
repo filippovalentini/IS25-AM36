@@ -97,4 +97,12 @@ public interface VirtualViewRMI extends Remote, VirtualView {
     @Override
     void updateNextTurn(String nickname) throws RemoteException;
 
+    //notifies the view that a new card has been picked and must be solved
+    @Override
+    void updateCardSolving(int imageID) throws RemoteException;
+
+    //notifies the view that a player has quit the game
+    @Override
+    void updatePlayerQuit(String nickname) throws RemoteException;
+
 }

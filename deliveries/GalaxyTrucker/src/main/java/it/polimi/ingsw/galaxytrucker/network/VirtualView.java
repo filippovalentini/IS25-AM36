@@ -74,4 +74,10 @@ public interface VirtualView {
 
     //notifies the view about the next player whose turn it is to perform an action
     void updateNextTurn(String nickname) throws Exception;
+
+    //notifies the view that a new card has been picked and must be solved
+    void updateCardSolving(int imageID) throws Exception;
+
+    //notifies the view that a player has quit the game
+    void updatePlayerQuit(String nickname) throws Exception;
 }

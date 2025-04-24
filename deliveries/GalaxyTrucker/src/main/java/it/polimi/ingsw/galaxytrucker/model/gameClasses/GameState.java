@@ -757,6 +757,7 @@ public class GameState {
     public void setTurnPlayer(String nickname){
         this.turnPlayer = nickname;
     }
+
     //this method is invoked when a player wants to leave the game
     public void quitGame(String nickname) throws InvalidActionException {
         if(state != State.CARD_PICKING && state != State.CARD_SOLVING){
@@ -764,6 +765,13 @@ public class GameState {
         }
         playersPos.remove(nickname);
         playersPlay.get(nickname).quitGame();
+
+        for(VirtualView view: clients.values()){
+            try{view.updatePlayerQuit(nickname);}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        }
+
+        updateTurns();
     }
     //invoked when the leader draws a new card from the deck (during the game), which must be solved
     public void pickNextCard(String nickname) throws InvalidActionException {
@@ -777,7 +785,13 @@ public class GameState {
             currentCard = gameDeck.drawCard();
             state = State.CARD_SOLVING;
             currentCard.specialEffect(this);
-        } catch (EmptyDeckException e) {
+
+            for(VirtualView view: clients.values()){
+                try{view.updateCardSolving(currentCard.getImageID());}
+                catch(Exception e){System.out.println("Error during remote method invocation on client");}
+            }
+        }
+        catch (EmptyDeckException e) {
             computeTotalRewards();
             state = State.END;
         }

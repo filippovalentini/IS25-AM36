@@ -92,4 +92,12 @@ public interface VirtualViewSocket extends VirtualView {
     //notifies the view about the next player whose turn it is to perform an action
     @Override
     void updateNextTurn(String nickname) throws IOException;
+
+    //notifies the view that a new card has been picked and must be solved
+    @Override
+    void updateCardSolving(int imageID) throws IOException;
+
+    //notifies the view that a player has quit the game
+    @Override
+    void updatePlayerQuit(String nickname) throws IOException;
 }

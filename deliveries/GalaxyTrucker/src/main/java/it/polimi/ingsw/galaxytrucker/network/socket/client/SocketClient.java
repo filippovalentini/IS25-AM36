@@ -11,7 +11,6 @@ import it.polimi.ingsw.galaxytrucker.view.View;
 
 import java.io.*;
 import java.net.Socket;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -145,6 +144,12 @@ public class SocketClient implements VirtualViewSocket {
                     case NEXT_TURN:
                         updateNextTurn(message.getGameParams(0));
                         break;
+                    case CARD_SOLVING:
+                        updateCardSolving(Integer.parseInt(message.getGameParams(0)));
+                        break;
+                    case PLAYER_QUIT:
+                        updatePlayerQuit(message.getGameParams(0));
+                        break;
                     default:
                         notifyError("Error: unknown command sent by client");
                 }
@@ -192,6 +197,23 @@ public class SocketClient implements VirtualViewSocket {
             try {
                 String command = tokens[0];
                 switch (command) {
+                    case "commands":
+                        ClientRMI.printCommands();
+                        break;
+                    case "shipBoard":
+                        if (tokens.length == 1) {
+                            view.visualizeShip();
+                        }
+                        else if(tokens.length == 2) {
+                            view.visualizeShip(tokens[1]);
+                        }
+                        else {
+                            System.out.println("Error: insert a nickname of another player");
+                        }
+                        break;
+                    case "flightBoard":
+                        view.visualizeFlightBoard();
+                        break;
                     case "pickHidden":
                         serverHandler.pickHidden(nickname);
                         break;
@@ -257,22 +279,11 @@ public class SocketClient implements VirtualViewSocket {
                         int y2 = Integer.parseInt(tokens[2]);
                         serverHandler.destroyComponent(nickname, x2, y2);
                         break;
-                    case "commands":
-                        ClientRMI.printCommands();
+                    case "pickCard":
+                        serverHandler.pickNextCard(nickname);
                         break;
-                    case "shipBoard":
-                        if (tokens.length == 1) {
-                            view.visualizeShip();
-                        }
-                        else if(tokens.length == 2) {
-                            view.visualizeShip(tokens[1]);
-                        }
-                        else {
-                            System.out.println("Error: insert a nickname of another player");
-                        }
-                        break;
-                    case "flightBoard":
-                        view.visualizeFlightBoard();
+                    case "quit":
+                        serverHandler.quitGame(nickname);
                         break;
                     default:
                         System.out.println("Error: unknown command");
@@ -408,5 +419,17 @@ public class SocketClient implements VirtualViewSocket {
     @Override
     public void updateNextTurn(String nickname) {
         this.view.updateNextTurn(nickname);
+    }
+
+    //notifies the view that a new card has been picked and must be solved
+    @Override
+    public void updateCardSolving(int imageID) {
+        this.view.updateCardSolving(imageID);
+    }
+
+    //notifies the view that a player has quit the game
+    @Override
+    public void updatePlayerQuit(String nickname) {
+        this.view.updatePlayerQuit(nickname);
     }
 }

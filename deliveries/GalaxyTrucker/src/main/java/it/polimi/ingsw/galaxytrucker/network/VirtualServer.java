@@ -44,4 +44,10 @@ public interface VirtualServer {
     //invoked when a player wants to destroy a component in order to validate its ship board or when a
     //component is destroyed due to a cannon shot/meteor attack
     void destroyComponent(String nickname, int x, int y) throws Exception;
+
+    //invoked when a player wants to pick a new card from the game deck
+    void pickNextCard(String nickname) throws Exception;
+
+    //invoked when a player wants to leave the game
+    void quitGame(String nickname) throws Exception;
 }

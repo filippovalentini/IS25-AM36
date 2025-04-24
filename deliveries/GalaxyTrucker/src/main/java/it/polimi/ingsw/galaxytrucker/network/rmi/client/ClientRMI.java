@@ -58,20 +58,22 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
     public static void printCommands(){
         System.out.println("Available commands:");
         System.out.println("0 - commands (list of available commands)");
-        System.out.println("1 - pickHidden (pick a hidden component)");
-        System.out.println("2 - pickShown <index> (pick a shown component)");
-        System.out.println("3 - release (release picked component)");
-        System.out.println("4 - reserve (reserve picked component)");
-        System.out.println("5 - pickReserved <position> (pick a reserved component)");
-        System.out.println("6 - rotate (rotate picked component)");
-        System.out.println("7 - assemble <x> <y> (assemble picked component)");
-        System.out.println("8 - pickDeck <deckNumber> (pick a deck)");
-        System.out.println("9 - releaseDeck (release picked deck)");
-        System.out.println("10 - setPosition <initCell> (set initial position on the flight board)");
-        System.out.println("11 - destroy <x> <y> (destroy a component)");
-        System.out.println("12 - shipBoard (view your shipboard)");
-        System.out.println("13 - shipBoard <otherPlayerNickname> (view another player's shipboard)");
-        System.out.println("14 - flightBoard (view the flight board)");
+        System.out.println("1 - shipBoard (view your shipboard)");
+        System.out.println("2 - shipBoard <otherPlayerNickname> (view another player's shipboard)");
+        System.out.println("3 - flightBoard (view the flight board)");
+        System.out.println("4 - pickHidden (pick a hidden component)");
+        System.out.println("5 - pickShown <index> (pick a shown component)");
+        System.out.println("6 - release (release picked component)");
+        System.out.println("7 - reserve (reserve picked component)");
+        System.out.println("8 - pickReserved <position> (pick a reserved component)");
+        System.out.println("9 - rotate (rotate picked component)");
+        System.out.println("10 - assemble <x> <y> (assemble picked component)");
+        System.out.println("11 - pickDeck <deckNumber> (pick a deck)");
+        System.out.println("12 - releaseDeck (release picked deck)");
+        System.out.println("13 - setPosition <initCell> (set initial position on the flight board)");
+        System.out.println("14 - destroy <x> <y> (destroy a component)");
+        System.out.println("15 - pickCard (pick a next card)");
+        System.out.println("16 - quit (quit the game)");
     }
 
     //runs a command line interface to send requests to the server
@@ -90,6 +92,23 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
             try {
                 String command = tokens[0];
                 switch (command) {
+                    case "commands":
+                        printCommands();
+                        break;
+                    case "shipBoard":
+                        if (tokens.length == 1) {
+                            view.visualizeShip();
+                        }
+                        else if(tokens.length == 2) {
+                            view.visualizeShip(tokens[1]);
+                        }
+                        else {
+                            System.out.println("Error: insert a nickname of another player");
+                        }
+                        break;
+                    case "flightBoard":
+                        view.visualizeFlightBoard();
+                        break;
                     case "pickHidden":
                         server.pickHidden(nickname);
                         break;
@@ -155,22 +174,11 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                         int y2 = Integer.parseInt(tokens[2]);
                         server.destroyComponent(nickname, x2, y2);
                         break;
-                    case "commands":
-                        printCommands();
+                    case "pickCard":
+                        server.pickNextCard(nickname);
                         break;
-                    case "shipBoard":
-                        if (tokens.length == 1) {
-                            view.visualizeShip();
-                        }
-                        else if(tokens.length == 2) {
-                            view.visualizeShip(tokens[1]);
-                        }
-                        else {
-                            System.out.println("Error: insert a nickname of another player");
-                        }
-                        break;
-                    case "flightBoard":
-                        view.visualizeFlightBoard();
+                    case "quit":
+                        server.quitGame(nickname);
                         break;
                     default:
                         System.out.println("Error: unknown command");
@@ -308,4 +316,15 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
         this.view.updateNextTurn(nickname);
     }
 
+    //notifies the view that a new card has been picked and must be solved
+    @Override
+    public void updateCardSolving(int imageID) throws RemoteException{
+        this.view.updateCardSolving(imageID);
+    }
+
+    //notifies the view that a player has quit the game
+    @Override
+    public void updatePlayerQuit(String nickname) throws RemoteException{
+        this.view.updatePlayerQuit(nickname);
+    }
 }

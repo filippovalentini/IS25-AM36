@@ -160,6 +160,10 @@ public class ViewPlayer {
         assembledComponents.get(x).set(y, new ViewComponent("000"));
     }
 
+    public void updateShipControl(){
+        reservedComponents.clear();
+    }
+
     public void loseReservedComponents() {
         lostComponents+=reservedComponents.size();
     }

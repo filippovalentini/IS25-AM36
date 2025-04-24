@@ -25,11 +25,16 @@ public class ViewFlightBoard {
             ViewPosition position = positions.get(player);
             System.out.println("👨‍🚀 Player: " + player.getNickname() + " " + View.convertColor(player.getColor()));
             if (position == null) {
-                System.out.println("not positioned yet");
+                System.out.println("not positioned yet or has quit the game");
             }
             else{
                 System.out.println("positioned at cell " + position.getCell() + " (lap " + position.getLap() + ")");
             }
         }
+    }
+
+    //sets to null the position of the player that has quit
+    public void updatePlayerQuit(ViewPlayer player) {
+        positions.put(player, null);
     }
 }
