@@ -187,8 +187,32 @@ public class ShipBoard {
     public void addCrew(int x, int y) throws AssembledComponentException, FullCabinException {
         assembledComponents.get(x).get(y).addCrew();
     }
-    //initializes a cabin with an alien of the specified type
-    public void addAlien(boolean isPurple, int x, int y) throws AssembledComponentException, FullCabinException {
+    //initializes a cabin with an alien of the specified type, checking whether there is life support for it
+    public void addAlien(boolean isPurple, int x, int y) throws AssembledComponentException, FullCabinException, NoLifeSupportException {
+        boolean lifeSupport = false;
+        if(x!=0){
+            if(assembledComponents.get(x-1).get(y).supportsAlien(isPurple)){
+                lifeSupport = true;
+            }
+        }
+        if(y!=0){
+            if(assembledComponents.get(x).get(y-1).supportsAlien(isPurple)){
+                lifeSupport = true;
+            }
+        }
+        if(x!=4){
+            if(assembledComponents.get(x+1).get(y).supportsAlien(isPurple)){
+                lifeSupport = true;
+            }
+        }
+        if(y!=6){
+            if(assembledComponents.get(x).get(y+1).supportsAlien(isPurple)){
+                lifeSupport = true;
+            }
+        }
+        if(!lifeSupport){
+            throw new NoLifeSupportException("Life support is missing");
+        }
         assembledComponents.get(x).get(y).addAlien(isPurple);
     }
     //determines if the ship board is correctly assembled

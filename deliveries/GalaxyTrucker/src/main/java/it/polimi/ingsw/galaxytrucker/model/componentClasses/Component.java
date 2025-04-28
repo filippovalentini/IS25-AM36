@@ -149,5 +149,6 @@ public class Component {
     public boolean pointsForward(){ return false;}
     public int goodsPrice(){ return 0;}
     public boolean isFull(){ return true;}
+    public boolean supportsAlien(boolean isPurple){ return false;}
 
 }

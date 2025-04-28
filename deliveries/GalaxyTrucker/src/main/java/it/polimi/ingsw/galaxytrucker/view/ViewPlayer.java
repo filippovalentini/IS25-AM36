@@ -51,7 +51,8 @@ public class ViewPlayer {
 
         for (List<ViewComponent> row : assembledComponents) {
             StringBuilder top = new StringBuilder();
-            StringBuilder middle = new StringBuilder();
+            StringBuilder middle1 = new StringBuilder();
+            StringBuilder middle2 = new StringBuilder();
             StringBuilder bottom = new StringBuilder();
 
             for (ViewComponent comp : row) {
@@ -60,27 +61,60 @@ public class ViewPlayer {
                 char ori = comp.getOrientation().toString().charAt(0);
                 String id = String.valueOf(comp.getImageID());
 
-                String content;
+                String content1="";
+                String content2="";
                 if(id.equals("000")){
-                    content ="     ";
+                    content1 ="     ";
+                    content2 ="     ";
                 }
                 else if(id.equals("003")){
-                    content ="/////";
+                    content1 ="/////";
+                    content2 ="/////";
                 }
                 else{
-                    content = ori + " " + id;
+                    content1 = ori + " " + id;
+                    content2 = generateComponentGraphics(comp);
                 }
 
-                content = String.format("%-4s", content); // padding per allineamento
+                content1 = String.format("%-4s", content1); // padding per allineamento
 
-                middle.append("║ " + content + " ║ ");
+                middle1.append("║ " + content1 + " ║ ");
+                middle2.append("║ " + content2 + " ║ ");
                 bottom.append("╚═══════╝ ");
             }
 
             System.out.println(top.toString());
-            System.out.println(middle.toString());
+            System.out.println(middle1.toString());
+            System.out.println(middle2.toString());
             System.out.println(bottom.toString());
             System.out.println(); // spazio tra righe
+        }
+    }
+
+    public String generateComponentGraphics(ViewComponent comp){
+        if (comp.getCrew() == 1) {
+            return "🧑‍🚀   ";
+        }
+        else if (comp.getCrew() == 2) {
+            return "🧑‍🚀🧑‍🚀 ";
+        }
+        else if (comp.isBrownAlien()) {
+            return "🟫   ";
+        }
+        else if (comp.isPurpleAlien()) {
+            return "🟪   ";
+        }
+        else if(comp.getBatteries() == 1){
+            return "💚   ";
+        }
+        else if(comp.getBatteries() == 2){
+            return "💚💚 ";
+        }
+        else if(comp.getBatteries() == 3){
+            return "💚💚💚";
+        }
+        else{
+            return "     ";
         }
     }
 
@@ -170,6 +204,18 @@ public class ViewPlayer {
 
     public void loseComponent(){
         lostComponents++;
+    }
+
+    public void updateAlienChange(int x, int y, boolean isPurple) {
+        assembledComponents.get(x).get(y).updateAlien(isPurple);
+    }
+
+    public void updateCrewChange(int x, int y, int change) {
+        assembledComponents.get(x).get(y).updateCrew(change);
+    }
+
+    public void updateBatteries(int x, int y, int change) {
+        assembledComponents.get(x).get(y).updateBatteries(change);
     }
 
 }

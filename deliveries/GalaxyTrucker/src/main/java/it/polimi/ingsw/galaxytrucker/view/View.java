@@ -3,7 +3,6 @@ package it.polimi.ingsw.galaxytrucker.view;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 
-import java.rmi.RemoteException;
 import java.util.*;
 
 public class View {
@@ -26,6 +25,12 @@ public class View {
         this.flightBoard = null;
         this.turnPlayer = null;
         this.currentCard = null;
+    }
+
+    public static void main(String[] args){
+        View view = new View("fil", Color.BLUE, true);
+        view.updateBatteries("fil", 2, 3, 1);
+        view.visualizeShip();
     }
 
     //visualizes the state of the game and of the ship board of the player associated to the view
@@ -245,8 +250,32 @@ public class View {
     }
 
     //notifies the view about a change in the number of crew of a cabin
-    public void updateCrewChange(String nickname, int x, int y, int change) {}
+    public void updateCrewChange(String nickname, int x, int y, int change) {
+        if(nickname.equals(this.player.getNickname())){
+            player.updateCrewChange(x,y,change);
+        }
+        else{
+            otherPlayers.get(nickname).updateCrewChange(x,y,change);
+        }
+    }
 
     //notifies the view about a change in the number of aliens of a cabin
-    public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) {}
+    public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) {
+        if(nickname.equals(this.player.getNickname())){
+            player.updateAlienChange(x,y,isPurple);
+        }
+        else{
+            otherPlayers.get(nickname).updateAlienChange(x,y,isPurple);
+        }
+    }
+
+    //notifies the view about a change in the number of batteries of a battery hold
+    public void updateBatteries(String nickname, int x, int y, int change) {
+        if(nickname.equals(this.player.getNickname())){
+            player.updateBatteries(x,y,change);
+        }
+        else{
+            otherPlayers.get(nickname).updateBatteries(x,y,change);
+        }
+    }
 }
