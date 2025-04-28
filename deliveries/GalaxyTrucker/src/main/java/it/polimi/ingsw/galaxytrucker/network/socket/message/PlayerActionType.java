@@ -18,4 +18,6 @@ public enum PlayerActionType {
     SET_POSITION,
     QUIT,
     PICK_CARD,
+    ADD_CREW,
+    ADD_ALIEN
 }

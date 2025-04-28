@@ -66,6 +66,11 @@ public class SocketClientHandler implements VirtualViewSocket {
                     case DESTROY:
                         controller.destroyComponent(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)));
                         break;
+                    case ADD_CREW:
+                        controller.addCrew(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)));
+                        break;
+                    case ADD_ALIEN:
+                        controller.addAlien(message.getGameParams(0), Boolean.parseBoolean(message.getGameParams(1)), Integer.parseInt(message.getGameParams(3)), Integer.parseInt(message.getGameParams(3)));
                     case PICK_CARD:
                         controller.pickNextCard(message.getGameParams(0));
                         break;
@@ -229,6 +234,22 @@ public class SocketClientHandler implements VirtualViewSocket {
     public void updateDestroyedComponent(String nickname, int x, int y) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(x), String.valueOf(y)));
         GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.DESTROYED_COMPONENT, params);
+        out.writeObject(message);
+    }
+
+    //notifies the view about a change in the number of crew of a cabin
+    @Override
+    public void updateCrewChange(String nickname, int x, int y, int change) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(x), String.valueOf(y), String.valueOf(change)));
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.CREW_CHANGE, params);
+        out.writeObject(message);
+    }
+
+    //notifies the view about a change in the number of aliens of a cabin
+    @Override
+    public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(x), String.valueOf(y), String.valueOf(isPurple), String.valueOf(added)));
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.ALIEN_CHANGE, params);
         out.writeObject(message);
     }
 

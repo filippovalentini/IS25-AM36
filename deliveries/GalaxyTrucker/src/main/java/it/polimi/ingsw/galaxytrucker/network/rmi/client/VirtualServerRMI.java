@@ -61,6 +61,14 @@ public interface VirtualServerRMI extends Remote, VirtualServer {
     @Override
     void destroyComponent(String nickname, int x, int y) throws RemoteException;
 
+    //invoked when a player wants to initialize a cabin of its shipboard with 2 human crew members
+    @Override
+    void addCrew(String nickname, int x, int y) throws RemoteException;
+
+    //invoked when a player wants to initialize a cabin of its shipboard with an alien
+    @Override
+    void addAlien(String nickname, boolean isPurple, int x, int y) throws RemoteException;
+
     //invoked when a player wants to pick a new card from the game deck
     @Override
     void pickNextCard(String nickname) throws RemoteException;

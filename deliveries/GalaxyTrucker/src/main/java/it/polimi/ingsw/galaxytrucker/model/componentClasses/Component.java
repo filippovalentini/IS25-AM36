@@ -2,6 +2,8 @@ package it.polimi.ingsw.galaxytrucker.model.componentClasses;
 
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.AssembledComponentException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.FullCabinException;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.NoBatteriesException;
 
 import java.util.ArrayList;
@@ -109,6 +111,15 @@ public class Component {
         }
     }
 
+    public boolean isNotEmpty(){
+        Component empty = new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
+        return !this.equals(empty);
+    }
+    public boolean belongsToShip(){
+        Component space = new Space(3, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
+        return !this.equals(space);
+    }
+
     public boolean isWellOriented(){        //determines if the component is oriented correctly (true by default, it will be overrided by subclasses for which the orientation is important)
         return true;
     }
@@ -118,6 +129,12 @@ public class Component {
     public boolean hasSingleEngine() { return false;}
     public boolean hasDoubleCannons() { return false;}
     public boolean hasSingleCannon() { return false;}
+    public void addCrew() throws FullCabinException {
+        throw new AssembledComponentException("Can't add crew outside a cabin");
+    }
+    public void addAlien(boolean isPurple) throws FullCabinException {
+        throw new AssembledComponentException("Can't add an alien outside a cabin");
+    }
     public void removeMember(){}
     public int getNumberCrew() {
         return 0;
@@ -131,12 +148,6 @@ public class Component {
     public boolean protects(Orientation orientation){ return false;}
     public boolean pointsForward(){ return false;}
     public int goodsPrice(){ return 0;}
-    public boolean isNotEmpty(){
-        Component empty = new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
-        return !this.equals(empty);
-    }
-    public boolean belongsToShip(){
-        Component space = new Space(3, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
-        return !this.equals(space);
-    }
+    public boolean isFull(){ return true;}
+
 }

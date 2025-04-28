@@ -40,6 +40,8 @@ class AbandonedShipTest {
         gameState.addPlayer(cl2, player2, Color.BLUE);
         gameState.setPosition(player1, 6);
         gameState.setPosition(player2, 3);
+        gameState.addCrew(player1, 2, 3);
+        gameState.addCrew(player2, 2, 3);
         gameState.setGameState(State.CARD_PICKING); //end of assembling phase
         abandonedShip = new AbandonedShip(3, 3, 1, 0);
         abandonedShip1 = new AbandonedShip(1, 3, 1, 0);

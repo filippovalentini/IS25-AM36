@@ -48,6 +48,8 @@ class CombatZoneTest {
         gameState.assembleComponent(player2, engineP2, 2,4); //right to the init cabin
         gameState.setPosition(player1, 0);
         gameState.setPosition(player2, 3);
+        gameState.addCrew(player1, 2, 3);
+        gameState.addCrew(player2, 2, 3);
         gameState.setGameState(State.CARD_SOLVING);
         combatZoneLV1 = new CombatZone(true, 0);
         combatZoneLV2 = new CombatZone(false, 0);

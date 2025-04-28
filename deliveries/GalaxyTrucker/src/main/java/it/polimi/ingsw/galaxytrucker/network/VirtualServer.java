@@ -1,6 +1,9 @@
 package it.polimi.ingsw.galaxytrucker.network;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.AssembledComponentException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.FullCabinException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
 import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
 
 //this interface defines the methods that are used by the clients to interact with the server, in order to change
@@ -44,6 +47,12 @@ public interface VirtualServer {
     //invoked when a player wants to destroy a component in order to validate its ship board or when a
     //component is destroyed due to a cannon shot/meteor attack
     void destroyComponent(String nickname, int x, int y) throws Exception;
+
+    //invoked when a player wants to initialize a cabin of its shipboard with 2 human crew members
+    void addCrew(String nickname, int x, int y) throws Exception;
+
+    //invoked when a player wants to initialize a cabin of its shipboard with an alien
+    void addAlien(String nickname, boolean isPurple, int x, int y) throws Exception;
 
     //invoked when a player wants to pick a new card from the game deck
     void pickNextCard(String nickname) throws Exception;

@@ -163,6 +163,8 @@ class GameStateNormalTest {
         gameState.setPosition(player2, 1);
         assertEquals(State.SHIP_CONTROL, gameState.getGameState());
         gameState.destroyComponent(player1, 2, 2);
+        gameState.addCrew(player1, 2, 3);
+        gameState.addCrew(player2, 2, 3);
         assertEquals(State.CARD_PICKING, gameState.getGameState());
     }
 
@@ -172,6 +174,8 @@ class GameStateNormalTest {
         gameState.putShown(player1);
         gameState.setPosition(player2, 1);
         gameState.setPosition(player1, 0);
+        gameState.addCrew(player1, 2, 3);
+        gameState.addCrew(player2, 2, 3);
         assertEquals(player2, gameState.getTurnPlayer());
         gameState.pickNextCard(player2);
         assertEquals(State.CARD_SOLVING, gameState.getGameState());
@@ -196,7 +200,7 @@ class GameStateNormalTest {
 
     @Test
     void testGetCrewCount() {
-        assertEquals(2, gameState.getCrewCount(player1));
+        assertEquals(0, gameState.getCrewCount(player1));
     }
 
     @Test
@@ -206,6 +210,10 @@ class GameStateNormalTest {
         gameState.setPosition(player1, 0);
         assertEquals(State.SHIP_BUILDING, gameState.getGameState());
         gameState.setPosition(player2, 1);
+        assertEquals(State.SHIP_CONTROL, gameState.getGameState());
+        gameState.addCrew(player1, 2, 3);
+        gameState.addCrew(player1, 2, 2);
+        gameState.addCrew(player2, 2, 3);
         assertEquals(State.CARD_PICKING, gameState.getGameState());
         assertEquals(4, gameState.getCrewCount(player1));
         assertEquals(2, gameState.getCrewCount(player2));
@@ -217,6 +225,9 @@ class GameStateNormalTest {
         List<Integer> x = new ArrayList<>(Arrays.asList(2));
         List<Integer> y = new ArrayList<>(Arrays.asList(3));
         List<Integer> eachCabinCrew = new ArrayList<>(Arrays.asList(2));
+        gameState.setPosition(player1, 0);
+        gameState.setPosition(player2, 1);
+        gameState.addCrew(player1, 2, 3);
         gameState.removedCrewMember(player1, x, y, eachCabinCrew, 2);
         assertEquals(0, gameState.getCrewCount(player1));
     }

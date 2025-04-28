@@ -39,9 +39,6 @@ public class Player {
     public int getCredits() {
         return credits;
     }
-    public int getPickedDeckNumber() {
-        return pickedDeckNumber;
-    }
     public boolean hasAbandoned() {
         return hasAbandoned;
     }
@@ -81,6 +78,18 @@ public class Player {
     public void destroyComponent(int x, int y) throws AssembledComponentException{
         shipBoard.destroyComponent(x, y);
     }
+    //adds 2 crew members to each cabin of the player's ship board
+    public void initializeCabins() {
+        shipBoard.initializeCabins();
+    }
+    //invoked when the player wants to initialize a cabin of its shipboard with 2 human crew members
+    public void addCrew(int x, int y) throws AssembledComponentException, FullCabinException{
+        shipBoard.addCrew(x,y);
+    }
+    //invoked when the player wants to initialize a cabin of its shipboard with an alien
+    public void addAlien(boolean isPurple, int x, int y) throws AssembledComponentException, FullCabinException{
+        shipBoard.addAlien(isPurple, x,y);
+    }
     //invoked when a player wants to pick a deck during the assembling phase
     public void pickDeck(int deckNumber) throws PickedDeckException{
         if(pickedDeckNumber != 0){
@@ -105,6 +114,8 @@ public class Player {
     public boolean hasCorrectShipBoard(){
         return shipBoard.isCorrect();
     }
+    //determines whether the player's shipBoard has all the cabins full of crew (humans or aliens)
+    public boolean hasAllCabinsFull(){return shipBoard.hasAllCabinsFull();}
     //counts the number of exposed connectors in the player's ship board
     public int countExposedConnectors(){
         return shipBoard.countExposedConnectors();

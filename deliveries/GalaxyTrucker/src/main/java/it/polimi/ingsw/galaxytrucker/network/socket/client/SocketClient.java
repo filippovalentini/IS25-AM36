@@ -138,6 +138,11 @@ public class SocketClient implements VirtualViewSocket {
                     case DESTROYED_COMPONENT:
                         updateDestroyedComponent(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)));
                         break;
+                    case CREW_CHANGE:
+                        updateCrewChange(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)), Integer.parseInt(message.getGameParams(3)));
+                        break;
+                    case ALIEN_CHANGE:
+                        updateAlienChange(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)), Boolean.parseBoolean(message.getGameParams(3)), Boolean.parseBoolean(message.getGameParams(4)));
                     case CARD_PICKING:
                         updateCardPicking();
                         break;
@@ -279,6 +284,29 @@ public class SocketClient implements VirtualViewSocket {
                         int y2 = Integer.parseInt(tokens[2]);
                         serverHandler.destroyComponent(nickname, x2, y2);
                         break;
+                    case "addCrew":
+                        if (tokens.length < 3) {
+                            System.out.println("Error: coordinates required");
+                            break;
+                        }
+                        int x3 = Integer.parseInt(tokens[1]);
+                        int y3 = Integer.parseInt(tokens[2]);
+                        serverHandler.addCrew(nickname, x3, y3);
+                        break;
+                    case "addAlien":
+                        if (tokens.length < 4) {
+                            System.out.println("Error: coordinates required");
+                            break;
+                        }
+                        if(!tokens[1].equals("purple") && !tokens[1].equals("brown")) {
+                            System.out.println("Error: alien can only be purple or brown");
+                            break;
+                        }
+                        boolean isPurple = (tokens[1].equals("purple"));
+                        int x4 = Integer.parseInt(tokens[2]);
+                        int y4 = Integer.parseInt(tokens[3]);
+                        serverHandler.addAlien(nickname, isPurple, x4, y4);
+                        break;
                     case "pickCard":
                         serverHandler.pickNextCard(nickname);
                         break;
@@ -407,6 +435,18 @@ public class SocketClient implements VirtualViewSocket {
     @Override
     public void updateDestroyedComponent(String nickname, int x, int y) {
         this.view.updateDestroyedComponent(nickname, x, y);
+    }
+
+    //notifies the view about a change in the number of crew of a cabin
+    @Override
+    public void updateCrewChange(String nickname, int x, int y, int change){
+        this.view.updateCrewChange(nickname, x, y, change);
+    }
+
+    //notifies the view about a change in the number of aliens of a cabin
+    @Override
+    public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) {
+        this.view.updateAlienChange(nickname, x, y, isPurple, added);
     }
 
     //notifies the view about the fact that a player has to pick a card in order to continue the game

@@ -3,6 +3,7 @@ package it.polimi.ingsw.galaxytrucker.view;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 
+import java.rmi.RemoteException;
 import java.util.*;
 
 public class View {
@@ -242,4 +243,10 @@ public class View {
             flightBoard.updatePlayerQuit(otherPlayers.get(nickname));
         }
     }
+
+    //notifies the view about a change in the number of crew of a cabin
+    public void updateCrewChange(String nickname, int x, int y, int change) {}
+
+    //notifies the view about a change in the number of aliens of a cabin
+    public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) {}
 }

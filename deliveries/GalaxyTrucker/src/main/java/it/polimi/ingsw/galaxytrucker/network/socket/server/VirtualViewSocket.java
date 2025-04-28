@@ -85,6 +85,14 @@ public interface VirtualViewSocket extends VirtualView {
     @Override
     void updateDestroyedComponent(String nickname, int x, int y) throws IOException;
 
+    //notifies the view about a change in the number of crew of a cabin
+    @Override
+    void updateCrewChange(String nickname, int x, int y, int change) throws IOException;
+
+    //notifies the view about a change in the number of aliens of a cabin
+    @Override
+    void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws IOException;
+
     //notifies the view about the fact that a player has to pick a card in order to continue the game
     @Override
     void updateCardPicking() throws IOException;

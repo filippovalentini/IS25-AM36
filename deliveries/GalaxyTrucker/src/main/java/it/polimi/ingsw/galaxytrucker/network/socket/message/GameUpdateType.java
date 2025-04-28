@@ -18,5 +18,7 @@ public enum GameUpdateType {
     CARD_PICKING,
     NEXT_TURN,
     PLAYER_QUIT,
-    CARD_SOLVING
+    CARD_SOLVING,
+    CREW_CHANGE,
+    ALIEN_CHANGE
 }

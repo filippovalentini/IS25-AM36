@@ -42,6 +42,8 @@ class SpecialEventTest {
         gameState.addPlayer(cl2, player2, Color.YELLOW);
         gameState.setPosition(player1, 0);
         gameState.setPosition(player2, 6);
+        gameState.addCrew(player1, 2, 3);
+        gameState.addCrew(player2, 2, 3);
         List<Component> shownComponents = gameState.getShownComponent();
         for(int i=0; i<shownComponents.size(); i++) { //assemble the cabin at the left to the initial cabin
             if (shownComponents.get(i).getClass() == Cabin.class && shownComponents.get(i).getEastSide()!= Connector.UNIVERSAL) {

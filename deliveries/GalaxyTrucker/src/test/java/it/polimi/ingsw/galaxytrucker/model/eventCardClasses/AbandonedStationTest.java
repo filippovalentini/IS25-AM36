@@ -44,6 +44,8 @@ class AbandonedStationTest {
         gameState.addPlayer(cl2, player2, Color.BLUE);
         gameState.setPosition(player1, 6);
         gameState.setPosition(player2, 3);
+        gameState.addCrew(player1, 2, 3);
+        gameState.addCrew(player2, 2, 3);
         gameState.setGameState(State.SHIP_BUILDING);
         for(int i=0; i<151; i++){ //show all components
             gameState.pickHidden(player1);

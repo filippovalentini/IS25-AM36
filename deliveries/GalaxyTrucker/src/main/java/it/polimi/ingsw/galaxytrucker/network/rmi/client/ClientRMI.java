@@ -72,8 +72,10 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
         System.out.println("12 - releaseDeck (release picked deck)");
         System.out.println("13 - setPosition <initCell> (set initial position on the flight board)");
         System.out.println("14 - destroy <x> <y> (destroy a component)");
-        System.out.println("15 - pickCard (pick a next card)");
-        System.out.println("16 - quit (quit the game)");
+        System.out.println("15 - addCrew <x> <y> (add 2 crew members to a cabin)");
+        System.out.println("16 - addAlien <purple/brown> <x> <y> (add an alien to a cabin)");
+        System.out.println("17 - pickCard (pick a next card)");
+        System.out.println("18 - quit (quit the game)");
     }
 
     //runs a command line interface to send requests to the server
@@ -173,6 +175,29 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                         int x2 = Integer.parseInt(tokens[1]);
                         int y2 = Integer.parseInt(tokens[2]);
                         server.destroyComponent(nickname, x2, y2);
+                        break;
+                    case "addCrew":
+                        if (tokens.length < 3) {
+                            System.out.println("Error: coordinates required");
+                            break;
+                        }
+                        int x3 = Integer.parseInt(tokens[1]);
+                        int y3 = Integer.parseInt(tokens[2]);
+                        server.addCrew(nickname, x3, y3);
+                        break;
+                    case "addAlien":
+                        if (tokens.length < 4) {
+                            System.out.println("Error: coordinates required");
+                            break;
+                        }
+                        if(!tokens[1].equals("purple") && !tokens[1].equals("brown")) {
+                            System.out.println("Error: alien can only be purple or brown");
+                            break;
+                        }
+                        boolean isPurple = (tokens[1].equals("purple"));
+                        int x4 = Integer.parseInt(tokens[2]);
+                        int y4 = Integer.parseInt(tokens[3]);
+                        server.addAlien(nickname, isPurple, x4, y4);
                         break;
                     case "pickCard":
                         server.pickNextCard(nickname);
@@ -302,6 +327,18 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
     @Override
     public void updateDestroyedComponent(String nickname, int x, int y) throws RemoteException{
         this.view.updateDestroyedComponent(nickname, x, y);
+    }
+
+    //notifies the view about a change in the number of crew of a cabin
+    @Override
+    public void updateCrewChange(String nickname, int x, int y, int change) throws RemoteException{
+        this.view.updateCrewChange(nickname, x, y, change);
+    }
+
+    //notifies the view about a change in the number of aliens of a cabin
+    @Override
+    public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws RemoteException{
+        this.view.updateAlienChange(nickname, x, y, isPurple, added);
     }
 
     //notifies the view about the fact that a player has to pick a card in order to continue the game

@@ -60,6 +60,10 @@ class SlaversTest {
         gameState.assembleComponent(player1, cab2, 1, 2);
         gameState.setPosition(player1, 6);
         gameState.setPosition(player2, 3);
+        gameState.addCrew(player1, 2, 3);
+        gameState.addCrew(player1, 1, 4);
+        gameState.addCrew(player1, 1, 2);
+        gameState.addCrew(player2, 2, 3);
     }
 
     @Test

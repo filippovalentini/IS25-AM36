@@ -100,9 +100,23 @@ public class GameController {
 
     //SHIP CONTROL PHASE
 
+    //invoked when a player wants to destroy a component in order to correct its ship board
     public void destroyComponent(String nickname, int x, int y) throws AssembledComponentException, InvalidActionException {
         synchronized (model) {
             model.destroyComponent(nickname, x, y);
+        }
+    }
+
+    //invoked when a player wants to initialize a cabin of its shipboard with 2 human crew members
+    public void addCrew(String nickname, int x, int y) throws AssembledComponentException, FullCabinException, InvalidActionException {
+        synchronized (model) {
+            model.addCrew(nickname, x, y);
+        }
+    }
+    //invoked when a player wants to initialize a cabin of its shipboard with an alien
+    public void addAlien(String nickname, boolean isPurple, int x, int y) throws AssembledComponentException, FullCabinException, InvalidActionException {
+        synchronized (model) {
+            model.addAlien(nickname, isPurple, x, y);
         }
     }
 

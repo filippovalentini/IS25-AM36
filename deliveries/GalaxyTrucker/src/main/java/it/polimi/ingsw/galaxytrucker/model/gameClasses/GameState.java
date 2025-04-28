@@ -629,6 +629,7 @@ public class GameState {
         }
         if(firstFlight) {
             playersPos.put(nickname, new LevelOnePosition(initCell));
+            playersPlay.get(nickname).initializeCabins();
         }
         else{
             playersPos.put(nickname, new LevelTwoPosition(initCell));
@@ -668,11 +669,46 @@ public class GameState {
 
         checkShipBoards();
     }
-    //checks the correctness of all the ships in the game
+    //invoked when a player wants to initialize a cabin of its shipboard with 2 human crew members
+    public void addCrew(String nickname, int x, int y) throws AssembledComponentException, FullCabinException, InvalidActionException {
+        if(state != State.SHIP_CONTROL){
+            throw new InvalidActionException("Wait for ship control phase");
+        }
+        if(firstFlight){
+            throw new InvalidActionException("Invalid action for first flight game");
+        }
+        playersPlay.get(nickname).addCrew(x,y);
+
+        for(VirtualView view: clients.values()){
+            try{view.updateCrewChange(nickname, x, y, 2);}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        }
+
+        checkShipBoards();
+    }
+    //invoked when a player wants to initialize a cabin of its shipboard with an alien
+    public void addAlien(String nickname, boolean isPurple, int x, int y) throws AssembledComponentException, FullCabinException, InvalidActionException {
+        if(state != State.SHIP_CONTROL){
+            throw new InvalidActionException("Wait for ship control phase");
+        }
+        if(firstFlight){
+            throw new InvalidActionException("Invalid action for first flight game");
+        }
+        playersPlay.get(nickname).addAlien(isPurple, x, y);
+
+        for(VirtualView view: clients.values()){
+            try{view.updateAlienChange(nickname, x, y, isPurple, true);}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        }
+
+        checkShipBoards();
+    }
+    //checks the correctness of all the ships in the game in order to start the flight phase (ships must me
+    //well assembled and each cabin must be full of crew)
     public void checkShipBoards(){
         boolean correctShips = true;
         for(Player p : playersPlay.values()) {
-            if(!p.hasCorrectShipBoard()){
+            if(!p.hasCorrectShipBoard() || !p.hasAllCabinsFull()){
                 correctShips = false;
                 break;
             }
@@ -693,7 +729,6 @@ public class GameState {
     public void changePlayerPosition(String nickname, int cells) {
         playersPos.get(nickname).changePosition(cells);
     }
-
     //creates the main deck for the game by unifying and shuffling the 4 decks used during the assembling phase;
     //this method is invoked after the assembling phase
     public void createGameDeck() {

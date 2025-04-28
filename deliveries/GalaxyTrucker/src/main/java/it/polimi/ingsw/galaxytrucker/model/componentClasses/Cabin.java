@@ -13,40 +13,19 @@ public class Cabin extends Component {
 
     public Cabin(int imageID, List<Connector> sides) {     //constructor
         super(imageID, sides);
-        numberCrew = 2; //each cabin when game starts has 2 members
+        numberCrew = 0; //each cabin is empty at the beginning
         purpleAlien = false;
         brownAlien = false;
     }
 
-    public boolean isPurpleAlien() {
+    public boolean hasPurpleAlien() {
         return purpleAlien;
     }
-    public boolean isBrownAlien() {
+    public boolean hasBrownAlien() {
         return brownAlien;
     }
 
-    public void addCrew() throws FullCabinException {   //adds 2 crew members in the cabin (invoked after assembling phase)
-        if(!purpleAlien && !brownAlien)
-            numberCrew = 2;
-        else
-            throw new FullCabinException("Alien already in cabin");
-    }
-    public void addAlien(boolean isPurple) throws FullCabinException {      //adds alien in the cabin (invoked after assembling phase)
-        if(numberCrew > 0){
-            throw new FullCabinException("Crew already in cabin");
-        }
-        else if(brownAlien || purpleAlien){
-            throw new FullCabinException("Alien already in cabin");
-        }
-        else{
-            if(isPurple){
-                purpleAlien = true;
-            }
-            else{
-                brownAlien = true;
-            }
-        }
-    }
+
     public void removeCrew(int lostCrew) throws NoCrewException {       //removes crew members from the cabin
         if(numberCrew < lostCrew){
             throw new NoCrewException("Not enough crew");
@@ -67,6 +46,27 @@ public class Cabin extends Component {
         return numberCrew > 0 || brownAlien || purpleAlien;
     }
     @Override
+    public void addCrew() throws FullCabinException {   //adds 2 crew members in the cabin (invoked after assembling phase)
+        if(!hasMembers())
+            numberCrew = 2;
+        else
+            throw new FullCabinException("The cabin is full");
+    }
+    @Override
+    public void addAlien(boolean isPurple) throws FullCabinException {      //adds alien in the cabin (invoked after assembling phase)
+        if(hasMembers()){
+            throw new FullCabinException("The cabin is full");
+        }
+        else{
+            if(isPurple){
+                purpleAlien = true;
+            }
+            else{
+                brownAlien = true;
+            }
+        }
+    }
+    @Override
     public void removeMember() {
         try{
             removeCrew(1);
@@ -80,9 +80,13 @@ public class Cabin extends Component {
     public int getNumberCrew() {
         return numberCrew;
     }
-
     @Override
-    public Component clone(){//return a copy of the component
+    public boolean isFull() {
+        return brownAlien || purpleAlien || (numberCrew == 2);
+    }
+    @Override
+    public Component clone(){
+        //return a copy of the component
         Cabin retComponent = new Cabin(this.imageID, new ArrayList<>(this.sides));
         retComponent.orientation = this.orientation;
         return retComponent;

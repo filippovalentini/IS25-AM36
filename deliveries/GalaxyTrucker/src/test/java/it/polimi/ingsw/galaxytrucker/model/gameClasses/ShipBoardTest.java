@@ -241,6 +241,8 @@ class ShipBoardTest {
         Component cabin = new Cabin(0, universalConnectorList);
         shipBoard.pickComponent(cabin);
         shipBoard.assembleComponent(1, 3); // assemble cabin near the initial cabin
+        shipBoard.addCrew(2,3);
+        shipBoard.addCrew(1,3);
         assertEquals(4, shipBoard.getNumberCrew());
         shipBoard.epidemicEffect();
         assertEquals(2, shipBoard.getNumberCrew());

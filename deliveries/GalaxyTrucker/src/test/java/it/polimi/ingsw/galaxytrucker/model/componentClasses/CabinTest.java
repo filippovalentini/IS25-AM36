@@ -32,10 +32,9 @@ class CabinTest {
 
     @Test
     void testAddAlienWithSpace() {
-        cabin.removeCrew(2);
         cabin.addAlien(true);
-        assertTrue(cabin.isPurpleAlien());
-        assertFalse(cabin.isBrownAlien());
+        assertTrue(cabin.hasPurpleAlien());
+        assertFalse(cabin.hasBrownAlien());
     }
 
     @Test
@@ -46,14 +45,12 @@ class CabinTest {
 
     @Test
     void testAddAlienWithoutSpaceAlien(){
-        cabin.removeCrew(2);
         cabin.addAlien(true);
         assertThrows(FullCabinException.class, () -> cabin.addAlien(false));
     }
 
     @Test
     void testRemoveCrewNoCrew() {
-        cabin.removeCrew(2);
         assertThrows(NoCrewException.class, () -> cabin.removeCrew(1));
     }
 
@@ -66,12 +63,11 @@ class CabinTest {
 
     @Test
     void testRemoveAlien(){
-        cabin.removeCrew(2);
         cabin.addAlien(true);
         cabin.removeAlien(true);
-        assertFalse(cabin.isPurpleAlien());
+        assertFalse(cabin.hasPurpleAlien());
         cabin.addAlien(false);
         cabin.removeAlien(false);
-        assertFalse(cabin.isBrownAlien());
+        assertFalse(cabin.hasBrownAlien());
     }
 }

@@ -160,6 +160,16 @@ public class ShipBoard {
             pickedComponent.rotateLeft();
         }
     }
+    //adds 2 crew members to each cabin of the ship board
+    public void initializeCabins() {
+        for (List<Component> componentRow : assembledComponents) {
+            for (Component component : componentRow) {
+                if(!component.isFull()){
+                    component.addCrew();
+                }
+            }
+        }
+    }
     //removes an assembled component from the ship board
     public void destroyComponent(int x, int y) throws AssembledComponentException {
         Component emptySpace = new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
@@ -172,6 +182,14 @@ public class ShipBoard {
         assembledComponents.get(x).set(y, emptySpace);
         lostComponents++;
         updateCorrectness();
+    }
+    //initializes a cabin with 2 human crew members
+    public void addCrew(int x, int y) throws AssembledComponentException, FullCabinException {
+        assembledComponents.get(x).get(y).addCrew();
+    }
+    //initializes a cabin with an alien of the specified type
+    public void addAlien(boolean isPurple, int x, int y) throws AssembledComponentException, FullCabinException {
+        assembledComponents.get(x).get(y).addAlien(isPurple);
     }
     //determines if the ship board is correctly assembled
     public void updateCorrectness(){
@@ -460,6 +478,19 @@ public class ShipBoard {
         }
         return true;
     }
+    //determines whether the player's shipBoard has all the cabins full of crew (humans or aliens)
+    public boolean hasAllCabinsFull(){
+        for (List<Component> componentRow : assembledComponents) {
+            for (Component component : componentRow) {
+                if(component.belongsToShip() && component.isNotEmpty()){
+                    if(!component.isFull()){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
     //destroys the first component of the ship from north, in the specified column
     public void destroyNorth(int column){
         for(int i=0; i<assembledComponents.size(); i++){
@@ -668,7 +699,6 @@ public class ShipBoard {
     //this method removes the numberGoods-most precious goods from the  ship board
     public void losePreciousGoods(int numberGoods){
         int toRemove = numberGoods;
-        int componentGoods;
         toRemove = removeSpecificGoods(Color.RED, toRemove);
         toRemove = removeSpecificGoods(Color.YELLOW, toRemove);
         toRemove = removeSpecificGoods(Color.GREEN, toRemove);
@@ -776,49 +806,7 @@ public class ShipBoard {
         return goodsPrice;
     }
 
-
-    public void printShip() {
-                int righe = 5;
-                int colonne = 7;
-                int altezzaCella = 3; // altezza interna
-                int larghezzaCella = 10; // larghezza interna
-
-                for (int r = 0; r < righe; r++) {
-                    // Riga superiore delle celle
-                    for (int c = 0; c < colonne; c++) {
-                        System.out.print("┌");
-                        for (int i = 0; i < larghezzaCella; i++) {
-                            System.out.print("─");
-                        }
-                        System.out.print("┐");
-                    }
-                    System.out.println();
-
-                    // Parte centrale
-                    for (int i = 0; i < altezzaCella; i++) {
-                        for (int c = 0; c < colonne; c++) {
-                            System.out.print("│");
-                            for (int j = 0; j < larghezzaCella; j++) {
-                                System.out.print(" ");
-
-                            }
-                            System.out.print("│");
-                        }
-                        System.out.println();
-                    }
-
-                    // Riga inferiore delle celle
-                    for (int c = 0; c < colonne; c++) {
-                        System.out.print("└");
-                        for (int i = 0; i < larghezzaCella; i++) {
-                            System.out.print("─");
-                        }
-                        System.out.print("┘");
-                    }
-                    System.out.println();
-                }
-            }
-        }
+}
 
 
 

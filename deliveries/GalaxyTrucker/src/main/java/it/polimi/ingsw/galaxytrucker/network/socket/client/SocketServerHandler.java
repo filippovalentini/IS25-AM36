@@ -114,10 +114,28 @@ public class SocketServerHandler implements VirtualServerSocket {
         out.writeObject(message);
     }
 
+    //invoked when a player wants to destroy a component in order to validate its ship board or when a
+    //component is destroyed due to a cannon shot/meteor attack
     @Override
     public void destroyComponent(String nickname, int x, int y) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(x), String.valueOf(y)));
         PlayerActionMessage message = new PlayerActionMessage(PlayerActionType.DESTROY, params);
+        out.writeObject(message);
+    }
+
+    //invoked when a player wants to initialize a cabin of its shipboard with 2 human crew members
+    @Override
+    public void addCrew(String nickname, int x, int y) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(x), String.valueOf(y)));
+        PlayerActionMessage message = new PlayerActionMessage(PlayerActionType.ADD_CREW, params);
+        out.writeObject(message);
+    }
+
+    //invoked when a player wants to initialize a cabin of its shipboard with an alien
+    @Override
+    public void addAlien(String nickname, boolean isPurple, int x, int y) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(isPurple), String.valueOf(x), String.valueOf(y)));
+        PlayerActionMessage message = new PlayerActionMessage(PlayerActionType.ADD_ALIEN, params);
         out.writeObject(message);
     }
 

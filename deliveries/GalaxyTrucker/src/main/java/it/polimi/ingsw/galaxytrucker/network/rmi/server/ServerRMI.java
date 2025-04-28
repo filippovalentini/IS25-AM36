@@ -243,6 +243,38 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
         }
     }
 
+    //invoked when a player wants to initialize a cabin of its shipboard with 2 human crew members
+    @Override
+    public void addCrew(String nickname, int x, int y) throws RemoteException{
+        try{
+            controller.addCrew(nickname, x, y);
+        }
+        catch(Exception e){
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
+        }
+    }
+
+    //invoked when a player wants to initialize a cabin of its shipboard with an alien
+    @Override
+    public void addAlien(String nickname, boolean isPurple, int x, int y) throws RemoteException{
+        try{
+            controller.addAlien(nickname, isPurple, x, y);
+        }
+        catch(Exception e){
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
+        }
+    }
+
     //invoked when a player wants to pick a new card from the game deck
     @Override
     public void pickNextCard(String nickname) throws RemoteException{
