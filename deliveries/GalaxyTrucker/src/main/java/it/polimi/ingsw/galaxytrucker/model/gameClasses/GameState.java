@@ -629,7 +629,6 @@ public class GameState {
         }
         if(firstFlight) {
             playersPos.put(nickname, new LevelOnePosition(initCell));
-            playersPlay.get(nickname).initializeCabins();
         }
         else{
             playersPos.put(nickname, new LevelTwoPosition(initCell));
@@ -674,13 +673,24 @@ public class GameState {
         if(state != State.SHIP_CONTROL){
             throw new InvalidActionException("Wait for ship control phase");
         }
-        if(firstFlight){
-            throw new InvalidActionException("Invalid action for first flight game");
-        }
         playersPlay.get(nickname).addCrew(x,y);
 
         for(VirtualView view: clients.values()){
             try{view.updateCrewChange(nickname, x, y, 2);}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        }
+
+        checkShipBoards();
+    }
+    //invoked when the player wants to initialize a battery container with batteries
+    public void addBatteries(String nickname, int x, int y) throws AssembledComponentException, NoBatteriesException, InvalidActionException {
+        if(state != State.SHIP_CONTROL){
+            throw new InvalidActionException("Wait for ship control phase");
+        }
+        int addedBatteries = playersPlay.get(nickname).addBatteries(x,y);
+
+        for(VirtualView view: clients.values()){
+            try{view.updateBatteries(nickname, x, y, addedBatteries);}
             catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
 
@@ -708,7 +718,7 @@ public class GameState {
     public void checkShipBoards(){
         boolean correctShips = true;
         for(Player p : playersPlay.values()) {
-            if(!p.hasCorrectShipBoard() || !p.hasAllCabinsFull()){
+            if(!p.hasCorrectShipBoard() || !p.hasAllCabinsBatteriesFull()){
                 correctShips = false;
                 break;
             }

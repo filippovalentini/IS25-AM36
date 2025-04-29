@@ -61,6 +61,10 @@ public interface VirtualServerSocket extends VirtualServer {
     @Override
     void addCrew(String nickname, int x, int y) throws IOException;
 
+    //invoked when a player wants to initialize a battery container of its shipboard with batteries
+    @Override
+    void addBatteries(String nickname, int x, int y) throws IOException;
+
     //invoked when a player wants to initialize a cabin of its shipboard with an alien
     @Override
     void addAlien(String nickname, boolean isPurple, int x, int y) throws IOException;

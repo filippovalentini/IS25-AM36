@@ -120,6 +120,15 @@ public class GameController {
         }
     }
 
+    //invoked when the player wants to initialize a battery container with batteries
+    public void addBatteries(String nickname, int x, int y) throws AssembledComponentException, NoBatteriesException, InvalidActionException{
+        synchronized (model) {
+            model.addBatteries(nickname, x, y);
+        }
+    }
+
+
+
     //FLIGHT PHASE
 
     //this method is invoked when a player has to leave the game

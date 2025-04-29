@@ -11,12 +11,7 @@ public class Battery extends ConfigurableComponent {
 
     public Battery(boolean isDouble, int imageID, List<Connector> sides) { //constructor
         super(isDouble, imageID, sides);
-        if (isDouble) {
-            this.numberBatteries = 2;
-        }
-        else {
-            this.numberBatteries = 3;
-        }
+        this.numberBatteries = 0;
     }
 
     @Override
@@ -35,5 +30,26 @@ public class Battery extends ConfigurableComponent {
         Battery retComponent = new Battery(isDouble,this.imageID, new ArrayList<>(this.sides));
         retComponent.orientation = this.orientation;
         return retComponent;
+    }
+    @Override
+    public boolean isFull(){
+        if(isDouble && getNumberBatteries() == 2) {
+            return true;
+        }
+        else return !isDouble && getNumberBatteries() == 3;
+    }
+    @Override
+    public int addBatteries() throws NoBatteriesException{
+        if(isFull()){
+            throw new NoBatteriesException("Battery component is full");
+        }
+        if (isDouble) {
+            this.numberBatteries = 2;
+            return 2;
+        }
+        else {
+            this.numberBatteries = 3;
+            return 3;
+        }
     }
 }

@@ -20,5 +20,6 @@ public enum GameUpdateType {
     PLAYER_QUIT,
     CARD_SOLVING,
     CREW_CHANGE,
-    ALIEN_CHANGE
+    ALIEN_CHANGE,
+    BATTERY_CHANGE
 }

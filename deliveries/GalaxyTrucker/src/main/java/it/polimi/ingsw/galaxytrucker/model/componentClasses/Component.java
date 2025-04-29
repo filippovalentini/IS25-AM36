@@ -129,11 +129,14 @@ public class Component {
     public boolean hasSingleEngine() { return false;}
     public boolean hasDoubleCannons() { return false;}
     public boolean hasSingleCannon() { return false;}
-    public void addCrew() throws FullCabinException {
+    public void addCrew() throws FullCabinException, AssembledComponentException {
         throw new AssembledComponentException("Can't add crew outside a cabin");
     }
-    public void addAlien(boolean isPurple) throws FullCabinException {
+    public void addAlien(boolean isPurple) throws FullCabinException, AssembledComponentException {
         throw new AssembledComponentException("Can't add an alien outside a cabin");
+    }
+    public int addBatteries() throws NoBatteriesException, AssembledComponentException {
+        throw new AssembledComponentException("Can't add batteries outside a battery component");
     }
     public void removeMember(){}
     public int getNumberCrew() {
@@ -149,6 +152,6 @@ public class Component {
     public boolean pointsForward(){ return false;}
     public int goodsPrice(){ return 0;}
     public boolean isFull(){ return true;}
-    public boolean supportsAlien(boolean isPurple){ return false;}
+    public boolean supportsAlien(boolean purpleAlien){ return false;}
 
 }

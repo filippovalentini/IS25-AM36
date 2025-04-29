@@ -72,6 +72,9 @@ public interface VirtualView {
     //notifies the view about a change in the number of crew of a cabin
     void updateCrewChange(String nickname, int x, int y, int change) throws Exception;
 
+    //notifies the view that a player has initialized a battery container with batteries
+    void updateBatteries(String nickname, int x, int y, int change) throws Exception;
+
     //notifies the view about a change in the number of aliens of a cabin
     void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws Exception;
 

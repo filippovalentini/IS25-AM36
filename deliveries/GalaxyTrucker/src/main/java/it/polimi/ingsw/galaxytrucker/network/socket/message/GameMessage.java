@@ -4,6 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 
 public interface GameMessage extends Serializable {
-    public String getGameParams(int paramIndex);
-    public List<String> getGameParams();
+    String getGameParams(int paramIndex);
+    List<String> getGameParams();
 }

@@ -69,8 +69,11 @@ public class SocketClientHandler implements VirtualViewSocket {
                     case ADD_CREW:
                         controller.addCrew(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)));
                         break;
+                    case ADD_BATTERIES:
+                        controller.addBatteries(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)));
+                        break;
                     case ADD_ALIEN:
-                        controller.addAlien(message.getGameParams(0), Boolean.parseBoolean(message.getGameParams(1)), Integer.parseInt(message.getGameParams(3)), Integer.parseInt(message.getGameParams(3)));
+                        controller.addAlien(message.getGameParams(0), Boolean.parseBoolean(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)), Integer.parseInt(message.getGameParams(3)));
                     case PICK_CARD:
                         controller.pickNextCard(message.getGameParams(0));
                         break;
@@ -242,6 +245,14 @@ public class SocketClientHandler implements VirtualViewSocket {
     public void updateCrewChange(String nickname, int x, int y, int change) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(x), String.valueOf(y), String.valueOf(change)));
         GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.CREW_CHANGE, params);
+        out.writeObject(message);
+    }
+
+    //notifies the view that a player has initialized a battery container with batteries
+    @Override
+    public void updateBatteries(String nickname, int x, int y, int change) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(x), String.valueOf(y), String.valueOf(change)));
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.BATTERY_CHANGE, params);
         out.writeObject(message);
     }
 

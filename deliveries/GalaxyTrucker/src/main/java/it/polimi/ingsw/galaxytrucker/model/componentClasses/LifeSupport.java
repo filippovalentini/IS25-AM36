@@ -20,7 +20,7 @@ public class LifeSupport extends Component {
         return retComponent;
     }
     @Override
-    public boolean supportsAlien(boolean isPurple) {
-        return isPurple;
+    public boolean supportsAlien(boolean purpleAlien) {
+        return this.isPurple == purpleAlien;
     }
 }

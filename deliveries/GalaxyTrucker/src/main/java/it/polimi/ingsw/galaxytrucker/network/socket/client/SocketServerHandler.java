@@ -131,6 +131,14 @@ public class SocketServerHandler implements VirtualServerSocket {
         out.writeObject(message);
     }
 
+    //invoked when a player wants to initialize a battery container of its shipboard with batteries
+    @Override
+    public void addBatteries(String nickname, int x, int y) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(x), String.valueOf(y)));
+        PlayerActionMessage message = new PlayerActionMessage(PlayerActionType.ADD_BATTERIES, params);
+        out.writeObject(message);
+    }
+
     //invoked when a player wants to initialize a cabin of its shipboard with an alien
     @Override
     public void addAlien(String nickname, boolean isPurple, int x, int y) throws IOException{

@@ -160,16 +160,6 @@ public class ShipBoard {
             pickedComponent.rotateLeft();
         }
     }
-    //adds 2 crew members to each cabin of the ship board
-    public void initializeCabins() {
-        for (List<Component> componentRow : assembledComponents) {
-            for (Component component : componentRow) {
-                if(!component.isFull()){
-                    component.addCrew();
-                }
-            }
-        }
-    }
     //removes an assembled component from the ship board
     public void destroyComponent(int x, int y) throws AssembledComponentException {
         Component emptySpace = new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
@@ -214,6 +204,10 @@ public class ShipBoard {
             throw new NoLifeSupportException("Life support is missing");
         }
         assembledComponents.get(x).get(y).addAlien(isPurple);
+    }
+    //invoked when the player wants to initialize a battery container with batteries
+    public int addBatteries(int x, int y) throws AssembledComponentException, NoBatteriesException{
+        return assembledComponents.get(x).get(y).addBatteries();
     }
     //determines if the ship board is correctly assembled
     public void updateCorrectness(){
@@ -502,8 +496,8 @@ public class ShipBoard {
         }
         return true;
     }
-    //determines whether the player's shipBoard has all the cabins full of crew (humans or aliens)
-    public boolean hasAllCabinsFull(){
+    //determines whether the shipBoard has all the cabins and battery containers full
+    public boolean hasAllCabinsBatteriesFull(){
         for (List<Component> componentRow : assembledComponents) {
             for (Component component : componentRow) {
                 if(component.belongsToShip() && component.isNotEmpty()){

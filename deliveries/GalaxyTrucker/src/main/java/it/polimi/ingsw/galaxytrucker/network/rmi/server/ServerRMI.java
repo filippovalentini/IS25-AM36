@@ -259,6 +259,22 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
         }
     }
 
+    //invoked when a player wants to initialize a battery container of its shipboard with batteries
+    @Override
+    public void addBatteries(String nickname, int x, int y) throws RemoteException{
+        try{
+            controller.addBatteries(nickname, x, y);
+        }
+        catch(Exception e){
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
+        }
+    }
+
     //invoked when a player wants to initialize a cabin of its shipboard with an alien
     @Override
     public void addAlien(String nickname, boolean isPurple, int x, int y) throws RemoteException{

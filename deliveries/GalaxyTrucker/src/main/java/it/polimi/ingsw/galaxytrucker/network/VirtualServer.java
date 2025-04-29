@@ -51,6 +51,9 @@ public interface VirtualServer {
     //invoked when a player wants to initialize a cabin of its shipboard with 2 human crew members
     void addCrew(String nickname, int x, int y) throws Exception;
 
+    //invoked when a player wants to initialize a battery container of its shipboard with batteries
+    void addBatteries(String nickname, int x, int y) throws Exception;
+
     //invoked when a player wants to initialize a cabin of its shipboard with an alien
     void addAlien(String nickname, boolean isPurple, int x, int y) throws Exception;
 

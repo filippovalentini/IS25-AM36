@@ -19,5 +19,6 @@ public enum PlayerActionType {
     QUIT,
     PICK_CARD,
     ADD_CREW,
-    ADD_ALIEN
+    ADD_ALIEN,
+    ADD_BATTERIES
 }

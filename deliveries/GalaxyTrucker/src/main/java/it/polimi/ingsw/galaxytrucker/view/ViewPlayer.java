@@ -93,10 +93,10 @@ public class ViewPlayer {
 
     public String generateComponentGraphics(ViewComponent comp){
         if (comp.getCrew() == 1) {
-            return "🧑‍🚀   ";
+            return "C    ";
         }
         else if (comp.getCrew() == 2) {
-            return "🧑‍🚀🧑‍🚀 ";
+            return "CC   ";
         }
         else if (comp.isBrownAlien()) {
             return "🟫   ";
@@ -105,13 +105,13 @@ public class ViewPlayer {
             return "🟪   ";
         }
         else if(comp.getBatteries() == 1){
-            return "💚   ";
+            return "B    ";
         }
         else if(comp.getBatteries() == 2){
-            return "💚💚 ";
+            return "BB   ";
         }
         else if(comp.getBatteries() == 3){
-            return "💚💚💚";
+            return "BBB  ";
         }
         else{
             return "     ";

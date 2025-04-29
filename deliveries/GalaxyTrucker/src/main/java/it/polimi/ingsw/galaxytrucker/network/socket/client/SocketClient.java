@@ -143,6 +143,10 @@ public class SocketClient implements VirtualViewSocket {
                         break;
                     case ALIEN_CHANGE:
                         updateAlienChange(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)), Boolean.parseBoolean(message.getGameParams(3)), Boolean.parseBoolean(message.getGameParams(4)));
+                        break;
+                    case BATTERY_CHANGE:
+                        updateBatteries(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)), Integer.parseInt(message.getGameParams(3)));
+                        break;
                     case CARD_PICKING:
                         updateCardPicking();
                         break;
@@ -293,6 +297,15 @@ public class SocketClient implements VirtualViewSocket {
                         int y3 = Integer.parseInt(tokens[2]);
                         serverHandler.addCrew(nickname, x3, y3);
                         break;
+                    case "addBatteries":
+                        if (tokens.length < 3) {
+                            System.out.println("Error: coordinates required");
+                            break;
+                        }
+                        int x5 = Integer.parseInt(tokens[1]);
+                        int y5 = Integer.parseInt(tokens[2]);
+                        serverHandler.addBatteries(nickname, x5, y5);
+                        break;
                     case "addAlien":
                         if (tokens.length < 4) {
                             System.out.println("Error: coordinates required");
@@ -441,6 +454,12 @@ public class SocketClient implements VirtualViewSocket {
     @Override
     public void updateCrewChange(String nickname, int x, int y, int change){
         this.view.updateCrewChange(nickname, x, y, change);
+    }
+
+    //notifies the view that a player has initialized a battery container with batteries
+    @Override
+    public void updateBatteries(String nickname, int x, int y, int change) throws IOException{
+        this.view.updateBatteries(nickname, x, y, change);
     }
 
     //notifies the view about a change in the number of aliens of a cabin
