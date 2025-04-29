@@ -43,6 +43,8 @@ class MeteorsSwarmTest {
         gameState.addPlayer(cl2, player2, Color.BLUE);
         gameState.setPosition(player1, 1);
         gameState.setPosition(player2, 0);
+        gameState.addCrew(player1, 2, 3);
+        gameState.addCrew(player2, 2, 3);
         Meteor mLarge = new Meteor(true, Orientation.SOUTH);
         Meteor mNotLarge1 = new Meteor(false, Orientation.EAST);
         Meteor mNotLarge2 = new Meteor(false, Orientation.WEST);
@@ -61,6 +63,9 @@ class MeteorsSwarmTest {
 
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 7; j++) {
+                if (i == 2 && j == 3) {
+                    continue; // skip the center cabin
+                }
                 gameState.assembleComponent(player1, gameState.getShownComponent().get(h), i, j);
                 h += h;
             }
@@ -71,12 +76,11 @@ class MeteorsSwarmTest {
     @Test
     void testHitShip() {
         int diceResult = 4;
-
         meteorsSwarm.hitShip(gameState, player1, diceResult, false, false);
         //player 1 hits
 
                 //assertEquals(false, gameState.getPlayersPlay().get(player1).getShipBoard().getAssembledComponent(4,0).isNotEmpty());
-                assertEquals(true, gameState.getPlayersPlay().get(player1).getShipBoard().getAssembledComponent(4, 0).getImageID()==0);
+        assertTrue(gameState.getPlayersPlay().get(player1).getShipBoard().getAssembledComponent(4, 0).getImageID() == 0);
 
 
                 assertDoesNotThrow(() -> meteorsSwarm.hitShip(gameState, player1, diceResult, false, false));
@@ -88,7 +92,22 @@ class MeteorsSwarmTest {
                 assertDoesNotThrow(() -> meteorsSwarm.hitShip(gameState, player2, diceResult, false, false));
                 gameState.setGameState(State.CARD_SOLVING);
                 assertDoesNotThrow(() -> meteorsSwarm.hitShip(gameState, player2, diceResult, false, false));
-            }
+
+        List<Integer> y= new ArrayList<>(1);
+        List<Integer> x= new ArrayList<>(1);
+        List<Integer> e= new ArrayList<>(1);
+        x.add(2);
+        y.add(3);
+        e.add(2);
+        gameState.removedCrewMember(player1,x,y,e,2);
+        int prova= gameState.getCrewCount(player1);
+        meteorsSwarm.hitShip(gameState, player1, diceResult, false, false);
+        meteorsSwarm.hitShip(gameState, player1, diceResult, false, false);
+        meteorsSwarm.hitShip(gameState, player1, diceResult, false, false);
+        meteorsSwarm.hitShip(gameState, player1, diceResult, false, false);
+        assertFalse(gameState.getPlayersPos().containsKey(player1));
+
+    }
 
         }
 
