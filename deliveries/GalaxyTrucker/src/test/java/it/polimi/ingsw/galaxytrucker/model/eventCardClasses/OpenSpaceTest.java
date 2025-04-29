@@ -5,6 +5,7 @@ import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
 import it.polimi.ingsw.galaxytrucker.model.componentClasses.Engine;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.LevelTwoPosition;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.Position;
@@ -61,5 +62,13 @@ class OpenSpaceTest {
         os.fly(gameState,player1,0);
         assertEquals(player2, gameState.getTurnPlayer(), "The leader should be player2 (thomas)");
         assertEquals(position.getCell()+1, gameState.getPlayersPos().get(player1).getCell(), "The leader should be the lap");
+        gameState.destroyComponent(player1,1,3);
+    }
+    @Test
+    void testFly_secondAttemptAfterDestruction() {
+        gameState.destroyComponent(player1, 1, 3);
+        gameState.setGameState(State.CARD_PICKING);
+        os.fly(gameState, player1, 0);
+        assertFalse(gameState.getPlayersPos().containsKey(player1));
     }
 }

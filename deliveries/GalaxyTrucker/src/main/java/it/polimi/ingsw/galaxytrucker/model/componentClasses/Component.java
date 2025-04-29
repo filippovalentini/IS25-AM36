@@ -136,6 +136,7 @@ public class Component {
         throw new AssembledComponentException("Can't add an alien outside a cabin");
     }
     public void removeMember(){}
+    public void removeCrew(int i){}
     public int getNumberCrew() {
         return 0;
     }

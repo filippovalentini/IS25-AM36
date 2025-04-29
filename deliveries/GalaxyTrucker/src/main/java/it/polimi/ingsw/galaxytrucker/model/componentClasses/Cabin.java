@@ -25,13 +25,14 @@ public class Cabin extends Component {
         return brownAlien;
     }
 
-
+@Override
     public void removeCrew(int lostCrew) throws NoCrewException {       //removes crew members from the cabin
         if(numberCrew < lostCrew){
             throw new NoCrewException("Not enough crew");
         }
         numberCrew-=lostCrew;
     }
+
     public void removeAlien(boolean isPurple) {
         if (isPurple) {
             purpleAlien = false;

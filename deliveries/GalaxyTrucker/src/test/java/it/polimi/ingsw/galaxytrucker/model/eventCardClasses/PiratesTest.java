@@ -44,6 +44,9 @@ class PiratesTest {
         gameState.addPlayer(cl2, nickname2, Color.BLUE);
         gameState.setPosition(nickname, 0);
         gameState.setPosition(nickname2, 1);
+        gameState.addCrew(nickname, 2, 3);
+        gameState.addCrew(nickname2, 2, 3);
+
         CannonShot cShotLarge = new CannonShot(true, Orientation.SOUTH);
         CannonShot cShotNotLarge1 = new CannonShot(false, Orientation.SOUTH);
         CannonShot cShotNotLarge2 = new CannonShot(false, Orientation.SOUTH);
@@ -61,7 +64,10 @@ class PiratesTest {
         List<Component> shownComponents = gameState.getShownComponent();
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 7; j++) {
-                gameState.assembleComponent(nickname,gameState.getShownComponent().get(c), i, j);
+                if (i == 2 && j == 3) {
+                    continue; // skip the center cabin
+                }
+                gameState.assembleComponent(nickname, gameState.getShownComponent().get(c), i, j);
                 c += c;
             }
         }
@@ -106,5 +112,25 @@ class PiratesTest {
         boolean activateCannon = false;
         gameState.setGameState(State.CARD_SOLVING);
         assertDoesNotThrow(() -> pirates.hitShip(gameState, nickname2, diceResult, activateShield, activateCannon));
+    }
+    @Test
+    void testHitShipQuitCond() {
+        int diceResult = 4;
+        int usedBatteries = 0;
+        boolean looseDays = true;
+        boolean activateShield = false;
+        boolean activateCannon = false;
+        List<Integer> y= new ArrayList<>(1);
+        List<Integer> x= new ArrayList<>(1);
+        List<Integer> e= new ArrayList<>(1);
+        x.add(2);
+        y.add(3);
+        e.add(2);
+        pirates.defeat(gameState, nickname, usedBatteries, looseDays);
+        gameState.removedCrewMember(nickname,x,y,e,2);
+        pirates.hitShip(gameState, nickname, diceResult, activateShield, activateCannon);
+        pirates.hitShip(gameState, nickname, diceResult, activateShield, activateCannon);
+        pirates.hitShip(gameState, nickname, diceResult, activateShield, activateCannon);
+        assertFalse(gameState.getPlayersPos().containsKey(nickname));
     }
 }
