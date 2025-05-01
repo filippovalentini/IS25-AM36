@@ -50,6 +50,7 @@ class CombatZoneTest {
         gameState.setPosition(player2, 3);
         gameState.addCrew(player1, 2, 3);
         gameState.addCrew(player2, 2, 3);
+        gameState.addBatteries(player2, 2, 2);
         gameState.setGameState(State.CARD_SOLVING);
         combatZoneLV1 = new CombatZone(true, 0);
         combatZoneLV2 = new CombatZone(false, 0);

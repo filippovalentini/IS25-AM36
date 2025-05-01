@@ -25,6 +25,7 @@ class BatteryTest {
 
     @Test
     void testUseAvailableBattery() {
+        battery.addBatteries();
         battery.useBatteries(2);
         assertEquals(0, battery.getNumberBatteries());
     }
