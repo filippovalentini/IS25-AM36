@@ -4,7 +4,6 @@ import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import it.polimi.ingsw.galaxytrucker.model.shotClasses.CannonShot;
 import it.polimi.ingsw.galaxytrucker.network.rmi.client.ClientRMI;
@@ -127,7 +126,7 @@ class PiratesTest {
         y.add(3);
         e.add(2);
         pirates.defeat(gameState, nickname, usedBatteries, looseDays);
-        gameState.removedCrewMember(nickname,x,y,e,2);
+        gameState.removeCrewMembers(nickname,x,y,e,2);
         pirates.hitShip(gameState, nickname, diceResult, activateShield, activateCannon);
         pirates.hitShip(gameState, nickname, diceResult, activateShield, activateCannon);
         pirates.hitShip(gameState, nickname, diceResult, activateShield, activateCannon);

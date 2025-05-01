@@ -15,9 +15,6 @@ public class SpecialEvent extends EventCard{
         super(imageID);
         this.specialEventType = specialEventType;
     }
-    public SpecialEventType getSpecialEventType(){      //returns the type of special event
-        return specialEventType;
-    }
 
     @Override
     //if the special event is of the type STARDUST, this method ensures that each player loses as many flight

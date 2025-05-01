@@ -548,19 +548,13 @@ public class ShipBoard {
         }
     }
     //remove the specified crew members from the specified cabins in the ship board
-    public void removeCrewMembers(List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) throws NoCrewException {
-        int sumRemovedCrewMembers = 0;
-        for(int i=0; i<x.size(); i++){
-            if(assembledComponents.get(x.get(i)).get(y.get(i)).getClass() != Cabin.class){
-                throw new NoCrewException("Invalid component, it must be a cabin");
-            }
-            else {
-                ((Cabin) assembledComponents.get(x.get(i)).get(y.get(i))).removeCrew(eachCabinCrew.get(i));
-                sumRemovedCrewMembers += eachCabinCrew.get(i);
-            }
-        }
+    public void removeCrewMembers(List<Integer> x, List<Integer> y, List<Integer> crewInEachCabin, int numberCrewToRemove) throws NoCrewException {
+        int sumRemovedCrewMembers = crewInEachCabin.stream().mapToInt(Integer::intValue).sum();
         if(sumRemovedCrewMembers != numberCrewToRemove){
             throw new NoCrewException("Wrong number of crew members to remove");
+        }
+        for(int i=0; i<x.size(); i++){
+            assembledComponents.get(x.get(i)).get(y.get(i)).removeCrew(crewInEachCabin.get(i));
         }
     }
     //substitutes the cargo good at the given coordinates with the good given in input

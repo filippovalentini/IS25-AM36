@@ -6,13 +6,11 @@ import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.NoBatteriesException;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.NoCrewException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
-import it.polimi.ingsw.galaxytrucker.model.gameClasses.Player;
 import it.polimi.ingsw.galaxytrucker.model.shotClasses.CannonShot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 //COMBAT ZONE
 public class CombatZone extends EventCard{
@@ -144,10 +142,10 @@ public class CombatZone extends EventCard{
                 throw new InvalidActionException("Wrong phase of the combat zone");
             }
             if (gameState.getCrewCount(nickname)<= 2) {
-                gameState.removedCrewMember(nickname, x, y, z, gameState.getCrewCount(nickname));
+                gameState.removeCrewMembers(nickname, x, y, z, gameState.getCrewCount(nickname));
                 gameState.quitGame(nickname);
             }else{
-                gameState.removedCrewMember(nickname, x, y, z, 2);
+                gameState.removeCrewMembers(nickname, x, y, z, 2);
             }
             phase = 3;
             gameState.updateTurns();

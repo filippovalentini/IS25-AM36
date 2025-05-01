@@ -24,6 +24,12 @@ public class SocketServerHandler implements VirtualServerSocket {
         this.out.close();
     }
 
+    //converts a list of integers in a string
+    public String serializeList(List<Integer> list) {
+        return list.toString()
+                .replaceAll("[\\[\\]\\s]", "");
+    }
+
     //invoked when one of the players decides enter the game; the remote client view is added to the list
     //of connected clients
     @Override
@@ -160,6 +166,38 @@ public class SocketServerHandler implements VirtualServerSocket {
     public void quitGame(String nickname) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname));
         PlayerActionMessage message = new PlayerActionMessage(PlayerActionType.QUIT, params);
+        out.writeObject(message);
+    }
+
+    //invoked when a player wants to skip an action during the flight phase
+    @Override
+    public void skip(String nickname) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname));
+        PlayerActionMessage message = new PlayerActionMessage(PlayerActionType.SKIP, params);
+        out.writeObject(message);
+    }
+
+    //invoked when a player wants to land on an abandoned ship or station
+    @Override
+    public void landing(String nickname, List<Integer> x, List<Integer> y, List<Integer> z) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname, serializeList(x), serializeList(y), serializeList(z)));
+        PlayerActionMessage message = new PlayerActionMessage(PlayerActionType.LANDING, params);
+        out.writeObject(message);
+    }
+
+    //invoked when th ship board of a player must be hit by meteor/cannon shot
+    @Override
+    public void hitShip(String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(diceResult), String.valueOf(activateShield), String.valueOf(activateCannon)));
+        PlayerActionMessage message = new PlayerActionMessage(PlayerActionType.HIT_SHIP, params);
+        out.writeObject(message);
+    }
+
+    //invoked when a player wants to fly across the flight board exploiting its engine strength
+    @Override
+    public void fly(String nickname, int usedBatteries) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(usedBatteries)));
+        PlayerActionMessage message = new PlayerActionMessage(PlayerActionType.FLY, params);
         out.writeObject(message);
     }
 

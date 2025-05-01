@@ -117,4 +117,11 @@ public interface VirtualViewRMI extends Remote, VirtualView {
     @Override
     void updatePlayerQuit(String nickname) throws RemoteException;
 
+    //notifies the view that a player has gained/lost credits
+    @Override
+    void updatePlayerCredits(String nickname, int change) throws RemoteException;
+
+    //notifies the view that the position of a player has changed
+    @Override
+    void updatePlayerPosition(String nickname, int lap, int cell) throws RemoteException;
 }

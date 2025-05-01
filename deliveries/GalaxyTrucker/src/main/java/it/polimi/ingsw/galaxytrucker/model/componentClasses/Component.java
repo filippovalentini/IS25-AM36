@@ -5,6 +5,7 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.AssembledComponentException;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.FullCabinException;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.NoBatteriesException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.NoCrewException;
 
 import java.util.ArrayList;
 import java.util.*;
@@ -139,7 +140,9 @@ public class Component {
         throw new AssembledComponentException("Can't add batteries outside a battery component");
     }
     public void removeMember(){}
-    public void removeCrew(int i){}
+    public void removeCrew(int i) throws NoCrewException {
+        throw new NoCrewException("Can't remove crew from outside a cabin");
+    }
     public int getNumberCrew() {
         return 0;
     }

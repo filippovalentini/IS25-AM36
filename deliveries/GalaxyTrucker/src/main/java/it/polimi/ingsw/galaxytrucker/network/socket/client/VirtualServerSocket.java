@@ -5,6 +5,7 @@ import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface VirtualServerSocket extends VirtualServer {
     //invoked when one of the players decides enter the game; the remote client view is added to the list
@@ -76,4 +77,20 @@ public interface VirtualServerSocket extends VirtualServer {
     //invoked when a player wants to leave the game
     @Override
     void quitGame(String nickname) throws IOException;
+
+    //invoked when a player wants to skip an action during the flight phase
+    @Override
+    void skip(String nickname) throws IOException;
+
+    //invoked when a player wants to land on an abandoned ship or station
+    @Override
+    void landing(String nickname, List<Integer> x, List<Integer> y, List<Integer> z) throws IOException;
+
+    //invoked when th ship board of a player must be hit by meteor/cannon shot
+    @Override
+    void hitShip(String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws IOException;
+
+    //invoked when a player wants to fly across the flight board exploiting its engine strength
+    @Override
+    void fly(String nickname, int usedBatteries) throws IOException;
 }

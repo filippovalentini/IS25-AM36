@@ -72,7 +72,7 @@ class AbandonedShipTest {
     }
 
     @Test
-    void testShouldNotLandingInvalidRequiredCrew(){ //not enough crew, player can not landing in the station
+    void testShouldNotLandingInvalidRequiredCrew(){ //not enough crew, player can not land in the station
         List<Integer> xCabin = new ArrayList<>();
         List<Integer> yCabin = new ArrayList<>();
         List<Integer> eachCabinCrew = new ArrayList<>();

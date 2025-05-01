@@ -6,6 +6,7 @@ import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 
 //this interface defines the methods that are implemented by the RMI server, which can be invoked by the remote
 //RMI client to change the state of the model
@@ -80,4 +81,20 @@ public interface VirtualServerRMI extends Remote, VirtualServer {
     //invoked when a player wants to leave the game
     @Override
     void quitGame(String nickname) throws RemoteException;
+
+    //invoked when a player wants to skip an action during the flight phase
+    @Override
+    void skip(String nickname) throws RemoteException;
+
+    //invoked when a player wants to land on an abandoned ship or station
+    @Override
+    void landing(String nickname, List<Integer> x, List<Integer> y, List<Integer> z) throws RemoteException;
+
+    //invoked when th ship board of a player must be hit by meteor/cannon shot
+    @Override
+    void hitShip(String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws RemoteException;
+
+    //invoked when a player wants to fly across the flight board exploiting its engine strength
+    @Override
+    void fly(String nickname, int usedBatteries) throws RemoteException;
 }

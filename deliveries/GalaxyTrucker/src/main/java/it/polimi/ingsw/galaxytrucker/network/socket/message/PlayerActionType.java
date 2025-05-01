@@ -20,5 +20,9 @@ public enum PlayerActionType {
     PICK_CARD,
     ADD_CREW,
     ADD_ALIEN,
-    ADD_BATTERIES
+    ADD_BATTERIES,
+    SKIP,
+    LANDING,
+    HIT_SHIP,
+    FLY
 }

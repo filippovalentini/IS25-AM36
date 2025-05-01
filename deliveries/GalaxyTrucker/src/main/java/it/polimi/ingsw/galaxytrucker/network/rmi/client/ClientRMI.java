@@ -77,6 +77,12 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
         System.out.println("17 - addBatteries <x> <y> (fill a battery component with batteries)");
         System.out.println("18 - pickCard (pick a next card)");
         System.out.println("19 - quit (quit the game)");
+        System.out.println("(commands for card solving)");
+        System.out.println("1 - dice (throw the dice)");
+        System.out.println("2 - skip (skip an action)");
+        System.out.println("3 - landing [<x> <y> <removedCrew>] (land in an abandoned ship specifying the cabins where to remove the crew and the respective quantity)");
+        System.out.println("4 - hit <yes/no> <yes/no> (decide whether to activate or not shield and/or double cannon to protect your ship)");
+        System.out.println("5 - fly <numberBatteries> (decide how many batteries to use to fly across the flight board)");
     }
 
     //runs a command line interface to send requests to the server
@@ -214,6 +220,62 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                         break;
                     case "quit":
                         server.quitGame(nickname);
+                        break;
+                    case "dice":
+                        view.updateRollDice();
+                        break;
+                    case "skip":
+                        server.skip(nickname);
+                        break;
+                    case "hit":
+                        if (tokens.length < 3) {
+                            System.out.println("Error: specify shield and cannon activation");
+                            break;
+                        }
+                        if(!tokens[1].equals("yes") && !tokens[1].equals("no")) {
+                            System.out.println("Error: specify yes or no for shield activation");
+                            break;
+                        }
+                        if(!tokens[2].equals("yes") && !tokens[2].equals("no")) {
+                            System.out.println("Error: specify yes or no for cannon activation");
+                            break;
+                        }
+                        int diceResult = view.diceResult();
+                        if(diceResult == 0){
+                            System.out.println("Error: first throw the dice");
+                            break;
+                        }
+                        boolean activateShield = (tokens[1].equals("yes"));
+                        boolean activateCannon = (tokens[2].equals("yes"));
+                        server.hitShip(nickname, diceResult, activateShield, activateCannon);
+                        view.updateInvalidDice();
+                        break;
+                    case "fly":
+                        if (tokens.length < 2) {
+                            System.out.println("Error: specify batteries to use");
+                            break;
+                        }
+                        int batteries = Integer.parseInt(tokens[1]);
+                        if(batteries < 0){
+                            System.out.println("Error: batteries cannot be negative");
+                            break;
+                        }
+                        server.fly(nickname, batteries);
+                        break;
+                    case "landing":
+                        if ((tokens.length - 1)%3 != 0) {
+                            System.out.println("Error: specify cabins and number of crew to remove form each cabin");
+                            break;
+                        }
+                        List<Integer> x = new ArrayList<>();
+                        List<Integer> y = new ArrayList<>();
+                        List<Integer> removedCrew = new ArrayList<>();
+                        for(int i=1; i< tokens.length; i+=3){
+                            x.add(Integer.parseInt(tokens[i]));
+                            y.add(Integer.parseInt(tokens[i+1]));
+                            removedCrew.add(Integer.parseInt(tokens[i+2]));
+                        }
+                        server.landing(nickname, x, y, removedCrew);
                         break;
                     default:
                         System.out.println("Error: unknown command");
@@ -379,5 +441,17 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
     @Override
     public void updatePlayerQuit(String nickname) throws RemoteException{
         this.view.updatePlayerQuit(nickname);
+    }
+
+    //notifies the view that a player has gained/lost credits
+    @Override
+    public void updatePlayerCredits(String nickname, int change) throws RemoteException{
+        this.view.updatePlayerCredits(nickname, change);
+    }
+
+    //notifies the view that the position of a player has changed
+    @Override
+    public void updatePlayerPosition(String nickname, int lap, int cell) throws RemoteException{
+        this.view.updatePlayerPosition(nickname, lap, cell);
     }
 }

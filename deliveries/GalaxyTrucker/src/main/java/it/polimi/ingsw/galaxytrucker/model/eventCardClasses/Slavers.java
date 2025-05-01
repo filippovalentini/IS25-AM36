@@ -28,7 +28,7 @@ public class Slavers extends AdvancedEnemies{
         if (gameState.getCrewCount(nickname)< this.crewLoss) {
             throw new NoCrewException("You do not have enough crew member");
         }
-        gameState.removedCrewMember(nickname, x, y, z, this.crewLoss);
+        gameState.removeCrewMembers(nickname, x, y, z, this.crewLoss);
         if(gameState.isLastInTurn(nickname)) {
             gameState.setGameState(State.CARD_PICKING);
         }

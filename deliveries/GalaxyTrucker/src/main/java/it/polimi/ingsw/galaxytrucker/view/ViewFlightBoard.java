@@ -37,4 +37,9 @@ public class ViewFlightBoard {
     public void updatePlayerQuit(ViewPlayer player) {
         positions.put(player, null);
     }
+
+    //updates the position of a player on the flight board
+    public void updatePlayerPosition(ViewPlayer player, int lap, int cell) {
+        positions.get(player).setPosition(lap, cell);
+    }
 }

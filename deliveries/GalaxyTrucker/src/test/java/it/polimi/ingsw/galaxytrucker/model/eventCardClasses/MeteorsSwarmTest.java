@@ -1,9 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
-import it.polimi.ingsw.galaxytrucker.model.componentClasses.CargoHold;
 import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
-import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
@@ -99,7 +97,7 @@ class MeteorsSwarmTest {
         x.add(2);
         y.add(3);
         e.add(2);
-        gameState.removedCrewMember(player1,x,y,e,2);
+        gameState.removeCrewMembers(player1,x,y,e,2);
         int prova= gameState.getCrewCount(player1);
         meteorsSwarm.hitShip(gameState, player1, diceResult, false, false);
         meteorsSwarm.hitShip(gameState, player1, diceResult, false, false);

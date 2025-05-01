@@ -18,33 +18,35 @@ public class MeteorsSwarm extends EventCard{
         this.meteors = meteors;
         this.currentMeteor = 0;
     }
-    public List<Meteor> getMeteors() {
-        return meteors;
-    }
 
-  /*  @Override
+    @Override
     public void hitShip(GameState gameState, String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException, NoBatteriesException {
         if((activateCannon || activateShield) && gameState.getNumberBatteries(nickname) == 0){
             throw new InvalidActionException("Too few batteries");
         }
+
         Orientation orientation = meteors.get(currentMeteor).getOrientation();
         int direction = (orientation.isVertical() ? diceResult-4 : diceResult-5);
         gameState.meteorAttack(nickname, meteors.get(currentMeteor), direction, activateShield, activateCannon);
+
         if(currentMeteor == meteors.size() - 1){
+            currentMeteor=0;
             if(gameState.isLastInTurn(nickname)) {
                 gameState.setGameState(State.CARD_PICKING);
             }
-            currentMeteor=0;
-            gameState.nextTurn();
+            if (gameState.getCrewCount(nickname)==0) {
+                System.out.println("You've lost all your crew");
+                gameState.quitGame(nickname);
+            }else{
+                gameState.nextTurn();
+            }
         }
         else{
             currentMeteor++;
         }
     }
 
-   */
-
-    @Override
+    /*@Override
     public void hitShip(GameState gameState, String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException, NoBatteriesException {
         if ((activateCannon || activateShield) && gameState.getNumberBatteries(nickname) == 0) {
             throw new InvalidActionException("Too few batteries");
@@ -71,5 +73,5 @@ public class MeteorsSwarm extends EventCard{
             currentMeteor++;
         }
     }
-
+    */
 }

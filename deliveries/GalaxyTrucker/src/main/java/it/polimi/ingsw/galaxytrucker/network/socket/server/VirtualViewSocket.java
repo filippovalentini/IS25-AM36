@@ -112,4 +112,12 @@ public interface VirtualViewSocket extends VirtualView {
     //notifies the view that a player has quit the game
     @Override
     void updatePlayerQuit(String nickname) throws IOException;
+
+    //notifies the view that a player has gained/lost credits
+    @Override
+    void updatePlayerCredits(String nickname, int change) throws IOException;
+
+    //notifies the view that the position of a player has changed
+    @Override
+    void updatePlayerPosition(String nickname, int lap, int cell) throws IOException;
 }

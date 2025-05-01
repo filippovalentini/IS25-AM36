@@ -322,4 +322,68 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
             }
         }
     }
+
+    //invoked when a player wants to skip an action during the flight phase
+    @Override
+    public void skip(String nickname) throws RemoteException{
+        try{
+            controller.skip(nickname);
+        }
+        catch(Exception e){
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
+        }
+    }
+
+    //invoked when a player wants to land on an abandoned ship or station
+    @Override
+    public void landing(String nickname, List<Integer> x, List<Integer> y, List<Integer> z) throws RemoteException{
+        try{
+            controller.landing(nickname, x, y, z);
+        }
+        catch(Exception e){
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
+        }
+    }
+
+    //invoked when th ship board of a player must be hit by meteor/cannon shot
+    @Override
+    public void hitShip(String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws RemoteException{
+        try{
+            controller.hit(nickname, diceResult, activateShield, activateCannon);
+        }
+        catch(Exception e){
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
+        }
+    }
+
+    //invoked when a player wants to fly across the flight board exploiting its engine strength
+    @Override
+    public void fly(String nickname, int usedBatteries) throws RemoteException{
+        try{
+            controller.fly(nickname, usedBatteries);
+        }
+        catch(Exception e){
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
+        }
+    }
 }

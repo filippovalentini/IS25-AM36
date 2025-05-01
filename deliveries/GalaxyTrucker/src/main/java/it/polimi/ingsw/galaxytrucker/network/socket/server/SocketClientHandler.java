@@ -80,6 +80,18 @@ public class SocketClientHandler implements VirtualViewSocket {
                     case QUIT:
                         controller.quitGame(message.getGameParams(0));
                         break;
+                    case SKIP:
+                        controller.skip(message.getGameParams(0));
+                        break;
+                    case LANDING:
+                        controller.landing(message.getGameParams(0), deserializeList(message.getGameParams(1)), deserializeList(message.getGameParams(2)), deserializeList(message.getGameParams(3)));
+                        break;
+                    case HIT_SHIP:
+                        controller.hit(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Boolean.parseBoolean(message.getGameParams(2)), Boolean.parseBoolean(message.getGameParams(3)));
+                        break;
+                    case FLY:
+                        controller.fly(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)));
+                        break;
                     default:
                         notifyError("Error: unknown command sent by client");
                 }
@@ -103,6 +115,15 @@ public class SocketClientHandler implements VirtualViewSocket {
         in.close();
         out.close();
         socket.close();
+    }
+
+    //converts a serialized list of integers in an effective list
+    public List<Integer> deserializeList(String data) {
+        List<Integer> list = new ArrayList<>();
+        for (String num : data.split(",")) {
+            list.add(Integer.parseInt(num));
+        }
+        return list;
     }
 
     //runs a command line interface to send requests to the server
@@ -293,6 +314,22 @@ public class SocketClientHandler implements VirtualViewSocket {
     public void updatePlayerQuit(String nickname) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname));
         GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.PLAYER_QUIT, params);
+        out.writeObject(message);
+    }
+
+    //notifies the view that a player has gained/lost credits
+    @Override
+    public void updatePlayerCredits(String nickname, int change) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(change)));
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.CREDITS_CHANGE, params);
+        out.writeObject(message);
+    }
+
+    //notifies the view that the position of a player has changed
+    @Override
+    public void updatePlayerPosition(String nickname, int lap, int cell) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(lap), String.valueOf(cell)));
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.POSITION_CHANGE, params);
         out.writeObject(message);
     }
 

@@ -6,6 +6,8 @@ import it.polimi.ingsw.galaxytrucker.model.exceptions.FullCabinException;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
 import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
 
+import java.util.List;
+
 //this interface defines the methods that are used by the clients to interact with the server, in order to change
 //the state of the model
 
@@ -62,4 +64,19 @@ public interface VirtualServer {
 
     //invoked when a player wants to leave the game
     void quitGame(String nickname) throws Exception;
+
+
+
+
+    //invoked when a player wants to skip an action during the flight phase
+    void skip(String nickname) throws Exception;
+
+    //invoked when a player wants to land on an abandoned ship or station
+    void landing(String nickname, List<Integer> x, List<Integer> y, List<Integer> z) throws Exception;
+
+    //invoked when th ship board of a player must be hit by meteor/cannon shot
+    void hitShip(String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws Exception;
+
+    //invoked when a player wants to fly across the flight board exploiting its engine strength
+    void fly(String nickname, int usedBatteries) throws Exception;
 }

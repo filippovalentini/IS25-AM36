@@ -218,4 +218,8 @@ public class ViewPlayer {
         assembledComponents.get(x).get(y).updateBatteries(change);
     }
 
+    public void updateCredits(int change) {
+        this.credits+=change;
+    }
+
 }

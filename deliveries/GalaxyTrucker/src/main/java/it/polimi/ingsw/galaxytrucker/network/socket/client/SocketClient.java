@@ -159,6 +159,11 @@ public class SocketClient implements VirtualViewSocket {
                     case PLAYER_QUIT:
                         updatePlayerQuit(message.getGameParams(0));
                         break;
+                    case CREDITS_CHANGE:
+                        updatePlayerCredits(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)));
+                        break;
+                    case POSITION_CHANGE:
+                        updatePlayerPosition(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)));
                     default:
                         notifyError("Error: unknown command sent by client");
                 }
@@ -256,9 +261,9 @@ public class SocketClient implements VirtualViewSocket {
                             System.out.println("Error: coordinates required");
                             break;
                         }
-                        int x = Integer.parseInt(tokens[1]);
-                        int y = Integer.parseInt(tokens[2]);
-                        serverHandler.assembledComponent(nickname, x, y);
+                        int x1 = Integer.parseInt(tokens[1]);
+                        int y1 = Integer.parseInt(tokens[2]);
+                        serverHandler.assembledComponent(nickname, x1, y1);
                         break;
                     case "pickDeck":
                         if (tokens.length < 2) {
@@ -325,6 +330,62 @@ public class SocketClient implements VirtualViewSocket {
                         break;
                     case "quit":
                         serverHandler.quitGame(nickname);
+                        break;
+                    case "dice":
+                        view.updateRollDice();
+                        break;
+                    case "skip":
+                        serverHandler.skip(nickname);
+                        break;
+                    case "hit":
+                        if (tokens.length < 3) {
+                            System.out.println("Error: specify shield and cannon activation");
+                            break;
+                        }
+                        if(!tokens[1].equals("yes") && !tokens[1].equals("no")) {
+                            System.out.println("Error: specify yes or no for shield activation");
+                            break;
+                        }
+                        if(!tokens[2].equals("yes") && !tokens[2].equals("no")) {
+                            System.out.println("Error: specify yes or no for cannon activation");
+                            break;
+                        }
+                        int diceResult = view.diceResult();
+                        if(diceResult == 0){
+                            System.out.println("Error: first throw the dice");
+                            break;
+                        }
+                        boolean activateShield = (tokens[1].equals("yes"));
+                        boolean activateCannon = (tokens[2].equals("yes"));
+                        serverHandler.hitShip(nickname, diceResult, activateShield, activateCannon);
+                        view.updateInvalidDice();
+                        break;
+                    case "fly":
+                        if (tokens.length < 2) {
+                            System.out.println("Error: specify batteries to use");
+                            break;
+                        }
+                        int batteries = Integer.parseInt(tokens[1]);
+                        if(batteries < 0){
+                            System.out.println("Error: batteries cannot be negative");
+                            break;
+                        }
+                        serverHandler.fly(nickname, batteries);
+                        break;
+                    case "landing":
+                        if ((tokens.length - 1)%3 != 0) {
+                            System.out.println("Error: specify cabins and number of crew to remove form each cabin");
+                            break;
+                        }
+                        List<Integer> x = new ArrayList<>();
+                        List<Integer> y = new ArrayList<>();
+                        List<Integer> removedCrew = new ArrayList<>();
+                        for(int i=1; i< (tokens.length-1)/3; i+=3){
+                            x.add(Integer.parseInt(tokens[i]));
+                            y.add(Integer.parseInt(tokens[i+1]));
+                            removedCrew.add(Integer.parseInt(tokens[i+2]));
+                        }
+                        serverHandler.landing(nickname, x, y, removedCrew);
                         break;
                     default:
                         System.out.println("Error: unknown command");
@@ -490,5 +551,17 @@ public class SocketClient implements VirtualViewSocket {
     @Override
     public void updatePlayerQuit(String nickname) {
         this.view.updatePlayerQuit(nickname);
+    }
+
+    //notifies the view that a player has gained/lost credits
+    @Override
+    public void updatePlayerCredits(String nickname, int change) throws IOException{
+        this.view.updatePlayerCredits(nickname, change);
+    }
+
+    //notifies the view that the position of a player has changed
+    @Override
+    public void updatePlayerPosition(String nickname, int lap, int cell) throws IOException{
+        this.view.updatePlayerPosition(nickname, lap, cell);
     }
 }

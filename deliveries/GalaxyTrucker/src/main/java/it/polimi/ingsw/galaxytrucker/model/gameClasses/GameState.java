@@ -31,6 +31,7 @@ public class GameState {
         this.playersPlay = new HashMap<>();
         this.turnPlayer = "";
         this.numPlayers = numPlayers;
+        this.gameDeck = null;
         this.state = State.WAITING_FOR_PLAYERS;
     }
 
@@ -142,10 +143,6 @@ public class GameState {
     //returns the engine strength of a player, removing the given batteries from its ship board in order to activate double engines
     public int getEngineStrength(String nickname, int usedBatteries){
         return playersPlay.get(nickname).getEngineStrength(usedBatteries);
-    }
-    //updates the cosmic credits of a player
-    public void updatePlayerCredits(String nickname, int update) {
-        playersPlay.get(nickname).updateCredits(update);
     }
     //substitutes (or adds) a good in a specific container of a player's cargo hold
     public void substituteGoods(String nickname, int cargo_row, int cargo_col, Color good, int pos){
@@ -725,8 +722,9 @@ public class GameState {
         }
         if(correctShips){
             state = State.CARD_PICKING;
-            createGameDeck();
-
+            if(gameDeck==null){
+                createGameDeck();
+            }
             for(VirtualView view: clients.values()){
                 try{view.updateCardPicking();}
                 catch(Exception e){System.out.println("Error during remote method invocation on client");}
@@ -734,10 +732,6 @@ public class GameState {
 
             updateTurns();
         }
-    }
-    //updates the position of a player on the ship board
-    public void changePlayerPosition(String nickname, int cells) {
-        playersPos.get(nickname).changePosition(cells);
     }
     //creates the main deck for the game by unifying and shuffling the 4 decks used during the assembling phase;
     //this method is invoked after the assembling phase
@@ -779,6 +773,10 @@ public class GameState {
             String current = iterator.next();
             if (found) {
                 turnPlayer = current;
+                for(VirtualView view: clients.values()){
+                    try{view.updateNextTurn(this.turnPlayer);}
+                    catch(Exception e){System.out.println("Error during remote method invocation on client");}
+                }
                 return;
             }
             if (current.equals(turnPlayer)) {
@@ -802,12 +800,27 @@ public class GameState {
     public void setTurnPlayer(String nickname){
         this.turnPlayer = nickname;
     }
-
     //this method is invoked when a player wants to leave the game
     public void quitGame(String nickname) throws InvalidActionException {
         if(state != State.CARD_PICKING && state != State.CARD_SOLVING){
             throw new InvalidActionException("Invalid action");
         }
+        //if the player quitting is the player in turn, we update the turns
+        if(nickname.equals(turnPlayer)){
+            nextTurn();
+            //this condition must be checked because after the turn update the quitting player could
+            //have become the leader
+            if(nickname.equals(turnPlayer)){
+                nextTurn();
+                //if this condition is satisfied it means that the quitting player is the only player left,
+                //so the game must end
+                if(nickname.equals(turnPlayer)){
+                    computeTotalRewards();
+                    state = State.END;
+                }
+            }
+        }
+
         playersPos.remove(nickname);
         playersPlay.get(nickname).quitGame();
 
@@ -815,8 +828,6 @@ public class GameState {
             try{view.updatePlayerQuit(nickname);}
             catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
-
-        updateTurns();
     }
     //invoked when the leader draws a new card from the deck (during the game), which must be solved
     public void pickNextCard(String nickname) throws InvalidActionException {
@@ -850,8 +861,27 @@ public class GameState {
         playersPlay.get(nickname).epidemicEffect();
     }
     //this method is invoked when a player has/wants to remove crew members from its ship board
-    public void removedCrewMember(String nickname, List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) {
-        playersPlay.get(nickname).removeCrewMembers(x, y, eachCabinCrew, numberCrewToRemove);
+    public void removeCrewMembers(String nickname, List<Integer> x, List<Integer> y, List<Integer> crewInEachCabin, int numberCrewToRemove) {
+        playersPlay.get(nickname).removeCrewMembers(x, y, crewInEachCabin, numberCrewToRemove);
+    }
+    //updates the cosmic credits of a player
+    public void updatePlayerCredits(String nickname, int update) {
+        playersPlay.get(nickname).updateCredits(update);
+
+        for(VirtualView view: clients.values()){
+            try{view.updatePlayerCredits(nickname, update);}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        }
+    }
+    //updates the position of a player on the ship board
+    public void changePlayerPosition(String nickname, int cells) {
+        playersPos.get(nickname).changePosition(cells);
+
+        Position position = playersPos.get(nickname);
+        for(VirtualView view: clients.values()){
+            try{view.updatePlayerPosition(nickname, position.getLap(), position.getCell());}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        }
     }
     //invoked when a meteor hits a player's ship board
     public void meteorAttack(String nickname, Meteor meteor, int direction, boolean activateShield, boolean activateCannon) throws InvalidActionException {

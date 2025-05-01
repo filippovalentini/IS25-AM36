@@ -126,8 +126,8 @@ public class Player {
         shipBoard.epidemicEffect();
     }
     //this method is invoked when the player has/wants to remove crew members from its ship board
-    public void removeCrewMembers(List<Integer> x, List<Integer> y, List<Integer> eachCabinCrew, int numberCrewToRemove) {
-        shipBoard.removeCrewMembers(x, y, eachCabinCrew, numberCrewToRemove);
+    public void removeCrewMembers(List<Integer> x, List<Integer> y, List<Integer> crewInEachCabin, int numberCrewToRemove) {
+        shipBoard.removeCrewMembers(x, y, crewInEachCabin, numberCrewToRemove);
     }
     //invoked when a meteor/cannon shot hits a player's ship board
     public void meteorAttack(Meteor meteor, int direction, boolean activateShield, boolean activateCannon) {

@@ -9,14 +9,12 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.network.rmi.client.ClientRMI;
-import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -210,14 +208,14 @@ public class GameStateFirstFlightTest {
     }
 
     @Test
-    void testRemovedCrewMember() {
+    void testRemoveCrewMembers() {
         List<Integer> x = new ArrayList<>(Arrays.asList(2));
         List<Integer> y = new ArrayList<>(Arrays.asList(3));
         List<Integer> eachCabinCrew = new ArrayList<>(Arrays.asList(2));
         gameState.setPosition(player1, 0);
         gameState.setPosition(player2, 1);
         gameState.addCrew(player1, 2, 3);
-        gameState.removedCrewMember(player1, x, y, eachCabinCrew, 2);
+        gameState.removeCrewMembers(player1, x, y, eachCabinCrew, 2);
         assertEquals(0, gameState.getCrewCount(player1));
     }
 

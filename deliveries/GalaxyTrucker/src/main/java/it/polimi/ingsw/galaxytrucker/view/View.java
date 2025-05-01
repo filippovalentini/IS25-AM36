@@ -16,6 +16,7 @@ public class View {
     private List<Integer> pickedDeck = new ArrayList<>();   //set of cards in the player's hand
     private List<ViewComponent> shownComponents = new ArrayList<>();    //set of components placed face up
     private Integer currentCard;        //current card to solve
+    private ViewDice dice;          //dice of the game
 
     public View(String nickname, Color color, boolean firstFlight) {
         this.player = new ViewPlayer(nickname, color, firstFlight);
@@ -25,12 +26,21 @@ public class View {
         this.flightBoard = null;
         this.turnPlayer = null;
         this.currentCard = null;
+        this.dice = new ViewDice();
     }
 
     public static void main(String[] args){
         View view = new View("fil", Color.BLUE, true);
         view.updateBatteries("fil", 2, 3, 1);
         view.visualizeShip();
+    }
+
+    //returns the dice result or 0 if the dice are no longer valid
+    public int diceResult(){
+        if(!dice.validDice()){
+            return 0;
+        }
+        return dice.getResult1() + dice.getResult2();
     }
 
     //visualizes the state of the game and of the ship board of the player associated to the view
@@ -50,6 +60,9 @@ public class View {
         }
         if(currentCard != null){
             System.out.println("🃏 Card to solve: " + currentCard + "\n");
+        }
+        if(dice.validDice()){
+            System.out.println("\uD83C\uDFB2" + " Dice result: " + dice.getResult1() + "   " + dice.getResult2() + "\n");
         }
         System.out.println();
         System.out.println("👨‍🚀 Player: " + player.getNickname() + " " + convertColor(player.getColor()));
@@ -277,5 +290,35 @@ public class View {
         else{
             otherPlayers.get(nickname).updateBatteries(x,y,change);
         }
+    }
+
+    //notifies the view that a player has gained/lost credits
+    public void updatePlayerCredits(String nickname, int change) {
+        if(nickname.equals(this.player.getNickname())){
+            player.updateCredits(change);
+        }
+        else{
+            otherPlayers.get(nickname).updateCredits(change);
+        }
+    }
+
+    //notifies the view that the position of a player has changed
+    public void updatePlayerPosition(String nickname, int lap, int cell) {
+        if(nickname.equals(this.player.getNickname())){
+            flightBoard.updatePlayerPosition(player, lap, cell);
+        }
+        else{
+            flightBoard.updatePlayerPosition(otherPlayers.get(nickname), lap, cell);
+        }
+    }
+
+    //simulates a throw of the dice
+    public void updateRollDice(){
+        this.dice.rollDice();
+    }
+
+    //notifies a view that the current dice configuration must be invalidated because it has already been used
+    public void updateInvalidDice(){
+        this.dice.invalid();
     }
 }

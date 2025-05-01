@@ -221,14 +221,14 @@ class GameStateNormalTest {
     }
 
     @Test
-    void testRemovedCrewMember() {
+    void testRemoveCrewMembers() {
         List<Integer> x = new ArrayList<>(Arrays.asList(2));
         List<Integer> y = new ArrayList<>(Arrays.asList(3));
         List<Integer> eachCabinCrew = new ArrayList<>(Arrays.asList(2));
         gameState.setPosition(player1, 0);
         gameState.setPosition(player2, 1);
         gameState.addCrew(player1, 2, 3);
-        gameState.removedCrewMember(player1, x, y, eachCabinCrew, 2);
+        gameState.removeCrewMembers(player1, x, y, eachCabinCrew, 2);
         assertEquals(0, gameState.getCrewCount(player1));
     }
 
