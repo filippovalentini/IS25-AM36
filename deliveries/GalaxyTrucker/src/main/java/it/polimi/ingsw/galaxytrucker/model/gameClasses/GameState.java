@@ -58,6 +58,27 @@ public class GameState {
 
     public void setGameState(State state) {
         this.state = state;
+
+        for(VirtualView view: clients.values()){
+            try{
+                if(state==State.SHIP_BUILDING){
+                    view.updateStartAssembling();
+                }
+                else if(state==State.SHIP_CONTROL){
+                    view.updateShipControl();
+                }
+                else if(state==State.CARD_PICKING){
+                    view.updateCardPicking();
+                }
+                else if(state==State.CARD_SOLVING){
+                    view.updateCardSolving(currentCard.getImageID());
+                }
+                else{
+                    view.notifyError("Ambiguous game state change");
+                }
+            }
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        }
     }
     public State getGameState() {
         return this.state;
@@ -75,7 +96,7 @@ public class GameState {
     }
     public int getCurrentPlayers(){return playersPlay.size();}
     public List<Component> getShownComponent() { //return a copy of the shown components
-        return new ArrayList<Component>(shownComponents);
+        return new ArrayList<>(shownComponents);
     }
     //returns the list of player nicknames (in position order)
     public List<String> getNicknames(){
@@ -452,17 +473,13 @@ public class GameState {
         catch(Exception e){System.out.println("Error during remote method invocation on client");}
         if(numPlayers == getCurrentPlayers()){
             startAssembling();
-            for(VirtualView view: clients.values()){
-                try{view.updateStartAssembling();}
-                catch(Exception e){System.out.println("Error during remote method invocation on client");}
-            }
         }
     }
     //invoked when one of the players decides to start the assembling phase
     public void startAssembling() {
         createComponents(firstFlight);
         createDecks(firstFlight);
-        state = State.SHIP_BUILDING;
+        setGameState(State.SHIP_BUILDING);
     }
 
     //
@@ -638,11 +655,7 @@ public class GameState {
         }
 
         if(!playersPos.containsValue(null)){
-            state = State.SHIP_CONTROL;
-            for(VirtualView view: clients.values()){
-                try{view.updateShipControl();}
-                catch(Exception e){System.out.println("Error during remote method invocation on client");}
-            }
+            setGameState(State.SHIP_CONTROL);
             checkShipBoards();
         }
     }
@@ -721,15 +734,10 @@ public class GameState {
             }
         }
         if(correctShips){
-            state = State.CARD_PICKING;
+            setGameState(State.CARD_PICKING);
             if(gameDeck==null){
                 createGameDeck();
             }
-            for(VirtualView view: clients.values()){
-                try{view.updateCardPicking();}
-                catch(Exception e){System.out.println("Error during remote method invocation on client");}
-            }
-
             updateTurns();
         }
     }
@@ -839,13 +847,8 @@ public class GameState {
         }
         try{
             currentCard = gameDeck.drawCard();
-            state = State.CARD_SOLVING;
+            setGameState(State.CARD_SOLVING);
             currentCard.specialEffect(this);
-
-            for(VirtualView view: clients.values()){
-                try{view.updateCardSolving(currentCard.getImageID());}
-                catch(Exception e){System.out.println("Error during remote method invocation on client");}
-            }
         }
         catch (EmptyDeckException e) {
             computeTotalRewards();
