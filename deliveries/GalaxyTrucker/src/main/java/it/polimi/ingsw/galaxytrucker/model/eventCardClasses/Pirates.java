@@ -37,13 +37,14 @@ public class Pirates extends AdvancedEnemies {
         Orientation orientation = cannonFire.get(currentCannonFire).getOrientation();
         int direction = (orientation.isVertical() ? diceResult-4 : diceResult-5);
         gameState.cannonFireAttack(nickname, cannonFire.get(currentCannonFire), direction, activateShield); //current cannon shot hits the ship
-        if(currentCannonFire == cannonFire.size() - 1) {     //if no more cannon shots have to hit the ship, the player's turn is finished
+        if(currentCannonFire == cannonFire.size() - 1) {//if no more cannon shots have to hit the ship, the player's turn is finished
+            if (gameState.isLastInTurn(nickname)) {
+                gameState.setGameState(State.CARD_PICKING);
             if (gameState.getCrewCount(nickname) == 0) {
                 System.out.println("You lost all your crew member.");
                 gameState.quitGame(nickname);
             } else {
-                if (gameState.isLastInTurn(nickname)) {
-                    gameState.setGameState(State.CARD_PICKING);
+                  gameState.nextTurn();
                 }
                 currentCannonFire = 0;
                 cannonFirePhase = false;
