@@ -6,8 +6,8 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 import java.util.*;
 
 public class LevelOneShipBoard extends ShipBoard {
-    public LevelOneShipBoard(Color color) {
-        super(color);
+    public LevelOneShipBoard(String nickname, Color color) {
+        super(nickname, color);
         imageID = 1;
 
         //adds "Space" components in the positions of the ship board where normal components cannot be assembled

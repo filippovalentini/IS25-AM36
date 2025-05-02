@@ -164,6 +164,10 @@ public class SocketClient implements VirtualViewSocket {
                         break;
                     case POSITION_CHANGE:
                         updatePlayerPosition(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)));
+                        break;
+                    case END_GAME:
+                        updateEndGame();
+                        break;
                     default:
                         notifyError("Error: unknown command sent by client");
                 }
@@ -563,5 +567,11 @@ public class SocketClient implements VirtualViewSocket {
     @Override
     public void updatePlayerPosition(String nickname, int lap, int cell) throws IOException{
         this.view.updatePlayerPosition(nickname, lap, cell);
+    }
+
+    //notifies the view about the fact that the game is finished
+    @Override
+    public void updateEndGame() throws IOException{
+        this.view.updateEndGame();
     }
 }

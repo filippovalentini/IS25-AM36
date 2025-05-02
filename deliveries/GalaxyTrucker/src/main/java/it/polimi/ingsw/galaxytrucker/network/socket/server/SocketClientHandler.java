@@ -333,4 +333,12 @@ public class SocketClientHandler implements VirtualViewSocket {
         out.writeObject(message);
     }
 
+    //notifies the view about the fact that the game is finished
+    @Override
+    public void updateEndGame() throws IOException{
+        List<String> params = new ArrayList<>();
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.END_GAME, params);
+        out.writeObject(message);
+    }
+
 }

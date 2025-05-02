@@ -22,7 +22,7 @@ public class LevelTwoShipBoardTest {
 
     @BeforeEach
     void init(){
-        levelTwoShipBoard = new LevelTwoShipBoard(Color.RED);
+        levelTwoShipBoard = new LevelTwoShipBoard("filippo", Color.RED);
         List<Connector> connectorList1 = new ArrayList<>();
         connectorList1.add(Connector.SINGLE);
         connectorList1.add(Connector.SINGLE);

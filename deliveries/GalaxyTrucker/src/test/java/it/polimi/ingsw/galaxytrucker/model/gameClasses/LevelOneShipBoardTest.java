@@ -17,7 +17,7 @@ class LevelOneShipBoardTest {
 
     @BeforeEach
     void init(){
-        levelOneShipBoard = new LevelOneShipBoard(Color.RED);
+        levelOneShipBoard = new LevelOneShipBoard("filippo", Color.RED);
         List<Connector> connectorList1 = new ArrayList<>();
         connectorList1.add(Connector.SINGLE);
         connectorList1.add(Connector.SINGLE);

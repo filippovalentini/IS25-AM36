@@ -454,4 +454,10 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
     public void updatePlayerPosition(String nickname, int lap, int cell) throws RemoteException{
         this.view.updatePlayerPosition(nickname, lap, cell);
     }
+
+    //notifies the view about the fact that the game is finished
+    @Override
+    public void updateEndGame() throws RemoteException{
+        this.view.updateEndGame();
+    }
 }

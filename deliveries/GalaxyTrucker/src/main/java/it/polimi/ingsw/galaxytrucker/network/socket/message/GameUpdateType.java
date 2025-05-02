@@ -23,5 +23,6 @@ public enum GameUpdateType {
     ALIEN_CHANGE,
     BATTERY_CHANGE,
     CREDITS_CHANGE,
-    POSITION_CHANGE
+    POSITION_CHANGE,
+    END_GAME
 }

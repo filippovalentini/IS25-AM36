@@ -23,7 +23,7 @@ public class GameState {
     private List<Component> hiddenComponents;       //components turned face down during the assembling phase
     private List<Component> shownComponents;        //components turned face up during the assembling phase
     private State state;            //current state of the game
-    final Map<String, VirtualView> clients = new HashMap<>();     //list of all clients
+    final Map<String, VirtualView> clients = new HashMap<>();     //list of observers (clients of the game)
 
     public GameState(boolean firstFlight, int numPlayers) {     //constructor, creates the deck(s) of cards and instantiates the components
         this.firstFlight = firstFlight;
@@ -72,6 +72,9 @@ public class GameState {
                 }
                 else if(state==State.CARD_SOLVING){
                     view.updateCardSolving(currentCard.getImageID());
+                }
+                else if(state==State.END){
+                    view.updateEndGame();
                 }
                 else{
                     view.notifyError("Ambiguous game state change");
@@ -429,12 +432,12 @@ public class GameState {
             List<EventCard> gameDeckCards = new ArrayList<>();
             //first flight cards creation
             gameDeckCards.add(new AbandonedShip(3, 4, 1, 1002));
-            gameDeckCards.add(new AbandonedStation(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN)), 5, 1, 2001));
-            gameDeckCards.add(new CombatZone(true, 3001));
+            //gameDeckCards.add(new AbandonedStation(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN)), 5, 1, 2001));
+            //gameDeckCards.add(new CombatZone(true, 3001));
             gameDeckCards.add(new MeteorsSwarm(new ArrayList<>(Arrays.asList(new Meteor(true, Orientation.NORTH), new Meteor(false, Orientation.WEST), new Meteor(false, Orientation.EAST))), 5001));
             gameDeckCards.add(new OpenSpace(6001));
-            gameDeckCards.add(new Planets(new ArrayList<>(Arrays.asList(new ArrayList<>(Arrays.asList(Color.RED, Color.RED)), new ArrayList<>(Arrays.asList(Color.RED, Color.BLUE, Color.BLUE)), new ArrayList<>(Arrays.asList(Color.YELLOW)))),2, 7002));
-            gameDeckCards.add(new Smugglers(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN, Color.BLUE)),2,4,1,8005));
+            //gameDeckCards.add(new Planets(new ArrayList<>(Arrays.asList(new ArrayList<>(Arrays.asList(Color.RED, Color.RED)), new ArrayList<>(Arrays.asList(Color.RED, Color.BLUE, Color.BLUE)), new ArrayList<>(Arrays.asList(Color.YELLOW)))),2, 7002));
+            //gameDeckCards.add(new Smugglers(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN, Color.BLUE)),2,4,1,8005));
             gameDeckCards.add(new SpecialEvent(SpecialEventType.STARDUST, 4002));
             //game deck creation
             Deck d = new Deck(gameDeckCards);
@@ -449,6 +452,7 @@ public class GameState {
         if(state != State.WAITING_FOR_PLAYERS){
             throw new InvalidActionException("Game has already started");
         }
+        //nickname and color of the player must be unique
         for(String n : getNicknames()) {
             if(n.equals(nickname)) {
                 throw new UniqueNicknameException("Nickname already taken");
@@ -457,10 +461,19 @@ public class GameState {
                 throw new UniquePlayerColorException("Color already taken");
             }
         }
+        //the new player is added to the game and its position on the flight board is set to null
         playersPlay.put(nickname, new Player(nickname, color, firstFlight));
         playersPos.put(nickname, null);
 
+        //the listeners stored in the game state and in the ship board of the current players are updated
+        for(String n: clients.keySet()){
+            playersPlay.get(nickname).addListener(n, clients.get(n));
+        }
+        for(Player p: playersPlay.values()){
+            p.addListener(nickname, client);
+        }
         clients.put(nickname, client);
+        //listeners are updated about the fact that a new player has entered the game
         try{
             client.updateWaitingForPlayers(this.firstFlight);
             for(String playerNickname : getNicknames()) {
@@ -671,11 +684,6 @@ public class GameState {
         }
         playersPlay.get(nickname).destroyComponent(x,y);
 
-        for(VirtualView view: clients.values()){
-            try{view.updateDestroyedComponent(nickname, x, y);}
-            catch(Exception e){System.out.println("Error during remote method invocation on client");}
-        }
-
         checkShipBoards();
     }
     //invoked when a player wants to initialize a cabin of its shipboard with 2 human crew members
@@ -852,7 +860,7 @@ public class GameState {
         }
         catch (EmptyDeckException e) {
             computeTotalRewards();
-            state = State.END;
+            setGameState(State.END);
         }
     }
     //removes a member (human or alien) from each cabin (of a player's ship board) that is directly

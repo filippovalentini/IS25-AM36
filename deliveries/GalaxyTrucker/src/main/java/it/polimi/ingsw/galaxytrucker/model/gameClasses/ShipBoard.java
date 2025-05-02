@@ -7,10 +7,12 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.model.shotClasses.CannonShot;
 import it.polimi.ingsw.galaxytrucker.model.shotClasses.Meteor;
+import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 
 import java.util.*;
 //this class is used to describe all information associated to the shipboard of a player
 public class ShipBoard {
+    protected final String nickname;
     protected int imageID;
     protected int lostComponents;     //number of misplaced tiles and of components destroyed during the game
     protected List<List<Component>> assembledComponents;     //components assembled on the ship board
@@ -18,14 +20,17 @@ public class ShipBoard {
     protected Component pickedComponent;      //component which has been picked by a player and brought to its ship board
     protected final Color color;      //color associated to the ship board (and to the player that owns it)
     protected boolean correct;      //determines if the ship is correctly assembled
+    protected Map<String, VirtualView> clients;     //list of observers (clients of the game)
 
-    public ShipBoard(Color color) {     //constructor
+    public ShipBoard(String nickname, Color color) {     //constructor
+        this.nickname = nickname;
         this.color = color;
         this.lostComponents = 0;
         this.assembledComponents = new ArrayList<>();
         this.reservedComponents = new ArrayList<>();
         this.pickedComponent = null;
         this.correct = true;
+        this.clients = new HashMap<>();
 
         for (int i = 0; i < 5; i++) {       //at the beginning of the assembling phase, all assembled components are set to empty
             List<Component> row = new ArrayList<>();
@@ -80,6 +85,10 @@ public class ShipBoard {
          return correct;
     }
 
+    //adds a listener to the map of listeners of the ship board
+    public void addListener(String nickname, VirtualView client) {
+        clients.put(nickname, client);
+    }
     //invoked when the owner of the ship board picks a component from the table
     public void pickComponent(Component component) throws PickedComponentException {
         if(pickedComponent!=null){
@@ -172,6 +181,11 @@ public class ShipBoard {
         assembledComponents.get(x).set(y, emptySpace);
         lostComponents++;
         updateCorrectness();
+
+        for(VirtualView view: clients.values()){
+            try{view.updateDestroyedComponent(nickname, x, y);}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        }
     }
     //initializes a cabin with 2 human crew members
     public void addCrew(int x, int y) throws AssembledComponentException, FullCabinException {
@@ -386,6 +400,11 @@ public class ShipBoard {
         for (int[] hitCabin : hitCabins) {
             Component c = assembledComponents.get(hitCabin[0]).get(hitCabin[1]);
             c.removeMember();
+
+            for(VirtualView view: clients.values()){
+                try{view.updateCrewChange(nickname, hitCabin[0], hitCabin[1], -1);}
+                catch(Exception e){System.out.println("Error during remote method invocation on client");}
+            }
         }
     }
     //determines whether a side of the ship board is protected by a shield and (if yes) activates it by using
@@ -555,6 +574,10 @@ public class ShipBoard {
         }
         for(int i=0; i<x.size(); i++){
             assembledComponents.get(x.get(i)).get(y.get(i)).removeCrew(crewInEachCabin.get(i));
+            for(VirtualView view: clients.values()){
+                try{view.updateCrewChange(nickname, x.get(i), y.get(i), -crewInEachCabin.get(i));}
+                catch(Exception e){System.out.println("Error during remote method invocation on client");}
+            }
         }
     }
     //substitutes the cargo good at the given coordinates with the good given in input
@@ -652,22 +675,31 @@ public class ShipBoard {
     public void removeBatteries(int batteries) throws NoBatteriesException{
         int toRemove = batteries;
         int componentBatteries;
-        for (List<Component> componentRow : assembledComponents) {
-            for (Component component : componentRow) {
+        for (int i = 0; i < assembledComponents.size(); i++) {
+            List<Component> componentRow = assembledComponents.get(i);
+            for (int j = 0; j < componentRow.size(); j++) {
+                Component component = componentRow.get(j);
                 componentBatteries = component.getNumberBatteries();
-                if(componentBatteries > 0){
-                    if(componentBatteries >= toRemove){
+                if (componentBatteries > 0) {
+                    if (componentBatteries >= toRemove) {
                         component.useBatteries(toRemove);
+                        for(VirtualView view: clients.values()){
+                            try{view.updateBatteries(nickname, i, j, -toRemove);}
+                            catch(Exception e){System.out.println("Error during remote method invocation on client");}
+                        }
                         toRemove = 0;
                         break;
-                    }
-                    else{
+                    } else {
                         component.useBatteries(componentBatteries);
-                        toRemove-=componentBatteries;
+                        for(VirtualView view: clients.values()){
+                            try{view.updateBatteries(nickname, i, j, -componentBatteries);}
+                            catch(Exception e){System.out.println("Error during remote method invocation on client");}
+                        }
+                        toRemove -= componentBatteries;
                     }
                 }
             }
-            if(toRemove ==0){
+            if (toRemove == 0) {
                 break;
             }
         }

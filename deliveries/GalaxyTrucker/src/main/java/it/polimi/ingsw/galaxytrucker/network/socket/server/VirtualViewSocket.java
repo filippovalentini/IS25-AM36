@@ -120,4 +120,8 @@ public interface VirtualViewSocket extends VirtualView {
     //notifies the view that the position of a player has changed
     @Override
     void updatePlayerPosition(String nickname, int lap, int cell) throws IOException;
+
+    //notifies the view about the fact that the game is finished
+    @Override
+    void updateEndGame() throws IOException;
 }

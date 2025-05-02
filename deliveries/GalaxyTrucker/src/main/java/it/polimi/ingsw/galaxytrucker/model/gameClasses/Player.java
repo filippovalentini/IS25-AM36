@@ -6,6 +6,7 @@ import it.polimi.ingsw.galaxytrucker.model.exceptions.AssembledComponentExceptio
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.model.shotClasses.CannonShot;
 import it.polimi.ingsw.galaxytrucker.model.shotClasses.Meteor;
+import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 
 import java.util.List;
 
@@ -23,10 +24,10 @@ public class Player {
         this.pickedDeckNumber = 0;
         this.hasAbandoned = false;
         if(levelOne){
-            shipBoard = new LevelOneShipBoard(color);
+            shipBoard = new LevelOneShipBoard(nickname, color);
         }
         else{
-            shipBoard = new LevelTwoShipBoard(color);
+            shipBoard = new LevelTwoShipBoard(nickname, color);
         }
     }
     //METODO DA TOGLIERE!!!!!!!!!!
@@ -50,6 +51,10 @@ public class Player {
         return shipBoard.getColor();
     }
 
+    //adds a listener to the map of listeners of the player's ship board
+    public void addListener(String nickname, VirtualView client) {
+        shipBoard.addListener(nickname, client);
+    }
     //invoked when the player of the ship board picks a component from the table
     public void pickComponent(Component component) throws PickedComponentException{
         shipBoard.pickComponent(component);

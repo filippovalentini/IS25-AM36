@@ -91,15 +91,13 @@ public interface VirtualView {
     //notifies the view that a player has quit the game
     void updatePlayerQuit(String nickname) throws Exception;
 
-
-
-
-
-
     //notifies the view that a player has gained/lost credits
     void updatePlayerCredits(String nickname, int change) throws Exception;
 
     //notifies the view that the position of a player has changed
     void updatePlayerPosition(String nickname, int lap, int cell) throws Exception;
+
+    //notifies the view about the fact that the game is finished
+    void updateEndGame() throws Exception;
 
 }

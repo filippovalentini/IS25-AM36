@@ -23,7 +23,7 @@ class ShipBoardTest {
 
     @BeforeEach
     void init(){
-        shipBoard = new LevelTwoShipBoard(Color.RED); // shipboard of level two is used
+        shipBoard = new LevelTwoShipBoard("filippo", Color.RED); // shipboard of level two is used
         List<Connector> connectorList1 = new ArrayList<>();
         connectorList1.add(Connector.SINGLE);
         connectorList1.add(Connector.SINGLE);
@@ -40,22 +40,22 @@ class ShipBoardTest {
 
     @Test
     void testShouldConstructShipBoardWithCorrespondingInitCabin(){
-        ShipBoard shipBoardBlue = new LevelTwoShipBoard(Color.BLUE);
+        ShipBoard shipBoardBlue = new LevelTwoShipBoard("filippo", Color.BLUE);
         assertEquals(Color.BLUE, shipBoardBlue.getColor());
         Cabin blueCabin = new Cabin(318, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
         assertEquals(shipBoardBlue.assembledComponents.get(2).get(3), blueCabin);
 
-        ShipBoard shipBoardGreen = new LevelTwoShipBoard(Color.GREEN);
+        ShipBoard shipBoardGreen = new LevelTwoShipBoard("filippo", Color.GREEN);
         assertEquals(Color.GREEN, shipBoardGreen.getColor());
         Cabin greenCabin = new Cabin(319, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
         assertEquals(shipBoardGreen.assembledComponents.get(2).get(3), greenCabin);
 
-        ShipBoard shipBoardRed = new LevelTwoShipBoard(Color.RED);
+        ShipBoard shipBoardRed = new LevelTwoShipBoard("filippo", Color.RED);
         assertEquals(Color.RED, shipBoardRed.getColor());
         Cabin redCabin = new Cabin(320, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
         assertEquals(shipBoardRed.assembledComponents.get(2).get(3), redCabin);
 
-        ShipBoard shipBoardYellow = new LevelTwoShipBoard(Color.YELLOW);
+        ShipBoard shipBoardYellow = new LevelTwoShipBoard("filippo", Color.YELLOW);
         assertEquals(Color.YELLOW, shipBoardYellow.getColor());
         Cabin yellowCabin = new Cabin(321, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
         assertEquals(shipBoardYellow.assembledComponents.get(2).get(3), yellowCabin);

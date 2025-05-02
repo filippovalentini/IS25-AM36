@@ -3,6 +3,7 @@ package it.polimi.ingsw.galaxytrucker.view;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 
+import java.rmi.RemoteException;
 import java.util.*;
 
 public class View {
@@ -45,6 +46,11 @@ public class View {
 
     //visualizes the state of the game and of the ship board of the player associated to the view
     public void visualizeShip(){
+        if(gameState.equals("END GAME")){
+            visualizeFinalRanking();
+            return;
+        }
+
         System.out.println("╔════════════════════════════╗");
         System.out.println("║       GALAXY TRUCKER       ║");
         if(firstFlight){
@@ -94,6 +100,11 @@ public class View {
 
     //visualizes the state of the ship board of another player
     public void visualizeShip(String nickname){
+        if(gameState.equals("END GAME")){
+            visualizeFinalRanking();
+            return;
+        }
+
         if(!otherPlayers.containsKey(nickname)){
             System.out.println("Error: invalid nickname");
         }
@@ -104,11 +115,30 @@ public class View {
 
     //visualizes the state of the flight board
     public void visualizeFlightBoard(){
+        if(gameState.equals("END GAME")){
+            visualizeFinalRanking();
+            return;
+        }
+
         if(flightBoard == null){
             System.out.println("Error: unstarted game");
         }
         else{
             this.flightBoard.visualize();
+        }
+    }
+
+    //visualizes the final ranking of the game
+    public void visualizeFinalRanking(){
+        System.out.println("╔════════════════════════════╗");
+        System.out.println("║        GAME OVER !!!       ║");
+        System.out.println("║                            ║");
+        System.out.println("║    Final cosmic credits:   ║");
+        System.out.println("╚════════════════════════════╝");
+
+        System.out.println("👨‍🚀 Player: " + player.getNickname() + " " + convertColor(player.getColor()) + "          💰 Credits: " + player.getCredits());
+        for(ViewPlayer p: otherPlayers.values()){
+            System.out.println("👨‍🚀 Player: " + p.getNickname() + " " + convertColor(p.getColor()) + "          💰 Credits: " + p.getCredits());
         }
     }
 
@@ -320,5 +350,10 @@ public class View {
     //notifies a view that the current dice configuration must be invalidated because it has already been used
     public void updateInvalidDice(){
         this.dice.invalid();
+    }
+
+    //notifies the view about the fact that the game is finished
+    public void updateEndGame(){
+        this.gameState = "END GAME";
     }
 }
