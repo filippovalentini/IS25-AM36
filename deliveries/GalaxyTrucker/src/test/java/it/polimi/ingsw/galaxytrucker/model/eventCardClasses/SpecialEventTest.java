@@ -1,8 +1,6 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
-import it.polimi.ingsw.galaxytrucker.model.componentClasses.Cabin;
-import it.polimi.ingsw.galaxytrucker.model.componentClasses.CargoHold;
-import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
+import it.polimi.ingsw.galaxytrucker.model.componentClasses.*;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.SpecialEventType;
@@ -13,6 +11,8 @@ import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,18 +40,27 @@ class SpecialEventTest {
         }
         gameState.addPlayer(cl1, player1, Color.RED);
         gameState.addPlayer(cl2, player2, Color.YELLOW);
+        Component struct = new Structural(101, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
+        Component engine = new Engine(false, 101, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
+        gameState.assembleComponent(player1, struct, 1,3);
+        gameState.assembleComponent(player1, struct, 1,2);
+        gameState.assembleComponent(player1, struct, 1,4);
+        gameState.assembleComponent(player1, struct, 1,1);
+        gameState.assembleComponent(player1, struct, 1,5);
+        //gameState.assembleComponent(player1, engine, 2,1);
+        //gameState.assembleComponent(player1, engine, 2,5);
         gameState.setPosition(player1, 0);
         gameState.setPosition(player2, 6);
         gameState.addCrew(player1, 2, 3);
         gameState.addCrew(player2, 2, 3);
-        List<Component> shownComponents = gameState.getShownComponent();
+        /*List<Component> shownComponents = gameState.getShownComponent();
         for(int i=0; i<shownComponents.size(); i++) { //assemble the cabin at the left to the initial cabin
             if (shownComponents.get(i).getClass() == Cabin.class && shownComponents.get(i).getEastSide()!= Connector.UNIVERSAL) {
                 gameState.pickShown(player1, i);
                 gameState.assembleComponent(player1, 2, 2);
                 i=100000;
             }
-        }
+        }*/
         gameState.setGameState(State.CARD_SOLVING);
         stardustEvent = new SpecialEvent(SpecialEventType.STARDUST, 0);
         epidemicEvent = new SpecialEvent(SpecialEventType.EPIDEMIC, 0);
@@ -60,6 +69,7 @@ class SpecialEventTest {
     @Test
     void testSpecialEventStardust() {
         stardustEvent.specialEffect(gameState);
+        assertEquals(10, gameState.getPlayersPos().get(player1).getCell());
         assertEquals(2, gameState.getPlayersPos().get(player2).getCell());
     }
 

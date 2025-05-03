@@ -228,7 +228,16 @@ class ShipBoardTest {
 
     @Test
     void testCountExposedConnectors(){
-        assertEquals(4, shipBoard.countExposedConnectors()); // exposed connectors of initial cabin
+        Component struct = new Structural(101, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
+        Component engine = new Engine(false, 101, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
+        shipBoard.assembleComponent(struct, 1,3);
+        shipBoard.assembleComponent(struct, 1,2);
+        shipBoard.assembleComponent(struct, 1,4);
+        shipBoard.assembleComponent(struct, 1,1);
+        shipBoard.assembleComponent(struct, 1,5);
+        shipBoard.assembleComponent(engine, 2,1);
+        shipBoard.assembleComponent(engine, 2,5);
+        assertEquals(12, shipBoard.countExposedConnectors()); // exposed connectors of initial cabin
     }
 
     @Test

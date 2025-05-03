@@ -336,19 +336,19 @@ public class ShipBoard {
                     }
                     if(i<assembledComponents.size()-1){
                         Component c1 = assembledComponents.get(i+1).get(j);
-                        if(c.getNorthSide()!=Connector.SMOOTH && (!c1.isNotEmpty() || !c1.belongsToShip())){
+                        if(c.getSouthSide()!=Connector.SMOOTH && (!c1.isNotEmpty() || !c1.belongsToShip())){
                             exposedConnectors++;
                         }
                     }
                     if(j>0){
                         Component c1 = assembledComponents.get(i).get(j-1);
-                        if(c.getNorthSide()!=Connector.SMOOTH && (!c1.isNotEmpty() || !c1.belongsToShip())){
+                        if(c.getEastSide()!=Connector.SMOOTH && (!c1.isNotEmpty() || !c1.belongsToShip())){
                             exposedConnectors++;
                         }
                     }
                     if(j<assembledComponents.get(i).size()-1){
                         Component c1 = assembledComponents.get(i).get(j+1);
-                        if(c.getNorthSide()!=Connector.SMOOTH && (!c1.isNotEmpty() || !c1.belongsToShip())){
+                        if(c.getWestSide()!=Connector.SMOOTH && (!c1.isNotEmpty() || !c1.belongsToShip())){
                             exposedConnectors++;
                         }
                     }
