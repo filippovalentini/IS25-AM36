@@ -25,7 +25,7 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //converts a list of integers in a string
-    public String serializeList(List<Integer> list) {
+    public static String serializeList(List<Integer> list) {
         return list.toString()
                 .replaceAll("[\\[\\]\\s]", "");
     }

@@ -118,7 +118,7 @@ public class SocketClientHandler implements VirtualViewSocket {
     }
 
     //converts a serialized list of integers in an effective list
-    public List<Integer> deserializeList(String data) {
+    public static List<Integer> deserializeList(String data) {
         List<Integer> list = new ArrayList<>();
         for (String num : data.split(",")) {
             list.add(Integer.parseInt(num));

@@ -6,6 +6,8 @@ import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.AbandonedStation;
 import it.polimi.ingsw.galaxytrucker.model.eventCardClasses.EventCard;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.EmptyDeckException;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.PickedDeckException;
+import it.polimi.ingsw.galaxytrucker.network.socket.client.SocketServerHandler;
+import it.polimi.ingsw.galaxytrucker.network.socket.server.SocketClientHandler;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
