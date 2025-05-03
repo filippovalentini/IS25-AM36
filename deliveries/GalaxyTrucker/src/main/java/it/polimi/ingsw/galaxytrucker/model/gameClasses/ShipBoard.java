@@ -193,6 +193,9 @@ public class ShipBoard {
     }
     //initializes a cabin with an alien of the specified type, checking whether there is life support for it
     public void addAlien(boolean isPurple, int x, int y) throws AssembledComponentException, FullCabinException, NoLifeSupportException {
+        if(x==2 && y==3){
+            throw new InvalidPositionException("Cannot add alien in the initial cabin");
+        }
         boolean lifeSupport = false;
         if(x!=0){
             if(assembledComponents.get(x-1).get(y).supportsAlien(isPurple)){
@@ -852,6 +855,10 @@ public class ShipBoard {
         return goodsPrice;
     }
 
+    //methods for testing
+    public Map<String, VirtualView> getClients(){
+        return new HashMap<>(this.clients);
+    }
 }
 
 

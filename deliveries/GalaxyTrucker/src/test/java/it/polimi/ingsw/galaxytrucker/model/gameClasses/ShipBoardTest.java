@@ -4,12 +4,12 @@ import it.polimi.ingsw.galaxytrucker.model.componentClasses.*;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.AssembledComponentException;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.PickedComponentException;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.ReservedComponentException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
+import it.polimi.ingsw.galaxytrucker.network.rmi.client.ClientRMI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +20,7 @@ class ShipBoardTest {
     private ShipBoard shipBoard;
     private Component component1;
     private Component component2;
+    private List<Connector> universalConnectorList;
 
     @BeforeEach
     void init(){
@@ -36,6 +37,11 @@ class ShipBoardTest {
         connectorList1.add(Connector.SMOOTH);
         component1 = new Component(9, connectorList1);
         component2 = new Component(9, connectorList2);
+        universalConnectorList = new ArrayList<>();
+        universalConnectorList.add(Connector.UNIVERSAL);
+        universalConnectorList.add(Connector.UNIVERSAL);
+        universalConnectorList.add(Connector.UNIVERSAL);
+        universalConnectorList.add(Connector.UNIVERSAL);
     }
 
     @Test
@@ -59,6 +65,26 @@ class ShipBoardTest {
         assertEquals(Color.YELLOW, shipBoardYellow.getColor());
         Cabin yellowCabin = new Cabin(321, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
         assertEquals(shipBoardYellow.assembledComponents.get(2).get(3), yellowCabin);
+    }
+
+    @Test
+    void testGetImageID(){
+        assertEquals(2, shipBoard.getImageID()); // image of level two shipboard
+    }
+
+    @Test
+    void testAddListener(){
+        //create a virtual view client with same nick and color of the player in the game state
+        ClientRMI clientRMI;
+        String nick = "filippo";
+        try {
+            clientRMI = new ClientRMI(nick, Color.RED);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+        shipBoard.addListener(nick, clientRMI);
+        assertTrue(shipBoard.getClients().containsKey(nick));
+        assertEquals(clientRMI, shipBoard.getClients().get(nick));
     }
 
     @Test
@@ -172,6 +198,45 @@ class ShipBoardTest {
     }
 
     @Test
+    void testAddAlien(){
+        //add a cabin
+        Cabin cabinForAlien = new Cabin(9, universalConnectorList);
+        shipBoard.pickComponent(cabinForAlien);
+        shipBoard.assembleComponent(1,3); // over the initial cabin
+        //add life support
+        LifeSupport lifeSupport = new LifeSupport(true, -1, universalConnectorList);
+        shipBoard.pickComponent(lifeSupport);
+        shipBoard.assembleComponent(1,4); // right to the cabinForAlien
+        shipBoard.addAlien(true,1,3); //add alien
+        assertTrue(shipBoard.getAssembledComponent(1,3).hasMembers());
+        assertTrue(((Cabin)shipBoard.getAssembledComponent(1, 3)).hasPurpleAlien());
+    }
+
+    @Test
+    void testShouldNotAddAlienSupportIsMissing(){
+        Cabin cabinForAlien = new Cabin(9, universalConnectorList);
+        shipBoard.pickComponent(cabinForAlien);
+        shipBoard.assembleComponent(1,3);
+        assertThrows(NoLifeSupportException.class, () -> shipBoard.addAlien(true, 1,3));
+        assertEquals(0, shipBoard.getNumberCrew());
+    }
+
+    @Test
+    void testShouldNotAddAlienInInitialCabin(){
+        assertThrows(InvalidPositionException.class, () -> shipBoard.addAlien(true, 2,3));
+        assertEquals(0, shipBoard.getNumberCrew());
+    }
+
+    @Test
+    void testAddBatteries(){
+        Battery battery = new Battery(true,-1, universalConnectorList);
+        shipBoard.pickComponent(battery);
+        shipBoard.assembleComponent(1,3);
+        shipBoard.addBatteries(1,3);
+        assertEquals(2, shipBoard.getNumberBatteries());
+    }
+
+    @Test
     void testUpdateCorrectnessFloatingComponents(){
         assertTrue(shipBoard.isCorrect());
         List<Connector> connectorList1 = new ArrayList<>();
@@ -180,7 +245,6 @@ class ShipBoardTest {
         connectorList1.add(Connector.SINGLE);
         connectorList1.add(Connector.SMOOTH);
         component1 = new Component(9, connectorList1);
-        Component cabin = new Cabin(0, connectorList1);
         shipBoard.pickComponent(component1);
         shipBoard.assembleComponent(1,1);
         assertFalse(shipBoard.isCorrect());
@@ -195,6 +259,27 @@ class ShipBoardTest {
     void testDestroyNorth(){
         assertEquals(320, shipBoard.getAssembledComponent(2,3).getImageID());
         shipBoard.destroyNorth(3);
+        assertEquals(0, shipBoard.getAssembledComponent(2,3).getImageID());
+    }
+
+    @Test
+    void testDestroySouth(){
+        assertEquals(320, shipBoard.getAssembledComponent(2,3).getImageID());
+        shipBoard.destroySouth(3);
+        assertEquals(0, shipBoard.getAssembledComponent(2,3).getImageID());
+    }
+
+    @Test
+    void testDestroyEast(){
+        assertEquals(320, shipBoard.getAssembledComponent(2,3).getImageID());
+        shipBoard.destroyEast(2);
+        assertEquals(0, shipBoard.getAssembledComponent(2,3).getImageID());
+    }
+
+    @Test
+    void testDestroyWest(){
+        assertEquals(320, shipBoard.getAssembledComponent(2,3).getImageID());
+        shipBoard.destroyWest(2);
         assertEquals(0, shipBoard.getAssembledComponent(2,3).getImageID());
     }
 
@@ -224,6 +309,23 @@ class ShipBoardTest {
         shipBoard.assembleComponent(2,2);
         boolean smooth = shipBoard.smoothSide(Orientation.WEST, 1);
         assertTrue(smooth);
+    }
+
+    @Test
+    void testHasAllCabinsBatteriesFull(){
+        // add cabin
+        Cabin cabin = new Cabin(9, universalConnectorList);
+        shipBoard.pickComponent(cabin);
+        shipBoard.assembleComponent(1,3);
+        // add battery container
+        Battery battery = new Battery(true,9, universalConnectorList);
+        shipBoard.pickComponent(battery);
+        shipBoard.assembleComponent(1,4);
+        //fill
+        shipBoard.addCrew(2,3);
+        shipBoard.addCrew(1,3);
+        shipBoard.addBatteries(1,4);
+        assertTrue(shipBoard.hasAllCabinsBatteriesFull());
     }
 
     @Test
@@ -287,4 +389,14 @@ class ShipBoardTest {
         shipBoard.assembleComponent(1,3); //above the init cabin
         assertTrue(shipBoard.armedShipBoard(false, orientationN, 3));
     }
+
+    @Test
+    void testRemoveCrewMembers(){
+        shipBoard.addCrew(2,3);
+        assertEquals(2, shipBoard.getNumberCrew());
+        //remove one crew member from init cabin
+        shipBoard.removeCrewMembers(List.of(2), List.of(3), List.of(1), 1);
+        assertEquals(1, shipBoard.getNumberCrew());
+    }
+
 }

@@ -1051,7 +1051,7 @@ public class GameState {
     public void saleOfGoodsReward(){
         for(String nickname: playersPlay.keySet()){
             if(hasAbandoned(nickname)){
-                updatePlayerCredits(nickname, Math.abs(playersPlay.get(nickname).getGoodsPrice()/2));
+                updatePlayerCredits(nickname, (int) Math.ceil(playersPlay.get(nickname).getGoodsPrice() / 2));
             }
             else{
                 updatePlayerCredits(nickname, playersPlay.get(nickname).getGoodsPrice());

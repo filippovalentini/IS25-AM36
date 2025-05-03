@@ -29,6 +29,7 @@ public class Battery extends ConfigurableComponent {
     public Component clone(){//return a copy of the component
         Battery retComponent = new Battery(isDouble,this.imageID, new ArrayList<>(this.sides));
         retComponent.orientation = this.orientation;
+        retComponent.numberBatteries = this.numberBatteries;
         return retComponent;
     }
     @Override

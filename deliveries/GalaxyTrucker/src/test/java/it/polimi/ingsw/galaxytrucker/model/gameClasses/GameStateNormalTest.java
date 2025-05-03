@@ -2,6 +2,7 @@ package it.polimi.ingsw.galaxytrucker.model.gameClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.componentClasses.Battery;
 import it.polimi.ingsw.galaxytrucker.model.componentClasses.Cabin;
+import it.polimi.ingsw.galaxytrucker.model.componentClasses.CargoHold;
 import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
@@ -271,5 +272,79 @@ class GameStateNormalTest {
         gameState.setPosition(player1, 0);
         gameState.setPosition(player2, 6);
         assertThrows(InvalidActionException.class, () -> gameState.assembleComponent(player1, 0, 0));
+    }
+
+    @Test
+    void testFinishOrderReward() {
+        gameState.setPosition(player1, 0);
+        gameState.setPosition(player2, 1);
+        gameState.updateTurns(); //sorts player in playersPlay
+        gameState.finishOrderReward(); //adds rewards for finish order
+        //check final credits of players
+        assertEquals(8, gameState.getPlayersPlay().get(player2).getCredits());
+        assertEquals(6, gameState.getPlayersPlay().get(player1).getCredits());
+    }
+
+    @Test
+    void testBestShipReward() {
+        //player one has more connector exposed
+        Component cabin = new Cabin(-1, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
+        gameState.assembleComponent(player1, cabin, 2, 2);
+        gameState.setPosition(player1, 0);
+        gameState.setPosition(player2, 1);
+        gameState.bestShipReward();
+        assertEquals(4, gameState.getPlayersPlay().get(player2).getCredits());
+    }
+
+    @Test
+    void testLossPenalty(){
+        //player one has one lost component
+        Component cabin = new Cabin(-1, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
+        gameState.assembleComponent(player1, cabin, 2, 2);
+        gameState.setPosition(player1, 0);
+        gameState.setPosition(player2, 1);
+        gameState.destroyComponent(player1, 2,2);
+        gameState.lossPenalty();
+        assertEquals(-1, gameState.getPlayersPlay().get(player1).getCredits());
+    }
+
+    @Test
+    void testSaleOfGoodsReward(){
+        //player one has quit
+        CargoHold cargoHold = new CargoHold(true,-1, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
+        gameState.assembleComponent(player1, cargoHold, 2, 2);
+        gameState.setPosition(player1, 0);
+        gameState.setPosition(player2, 1);
+        gameState.addCrew(player1, 2,3);
+        gameState.addCrew(player2, 2,3);
+        gameState.checkShipBoards();
+        gameState.substituteGoods(player1, 2,2,Color.YELLOW,0);
+        gameState.substituteGoods(player1, 2,2,Color.BLUE,1);
+        gameState.quitGame(player1);
+        gameState.saleOfGoodsReward();
+        assertEquals(2, gameState.getPlayersPlay().get(player1).getCredits());
+    }
+
+    @Test
+    void testComputeTotalRewards(){
+        //player one has finishes first and has one lost component
+        Component cabinToDestroy = new Cabin(-1, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
+        gameState.assembleComponent(player1, cabinToDestroy, 2, 1);
+        gameState.setPosition(player1, 1);
+        gameState.setPosition(player2, 0);
+        gameState.addCrew(player1, 2,3);
+        gameState.addCrew(player1, 2,1);
+        gameState.addCrew(player2, 2,3);
+        gameState.checkShipBoards();
+        gameState.destroyComponent(player1, 2,1);
+        gameState.checkShipBoards();
+        //player two has more connector exposed and some goods
+        CargoHold cargoHoldExposed = new CargoHold(true, -1, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
+        gameState.assembleComponent(player2, cargoHoldExposed, 2, 2);
+        gameState.substituteGoods(player2, 2,2,Color.BLUE,0);
+        gameState.substituteGoods(player2, 2,2,Color.BLUE,1);
+        gameState.computeTotalRewards();
+        assertEquals(8-1+4, gameState.getPlayersPlay().get(player1).getCredits());
+        assertEquals(6+2, gameState.getPlayersPlay().get(player2).getCredits());
     }
 }

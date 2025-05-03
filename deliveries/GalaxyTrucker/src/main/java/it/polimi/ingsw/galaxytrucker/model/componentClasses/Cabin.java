@@ -90,6 +90,9 @@ public class Cabin extends Component {
         //return a copy of the component
         Cabin retComponent = new Cabin(this.imageID, new ArrayList<>(this.sides));
         retComponent.orientation = this.orientation;
+        retComponent.numberCrew = this.numberCrew;
+        retComponent.purpleAlien = this.purpleAlien;
+        retComponent.brownAlien = this.brownAlien;
         return retComponent;
     }
 }
