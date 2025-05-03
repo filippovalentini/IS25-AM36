@@ -1027,7 +1027,7 @@ public class GameState {
         String bestShipPlayer = "";
         int minExposedConnectors = 1000;
         int exposedConnectorsCount;
-        for(String nickname: playersPlay.keySet()){
+        for(String nickname: playersPos.keySet()){
             exposedConnectorsCount = countExposedConnectors(nickname);
             if(exposedConnectorsCount < minExposedConnectors){
                 bestShipPlayer = nickname;
