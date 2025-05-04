@@ -84,6 +84,7 @@ public class CargoHold extends ConfigurableComponent {
             if(goods.get(i).equals(color)){
                 goods.remove(i); //the list is shifted
                 i--; //decrement due to shifted list
+                deleted++;
             }
         }
     }
