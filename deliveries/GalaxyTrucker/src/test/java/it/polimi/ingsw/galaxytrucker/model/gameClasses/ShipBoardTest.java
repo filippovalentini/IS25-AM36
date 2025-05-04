@@ -5,6 +5,8 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
+import it.polimi.ingsw.galaxytrucker.model.shotClasses.CannonShot;
+import it.polimi.ingsw.galaxytrucker.model.shotClasses.Meteor;
 import it.polimi.ingsw.galaxytrucker.network.rmi.client.ClientRMI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -399,4 +401,200 @@ class ShipBoardTest {
         assertEquals(1, shipBoard.getNumberCrew());
     }
 
+    @Test
+    void testSubstituteGoods(){
+        CargoHold cargoHold = new CargoHold(true, -1, universalConnectorList);
+        shipBoard.pickComponent(cargoHold);
+        shipBoard.assembleComponent(2,2);
+        CargoSpecial cargoSpecial = new CargoSpecial(true, -1, universalConnectorList);
+        shipBoard.pickComponent(cargoSpecial);
+        shipBoard.assembleComponent(2,1);
+        //cargo hold at the end should have blue and yellow
+        shipBoard.substituteGoods(2,2,Color.BLUE,0);
+        shipBoard.substituteGoods(2,2,Color.BLUE,1);
+        shipBoard.substituteGoods(2,2,Color.YELLOW,1);
+        assertEquals(Color.BLUE,shipBoard.getAssembledComponent(2,2).getGoods().get(0));
+        assertEquals(Color.YELLOW,shipBoard.getAssembledComponent(2,2).getGoods().get(1));
+        //cargo special at the end should have 2 reds
+        shipBoard.substituteGoods(2,1,Color.RED,0);
+        shipBoard.substituteGoods(2,1,Color.BLUE,1);
+        shipBoard.substituteGoods(2,1,Color.RED,1);
+        assertEquals(Color.RED, shipBoard.getAssembledComponent(2,1).getGoods().get(0));
+        assertEquals(Color.RED, shipBoard.getAssembledComponent(2,1).getGoods().get(1));
+    }
+
+    @Test
+    void testMeteorAttack(){
+        Meteor meteor = new Meteor(false, Orientation.SOUTH);
+        shipBoard.meteorAttack(meteor, 3, false, false); //destroys init cabin
+        assertEquals(1, shipBoard.getLostComponents());
+        assertFalse(shipBoard.getAssembledComponent(2,3).isNotEmpty());
+    }
+
+    @Test
+    void testCannonFireAttack(){
+        CannonShot cannonShot = new CannonShot(false, Orientation.EAST);
+        shipBoard.cannonFireAttack(cannonShot, 2, false); //destroys init cabin
+        assertEquals(1, shipBoard.getLostComponents());
+        assertFalse(shipBoard.getAssembledComponent(2,3).isNotEmpty());
+    }
+
+    @Test
+    void testGetNumberGoods(){
+        CargoHold cargoHold = new CargoHold(true, -1, universalConnectorList);
+        shipBoard.pickComponent(cargoHold);
+        shipBoard.assembleComponent(2,2);
+        //cargo hold has blue and yellow
+        shipBoard.substituteGoods(2,2,Color.BLUE,0);
+        assertEquals(1, shipBoard.getNumberGoods());
+        shipBoard.substituteGoods(2,2,Color.YELLOW,1);
+        assertEquals(2, shipBoard.getNumberGoods());
+    }
+
+    @Test
+    void testRemoveSpecificGoods(){
+        CargoHold cargoHold = new CargoHold(true, -1, universalConnectorList);
+        shipBoard.pickComponent(cargoHold);
+        shipBoard.assembleComponent(2,2);
+        shipBoard.substituteGoods(2,2,Color.BLUE,0);
+        assertEquals(1, shipBoard.getNumberGoods());
+        assertEquals(1, shipBoard.removeSpecificGoods(Color.RED, 1)); //one red is missing
+        assertEquals(0, shipBoard.removeSpecificGoods(Color.BLUE, 1)); //one blue is removed
+        assertEquals(0, shipBoard.getNumberGoods());
+    }
+
+    @Test
+    void testLosePreciousGoods(){
+        CargoHold cargoHold = new CargoHold(true, -1, universalConnectorList);
+        shipBoard.pickComponent(cargoHold);
+        shipBoard.assembleComponent(2,2);
+        shipBoard.substituteGoods(2,2,Color.BLUE,0);
+        shipBoard.substituteGoods(2,2,Color.YELLOW,1);
+        shipBoard.losePreciousGoods(1); //yellow must be lost
+        assertEquals(1, shipBoard.getNumberGoods());
+        assertEquals(Color.BLUE,shipBoard.getAssembledComponent(2,2).getGoods().getFirst());
+    }
+
+    @Test
+    void testGetNumberDoubleEngines(){
+        Engine dEngine1 = new Engine(true, -1, universalConnectorList);
+        shipBoard.pickComponent(dEngine1);
+        shipBoard.assembleComponent(2,2);
+        Engine dEngine2 = new Engine(true, -1, universalConnectorList);
+        shipBoard.pickComponent(dEngine2);
+        shipBoard.assembleComponent(2,4);
+        Engine engine = new Engine(false, -1, universalConnectorList);
+        shipBoard.pickComponent(engine);
+        shipBoard.assembleComponent(3,3);
+        assertEquals(2, shipBoard.getNumberDoubleEngines());
+    }
+
+    @Test
+    void testGetNumberSingleEngines(){
+        Engine dEngine = new Engine(true, -1, universalConnectorList);
+        shipBoard.pickComponent(dEngine);
+        shipBoard.assembleComponent(2,2);
+        Engine engine1 = new Engine(false, -1, universalConnectorList);
+        shipBoard.pickComponent(engine1);
+        shipBoard.assembleComponent(2,4);
+        Engine engine2 = new Engine(false, -1, universalConnectorList);
+        shipBoard.pickComponent(engine2);
+        shipBoard.assembleComponent(3,3);
+        assertEquals(2, shipBoard.getNumberSingleEngines());
+    }
+
+    @Test
+    void testGetNumberDoubleCannons(){
+        Cannon dCannon1 = new Cannon(true, -1, universalConnectorList);
+        shipBoard.pickComponent(dCannon1);
+        shipBoard.assembleComponent(2,2);
+        Cannon dCannon2 = new Cannon(true, -1, universalConnectorList);
+        shipBoard.pickComponent(dCannon2);
+        shipBoard.assembleComponent(2,4);
+        Cannon cannon = new Cannon(false, -1, universalConnectorList);
+        shipBoard.pickComponent(cannon);
+        shipBoard.assembleComponent(1,3);
+        assertEquals(2, shipBoard.getNumberDoubleCannons());
+    }
+
+    @Test
+    void testGetNumberSingleCannons(){
+        Cannon dCannon1 = new Cannon(true, -1, universalConnectorList);
+        shipBoard.pickComponent(dCannon1);
+        shipBoard.assembleComponent(2,2);
+        Cannon cannon1 = new Cannon(false, -1, universalConnectorList);
+        shipBoard.pickComponent(cannon1);
+        shipBoard.assembleComponent(2,4);
+        Cannon cannon2 = new Cannon(false, -1, universalConnectorList);
+        shipBoard.pickComponent(cannon2);
+        shipBoard.assembleComponent(1,3);
+        assertEquals(2, shipBoard.getNumberSingleCannons());
+    }
+
+    @Test
+    void testGetNumberForwardDoubleCannons(){
+        //shipboard has one double cannon forward and the other horizontal
+        Cannon dCannon1 = new Cannon(true, -1, universalConnectorList);
+        shipBoard.pickComponent(dCannon1);
+        shipBoard.assembleComponent(2,2);
+        Cannon dCannon2 = new Cannon(true, -1, universalConnectorList);
+        shipBoard.pickComponent(dCannon2);
+        shipBoard.rotatePickedComponent();
+        shipBoard.assembleComponent(2,4);
+        assertEquals(1, shipBoard.getNumberForwardDoubleCannons());
+    }
+
+    @Test
+    void testGetNumberForwardSingleCannons(){
+        //shipboard has one single cannon forward and the other horizontal
+        Cannon cannon1 = new Cannon(false, -1, universalConnectorList);
+        shipBoard.pickComponent(cannon1);
+        shipBoard.assembleComponent(2,2);
+        Cannon cannon2 = new Cannon(false, -1, universalConnectorList);
+        shipBoard.pickComponent(cannon2);
+        shipBoard.rotatePickedComponent();
+        shipBoard.assembleComponent(2,4);
+        assertEquals(1, shipBoard.getNumberForwardSingleCannons());
+    }
+
+    @Test
+    void testGetCannonStrength(){
+        //shipboard has one double cannon forward and a single cannon horizontal
+        Cannon dCannon = new Cannon(true, -1, universalConnectorList);
+        shipBoard.pickComponent(dCannon);
+        shipBoard.assembleComponent(2,2);
+        Cannon cannon = new Cannon(false, -1, universalConnectorList);
+        shipBoard.pickComponent(cannon);
+        shipBoard.rotatePickedComponent();
+        shipBoard.assembleComponent(2,4);
+        assertEquals(0.5, shipBoard.getCannonStrength(0));
+    }
+
+    @Test
+    void testGetEngineStrength(){
+        //shipboard has one double engine and one single engine
+        Engine dEngine = new Engine(true, -1, universalConnectorList);
+        shipBoard.pickComponent(dEngine);
+        shipBoard.assembleComponent(2,2);
+        Engine engine = new Engine(false, -1, universalConnectorList);
+        shipBoard.pickComponent(engine);
+        shipBoard.assembleComponent(2,4);
+        assertEquals(1, shipBoard.getEngineStrength(0));
+    }
+
+    @Test
+    void testGetGoodsPrice(){
+        //shipboard has 1 blue, 2 yellow and 1 red
+        CargoHold cargoHold = new CargoHold(false, -1, universalConnectorList);
+        shipBoard.pickComponent(cargoHold);
+        shipBoard.assembleComponent(2,2);
+        CargoSpecial cargoSpecial = new CargoSpecial(true, -1, universalConnectorList);
+        shipBoard.pickComponent(cargoSpecial);
+        shipBoard.assembleComponent(2,1);
+        shipBoard.substituteGoods(2,2,Color.BLUE,0);
+        shipBoard.substituteGoods(2,2,Color.YELLOW,1);
+        shipBoard.substituteGoods(2,2,Color.YELLOW,2);
+        shipBoard.substituteGoods(2,1,Color.RED,0);
+        assertEquals(11, shipBoard.getGoodsPrice());
+    }
 }

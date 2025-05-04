@@ -9,12 +9,10 @@ import java.util.*;
 
 public class CargoHold extends ConfigurableComponent {
     protected List<Color> goods;        //list of goods stored in the cargo hold
-    //protected int numberGoods;      //number of goods stored in the cargo hold (can be inferred from the list)
 
     public CargoHold(boolean isDouble, int imageID, List<Connector> sides) {       //constructor
         super(isDouble, imageID, sides);
         goods = new ArrayList<>();
-        //numberGoods = 0;
     }
 
     @Override
@@ -27,7 +25,6 @@ public class CargoHold extends ConfigurableComponent {
             throw new FullCargoHoldException("The Cargo Hold is full");
         } else {
             goods.add(good);
-            //numberGoods++;
         }
     }
 
@@ -82,7 +79,14 @@ public class CargoHold extends ConfigurableComponent {
         return numberGoods;
     }
     @Override
-    public void removeSpecificGoods(Color color, int numberGoods){}
+    public void removeSpecificGoods(Color color, int numberGoods){
+        for(int i=0, deleted=0; i<goods.size() && deleted<numberGoods; i++){
+            if(goods.get(i).equals(color)){
+                goods.remove(i); //the list is shifted
+                i--; //decrement due to shifted list
+            }
+        }
+    }
 
     @Override
     public Component clone(){//return a copy of the component
