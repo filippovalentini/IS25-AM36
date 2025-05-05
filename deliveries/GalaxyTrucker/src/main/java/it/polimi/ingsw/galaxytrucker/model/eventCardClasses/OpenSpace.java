@@ -24,8 +24,8 @@ public class OpenSpace extends EventCard {
             gameState.setGameState(State.CARD_PICKING);
         }
         if (engineStrength == 0) {
-            System.out.println("No engine strength available");
             gameState.quitGame(nickname);
+            throw new NoStrengthException("Insufficient engine strength: quitting game...");
         } else {
             gameState.changePlayerPosition(nickname, (int) Math.abs(engineStrength));
             gameState.nextTurn();

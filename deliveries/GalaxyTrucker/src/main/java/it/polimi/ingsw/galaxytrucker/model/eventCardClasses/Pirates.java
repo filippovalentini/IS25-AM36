@@ -23,9 +23,6 @@ public class Pirates extends AdvancedEnemies {
 
     public boolean isDefeated() {return this.defeated;}
 
-    public List<CannonShot> getCannonFire() {
-        return cannonFire;
-    }
     @Override
     public void hitShip(GameState gameState, String nickname, int diceResult, boolean activateShield, boolean activateCannon /*ignored*/) throws InvalidActionException, NoBatteriesException {
         if(isDefeated() || !cannonFirePhase){  //if the enemy has been defeated or hasn't defeated the current player, a player can't invoke this method
@@ -38,16 +35,16 @@ public class Pirates extends AdvancedEnemies {
         int direction = (orientation.isVertical() ? diceResult-4 : diceResult-5);
         gameState.cannonFireAttack(nickname, cannonFire.get(currentCannonFire), direction, activateShield); //current cannon shot hits the ship
         if(currentCannonFire == cannonFire.size() - 1) {//if no more cannon shots have to hit the ship, the player's turn is finished
+            currentCannonFire = 0;
+            cannonFirePhase = false;
             if (gameState.isLastInTurn(nickname)) {
                 gameState.setGameState(State.CARD_PICKING);
+            }
             if (gameState.getCrewCount(nickname) == 0) {
-                System.out.println("You lost all your crew member.");
                 gameState.quitGame(nickname);
-            } else {
-                  gameState.nextTurn();
-                }
-                currentCannonFire = 0;
-                cannonFirePhase = false;
+                throw new NoCrewException("You have lost all your crew: quitting game...");
+            }
+            else {
                 gameState.nextTurn();
             }
         }

@@ -24,5 +24,6 @@ public enum PlayerActionType {
     SKIP,
     LANDING,
     HIT_SHIP,
-    FLY
+    FLY,
+    DEFEAT
 }

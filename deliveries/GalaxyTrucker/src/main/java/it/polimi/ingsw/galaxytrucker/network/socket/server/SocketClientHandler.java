@@ -92,6 +92,9 @@ public class SocketClientHandler implements VirtualViewSocket {
                     case FLY:
                         controller.fly(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)));
                         break;
+                    case DEFEAT:
+                        controller.defeat(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Boolean.parseBoolean(message.getGameParams(2)));
+                        break;
                     default:
                         notifyError("Error: unknown command sent by client");
                 }

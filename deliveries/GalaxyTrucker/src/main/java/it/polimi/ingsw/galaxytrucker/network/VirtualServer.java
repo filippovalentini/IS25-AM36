@@ -4,6 +4,8 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.AssembledComponentException;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.FullCabinException;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.NoBatteriesException;
+import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
 
 import java.util.List;
@@ -79,4 +81,8 @@ public interface VirtualServer {
 
     //invoked when a player wants to fly across the flight board exploiting its engine strength
     void fly(String nickname, int usedBatteries) throws Exception;
+
+    //invoked when a player wants to defeat an enemy; the player can decide whether to lose flight days
+    //to gain credits/goods or not
+    void defeat(String nickname, int usedBatteries, boolean loseDays) throws Exception;
 }

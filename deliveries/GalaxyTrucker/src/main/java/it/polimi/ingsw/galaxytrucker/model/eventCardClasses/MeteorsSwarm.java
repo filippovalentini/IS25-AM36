@@ -4,6 +4,7 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.NoBatteriesException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.NoCrewException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import it.polimi.ingsw.galaxytrucker.model.shotClasses.Meteor;
 
@@ -35,8 +36,8 @@ public class MeteorsSwarm extends EventCard{
                 gameState.setGameState(State.CARD_PICKING);
             }
             if (gameState.getCrewCount(nickname)==0) {
-                System.out.println("You've lost all your crew");
                 gameState.quitGame(nickname);
+                throw new NoCrewException("You have lost all your crew: quitting game...");
             }else{
                 gameState.nextTurn();
             }

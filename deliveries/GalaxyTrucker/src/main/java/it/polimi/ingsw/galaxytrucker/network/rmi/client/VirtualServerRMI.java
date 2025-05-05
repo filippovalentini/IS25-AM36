@@ -1,6 +1,9 @@
 package it.polimi.ingsw.galaxytrucker.network.rmi.client;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.NoBatteriesException;
+import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 
@@ -97,4 +100,10 @@ public interface VirtualServerRMI extends Remote, VirtualServer {
     //invoked when a player wants to fly across the flight board exploiting its engine strength
     @Override
     void fly(String nickname, int usedBatteries) throws RemoteException;
+
+    //invoked when a player wants to defeat an enemy; the player can decide whether to lose flight days
+    //to gain credits/goods or not
+    @Override
+    void defeat(String nickname, int usedBatteries, boolean loseDays) throws RemoteException;
+
 }

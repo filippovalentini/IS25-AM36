@@ -2,6 +2,7 @@ package it.polimi.ingsw.galaxytrucker.network.rmi.server;
 
 import it.polimi.ingsw.galaxytrucker.controller.GameController;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 import it.polimi.ingsw.galaxytrucker.network.rmi.client.VirtualServerRMI;
 
@@ -376,6 +377,23 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
     public void fly(String nickname, int usedBatteries) throws RemoteException{
         try{
             controller.fly(nickname, usedBatteries);
+        }
+        catch(Exception e){
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
+        }
+    }
+
+    //invoked when a player wants to defeat an enemy; the player can decide whether to lose flight days
+    //to gain credits/goods or not
+    @Override
+    public void defeat(String nickname, int usedBatteries, boolean loseDays) throws RemoteException{
+        try{
+            controller.defeat(nickname, usedBatteries, loseDays);
         }
         catch(Exception e){
             try{

@@ -391,6 +391,19 @@ public class SocketClient implements VirtualViewSocket {
                         }
                         serverHandler.landing(nickname, x, y, removedCrew);
                         break;
+                    case "defeat":
+                        if (tokens.length < 3) {
+                            System.out.println("Error: specify batteries to use and whether to lose days or not");
+                            break;
+                        }
+                        if(!tokens[2].equals("yes") && !tokens[2].equals("no")) {
+                            System.out.println("Error: specify yes or no for losing days or not");
+                            break;
+                        }
+                        int batteries1 = Integer.parseInt(tokens[1]);
+                        boolean loseDays = (tokens[2].equals("yes"));
+                        serverHandler.defeat(nickname, batteries1, loseDays);
+                        break;
                     default:
                         System.out.println("Error: unknown command");
                 }

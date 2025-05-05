@@ -201,4 +201,13 @@ public class SocketServerHandler implements VirtualServerSocket {
         out.writeObject(message);
     }
 
+    //invoked when a player wants to defeat an enemy; the player can decide whether to lose flight days
+    //to gain credits/goods or not
+    @Override
+    public void defeat(String nickname, int usedBatteries, boolean loseDays) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(usedBatteries), String.valueOf(loseDays)));
+        PlayerActionMessage message = new PlayerActionMessage(PlayerActionType.DEFEAT, params);
+        out.writeObject(message);
+    }
+
 }

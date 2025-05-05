@@ -83,6 +83,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
         System.out.println("3 - landing [<x> <y> <removedCrew>] (land in an abandoned ship specifying the cabins where to remove the crew and the respective quantity)");
         System.out.println("4 - hit <yes/no> <yes/no> (decide whether to activate or not shield and/or double cannon to protect your ship)");
         System.out.println("5 - fly <numberBatteries> (decide how many batteries to use to fly across the flight board)");
+        System.out.println("6 - defeat <numberBatteries> <yes/no> (decide how many batteries to use to improve your cannon strength and whether to lose days to get a reward)");
     }
 
     //runs a command line interface to send requests to the server
@@ -276,6 +277,19 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                             removedCrew.add(Integer.parseInt(tokens[i+2]));
                         }
                         server.landing(nickname, x, y, removedCrew);
+                        break;
+                    case "defeat":
+                        if (tokens.length < 3) {
+                            System.out.println("Error: specify batteries to use and whether to lose days or not");
+                            break;
+                        }
+                        if(!tokens[2].equals("yes") && !tokens[2].equals("no")) {
+                            System.out.println("Error: specify yes or no for losing days or not");
+                            break;
+                        }
+                        int batteries1 = Integer.parseInt(tokens[1]);
+                        boolean loseDays = (tokens[2].equals("yes"));
+                        server.defeat(nickname, batteries1, loseDays);
                         break;
                     default:
                         System.out.println("Error: unknown command");

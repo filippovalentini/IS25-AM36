@@ -35,7 +35,7 @@ public class AbandonedShip extends DayLossCard{
             throw new InvalidActionException("Already used this card.");
         }
         if (gameState.getCrewCount(nickname)< this.requiredCrew) {
-            throw new NoCrewException("You do not have enough crew member");
+            throw new NoCrewException("You do not have enough crew members");
         }
         gameState.removeCrewMembers(nickname, x, y, z, this.requiredCrew);
         gameState.updatePlayerCredits(nickname, this.gainedCredits);

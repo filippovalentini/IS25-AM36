@@ -4,6 +4,7 @@ import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.NoCrewException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import it.polimi.ingsw.galaxytrucker.model.shotClasses.CannonShot;
 import it.polimi.ingsw.galaxytrucker.network.rmi.client.ClientRMI;
@@ -119,9 +120,9 @@ class PiratesTest {
         boolean looseDays = true;
         boolean activateShield = false;
         boolean activateCannon = false;
-        List<Integer> y= new ArrayList<>(1);
-        List<Integer> x= new ArrayList<>(1);
-        List<Integer> e= new ArrayList<>(1);
+        List<Integer> y= new ArrayList<>();
+        List<Integer> x= new ArrayList<>();
+        List<Integer> e= new ArrayList<>();
         x.add(2);
         y.add(3);
         e.add(2);
@@ -129,7 +130,8 @@ class PiratesTest {
         gameState.removeCrewMembers(nickname,x,y,e,2);
         pirates.hitShip(gameState, nickname, diceResult, activateShield, activateCannon);
         pirates.hitShip(gameState, nickname, diceResult, activateShield, activateCannon);
-        pirates.hitShip(gameState, nickname, diceResult, activateShield, activateCannon);
+        assertThrows(NoCrewException.class, () -> pirates.hitShip(gameState, nickname, diceResult, activateShield, activateCannon));
         assertFalse(gameState.getPlayersPos().containsKey(nickname));
+        assertEquals(State.CARD_PICKING, gameState.getGameState());
     }
 }

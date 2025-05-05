@@ -89,7 +89,9 @@ class SlaversTest {
         slavers2.landing(gameState, player1, new ArrayList<>(Arrays.asList(1,1)), new ArrayList<>(Arrays.asList(4,2)), new ArrayList<>(Arrays.asList(1,2)));
         assertEquals(player2, gameState.getTurnPlayer());
         assertEquals(3, gameState.getCrewCount(player1));
-        slavers2.defeat(gameState, player2, 0, true);
-        assertThrows(NoCrewException.class, () -> slavers2.landing(gameState, player2, new ArrayList<>(Arrays.asList(1,1)), new ArrayList<>(Arrays.asList(4,2)), new ArrayList<>(Arrays.asList(1,2))));
+        assertThrows(NoCrewException.class, () -> slavers2.defeat(gameState, player2, 0, true));
+        assertEquals(State.CARD_PICKING, gameState.getGameState());
+        assertEquals(player1, gameState.getTurnPlayer());
+        assertEquals(null, gameState.getPlayersPos().get(player2));
     }
 }

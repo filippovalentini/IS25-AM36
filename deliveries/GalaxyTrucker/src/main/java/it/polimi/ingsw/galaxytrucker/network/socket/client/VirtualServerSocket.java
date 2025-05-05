@@ -93,4 +93,9 @@ public interface VirtualServerSocket extends VirtualServer {
     //invoked when a player wants to fly across the flight board exploiting its engine strength
     @Override
     void fly(String nickname, int usedBatteries) throws IOException;
+
+    //invoked when a player wants to defeat an enemy; the player can decide whether to lose flight days
+    //to gain credits/goods or not
+    @Override
+    void defeat(String nickname, int usedBatteries, boolean loseDays) throws IOException;
 }

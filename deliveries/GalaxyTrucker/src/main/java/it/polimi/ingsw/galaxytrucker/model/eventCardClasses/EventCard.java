@@ -34,9 +34,7 @@ public class EventCard  {
     }
     //invoked when a card is picked from the deck during the solving phase; it has an effect on all the players of
     //the game without requiring user actions
-    public void specialEffect(GameState gameState) throws InvalidActionException {
-        return;
-    }
+    public void specialEffect(GameState gameState) throws InvalidActionException {}
     //invoked when a player wants to defeat an enemy; the player can decide whether to lose flight days
     //to gain credits/goods or not
     public void defeat(GameState gameState, String nickname, int usedBatteries, boolean loseDays) throws InvalidActionException, NoBatteriesException {

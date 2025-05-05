@@ -25,9 +25,6 @@ public class Slavers extends AdvancedEnemies{
         if (isDefeated() || !crewLossPhase) {
             throw new InvalidActionException("Invalid action");
         }
-        if (gameState.getCrewCount(nickname)< this.crewLoss) {
-            throw new NoCrewException("You do not have enough crew member");
-        }
         gameState.removeCrewMembers(nickname, x, y, z, this.crewLoss);
         if(gameState.isLastInTurn(nickname)) {
             gameState.setGameState(State.CARD_PICKING);
@@ -63,7 +60,16 @@ public class Slavers extends AdvancedEnemies{
         else{
             //if cannonStrength<this.enemyStrength, the slavers have defeated the player; nothing happens, but
             //the player is forced to lose crew members, otherwise the game can't go on
-            crewLossPhase = true;
+            if (gameState.getCrewCount(nickname)< this.crewLoss) {
+                if(gameState.isLastInTurn(nickname)) {
+                    gameState.setGameState(State.CARD_PICKING);
+                }
+                gameState.quitGame(nickname);
+                throw new NoCrewException("You do not have enough crew members: quitting game...");
+            }
+            else{
+                crewLossPhase = true;
+            }
         }
     }
 }
