@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CombatZoneTest {
     private CombatZone combatZoneLV1;
@@ -99,7 +100,8 @@ class CombatZoneTest {
 
     @Test
     void testShouldNotUseBatteriesNotAvailableL1(){
-        combatZoneLV1.specialEffect(gameState); //applies the effect so it will be in second phase
+        combatZoneLV1.specialEffect(gameState);
+        //applies the effect so it will be in second phase
         assertThrows(NoBatteriesException.class, () -> {combatZoneLV1.useBatteries(gameState, player2, 1000);});
     }
 
@@ -115,9 +117,18 @@ class CombatZoneTest {
     void testHitShipNotEmptyColumnL1(){
         combatZoneLV1.specialEffect(gameState); //applies the effect so it will be in second phase
         //the player2 should lose the component (battery)
-        assertEquals(0, gameState.getPlayersPlay().get(player2).getShipBoard().getLostComponents());
-        combatZoneLV1.hitShip(gameState, player2, 2+4, false, false);
-        assertEquals(1, gameState.getPlayersPlay().get(player2).getShipBoard().getLostComponents());
+        combatZoneLV1.useBatteries(gameState, player2, 2);
+        combatZoneLV1.useBatteries(gameState, player1, 0); //player1 should be the next in turn ready to apply the penalty
+        List<Integer> x = new ArrayList<>();
+        x.add(2);
+        List<Integer> y = new ArrayList<>();
+        y.add(3);
+        List<Integer> crewMemToRemove = new ArrayList<>();
+        crewMemToRemove.add(2);
+        combatZoneLV1.landing(gameState, player1, x, y, crewMemToRemove); //player1 removes 2 crew member
+        assertEquals(0, gameState.getPlayersPlay().get(player1).getShipBoard().getLostComponents());
+        combatZoneLV1.hitShip(gameState, player1, 2+4, false, false);
+        assertEquals(1, gameState.getPlayersPlay().get(player1).getShipBoard().getLostComponents());
     }
 
     //---------------------------------------------------------------------------------------------------

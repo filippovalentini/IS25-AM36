@@ -173,9 +173,6 @@ public class CombatZone extends EventCard{
     public void hitShip(GameState gameState, String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException {
         if(levelOne) {
             if(phase==3) {
-                if(!Objects.equals(nickname, worstCannonPlayer)){
-                    throw new InvalidActionException("You are not the player with less cannon Strength");
-                }
                 if (activateShield && gameState.getNumberBatteries(nickname) == 0) {
                     throw new InvalidActionException("Too few batteries");
                 }
