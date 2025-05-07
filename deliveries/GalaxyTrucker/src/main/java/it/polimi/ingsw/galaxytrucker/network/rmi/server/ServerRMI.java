@@ -404,4 +404,20 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
             }
         }
     }
+
+    //invoked when a player decides to load goods inside cargo hold components of its ship
+    @Override
+    public void loadGoods(String nickname, List<Integer> x, List<Integer> y) throws RemoteException{
+        try{
+            controller.loadGoods(nickname, x, y);
+        }
+        catch(Exception e){
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
+        }
+    }
 }

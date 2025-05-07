@@ -106,4 +106,8 @@ public interface VirtualServerRMI extends Remote, VirtualServer {
     @Override
     void defeat(String nickname, int usedBatteries, boolean loseDays) throws RemoteException;
 
+    //invoked when a player decides to load goods inside cargo hold components of its ship
+    @Override
+    void loadGoods(String nickname, List<Integer> x, List<Integer> y) throws RemoteException;
+
 }

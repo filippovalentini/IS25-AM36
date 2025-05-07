@@ -95,6 +95,9 @@ public class SocketClientHandler implements VirtualViewSocket {
                     case DEFEAT:
                         controller.defeat(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Boolean.parseBoolean(message.getGameParams(2)));
                         break;
+                    case LOAD_GOODS:
+                        controller.loadGoods(message.getGameParams(0), deserializeList(message.getGameParams(1)), deserializeList(message.getGameParams(2)));
+                        break;
                     default:
                         notifyError("Error: unknown command sent by client");
                 }
@@ -285,6 +288,14 @@ public class SocketClientHandler implements VirtualViewSocket {
     public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(x), String.valueOf(y), String.valueOf(isPurple), String.valueOf(added)));
         GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.ALIEN_CHANGE, params);
+        out.writeObject(message);
+    }
+
+    //notifies the view that a good has been loaded in a cargo hold
+    @Override
+    public void updateLoadedGood(String nickname, int x, int y, Color good) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(x), String.valueOf(y), good.toString()));
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.LOADED_GOOD, params);
         out.writeObject(message);
     }
 

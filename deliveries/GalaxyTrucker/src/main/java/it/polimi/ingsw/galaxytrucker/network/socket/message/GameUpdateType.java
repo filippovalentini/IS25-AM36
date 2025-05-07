@@ -21,6 +21,7 @@ public enum GameUpdateType {
     CARD_SOLVING,
     CREW_CHANGE,
     ALIEN_CHANGE,
+    LOADED_GOOD,
     BATTERY_CHANGE,
     CREDITS_CHANGE,
     POSITION_CHANGE,

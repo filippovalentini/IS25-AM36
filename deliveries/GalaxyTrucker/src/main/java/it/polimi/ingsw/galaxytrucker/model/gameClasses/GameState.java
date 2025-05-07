@@ -172,6 +172,10 @@ public class GameState {
     public void substituteGoods(String nickname, int cargo_row, int cargo_col, Color good, int posInCargo) throws FullCargoHoldException, UnsupportedCargoColorException{
         playersPlay.get(nickname).substituteGoods(cargo_row, cargo_col, good, posInCargo);
     }
+    //adds a set of goods in specific cargo holds of a player's ship board
+    public void loadGoods(String nickname, List<Integer> x, List<Integer> y, List<Color> goods) throws UnsupportedCargoColorException, FullCargoHoldException {
+        playersPlay.get(nickname).loadGoods(x, y, goods);
+    }
 
     //
      //STARTING PHASE
@@ -431,7 +435,7 @@ public class GameState {
         else{   //first flight
             List<EventCard> gameDeckCards = new ArrayList<>();
             //first flight cards creation
-            //gameDeckCards.add(new AbandonedShip(3, 4, 1, 1002));
+            gameDeckCards.add(new AbandonedShip(3, 4, 1, 1002));
             //gameDeckCards.add(new AbandonedStation(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN)), 5, 1, 2001));
             //gameDeckCards.add(new CombatZone(true, 3001));
             //gameDeckCards.add(new MeteorsSwarm(new ArrayList<>(Arrays.asList(new Meteor(true, Orientation.NORTH), new Meteor(false, Orientation.WEST), new Meteor(false, Orientation.EAST))), 5001));
@@ -942,7 +946,7 @@ public class GameState {
         }
         currentCard.hitShip(this, nickname, diceResult, activateShield, activateCannon);
     }
-    //invoked when a player decides to land on an abandoned station/ship
+    //invoked when a player decides to land on an abandoned ship
     public void landing(String nickname, List<Integer> x, List<Integer> y, List<Integer> z) throws InvalidActionException, NoCrewException {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
@@ -992,6 +996,16 @@ public class GameState {
             throw new InvalidActionException("Wait for the turn");
         }
         currentCard.skip(this, nickname);
+    }
+    //invoked when a player decides to load goods inside cargo hold components of its ship
+    public void loadGoods(String nickname, List<Integer> x, List<Integer> y) throws InvalidActionException, UnsupportedCargoColorException, FullCargoHoldException, NoGoodsException {
+        if(state != State.CARD_SOLVING){
+            throw new InvalidActionException("Card must be picked first");
+        }
+        if(!nickname.equals(turnPlayer)){
+            throw new InvalidActionException("Wait for the turn");
+        }
+        currentCard.loadGoods(this, nickname, x, y);
     }
 
     //

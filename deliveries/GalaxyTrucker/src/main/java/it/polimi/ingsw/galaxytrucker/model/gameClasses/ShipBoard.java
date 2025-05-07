@@ -589,6 +589,22 @@ public class ShipBoard {
     public void substituteGoods(int cargo_row, int cargo_col, Color good, int posInCargo) throws FullCargoHoldException, UnsupportedCargoColorException {
         assembledComponents.get(cargo_row).get(cargo_col).substituteGood(good, posInCargo);
     }
+    //adds a set of goods in specific cargo holds of the player's ship board; discards the good if the specified
+    //coordinates are (0,0)
+    public void loadGoods(List<Integer> x, List<Integer> y, List<Color> goods) throws UnsupportedCargoColorException, FullCargoHoldException{
+        for(int i=0; i<x.size(); i++){
+            if(x.get(i) == 0 && y.get(i) == 0){
+                continue;
+            }
+
+            assembledComponents.get(x.get(i)).get(y.get(i)).addGood(goods.get(i));
+
+            for(VirtualView view: clients.values()){
+                try{view.updateLoadedGood(nickname, x.get(i), y.get(i), goods.get(i));}
+                catch(Exception e){System.out.println("Error during remote method invocation on client");}
+            }
+        }
+    }
     //invoked when a meteor/cannon shot hits the ship board
     public void meteorAttack(Meteor meteor, int direction, boolean activateShield, boolean activateCannon){
         Orientation orientation = meteor.getOrientation();

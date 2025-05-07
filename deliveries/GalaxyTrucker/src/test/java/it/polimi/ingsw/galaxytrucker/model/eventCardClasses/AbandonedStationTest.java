@@ -94,7 +94,7 @@ class AbandonedStationTest {
         sG.add(Color.GREEN);
         AbandonedStation abandonedStationFreeCrew = new AbandonedStation(sG, 0, 1, 0);
         assertTrue(gameState.getCrewCount(player1)>0);
-        abandonedStationFreeCrew.landing(gameState, player1, x_cargo, y_cargo, goodsPosCargo);
+        abandonedStationFreeCrew.loadGoods(gameState, player1, x_cargo, y_cargo);
         assertTrue(abandonedStationFreeCrew.isUsed());
     }
 

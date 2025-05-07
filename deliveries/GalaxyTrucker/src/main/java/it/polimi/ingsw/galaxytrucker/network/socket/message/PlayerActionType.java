@@ -25,5 +25,6 @@ public enum PlayerActionType {
     LANDING,
     HIT_SHIP,
     FLY,
-    DEFEAT
+    DEFEAT,
+    LOAD_GOODS
 }

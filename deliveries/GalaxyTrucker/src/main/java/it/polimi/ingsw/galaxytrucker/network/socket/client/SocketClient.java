@@ -147,6 +147,9 @@ public class SocketClient implements VirtualViewSocket {
                     case BATTERY_CHANGE:
                         updateBatteries(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)), Integer.parseInt(message.getGameParams(3)));
                         break;
+                    case LOADED_GOOD:
+                        updateLoadedGood(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)), Color.convertToColor(message.getGameParams(3)));
+                        break;
                     case CARD_PICKING:
                         updateCardPicking();
                         break;
@@ -404,6 +407,19 @@ public class SocketClient implements VirtualViewSocket {
                         boolean loseDays = (tokens[2].equals("yes"));
                         serverHandler.defeat(nickname, batteries1, loseDays);
                         break;
+                    case "loadGoods":
+                        if ((tokens.length - 1)%2 != 0) {
+                            System.out.println("Error: specify both coordinates for each cargo hold");
+                            break;
+                        }
+                        List<Integer> x6 = new ArrayList<>();
+                        List<Integer> y6 = new ArrayList<>();
+                        for(int i=1; i< tokens.length; i+=2){
+                            x6.add(Integer.parseInt(tokens[i]));
+                            y6.add(Integer.parseInt(tokens[i+1]));
+                        }
+                        serverHandler.loadGoods(nickname, x6, y6);
+                        break;
                     default:
                         System.out.println("Error: unknown command");
                 }
@@ -544,6 +560,12 @@ public class SocketClient implements VirtualViewSocket {
     @Override
     public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) {
         this.view.updateAlienChange(nickname, x, y, isPurple, added);
+    }
+
+    //notifies the view that a good has been loaded in a cargo hold
+    @Override
+    public void updateLoadedGood(String nickname, int x, int y, Color good){
+        this.view.updateLoadedGood(nickname, x, y, good);
     }
 
     //notifies the view about the fact that a player has to pick a card in order to continue the game

@@ -98,4 +98,8 @@ public interface VirtualServerSocket extends VirtualServer {
     //to gain credits/goods or not
     @Override
     void defeat(String nickname, int usedBatteries, boolean loseDays) throws IOException;
+
+    //invoked when a player decides to load goods inside cargo hold components of its ship
+    @Override
+    void loadGoods(String nickname, List<Integer> x, List<Integer> y) throws IOException;
 }

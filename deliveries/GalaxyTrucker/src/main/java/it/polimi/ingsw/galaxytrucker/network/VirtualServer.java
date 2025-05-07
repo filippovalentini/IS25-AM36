@@ -1,10 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.network;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.AssembledComponentException;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.FullCabinException;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.NoBatteriesException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
 
@@ -85,4 +82,7 @@ public interface VirtualServer {
     //invoked when a player wants to defeat an enemy; the player can decide whether to lose flight days
     //to gain credits/goods or not
     void defeat(String nickname, int usedBatteries, boolean loseDays) throws Exception;
+
+    //invoked when a player decides to load goods inside cargo hold components of its ship
+    void loadGoods(String nickname, List<Integer> x, List<Integer> y) throws Exception;
 }

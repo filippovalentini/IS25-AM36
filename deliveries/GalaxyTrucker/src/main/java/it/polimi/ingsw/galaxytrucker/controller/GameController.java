@@ -203,6 +203,13 @@ public class GameController {
         }
     }
 
+    //invoked when a player decides to load goods inside cargo hold components of its ship
+    public void loadGoods(String nickname, List<Integer> x, List<Integer> y) throws InvalidActionException, UnsupportedCargoColorException, FullCargoHoldException, NoGoodsException{
+        synchronized (model) {
+            model.loadGoods(nickname, x, y);
+        }
+    }
+
 
 
     //[method for testing]

@@ -210,4 +210,12 @@ public class SocketServerHandler implements VirtualServerSocket {
         out.writeObject(message);
     }
 
+    //invoked when a player decides to load goods inside cargo hold components of its ship
+    @Override
+    public void loadGoods(String nickname, List<Integer> x, List<Integer> y) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname, serializeList(x), serializeList(y)));
+        PlayerActionMessage message = new PlayerActionMessage(PlayerActionType.LOAD_GOODS, params);
+        out.writeObject(message);
+    }
+
 }

@@ -80,10 +80,11 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
         System.out.println("(commands for card solving)");
         System.out.println("1 - dice (throw the dice)");
         System.out.println("2 - skip (skip an action)");
-        System.out.println("3 - landing [<x> <y> <removedCrew>] (land in an abandoned ship specifying the cabins where to remove the crew and the respective quantity)");
+        System.out.println("3 - landing [<x> <y> <removedCrew>] ... (land in an abandoned ship specifying the cabins where to remove the crew and the respective quantity)");
         System.out.println("4 - hit <yes/no> <yes/no> (decide whether to activate or not shield and/or double cannon to protect your ship)");
         System.out.println("5 - fly <numberBatteries> (decide how many batteries to use to fly across the flight board)");
         System.out.println("6 - defeat <numberBatteries> <yes/no> (decide how many batteries to use to improve your cannon strength and whether to lose days to get a reward)");
+        System.out.println("7 - loadGoods [<x> <y>] ... (specify the cargo holds where to load goods found during the flight; specify (0,0) if you want to discard a good)");
     }
 
     //runs a command line interface to send requests to the server
@@ -291,6 +292,19 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                         boolean loseDays = (tokens[2].equals("yes"));
                         server.defeat(nickname, batteries1, loseDays);
                         break;
+                    case "loadGoods":
+                        if ((tokens.length - 1)%2 != 0) {
+                            System.out.println("Error: specify both coordinates for each cargo hold");
+                            break;
+                        }
+                        List<Integer> x6 = new ArrayList<>();
+                        List<Integer> y6 = new ArrayList<>();
+                        for(int i=1; i< tokens.length; i+=2){
+                            x6.add(Integer.parseInt(tokens[i]));
+                            y6.add(Integer.parseInt(tokens[i+1]));
+                        }
+                        server.loadGoods(nickname, x6, y6);
+                        break;
                     default:
                         System.out.println("Error: unknown command");
                 }
@@ -431,6 +445,12 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
     @Override
     public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws RemoteException{
         this.view.updateAlienChange(nickname, x, y, isPurple, added);
+    }
+
+    //notifies the view that a good has been loaded in a cargo hold
+    @Override
+    public void updateLoadedGood(String nickname, int x, int y, Color good) throws RemoteException{
+        this.view.updateLoadedGood(nickname, x, y, good);
     }
 
     //notifies the view about the fact that a player has to pick a card in order to continue the game

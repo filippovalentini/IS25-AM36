@@ -121,7 +121,9 @@ public class Component {
     public boolean isWellOriented(){        //determines if the component is oriented correctly (true by default, it will be overrided by subclasses for which the orientation is important)
         return true;
     }
-    public void addGood(Color good){}
+    public void addGood(Color good) throws FullCargoHoldException, UnsupportedCargoColorException, AssembledComponentException {
+        throw new AssembledComponentException("Can't add a good outside a cargo hold");
+    }
     public boolean hasMembers(){ return false;}
     public boolean hasDoubleEngines() { return false;}
     public boolean hasSingleEngine() { return false;}

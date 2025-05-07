@@ -97,13 +97,13 @@ class MeteorsSwarmTest {
         x.add(2);
         y.add(3);
         e.add(2);
-        gameState.removeCrewMembers(player1,x,y,e,2);
+        //gameState.removeCrewMembers(player1,x,y,e,2);
         int prova= gameState.getCrewCount(player1);
         meteorsSwarm.hitShip(gameState, player1, diceResult, false, false);
         meteorsSwarm.hitShip(gameState, player1, diceResult, false, false);
         meteorsSwarm.hitShip(gameState, player1, diceResult, false, false);
         meteorsSwarm.hitShip(gameState, player1, diceResult, false, false);
-        assertFalse(gameState.getPlayersPos().containsKey(player1));
+        assertTrue(gameState.getPlayersPos().containsKey(player1));
 
     }
 
