@@ -27,7 +27,7 @@ public class CargoSpecial extends CargoHold {
     }
 
     @Override
-    public void substituteGood(Color good, int pos){
+    public void substituteGood(Color good, int pos) throws FullCargoHoldException{
         if(goods.size()<2 && isDouble || goods.size()<1 && !isDouble){
             addGood(good);
         }else{ //full cargo (it will substitute)

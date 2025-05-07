@@ -179,8 +179,8 @@ public class Player {
         this.credits += update;
     }
     //substitutes (in the player's ship) the cargo good at the given coordinates with the good given in input
-    public void substituteGoods(int cargo_row, int cargo_col, Color good, int pos){
-        this.shipBoard.substituteGoods(cargo_row, cargo_col, good, pos);
+    public void substituteGoods(int cargo_row, int cargo_col, Color good, int posInCargo) throws FullCargoHoldException, UnsupportedCargoColorException {
+        this.shipBoard.substituteGoods(cargo_row, cargo_col, good, posInCargo);
     }
 
 }

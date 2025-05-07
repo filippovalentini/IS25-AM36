@@ -31,7 +31,7 @@ public class AbandonedStation extends DayLossCard{
 
     @Override
     //substitute the cargo goods (specified by coordinates of component) of the player with the station goods
-    public void landing(GameState gameState, String nickname, List<Integer> x, List<Integer> y, List<Integer> z) throws InvalidActionException {
+    public void landing(GameState gameState, String nickname, List<Integer> x, List<Integer> y, List<Integer> positionInEachCargo) throws InvalidActionException {
         if (this.used) {
             throw new InvalidActionException("Already used card");
         }
@@ -39,7 +39,7 @@ public class AbandonedStation extends DayLossCard{
             throw new InvalidActionException("You don't have enough crew members");
         }
         for(int i=0; i<x.size(); i++){
-            gameState.substituteGoods(nickname, x.get(i), y.get(i), stationGoods.get(i), z.get(i));
+            gameState.substituteGoods(nickname, x.get(i), y.get(i), stationGoods.get(i), positionInEachCargo.get(i));
         }
         gameState.changePlayerPosition(nickname, -this.lostDays);
         this.used = true;

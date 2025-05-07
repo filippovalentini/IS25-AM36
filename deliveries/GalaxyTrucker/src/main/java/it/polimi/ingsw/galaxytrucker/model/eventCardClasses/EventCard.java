@@ -21,16 +21,16 @@ public class EventCard  {
 
     //invoked when a player decides to land on a planet in order to gain goods
     public void planetLanding(GameState gameState, String nickname, int numberPlanet) throws InvalidActionException {
-        throw new InvalidActionException("Invalid action");
+        throw new InvalidActionException("Invalid action for solving the current card");
     }
     //invoked when a player's ship has to be hit by a meteor/cannon shot; the player can decide whether to
     //activate a shield or a cannon to defend its ship
     public void hitShip(GameState gameState, String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException, NoBatteriesException {
-        throw new InvalidActionException("Invalid action");
+        throw new InvalidActionException("Invalid action for solving the current card");
     }
     //invoked when a player decides to land on an abandoned station/ship
     public void landing(GameState gameState, String nickname, List<Integer> x, List<Integer> y, List<Integer> z) throws InvalidActionException, NoCrewException {
-        throw new InvalidActionException("Invalid action");
+        throw new InvalidActionException("Invalid action for solving the current card");
     }
     //invoked when a card is picked from the deck during the solving phase; it has an effect on all the players of
     //the game without requiring user actions
@@ -38,23 +38,23 @@ public class EventCard  {
     //invoked when a player wants to defeat an enemy; the player can decide whether to lose flight days
     //to gain credits/goods or not
     public void defeat(GameState gameState, String nickname, int usedBatteries, boolean loseDays) throws InvalidActionException, NoBatteriesException {
-        throw new InvalidActionException("Invalid action");
+        throw new InvalidActionException("Invalid action for solving the current card");
     }
     //invoked when a player wants to fly across the flight board exploiting its engine strength
     public void fly(GameState gameState, String nickname, int usedBatteries) throws InvalidActionException, NoBatteriesException {
-        throw new InvalidActionException("Invalid action");
+        throw new InvalidActionException("Invalid action for solving the current card");
     }
     //invoked when a player wants to use batteries to have an advantage while solving a card
     public void useBatteries(GameState gameState, String nickname, int usedBatteries) throws InvalidActionException, NoBatteriesException {
-        throw new InvalidActionException("Invalid action");
+        throw new InvalidActionException("Invalid action for solving the current card");
     }
     //invoked when a player doesn't want to exploit the benefits of a card and therefore skips the turn
     public void skip(GameState gameState, String nickname) throws InvalidActionException {
-        throw new InvalidActionException("Invalid action");
+        throw new InvalidActionException("Invalid action for solving the current card");
     }
 
     public void switchGoods(GameState gamestate, String nickname, int cargo_row, int cargo_col, Color good, int pos)throws InvalidActionException{
-        throw new InvalidActionException("Invalid action");
+        throw new InvalidActionException("Invalid action for solving the current card");
     }
 
 }
