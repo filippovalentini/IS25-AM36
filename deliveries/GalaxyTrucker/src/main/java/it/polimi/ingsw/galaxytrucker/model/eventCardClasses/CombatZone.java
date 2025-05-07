@@ -11,6 +11,7 @@ import it.polimi.ingsw.galaxytrucker.model.shotClasses.CannonShot;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 //COMBAT ZONE
 public class CombatZone extends EventCard{
@@ -52,12 +53,7 @@ public class CombatZone extends EventCard{
                 phase = 2;
             }
         } else { //default effect of level two combat zone
-            if (phase != 3) {
-                throw new InvalidActionException("Wrong phase of the combat zone");
-            } else {
-                String nickname = gameState.getCrewMinPlayer();
-                gameState.updateTurns();
-            }
+                throw new InvalidActionException("This action is only available for level one card");
         }
     }
 
@@ -98,15 +94,16 @@ public class CombatZone extends EventCard{
         }
         else{ //level two
             if(phase==1){
-                double cannonStrenght= gameState.getCannonStrength(nickname, usedBatteries);
-                if(cannonStrenght < worstCannonStrength){
+                double cannonStrength = gameState.getCannonStrength(nickname, usedBatteries);
+                if (cannonStrength < worstCannonStrength) {
                     worstCannonPlayer = nickname;
-                    worstCannonStrength = cannonStrenght;
+                    worstCannonStrength = cannonStrength;
                 }
-                if(gameState.isLastInTurn(nickname)){
+                if(gameState.isLastInTurn(nickname)) {
                     gameState.setTurnPlayer(worstCannonPlayer);
-                    //gameState.changePlayerPosition(worstEnginePlayer, -4);
-                    //phase = 2; //next phase
+                    gameState.changePlayerPosition(worstCannonPlayer, -4);
+                    gameState.updateTurns();
+                    phase = 2;
                     /*
                         after the last in turn player has decided to use the batteries,
                          the worst player can just lose the positions with changePlayerPos(...)
@@ -141,7 +138,7 @@ public class CombatZone extends EventCard{
             if(phase!=2){
                 throw new InvalidActionException("Wrong phase of the combat zone");
             }
-            if (gameState.getCrewCount(nickname)<= 2) {
+            else if (gameState.getCrewCount(nickname)<= 2) {
                 gameState.removeCrewMembers(nickname, x, y, z, gameState.getCrewCount(nickname));
                 gameState.quitGame(nickname);
             }else{
@@ -153,15 +150,17 @@ public class CombatZone extends EventCard{
             if(phase!=2){
                 throw new InvalidActionException("Wrong phase of the combat zone");
             }
+            if(!Objects.equals(nickname, worstEnginePlayer)){
+                throw new InvalidActionException("You are not the player with less engine Strength");
+            }
             if(gameState.getNumberGoods(nickname)<= 3) {
-                //gameState.removeGoods(nickname, x, y, z, gameState.getCrewCount(nickname));
+                gameState.losePreciousGoods(nickname,  gameState.getNumberGoods(nickname));
                 /*
                     removeGoods should be a method similar to substituteGoods but instead
                     of set/add does the list.remove() from the goods list in the cargo
-
                  */
             }else{
-                //gameState.removeGoods(nickname, x, y, z, 2);
+                gameState.losePreciousGoods(nickname, 3);
             }
             phase = 3;
             gameState.updateTurns();
@@ -173,7 +172,10 @@ public class CombatZone extends EventCard{
     //cannon shot
     public void hitShip(GameState gameState, String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException {
         if(levelOne) {
-            if(phase==2) {
+            if(phase==3) {
+                if(!Objects.equals(nickname, worstCannonPlayer)){
+                    throw new InvalidActionException("You are not the player with less cannon Strength");
+                }
                 if (activateShield && gameState.getNumberBatteries(nickname) == 0) {
                     throw new InvalidActionException("Too few batteries");
                 }
@@ -185,12 +187,9 @@ public class CombatZone extends EventCard{
                         if (gameState.isLastInTurn(nickname)) {
                             gameState.setGameState(State.CARD_PICKING);
                         }
-                        currentShot = 0;
                         gameState.nextTurn();
                     }
                 }
-            }else {
-                currentShot++;
             }
         }else{ //level two
             if(phase==3){ //cannon shot from special effect
