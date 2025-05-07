@@ -21,11 +21,11 @@ public class Slavers extends AdvancedEnemies{
 
     @Override
     //the player decides which crew members to remove from the ship because the slavers have defeated him
-    public void landing(GameState gameState, String nickname, List<Integer> x, List<Integer> y, List<Integer> z) throws InvalidActionException, NoCrewException {
+    public void landing(GameState gameState, String nickname, List<Integer> x, List<Integer> y, List<Integer> crewInEachCabin) throws InvalidActionException, NoCrewException {
         if (isDefeated() || !crewLossPhase) {
             throw new InvalidActionException("Invalid action");
         }
-        gameState.removeCrewMembers(nickname, x, y, z, this.crewLoss);
+        gameState.removeCrewMembers(nickname, x, y, crewInEachCabin, this.crewLoss);
         if(gameState.isLastInTurn(nickname)) {
             gameState.setGameState(State.CARD_PICKING);
         }

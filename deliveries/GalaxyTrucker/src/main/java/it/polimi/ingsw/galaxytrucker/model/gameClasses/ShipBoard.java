@@ -586,12 +586,8 @@ public class ShipBoard {
         }
     }
     //substitutes the cargo good at the given coordinates with the good given in input
-    public void substituteGoods(int cargo_row, int cargo_col, Color good, int pos){
-        if(good==Color.RED){ //special cargo needed
-            ((CargoSpecial)(assembledComponents).get(cargo_row).get(cargo_col)).substituteGood(good, pos);
-        }else {
-            ((CargoHold) (assembledComponents.get(cargo_row).get(cargo_col))).substituteGood(good, pos);
-        }
+    public void substituteGoods(int cargo_row, int cargo_col, Color good, int posInCargo) throws FullCargoHoldException, UnsupportedCargoColorException {
+        assembledComponents.get(cargo_row).get(cargo_col).substituteGood(good, posInCargo);
     }
     //invoked when a meteor/cannon shot hits the ship board
     public void meteorAttack(Meteor meteor, int direction, boolean activateShield, boolean activateCannon){

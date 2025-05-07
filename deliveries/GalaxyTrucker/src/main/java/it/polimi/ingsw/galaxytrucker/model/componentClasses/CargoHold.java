@@ -28,9 +28,10 @@ public class CargoHold extends ConfigurableComponent {
         }
     }
 
-    public void substituteGood(Color good, int pos){
+    @Override
+    public void substituteGood(Color good, int pos) throws FullCargoHoldException, UnsupportedCargoColorException{
         if(good==Color.RED){
-            throw new UnsupportedCargoColorException("Unsupported Cargo type");
+            throw new UnsupportedCargoColorException("Can't add a red good in a normal cargo hold");
         } else {
             if(goods.size()<3 && !isDouble || goods.size()<2 && isDouble){
                 addGood(good);

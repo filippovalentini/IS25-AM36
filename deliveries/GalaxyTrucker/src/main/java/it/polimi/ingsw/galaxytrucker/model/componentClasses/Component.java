@@ -2,10 +2,7 @@ package it.polimi.ingsw.galaxytrucker.model.componentClasses;
 
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.AssembledComponentException;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.FullCabinException;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.NoBatteriesException;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.NoCrewException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 
 import java.util.ArrayList;
 import java.util.*;
@@ -151,6 +148,9 @@ public class Component {
     public int getNumberGoods() { return 0;}
     public int getNumberGoods(Color color){ return 0;}
     public void removeSpecificGoods(Color color, int numberGoods){}
+    public void substituteGood(Color good, int position) throws FullCargoHoldException, UnsupportedCargoColorException, AssembledComponentException {
+        throw new AssembledComponentException("Can't substitute good outside a cargo hold");
+    }
     public void useBatteries(int batteriesToUse) throws NoBatteriesException{}
     public boolean protects(Orientation orientation){ return false;}
     public boolean pointsForward(){ return false;}
