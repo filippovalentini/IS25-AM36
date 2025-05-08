@@ -150,6 +150,9 @@ public class SocketClient implements VirtualViewSocket {
                     case LOADED_GOOD:
                         updateLoadedGood(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)), Color.convertToColor(message.getGameParams(3)));
                         break;
+                    case REMOVED_GOODS:
+                        updateRemovedGoods(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)), Color.convertToColor(message.getGameParams(3)), Integer.parseInt(message.getGameParams(4)));
+                        break;
                     case CARD_PICKING:
                         updateCardPicking();
                         break;
@@ -566,6 +569,12 @@ public class SocketClient implements VirtualViewSocket {
     @Override
     public void updateLoadedGood(String nickname, int x, int y, Color good){
         this.view.updateLoadedGood(nickname, x, y, good);
+    }
+
+    //notifies the view that some goods have been removed form a cargo hold
+    @Override
+    public void updateRemovedGoods(String nickname, int x, int y, Color good, int numberGoods) {
+        this.view.updateRemovedGoods(nickname, x, y, good, numberGoods);
     }
 
     //notifies the view about the fact that a player has to pick a card in order to continue the game

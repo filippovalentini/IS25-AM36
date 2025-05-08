@@ -32,6 +32,8 @@ public class View {
     public static void main(String[] args){
         View view = new View("fil", Color.BLUE, true);
         view.updateLoadedGood("fil", 2, 3, Color.RED);
+        view.updateLoadedGood("fil", 2, 3, Color.BLUE);
+        view.updateLoadedGood("fil", 2, 3, Color.RED);
         view.visualizeShip();
     }
 
@@ -159,10 +161,10 @@ public class View {
     //converts a color into a letter
     public static String convertColorIntoLetter(Color color) {
         return switch (color) {
-            case Color.RED -> "r    ";
-            case Color.GREEN -> "g    ";
-            case Color.BLUE -> "b    ";
-            case Color.YELLOW -> "y    ";
+            case Color.RED -> "r";
+            case Color.GREEN -> "g";
+            case Color.BLUE -> "b";
+            case Color.YELLOW -> "y";
         };
     }
 
@@ -338,6 +340,16 @@ public class View {
         }
         else{
             otherPlayers.get(nickname).updateLoadedGood(x,y,good);
+        }
+    }
+
+    //notifies the view that some goods have been removed form a cargo hold
+    public void updateRemovedGoods(String nickname, int x, int y, Color good, int numberGoods){
+        if(nickname.equals(this.player.getNickname())){
+            player.updateRemovedGoods(x,y,good,numberGoods);
+        }
+        else{
+            otherPlayers.get(nickname).updateRemovedGoods(x,y,good,numberGoods);
         }
     }
 

@@ -101,6 +101,10 @@ public interface VirtualViewSocket extends VirtualView {
     @Override
     void updateLoadedGood(String nickname, int x, int y, Color good) throws IOException;
 
+    //notifies the view that some goods have been removed form a cargo hold
+    @Override
+    void updateRemovedGoods(String nickname, int x, int y, Color good, int numberGoods) throws IOException;
+
     //notifies the view about the fact that a player has to pick a card in order to continue the game
     @Override
     void updateCardPicking() throws IOException;

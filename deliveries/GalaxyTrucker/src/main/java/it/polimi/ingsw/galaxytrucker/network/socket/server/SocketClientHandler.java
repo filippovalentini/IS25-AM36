@@ -299,6 +299,14 @@ public class SocketClientHandler implements VirtualViewSocket {
         out.writeObject(message);
     }
 
+    //notifies the view that some goods have been removed form a cargo hold
+    @Override
+    public void updateRemovedGoods(String nickname, int x, int y, Color good, int numberGoods) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(x), String.valueOf(y), good.toString(), String.valueOf(numberGoods)));
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.REMOVED_GOODS, params);
+        out.writeObject(message);
+    }
+
     //notifies the view about the fact that a player has to pick a card in order to continue the game
     @Override
     public void updateCardPicking() throws IOException{

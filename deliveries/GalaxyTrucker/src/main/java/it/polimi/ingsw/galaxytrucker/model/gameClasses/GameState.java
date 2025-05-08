@@ -435,13 +435,13 @@ public class GameState {
         else{   //first flight
             List<EventCard> gameDeckCards = new ArrayList<>();
             //first flight cards creation
-            gameDeckCards.add(new AbandonedShip(3, 4, 1, 1002));
-            //gameDeckCards.add(new AbandonedStation(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN)), 5, 1, 2001));
+            //gameDeckCards.add(new AbandonedShip(3, 4, 1, 1002));
+            gameDeckCards.add(new Smugglers(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN, Color.BLUE)),2,4,1,8005));
+            gameDeckCards.add(new AbandonedStation(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN)), 5, 1, 2001));
             //gameDeckCards.add(new CombatZone(true, 3001));
             //gameDeckCards.add(new MeteorsSwarm(new ArrayList<>(Arrays.asList(new Meteor(true, Orientation.NORTH), new Meteor(false, Orientation.WEST), new Meteor(false, Orientation.EAST))), 5001));
             //gameDeckCards.add(new OpenSpace(6001));
             //gameDeckCards.add(new Planets(new ArrayList<>(Arrays.asList(new ArrayList<>(Arrays.asList(Color.RED, Color.RED)), new ArrayList<>(Arrays.asList(Color.RED, Color.BLUE, Color.BLUE)), new ArrayList<>(Arrays.asList(Color.YELLOW)))),2, 7002));
-            //gameDeckCards.add(new Smugglers(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN, Color.BLUE)),2,4,1,8005));
             //gameDeckCards.add(new SpecialEvent(SpecialEventType.STARDUST, 4002));
             //game deck creation
             Deck d = new Deck(gameDeckCards);

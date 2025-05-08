@@ -77,6 +77,14 @@ public class ViewComponent {
     public void loadGood(Color good){
         goods.add(good);
     }
+    public void removeGood(Color good){
+        for(Color g : goods){
+            if(g == good){
+                goods.remove(g);
+                break;
+            }
+        }
+    }
     public List<Color> getGoods() {
         return new ArrayList<>(goods);
     }

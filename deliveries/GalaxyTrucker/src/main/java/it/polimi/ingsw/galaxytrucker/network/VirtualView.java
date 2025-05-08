@@ -82,6 +82,9 @@ public interface VirtualView {
     //notifies the view that a good has been loaded in a cargo hold
     void updateLoadedGood(String nickname, int x, int y, Color good) throws Exception;
 
+    //notifies the view that some goods have been removed form a cargo hold
+    void updateRemovedGoods(String nickname, int x, int y, Color good, int numberGoods) throws Exception;
+
     //notifies the view about the fact that a player has to pick a card in order to continue the game
     void updateCardPicking() throws Exception;
 

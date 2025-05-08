@@ -119,7 +119,16 @@ public class ViewPlayer {
             for (Color good : goods) {
                 goodsString = goodsString + View.convertColorIntoLetter(good);
             }
-            return goodsString;
+            int numberGoods = comp.getGoods().size();
+            if (numberGoods == 1) {
+                return goodsString + "    ";
+            }
+            else if (numberGoods == 2) {
+                return goodsString + "   ";
+            }
+            else{
+                return goodsString + "  ";
+            }
         }
         else{
             return "     ";
@@ -232,6 +241,12 @@ public class ViewPlayer {
 
     public void updateLoadedGood(int x, int y, Color good) {
         assembledComponents.get(x).get(y).loadGood(good);
+    }
+
+    public void updateRemovedGoods(int x, int y, Color good, int numberGoods) {
+        for(int i = 0; i<numberGoods; i++){
+            assembledComponents.get(x).get(y).removeGood(good);
+        }
     }
 
 }

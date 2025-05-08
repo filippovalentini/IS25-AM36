@@ -736,22 +736,35 @@ public class ShipBoard {
     public int removeSpecificGoods(Color color, int numberGoods){
         int toRemove = numberGoods;
         int componentGoods;
-        for (List<Component> componentRow : assembledComponents) {
-            for (Component component : componentRow) {
+        for (int i = 0; i < assembledComponents.size(); i++) {
+            List<Component> componentRow = assembledComponents.get(i);
+            for (int j = 0; j < componentRow.size(); j++) {
+                Component component = componentRow.get(j);
                 componentGoods = component.getNumberGoods(color);
-                if(componentGoods > 0){
-                    if(componentGoods >= toRemove){
+                if (componentGoods > 0) {
+                    if (componentGoods >= toRemove) {
                         component.removeSpecificGoods(color, toRemove);
+
+                        for (VirtualView view : clients.values()) {
+                            try {view.updateRemovedGoods(nickname, i, j, color, toRemove);}
+                            catch (Exception e) {System.out.println("Error during remote method invocation on client");}
+                        }
+
                         toRemove = 0;
                         break;
-                    }
-                    else{
+                    } else {
                         component.removeSpecificGoods(color, componentGoods);
-                        toRemove-= componentGoods;
+
+                        for (VirtualView view : clients.values()) {
+                            try {view.updateRemovedGoods(nickname, i, j, color, componentGoods);}
+                            catch (Exception e) {System.out.println("Error during remote method invocation on client");}
+                        }
+
+                        toRemove -= componentGoods;
                     }
                 }
             }
-            if(toRemove ==0){
+            if (toRemove == 0) {
                 break;
             }
         }
