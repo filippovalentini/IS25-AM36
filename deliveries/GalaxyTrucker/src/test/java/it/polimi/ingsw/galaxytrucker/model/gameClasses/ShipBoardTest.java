@@ -597,4 +597,31 @@ class ShipBoardTest {
         shipBoard.substituteGoods(2,1,Color.RED,0);
         assertEquals(11, shipBoard.getGoodsPrice());
     }
+
+    @Test
+    void testLoadGoods(){
+        Component cargo1 = new CargoHold(false, 408, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
+        Component cargo2 = new CargoHold(false, 408, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
+        Component cargo3 = new CargoHold(false, 408, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
+        Component cargo4 = new CargoHold(false, 408, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
+
+        shipBoard.assembleComponent(cargo1, 2, 2);
+        shipBoard.assembleComponent(cargo2, 2, 4);
+        shipBoard.assembleComponent(cargo3, 1, 3);
+        shipBoard.assembleComponent(cargo4, 3, 3);
+        List<Integer> x = new ArrayList<>(Arrays.asList(2,2,1,0));
+        List<Integer> y = new ArrayList<>(Arrays.asList(2,4,3,0));
+        List<Color> planetOneGoods = new ArrayList<>();
+        planetOneGoods.add(Color.YELLOW);
+        planetOneGoods.add(Color.GREEN);
+        planetOneGoods.add(Color.BLUE);
+        planetOneGoods.add(Color.BLUE);
+        shipBoard.loadGoods(x,y, planetOneGoods);
+
+        assertEquals(Color.YELLOW, shipBoard.getAssembledComponent(2,2).getGoods().get(0));
+        assertEquals(Color.GREEN, shipBoard.getAssembledComponent(2,4).getGoods().get(0));
+        assertEquals(Color.BLUE, shipBoard.getAssembledComponent(1,3).getGoods().get(0));
+        assertEquals(0, shipBoard.getAssembledComponent(3,3).getGoods().size());
+
+    }
 }

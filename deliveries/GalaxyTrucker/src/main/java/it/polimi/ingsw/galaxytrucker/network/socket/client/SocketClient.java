@@ -423,6 +423,14 @@ public class SocketClient implements VirtualViewSocket {
                         }
                         serverHandler.loadGoods(nickname, x6, y6);
                         break;
+                    case "planet":
+                        if (tokens.length < 2) {
+                            System.out.println("Error: planet number required");
+                            break;
+                        }
+                        int planetNumber = Integer.parseInt(tokens[1]);
+                        serverHandler.planetLanding(nickname, planetNumber);
+                        break;
                     default:
                         System.out.println("Error: unknown command");
                 }

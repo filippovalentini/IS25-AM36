@@ -110,4 +110,8 @@ public interface VirtualServerRMI extends Remote, VirtualServer {
     @Override
     void loadGoods(String nickname, List<Integer> x, List<Integer> y) throws RemoteException;
 
+    //invoked when a player wants to land on a planet
+    @Override
+    void planetLanding(String nickname, int numberPlanet) throws RemoteException;
+
 }

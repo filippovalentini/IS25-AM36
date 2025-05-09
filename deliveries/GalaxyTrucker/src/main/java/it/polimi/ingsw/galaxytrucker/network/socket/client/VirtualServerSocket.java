@@ -5,6 +5,7 @@ import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.List;
 
 public interface VirtualServerSocket extends VirtualServer {
@@ -102,4 +103,8 @@ public interface VirtualServerSocket extends VirtualServer {
     //invoked when a player decides to load goods inside cargo hold components of its ship
     @Override
     void loadGoods(String nickname, List<Integer> x, List<Integer> y) throws IOException;
+
+    //invoked when a player wants to land on a planet
+    @Override
+    void planetLanding(String nickname, int numberPlanet) throws IOException;
 }

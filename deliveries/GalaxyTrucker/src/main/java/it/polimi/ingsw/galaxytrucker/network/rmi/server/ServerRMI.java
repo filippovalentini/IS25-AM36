@@ -420,4 +420,20 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
             }
         }
     }
+
+    //invoked when a player wants to land on a planet
+    @Override
+    public void planetLanding(String nickname, int numberPlanet) throws RemoteException{
+        try{
+            controller.planetLanding(nickname, numberPlanet);
+        }
+        catch(Exception e){
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
+        }
+    }
 }

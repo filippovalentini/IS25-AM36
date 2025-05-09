@@ -98,6 +98,9 @@ public class SocketClientHandler implements VirtualViewSocket {
                     case LOAD_GOODS:
                         controller.loadGoods(message.getGameParams(0), deserializeList(message.getGameParams(1)), deserializeList(message.getGameParams(2)));
                         break;
+                    case PLANET_LANDING:
+                        controller.planetLanding(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)));
+                        break;
                     default:
                         notifyError("Error: unknown command sent by client");
                 }

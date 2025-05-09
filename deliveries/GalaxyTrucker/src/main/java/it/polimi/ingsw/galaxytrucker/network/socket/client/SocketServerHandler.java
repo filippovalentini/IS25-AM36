@@ -218,4 +218,12 @@ public class SocketServerHandler implements VirtualServerSocket {
         out.writeObject(message);
     }
 
+    //invoked when a player wants to land on a planet
+    @Override
+    public void planetLanding(String nickname, int numberPlanet) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(numberPlanet)));
+        PlayerActionMessage message = new PlayerActionMessage(PlayerActionType.PLANET_LANDING, params);
+        out.writeObject(message);
+    }
+
 }

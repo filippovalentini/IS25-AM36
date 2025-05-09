@@ -85,4 +85,8 @@ public interface VirtualServer {
 
     //invoked when a player decides to load goods inside cargo hold components of its ship
     void loadGoods(String nickname, List<Integer> x, List<Integer> y) throws Exception;
+
+    //invoked when a player wants to land on a planet
+    void planetLanding(String nickname, int numberPlanet) throws Exception;
+
 }
