@@ -52,9 +52,9 @@ public class CombatZone extends EventCard{
                 gameState.updateTurns();
                 phase = 2;
             }
-        } else { //default effect of level two combat zone
+        } /*else { //default effect of level two combat zone
                 throw new InvalidActionException("This action is only available for level one card");
-        }
+        }*/ //pickNextCard() does the .specialEffect() on everyCard so LV1 need to use the method without exception
     }
 
     @Override

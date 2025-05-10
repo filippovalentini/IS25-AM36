@@ -37,13 +37,28 @@ public class GameState {
 
 
 
-     //[method for testing]
+    //[method for testing]
     public void assembleComponent(String nickname, Component component, int x, int y){
         playersPlay.get(nickname).assembleComponent(component, x, y);
     }
     //[method for testing] set a custom deck
     public void setGameDeck(Deck deck){
         gameDeck = deck;
+    }
+    //[method for testing] pick the given card and set as currentCard
+    public void pickGivenCard(EventCard eventCardIn) throws InvalidActionException{
+        if(state != State.CARD_PICKING){
+            throw new InvalidActionException("Can't pick a new card");
+        }
+        try{
+            currentCard = eventCardIn;
+            setGameState(State.CARD_SOLVING);
+            currentCard.specialEffect(this);
+        }
+        catch (EmptyDeckException e) {
+            computeTotalRewards();
+            setGameState(State.END);
+        }
     }
     //[method for testing]
     public EventCard getCurrentCard(){

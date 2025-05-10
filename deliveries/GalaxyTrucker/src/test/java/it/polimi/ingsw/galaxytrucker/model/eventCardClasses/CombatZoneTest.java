@@ -35,9 +35,9 @@ class CombatZoneTest {
     void init() {
         gameState = new GameState(false, 2);
         CargoHold cargoP1 = new CargoHold(false,2334, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.SINGLE, Connector.DOUBLE, Connector.SMOOTH)));
-       cargoP1.addGood(Color.YELLOW);
-       cargoP1.addGood(Color.GREEN);
-       cargoP1.addGood(Color.BLUE);
+        cargoP1.addGood(Color.YELLOW);
+        cargoP1.addGood(Color.GREEN);
+        cargoP1.addGood(Color.BLUE);
         player1 = "a";
         player2 = "b";
         try{
@@ -66,26 +66,27 @@ class CombatZoneTest {
         gameState.addCrew(player2, 2, 3);
         gameState.addBatteries(player2, 2, 2);
         gameState.addBatteries(player1, 3, 3);
-        gameState.setGameState(State.CARD_SOLVING);
+        gameState.checkShipBoards();
+
         combatZoneLV1 = new CombatZone(true, 0);
         combatZoneLV2 = new CombatZone(false, 0);
     }
 
     @Test
     void testSpecialEffectLV1() {
-        combatZoneLV1.specialEffect(gameState);
+        gameState.pickGivenCard(combatZoneLV1);
         assertEquals(0, gameState.getPlayersPos().get(player2).getCell()); //player2 should have lost 3 position
     }
     @Test
     void testSpecialEffectLV1WrongPhase() {
-        combatZoneLV1.specialEffect(gameState);
+        gameState.pickGivenCard(combatZoneLV1);
         assertThrows(InvalidActionException.class, () -> combatZoneLV1.specialEffect(gameState));
     }
 
 
     @Test
     void testUseBatteriesAvailable(){
-        combatZoneLV1.specialEffect(gameState); //applies the effect so it will be in second phase
+        gameState.pickGivenCard(combatZoneLV1); //applies the effect so it will be in second phase
         combatZoneLV1.useBatteries(gameState, player2, 2);
         combatZoneLV1.useBatteries(gameState, player1, 0); //player1 should be the next in turn ready to apply the penalty
         List<Integer> x = new ArrayList<>();
@@ -100,14 +101,14 @@ class CombatZoneTest {
 
     @Test
     void testShouldNotUseBatteriesNotAvailableL1(){
-        combatZoneLV1.specialEffect(gameState);
+        gameState.pickGivenCard(combatZoneLV1);
         //applies the effect so it will be in second phase
         assertThrows(NoBatteriesException.class, () -> {combatZoneLV1.useBatteries(gameState, player2, 1000);});
     }
 
     @Test
     void testHitShipEmptyColumnL1(){
-        combatZoneLV1.specialEffect(gameState); //applies the effect so it will be in second phase
+        gameState.pickGivenCard(combatZoneLV1); //applies the effect so it will be in second phase
         //the player should not lose any component
         combatZoneLV1.hitShip(gameState, player1, 1+4, false, false);
         assertEquals(0, gameState.getPlayersPlay().get(player1).getShipBoard().getLostComponents());
@@ -115,7 +116,7 @@ class CombatZoneTest {
 
     @Test
     void testHitShipNotEmptyColumnL1(){
-        combatZoneLV1.specialEffect(gameState); //applies the effect so it will be in second phase
+        gameState.pickGivenCard(combatZoneLV1); //picks the card and applies the effect so it will be in second phase
         //the player2 should lose the component (battery)
         combatZoneLV1.useBatteries(gameState, player2, 2);
         combatZoneLV1.useBatteries(gameState, player1, 0); //player1 should be the next in turn ready to apply the penalty
@@ -132,15 +133,16 @@ class CombatZoneTest {
     }
 
     //---------------------------------------------------------------------------------------------------
-    @Test
+    /*@Test
     void testSpecialEffectLV2WrongAction() {
         assertThrows(InvalidActionException.class, () -> combatZoneLV2.specialEffect(gameState));
-    }
+    }*/
 
 
 
     @Test
     void testUseBatteriesAvailableLV2(){
+        gameState.pickGivenCard(combatZoneLV2);
         combatZoneLV2.useBatteries(gameState, player2, 0); // usa 2 batterie
         combatZoneLV2.useBatteries(gameState, player1, 2); // passa turno
         assertEquals(23, gameState.getPlayersPos().get(player2).getCell()); //player2 should have lost 3 position
@@ -149,6 +151,7 @@ class CombatZoneTest {
 
     @Test
     void testShouldNotUseBatteriesNotAvailableL2(){
+        gameState.pickGivenCard(combatZoneLV2);
         assertThrows(NoBatteriesException.class, () -> {
             combatZoneLV2.useBatteries(gameState, player2, 1000);
         });
@@ -156,6 +159,7 @@ class CombatZoneTest {
 
     @Test
     void testHitShipEmptyColumnL2(){
+        gameState.pickGivenCard(combatZoneLV2);
         combatZoneLV2.useBatteries(gameState,player1,0);
         combatZoneLV2.useBatteries(gameState, player1, 2);
         List<Integer> x = new ArrayList<>();
@@ -170,6 +174,7 @@ class CombatZoneTest {
 
     @Test
     void testHitShipNotEmptyColumnL2(){
+        gameState.pickGivenCard(combatZoneLV2);
         combatZoneLV2.useBatteries(gameState,player1,0);
         combatZoneLV2.useBatteries(gameState, player1, 2);
         List<Integer> x = new ArrayList<>();

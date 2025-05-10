@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 //PLANETS
-public class Planets extends DayLossCard{
+public class Planets extends SkipCard{
     private List<List<Color>> planetGoods; //each element of the main list represents the goods
     //that can be gained by landing on the corresponding planet
     //(each type of good corresponds to a color)
@@ -68,10 +68,7 @@ public class Planets extends DayLossCard{
         if (goodsExchangePhase) {
             throw new InvalidActionException("Invalid action");
         }
-        if(gameState.isLastInTurn(nickname)) {
-            gameState.setGameState(State.CARD_PICKING);
-        }
-        gameState.nextTurn();
+        super.skip(gameState, nickname);
     }
 
 

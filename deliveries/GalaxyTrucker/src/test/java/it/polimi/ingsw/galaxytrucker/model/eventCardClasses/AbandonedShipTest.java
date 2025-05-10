@@ -16,8 +16,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AbandonedShipTest {
-    private AbandonedShip abandonedShip;
-    private AbandonedShip abandonedShip1;
+    private AbandonedShip abandonedShipMoreCrew;
+    private AbandonedShip abandonedShipLessCrew;
     private String player1;
     private String player2;
     private VirtualViewRMI cl1;
@@ -42,44 +42,77 @@ class AbandonedShipTest {
         gameState.setPosition(player2, 3);
         gameState.addCrew(player1, 2, 3);
         gameState.addCrew(player2, 2, 3);
-        gameState.setGameState(State.CARD_PICKING); //end of assembling phase
-        abandonedShip = new AbandonedShip(3, 3, 1, 0);
-        abandonedShip1 = new AbandonedShip(1, 3, 1, 0);
+        gameState.checkShipBoards();
+
+        abandonedShipMoreCrew = new AbandonedShip(3, 3, 1, 0);
+        abandonedShipLessCrew = new AbandonedShip(1, 3, 1, 0);
     }
 
     @Test
     void testUseShip(){
-        abandonedShip.setUsed();
-        assertTrue(abandonedShip.isUsed());
+        gameState.pickGivenCard(abandonedShipLessCrew);
+        abandonedShipMoreCrew.setUsed();
+        assertTrue(abandonedShipMoreCrew.isUsed());
     }
 
     @Test
     void testShouldNotUseShipAlreadyUsed(){
-        abandonedShip.setUsed();
-        assertThrows(InvalidActionException.class, () -> abandonedShip.setUsed());
+        gameState.pickGivenCard(abandonedShipMoreCrew);
+        abandonedShipMoreCrew.setUsed();
+        assertThrows(InvalidActionException.class, () -> abandonedShipMoreCrew.setUsed());
     }
 
     @Test
     void testLandingWithRequiredCrew(){
+        gameState.pickGivenCard(abandonedShipLessCrew);
         List<Integer> xCabin = new ArrayList<>();
         List<Integer> yCabin = new ArrayList<>();
         List<Integer> eachCabinCrew = new ArrayList<>();
         xCabin.add(2);
         yCabin.add(3);
         eachCabinCrew.add(1);
-        abandonedShip1.landing(gameState, player1,xCabin,yCabin,eachCabinCrew);
-        assertTrue(abandonedShip1.isUsed());
+        abandonedShipLessCrew.landing(gameState, player1,xCabin,yCabin,eachCabinCrew);
+        assertTrue(abandonedShipLessCrew.isUsed());
     }
 
     @Test
-    void testShouldNotLandingInvalidRequiredCrew(){ //not enough crew, player can not land in the station
+    void testShouldNotLandingCardAlreadyUsed(){
+        gameState.pickGivenCard(abandonedShipLessCrew);
         List<Integer> xCabin = new ArrayList<>();
         List<Integer> yCabin = new ArrayList<>();
         List<Integer> eachCabinCrew = new ArrayList<>();
         xCabin.add(2);
         yCabin.add(3);
         eachCabinCrew.add(2);
-        assertThrows(NoCrewException.class,() -> abandonedShip.landing(gameState, player1,xCabin,yCabin,eachCabinCrew));
+        abandonedShipLessCrew.setUsed();
+        assertThrows(InvalidActionException.class, () -> abandonedShipLessCrew.landing(gameState, player1, xCabin, yCabin, eachCabinCrew));
     }
 
+    @Test
+    void testShouldNotLandingInvalidRequiredCrew(){ //not enough crew, player can not land in the station
+        gameState.pickGivenCard(abandonedShipMoreCrew);
+        List<Integer> xCabin = new ArrayList<>();
+        List<Integer> yCabin = new ArrayList<>();
+        List<Integer> eachCabinCrew = new ArrayList<>();
+        xCabin.add(2);
+        yCabin.add(3);
+        eachCabinCrew.add(2);
+        assertThrows(NoCrewException.class,() -> abandonedShipMoreCrew.landing(gameState, player1,xCabin,yCabin,eachCabinCrew));
+    }
+
+    @Test
+    void testSkipFirstPlayer(){
+        gameState.pickGivenCard(abandonedShipLessCrew);
+        abandonedShipLessCrew.skip(gameState, player1);
+        assertEquals(player2, gameState.getTurnPlayer()); //next player should be in turn
+    }
+
+    @Test
+    void testSkipLastPlayer(){
+        gameState.pickGivenCard(abandonedShipLessCrew);
+        abandonedShipLessCrew.skip(gameState, player1);
+        abandonedShipLessCrew.skip(gameState, player2);
+        assertEquals(State.CARD_PICKING, gameState.getGameState()); //the phase should be CARD_PICKING
+        assertEquals(player1, gameState.getTurnPlayer()); //player one should be in turn
+    }
 }
