@@ -7,6 +7,7 @@ import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 
+import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -113,5 +114,9 @@ public interface VirtualServerRMI extends Remote, VirtualServer {
     //invoked when a player wants to land on a planet
     @Override
     void planetLanding(String nickname, int numberPlanet) throws RemoteException;
+
+    //invoked when a player wants to use batteries to declare its engine/cannon strength
+    @Override
+    void useBatteries(String nickname, int usedBatteries) throws RemoteException;
 
 }

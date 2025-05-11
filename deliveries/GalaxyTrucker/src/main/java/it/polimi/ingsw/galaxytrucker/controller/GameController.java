@@ -211,19 +211,4 @@ public class GameController {
     }
 
 
-
-    //[method for testing]
-    public State getModelState() {
-        return model.getGameState();
-    }
-
-    //[method for testing]
-    public void setModelDeck(Deck customDeck) {
-        model.setGameDeck(customDeck);
-    }
-
-    //[method for testing]
-    public EventCard getModelCurrentCard() {
-        return model.getCurrentCard();
-    }
 }

@@ -834,6 +834,11 @@ public class GameState {
     //sets turnPlayer to a specific player's nickname
     public void setTurnPlayer(String nickname){
         this.turnPlayer = nickname;
+
+        for(VirtualView view: clients.values()){
+            try{view.updateNextTurn(this.turnPlayer);}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        }
     }
     //this method is invoked when a player wants to leave the game
     public void quitGame(String nickname) throws InvalidActionException {

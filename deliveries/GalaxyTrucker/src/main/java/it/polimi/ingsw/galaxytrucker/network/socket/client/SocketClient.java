@@ -431,6 +431,14 @@ public class SocketClient implements VirtualViewSocket {
                         int planetNumber = Integer.parseInt(tokens[1]);
                         serverHandler.planetLanding(nickname, planetNumber);
                         break;
+                    case "useBatteries":
+                        if (tokens.length < 2) {
+                            System.out.println("Error: number of batteries required");
+                            break;
+                        }
+                        int numberBatteries = Integer.parseInt(tokens[1]);
+                        serverHandler.useBatteries(nickname, numberBatteries);
+                        break;
                     default:
                         System.out.println("Error: unknown command");
                 }

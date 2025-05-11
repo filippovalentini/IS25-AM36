@@ -8,6 +8,7 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.NoBatteriesException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.NoCrewException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import it.polimi.ingsw.galaxytrucker.network.rmi.client.ClientRMI;
 import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
@@ -95,7 +96,7 @@ class CombatZoneTest {
         y.add(3);
         List<Integer> crewMemToRemove = new ArrayList<>();
         crewMemToRemove.add(2);
-        combatZoneLV1.landing(gameState, player1, x, y, crewMemToRemove); //player1 removes 2 crew member
+        assertThrows(NoCrewException.class, () -> combatZoneLV1.landing(gameState, player1, x, y, crewMemToRemove)); //player1 removes 2 crew member
         assertEquals(0, gameState.getPlayersPlay().get(player1).getNumberCrew()); //player1 must have 0 crew members at this point
     }
 

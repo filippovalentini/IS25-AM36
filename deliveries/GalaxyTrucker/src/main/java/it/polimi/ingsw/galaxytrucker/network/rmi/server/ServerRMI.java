@@ -436,4 +436,20 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
             }
         }
     }
+
+    //invoked when a player wants to use batteries to declare its engine/cannon strength
+    @Override
+    public void useBatteries(String nickname, int usedBatteries) throws RemoteException{
+        try{
+            controller.useBatteries(nickname, usedBatteries);
+        }
+        catch(Exception e){
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
+        }
+    }
 }

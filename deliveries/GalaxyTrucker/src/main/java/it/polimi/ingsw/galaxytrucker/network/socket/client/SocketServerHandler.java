@@ -226,4 +226,12 @@ public class SocketServerHandler implements VirtualServerSocket {
         out.writeObject(message);
     }
 
+    //invoked when a player wants to use batteries to declare its engine/cannon strength
+    @Override
+    public void useBatteries(String nickname, int usedBatteries) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(usedBatteries)));
+        PlayerActionMessage message = new PlayerActionMessage(PlayerActionType.USE_BATTERIES, params);
+        out.writeObject(message);
+    }
+
 }

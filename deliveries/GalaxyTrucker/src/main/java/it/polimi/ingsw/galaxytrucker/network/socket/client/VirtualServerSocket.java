@@ -107,4 +107,8 @@ public interface VirtualServerSocket extends VirtualServer {
     //invoked when a player wants to land on a planet
     @Override
     void planetLanding(String nickname, int numberPlanet) throws IOException;
+
+    //invoked when a player wants to use batteries to declare its engine/cannon strength
+    @Override
+    void useBatteries(String nickname, int usedBatteries) throws IOException;
 }

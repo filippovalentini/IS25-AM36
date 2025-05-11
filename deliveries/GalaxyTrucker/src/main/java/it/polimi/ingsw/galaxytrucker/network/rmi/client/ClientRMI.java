@@ -86,6 +86,8 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
         System.out.println("6 - defeat <numberBatteries> <yes/no> (decide how many batteries to use to improve your cannon strength and whether to lose days to get a reward)");
         System.out.println("7 - loadGoods [<x> <y>] ... (specify the cargo holds where to load goods found during the flight; specify (0,0) if you want to discard a good)");
         System.out.println("8 - planet <planetNumber> (land in the specified planet)");
+        System.out.println("9 - useBatteries <numberBatteries> (declare your engine/cannon strength specifying the number of batteries to use)");
+
     }
 
     //runs a command line interface to send requests to the server
@@ -313,6 +315,14 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                         }
                         int planetNumber = Integer.parseInt(tokens[1]);
                         server.planetLanding(nickname, planetNumber);
+                        break;
+                    case "useBatteries":
+                        if (tokens.length < 2) {
+                            System.out.println("Error: number of batteries required");
+                            break;
+                        }
+                        int numberBatteries = Integer.parseInt(tokens[1]);
+                        server.useBatteries(nickname, numberBatteries);
                         break;
                     default:
                         System.out.println("Error: unknown command");

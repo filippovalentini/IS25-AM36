@@ -89,4 +89,7 @@ public interface VirtualServer {
     //invoked when a player wants to land on a planet
     void planetLanding(String nickname, int numberPlanet) throws Exception;
 
+    //invoked when a player wants to use batteries to declare its engine/cannon strength
+    void useBatteries(String nickname, int usedBatteries) throws Exception;
+
 }

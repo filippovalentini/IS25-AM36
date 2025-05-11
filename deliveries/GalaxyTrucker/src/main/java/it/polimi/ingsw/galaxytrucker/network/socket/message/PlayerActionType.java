@@ -27,5 +27,6 @@ public enum PlayerActionType {
     FLY,
     DEFEAT,
     LOAD_GOODS,
-    PLANET_LANDING
+    PLANET_LANDING,
+    USE_BATTERIES
 }
