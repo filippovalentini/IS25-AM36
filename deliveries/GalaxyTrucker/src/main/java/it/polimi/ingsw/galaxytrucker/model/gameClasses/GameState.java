@@ -33,6 +33,7 @@ public class GameState {
         this.turnPlayer = "";
         this.numPlayers = numPlayers;
         this.gameDeck = null;
+        this.hourglass = new Hourglass(120);
         this.state = State.WAITING_FOR_PLAYERS;
     }
 
@@ -60,10 +61,6 @@ public class GameState {
             computeTotalRewards();
             setGameState(State.END);
         }
-    }
-    //[method for testing]
-    public EventCard getCurrentCard(){
-        return this.currentCard;
     }
 
     //
@@ -690,6 +687,20 @@ public class GameState {
         if(!playersPos.containsValue(null)){
             setGameState(State.SHIP_CONTROL);
             checkShipBoards();
+        }
+    }
+    //invoked when a player wants to turn around the hourglass
+    public void startNewCycle(String nickname) throws InvalidActionException, HourGlassException{
+        if (hourglass.getNumberFlips() != 1) {
+            throw new HourGlassException("Wrong phase of the game");
+        } else if (playersPos.get(nickname) == null) {
+            throw new InvalidActionException("First finish assembling!!!");
+        } else if (state != State.SHIP_BUILDING) {
+            System.out.println("Wait for assembling phase");
+        } else if (firstFlight) {
+            throw new InvalidActionException("Invalid action for first flight game");
+        } else{
+            hourglass.startNewCycle();
         }
     }
 

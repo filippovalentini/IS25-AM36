@@ -98,6 +98,13 @@ public class GameController {
         }
     }
 
+    //invoked when a player wants to turn around the hourglass
+    public void startNewCycle(String nickname) throws InvalidActionException, HourGlassException{
+        synchronized (model) {
+            model.startNewCycle(nickname);
+        }
+    }
+
     //SHIP CONTROL PHASE
 
     //invoked when a player wants to destroy a component in order to correct its ship board
