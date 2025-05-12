@@ -63,6 +63,9 @@ public class SocketClientHandler implements VirtualViewSocket {
                     case SET_POSITION:
                         controller.setPosition(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)));
                         break;
+                    case HOURGLASS:
+                        controller.startNewCycle(message.getGameParams(0));
+                        break;
                     case DESTROY:
                         controller.destroyComponent(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)));
                         break;

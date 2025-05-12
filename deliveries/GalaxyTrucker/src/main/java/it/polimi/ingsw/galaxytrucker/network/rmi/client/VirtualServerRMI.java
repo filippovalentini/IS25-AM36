@@ -61,6 +61,10 @@ public interface VirtualServerRMI extends Remote, VirtualServer {
     @Override
     void setPosition(String nickname, int initCell) throws RemoteException;
 
+    //invoked when a player wants to turn around the hourglass
+    @Override
+    void startNewCycle(String nickname) throws RemoteException;
+
     //invoked when a player wants to destroy a component in order to validate its ship board or when a
     //component is destroyed due to a cannon shot/meteor attack
     @Override

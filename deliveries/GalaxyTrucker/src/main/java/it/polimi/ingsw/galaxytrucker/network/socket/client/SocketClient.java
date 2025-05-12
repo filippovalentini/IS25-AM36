@@ -294,6 +294,9 @@ public class SocketClient implements VirtualViewSocket {
                         int initCell = Integer.parseInt(tokens[1]);
                         serverHandler.setPosition(nickname, initCell);
                         break;
+                    case "hourglass":
+                        serverHandler.startNewCycle(nickname);
+                        break;
                     case "destroy":
                         if (tokens.length < 3) {
                             System.out.println("Error: coordinates required");

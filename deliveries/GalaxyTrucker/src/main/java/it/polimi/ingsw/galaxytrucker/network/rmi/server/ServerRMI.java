@@ -227,6 +227,22 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
         }
     }
 
+    //invoked when a player wants to turn around the hourglass
+    @Override
+    public void startNewCycle(String nickname) throws RemoteException{
+        try{
+            controller.startNewCycle(nickname);
+        }
+        catch(Exception e){
+            try{
+                clients.get(nickname).notifyError(e.getMessage());
+            }
+            catch(RemoteException e1){
+                System.out.println("Error during remote method invocation on client");
+            }
+        }
+    }
+
     //invoked when a player wants to destroy a component in order to validate its ship board or when a
     //component is destroyed due to a cannon shot/meteor attack
     @Override

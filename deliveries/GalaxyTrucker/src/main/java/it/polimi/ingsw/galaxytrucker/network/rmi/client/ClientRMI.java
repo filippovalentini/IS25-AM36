@@ -71,12 +71,13 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
         System.out.println("11 - pickDeck <deckNumber> (pick a deck)");
         System.out.println("12 - releaseDeck (release picked deck)");
         System.out.println("13 - setPosition <initCell> (set initial position on the flight board)");
-        System.out.println("14 - destroy <x> <y> (destroy a component)");
-        System.out.println("15 - addCrew <x> <y> (add 2 crew members to a cabin)");
-        System.out.println("16 - addAlien <purple/brown> <x> <y> (add an alien to a cabin)");
-        System.out.println("17 - addBatteries <x> <y> (fill a battery component with batteries)");
-        System.out.println("18 - pickCard (pick a next card)");
-        System.out.println("19 - quit (quit the game)");
+        System.out.println("14 - hourglass (turn around the hourglass)");
+        System.out.println("15 - destroy <x> <y> (destroy a component)");
+        System.out.println("16 - addCrew <x> <y> (add 2 crew members to a cabin)");
+        System.out.println("17 - addAlien <purple/brown> <x> <y> (add an alien to a cabin)");
+        System.out.println("18 - addBatteries <x> <y> (fill a battery component with batteries)");
+        System.out.println("19 - pickCard (pick a next card)");
+        System.out.println("20 - quit (quit the game)");
         System.out.println("(commands for card solving)");
         System.out.println("1 - dice (throw the dice)");
         System.out.println("2 - skip (skip an action)");
@@ -178,6 +179,9 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                         }
                         int initCell = Integer.parseInt(tokens[1]);
                         server.setPosition(nickname, initCell);
+                        break;
+                    case "hourglass":
+                        server.startNewCycle(nickname);
                         break;
                     case "destroy":
                         if (tokens.length < 3) {

@@ -16,6 +16,7 @@ public enum PlayerActionType {
     RELEASE_DECK,
     //others
     SET_POSITION,
+    HOURGLASS,
     QUIT,
     PICK_CARD,
     ADD_CREW,

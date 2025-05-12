@@ -120,6 +120,14 @@ public class SocketServerHandler implements VirtualServerSocket {
         out.writeObject(message);
     }
 
+    //invoked when a player wants to turn around the hourglass
+    @Override
+    public void startNewCycle(String nickname) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname));
+        PlayerActionMessage message = new PlayerActionMessage(PlayerActionType.HOURGLASS, params);
+        out.writeObject(message);
+    }
+
     //invoked when a player wants to destroy a component in order to validate its ship board or when a
     //component is destroyed due to a cannon shot/meteor attack
     @Override
