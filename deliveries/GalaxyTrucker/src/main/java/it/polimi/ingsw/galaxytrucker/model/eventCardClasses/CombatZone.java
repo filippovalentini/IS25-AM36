@@ -40,6 +40,14 @@ public class CombatZone extends EventCard{
         }
     }
 
+    public int getPhase() {
+        return phase;
+    }
+
+    public String getWorstEnginePlayer() {
+        return worstEnginePlayer;
+    }
+
     @Override
     //the player with fewer crew members loses 3 flight days
     public void specialEffect(GameState gameState) throws InvalidActionException {
@@ -118,7 +126,7 @@ public class CombatZone extends EventCard{
                     worstEngineStrength = engineStrength;
                 }
                 if(gameState.isLastInTurn(nickname)) {
-                    gameState.losePreciousGoods(nickname, 3);
+                    gameState.losePreciousGoods(worstEnginePlayer, 3);
                     gameState.setTurnPlayer(gameState.getCrewMinPlayer());
                     phase = 3;
                     /*
@@ -146,6 +154,8 @@ public class CombatZone extends EventCard{
             else if (gameState.getCrewCount(nickname)<= 2) {
                 gameState.removeCrewMembers(nickname, x, y, z, gameState.getCrewCount(nickname));
                 gameState.quitGame(nickname);
+                phase = 3;
+                gameState.updateTurns();
                 throw new NoCrewException("You have lost all your crew: quitting game...");
             }else{
                 gameState.removeCrewMembers(nickname, x, y, z, 2);
