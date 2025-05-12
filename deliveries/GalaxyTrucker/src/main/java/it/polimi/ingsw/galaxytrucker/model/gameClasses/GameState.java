@@ -23,7 +23,8 @@ public class GameState {
     private List<Component> hiddenComponents;       //components turned face down during the assembling phase
     private List<Component> shownComponents;        //components turned face up during the assembling phase
     private State state;            //current state of the game
-    final Map<String, VirtualView> clients = new HashMap<>();     //list of observers (clients of the game)
+    final Map<String, VirtualView> clients = new HashMap<>(); //list of observers (clients of the game)
+    private Hourglass hourglass;
 
     public GameState(boolean firstFlight, int numPlayers) {     //constructor, creates the deck(s) of cards and instantiates the components
         this.firstFlight = firstFlight;
