@@ -38,7 +38,7 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
             ff = inputScanner.nextLine();
         }while(!ff.equals("F") && !ff.equals("S"));
         firstFlight = (ff.equals("F"));
-        System.setProperty("java.rmi.server.hostname", "172.20.10.3");
+        //System.setProperty("java.rmi.server.hostname", "172.20.10.3");
         ServerRMI server = new ServerRMI(firstFlight, numPlayers);
         final String serverName = "GalaxyTruckerServer";
         Registry registry = LocateRegistry.createRegistry(1234);

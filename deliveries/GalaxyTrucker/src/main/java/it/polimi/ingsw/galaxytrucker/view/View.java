@@ -17,6 +17,7 @@ public class View {
     private List<ViewComponent> shownComponents = new ArrayList<>();    //set of components placed face up
     private Integer currentCard;        //current card to solve
     private ViewDice dice;          //dice of the game
+    private String hourglassState;      //state of the hourglass
 
     public View(String nickname, Color color, boolean firstFlight) {
         this.player = new ViewPlayer(nickname, color, firstFlight);
@@ -27,6 +28,7 @@ public class View {
         this.turnPlayer = null;
         this.currentCard = null;
         this.dice = new ViewDice();
+        this.hourglassState = null;
     }
 
     public static void main(String[] args){
@@ -64,6 +66,10 @@ public class View {
         System.out.print("🚀 Game State: " + gameState);
         if(turnPlayer != null){
             System.out.println(" --------- IT'S " + turnPlayer + "'S TURN");
+        }
+        System.out.println();
+        if(hourglassState != null){
+            System.out.println("⏳ Hourglass state: " + hourglassState + "\n");
         }
         if(currentCard != null){
             System.out.println("🃏 Card to solve: " + currentCard + "\n");
@@ -255,10 +261,27 @@ public class View {
 
     }
 
+    //notifies the view that the hourglass has been turned around
+    public void updateStartNewCycle(){
+        this.hourglassState = "Hourglass is running...";
+    }
+
+    //notifies the view that the hourglass has finished running
+    public void updateFinishedCycle(){
+        this.hourglassState = "Hourglass has finished running, you can start the last cycle";
+    }
+
+    //invoked when the game switches to the ship placement phase
+    public void updateShipPlacement() {
+        this.hourglassState = "Hourglass has finished running, place your ship on the flight board!!!";
+        gameState = "SHIP PLACEMENT";
+    }
+
     //invoked when the game switches to the ship control phase
     public void updateShipControl() {
         gameState = "SHIP CONTROL";
         pickedViewComponent = null;
+        hourglassState = null;
         shownComponents.clear();
         pickedDeck.clear();
         player.updateShipControl();

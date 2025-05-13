@@ -76,6 +76,19 @@ public interface VirtualViewSocket extends VirtualView {
     @Override
     void updateFinishAssembling(String nickname, int position) throws IOException;
 
+    //notifies the view that the hourglass has been turned around
+    @Override
+    void updateStartNewCycle() throws IOException;
+
+    //notifies the view that the hourglass has finished running
+    @Override
+    void updateFinishedCycle() throws IOException;
+
+    //invoked when the game switches to the ship placement phase, which means that the players can only
+    //place their ship on the flight board
+    @Override
+    void updateShipPlacement() throws IOException;
+
     //notifies the view that all the players have concluded the assembling phase, which means that the players
     //enter the ship control phase
     @Override

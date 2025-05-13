@@ -1,5 +1,6 @@
 package it.polimi.ingsw.galaxytrucker.model.componentClasses;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.HourGlassException;
+import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,11 +9,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class HourglassTest {
     private Hourglass hourglass;
+    GameState gs;
 
 
     @BeforeEach
     void init() {
-        hourglass = new Hourglass(1); // 1 seconds for testing
+        gs = new GameState(false, 2);
+        hourglass = new Hourglass(1, gs); // 1 seconds for testing
     }
 
     @Test
@@ -24,8 +27,8 @@ public class HourglassTest {
 
     @Test
     void testConstructorWithInvalidDuration_Negative() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Hourglass(-2);
+        HourGlassException exception = assertThrows(HourGlassException.class, () -> {
+            new Hourglass(-2, gs);
         });
         assertEquals("La durata del ciclo deve essere positiva.", exception.getMessage());
     }

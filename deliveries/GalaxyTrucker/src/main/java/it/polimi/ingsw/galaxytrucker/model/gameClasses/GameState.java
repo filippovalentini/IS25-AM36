@@ -23,7 +23,7 @@ public class GameState {
     private List<Component> hiddenComponents;       //components turned face down during the assembling phase
     private List<Component> shownComponents;        //components turned face up during the assembling phase
     private State state;            //current state of the game
-    final Map<String, VirtualView> clients = new HashMap<>(); //list of observers (clients of the game)
+    private final Map<String, VirtualView> clients = new HashMap<>(); //list of observers (clients of the game)
     private Hourglass hourglass;
 
     public GameState(boolean firstFlight, int numPlayers) {     //constructor, creates the deck(s) of cards and instantiates the components
@@ -33,7 +33,7 @@ public class GameState {
         this.turnPlayer = "";
         this.numPlayers = numPlayers;
         this.gameDeck = null;
-        this.hourglass = new Hourglass(120);
+        this.hourglass = new Hourglass(20, this);
         this.state = State.WAITING_FOR_PLAYERS;
     }
 
@@ -76,6 +76,9 @@ public class GameState {
             try{
                 if(state==State.SHIP_BUILDING){
                     view.updateStartAssembling();
+                }
+                else if(state==State.SHIP_PLACEMENT){
+                    view.updateShipPlacement();
                 }
                 else if(state==State.SHIP_CONTROL){
                     view.updateShipControl();
@@ -448,14 +451,14 @@ public class GameState {
         else{   //first flight
             List<EventCard> gameDeckCards = new ArrayList<>();
             //first flight cards creation
-            //gameDeckCards.add(new AbandonedShip(3, 4, 1, 1002));
+            gameDeckCards.add(new AbandonedShip(3, 4, 1, 1002));
             gameDeckCards.add(new Smugglers(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN, Color.BLUE)),2,4,1,8005));
             gameDeckCards.add(new AbandonedStation(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN)), 5, 1, 2001));
-            //gameDeckCards.add(new CombatZone(true, 3001));
-            //gameDeckCards.add(new MeteorsSwarm(new ArrayList<>(Arrays.asList(new Meteor(true, Orientation.NORTH), new Meteor(false, Orientation.WEST), new Meteor(false, Orientation.EAST))), 5001));
-            //gameDeckCards.add(new OpenSpace(6001));
-            //gameDeckCards.add(new Planets(new ArrayList<>(Arrays.asList(new ArrayList<>(Arrays.asList(Color.RED, Color.RED)), new ArrayList<>(Arrays.asList(Color.RED, Color.BLUE, Color.BLUE)), new ArrayList<>(Arrays.asList(Color.YELLOW)))),2, 7002));
-            //gameDeckCards.add(new SpecialEvent(SpecialEventType.STARDUST, 4002));
+            gameDeckCards.add(new CombatZone(true, 3001));
+            gameDeckCards.add(new MeteorsSwarm(new ArrayList<>(Arrays.asList(new Meteor(true, Orientation.NORTH), new Meteor(false, Orientation.WEST), new Meteor(false, Orientation.EAST))), 5001));
+            gameDeckCards.add(new OpenSpace(6001));
+            gameDeckCards.add(new Planets(new ArrayList<>(Arrays.asList(new ArrayList<>(Arrays.asList(Color.RED, Color.RED)), new ArrayList<>(Arrays.asList(Color.RED, Color.BLUE, Color.BLUE)), new ArrayList<>(Arrays.asList(Color.YELLOW)))),2, 7002));
+            gameDeckCards.add(new SpecialEvent(SpecialEventType.STARDUST, 4002));
             //game deck creation
             Deck d = new Deck(gameDeckCards);
             decks = new ArrayList<>();
@@ -509,6 +512,9 @@ public class GameState {
     public void startAssembling() {
         createComponents(firstFlight);
         createDecks(firstFlight);
+        if(!firstFlight){
+            startNewCycle();
+        }
         setGameState(State.SHIP_BUILDING);
     }
 
@@ -653,7 +659,7 @@ public class GameState {
     }
     //invoked when a player has finished the assembling phase and has to pick a free position on the flight board
     public void setPosition(String nickname, int initCell) throws InvalidPositionException, InvalidActionException {
-        if(state != State.SHIP_BUILDING){
+        if(state != State.SHIP_BUILDING && state != State.SHIP_PLACEMENT){
             throw new InvalidActionException("Wait for assembling phase");
         }
         if(firstFlight) {
@@ -691,9 +697,7 @@ public class GameState {
     }
     //invoked when a player wants to turn around the hourglass
     public void startNewCycle(String nickname) throws InvalidActionException, HourGlassException{
-        if (hourglass.getNumberFlips() != 1) {
-            throw new HourGlassException("Wrong phase of the game");
-        } else if (playersPos.get(nickname) == null) {
+        if (playersPos.get(nickname) == null) {
             throw new InvalidActionException("First finish assembling!!!");
         } else if (state != State.SHIP_BUILDING) {
             System.out.println("Wait for assembling phase");
@@ -701,6 +705,27 @@ public class GameState {
             throw new InvalidActionException("Invalid action for first flight game");
         } else{
             hourglass.startNewCycle();
+
+            for(VirtualView view: clients.values()){
+                try{view.updateStartNewCycle();}
+                catch(Exception e){System.out.println("Error during remote method invocation on client");}
+            }
+        }
+    }
+    //invoked when the assembling phase starts, turns around the hourglass
+    public void startNewCycle(){
+        hourglass.startNewCycle();
+
+        for(VirtualView view: clients.values()){
+            try{view.updateStartNewCycle();}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        }
+    }
+    //invoked when the hourglass has finished running
+    public void finishedCycle() {
+        for(VirtualView view: clients.values()){
+            try{view.updateFinishedCycle();}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
     }
 
