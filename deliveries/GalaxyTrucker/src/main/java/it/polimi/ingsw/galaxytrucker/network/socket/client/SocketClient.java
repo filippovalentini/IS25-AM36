@@ -132,6 +132,15 @@ public class SocketClient implements VirtualViewSocket {
                     case FINISH_ASSEMBLING:
                         updateFinishAssembling(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)));
                         break;
+                    case STARTED_CYCLE:
+                        updateStartNewCycle();
+                        break;
+                    case FINISHED_CYCLE:
+                        updateFinishedCycle();
+                        break;
+                    case SHIP_PLACEMENT:
+                        updateShipPlacement();
+                        break;
                     case SHIP_CONTROL:
                         updateShipControl();
                         break;
@@ -551,6 +560,25 @@ public class SocketClient implements VirtualViewSocket {
     @Override
     public void updateFinishAssembling(String nickname, int position) {
         this.view.updateFinishAssembling(nickname, position);
+    }
+
+    //notifies the view that the hourglass has been turned around
+    @Override
+    public void updateStartNewCycle() {
+        this.view.updateStartNewCycle();
+    }
+
+    //notifies the view that the hourglass has finished running
+    @Override
+    public void updateFinishedCycle() {
+        this.view.updateFinishedCycle();
+    }
+
+    //invoked when the game switches to the ship placement phase, which means that the players can only
+    //place their ship on the flight board
+    @Override
+    public void updateShipPlacement() {
+        this.view.updateShipPlacement();
     }
 
     //notifies the view that all the players have concluded the assembling phase, which means that the players

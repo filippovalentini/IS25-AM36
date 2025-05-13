@@ -439,6 +439,25 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
         this.view.updateFinishAssembling(nickname, position);
     }
 
+    //notifies the view that the hourglass has been turned around
+    @Override
+    public void updateStartNewCycle() throws RemoteException{
+        this.view.updateStartNewCycle();
+    }
+
+    //notifies the view that the hourglass has finished running
+    @Override
+    public void updateFinishedCycle() throws RemoteException{
+        this.view.updateFinishedCycle();
+    }
+
+    //invoked when the game switches to the ship placement phase, which means that the players can only
+    //place their ship on the flight board
+    @Override
+    public void updateShipPlacement() throws RemoteException{
+        this.view.updateShipPlacement();
+    }
+
     //notifies the view that all the players have concluded the assembling phase, which means that the players
     //enter the ship control phase
     @Override

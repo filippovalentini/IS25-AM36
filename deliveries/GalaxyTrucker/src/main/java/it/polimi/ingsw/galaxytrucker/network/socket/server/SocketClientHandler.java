@@ -77,6 +77,7 @@ public class SocketClientHandler implements VirtualViewSocket {
                         break;
                     case ADD_ALIEN:
                         controller.addAlien(message.getGameParams(0), Boolean.parseBoolean(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)), Integer.parseInt(message.getGameParams(3)));
+                        break;
                     case PICK_CARD:
                         controller.pickNextCard(message.getGameParams(0));
                         break;
@@ -256,6 +257,31 @@ public class SocketClientHandler implements VirtualViewSocket {
     public void updateFinishAssembling(String nickname, int position) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(position)));
         GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.FINISH_ASSEMBLING, params);
+        out.writeObject(message);
+    }
+
+    //notifies the view that the hourglass has been turned around
+    @Override
+    public void updateStartNewCycle() throws IOException{
+        List<String> params = new ArrayList<>();
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.STARTED_CYCLE, params);
+        out.writeObject(message);
+    }
+
+    //notifies the view that the hourglass has finished running
+    @Override
+    public void updateFinishedCycle() throws IOException{
+        List<String> params = new ArrayList<>();
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.FINISHED_CYCLE, params);
+        out.writeObject(message);
+    }
+
+    //invoked when the game switches to the ship placement phase, which means that the players can only
+    //place their ship on the flight board
+    @Override
+    public void updateShipPlacement() throws IOException{
+        List<String> params = new ArrayList<>();
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.SHIP_PLACEMENT, params);
         out.writeObject(message);
     }
 
