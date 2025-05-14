@@ -2,13 +2,10 @@ package it.polimi.ingsw.galaxytrucker.network.rmi.server;
 
 import it.polimi.ingsw.galaxytrucker.controller.GameController;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 import it.polimi.ingsw.galaxytrucker.network.rmi.client.VirtualServerRMI;
 
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
@@ -17,33 +14,9 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
     final Map<String, VirtualViewRMI> clients = new HashMap<>();    //maps each client with the nickname of the respective player
 
     //constructor, initializes the game controller
-    public ServerRMI(boolean firstFlight, int numPlayers) throws RemoteException {
+    public ServerRMI(GameController controller) throws RemoteException {
         super();
-        this.controller = new GameController(firstFlight, numPlayers);
-    }
-
-    //launches the server and receives in input for the user the number of players and the type of game
-    //(standard game or first flight), in order to set up the server correctly
-    public static void main(String[] args) throws RemoteException {
-        int numPlayers;
-        String ff;
-        boolean firstFlight;
-        Scanner inputScanner = new Scanner(System.in);
-        do{
-            System.out.println("Number of players (from 1 to 4): ");
-            numPlayers = Integer.parseInt(inputScanner.nextLine());
-        }while(numPlayers>4 || numPlayers<1);
-        do{
-            System.out.println("Standard game (S) or first flight (F): ");
-            ff = inputScanner.nextLine();
-        }while(!ff.equals("F") && !ff.equals("S"));
-        firstFlight = (ff.equals("F"));
-        //System.setProperty("java.rmi.server.hostname", "172.20.10.3");
-        ServerRMI server = new ServerRMI(firstFlight, numPlayers);
-        final String serverName = "GalaxyTruckerServer";
-        Registry registry = LocateRegistry.createRegistry(1234);
-        registry.rebind(serverName, server);
-        System.out.println("Waiting for remote invocation...");
+        this.controller = controller;
     }
 
 

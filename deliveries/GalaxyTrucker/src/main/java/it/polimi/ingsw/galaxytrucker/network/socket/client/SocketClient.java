@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import static it.polimi.ingsw.galaxytrucker.network.MainClient.printCommands;
+
 //this class contains all the logic needed to connect to the server through socket, manage the user interaction
 //and handle server responses
 public class SocketClient implements VirtualViewSocket {
@@ -25,24 +27,16 @@ public class SocketClient implements VirtualViewSocket {
     private final ObjectInputStream in;
     private final SocketServerHandler serverHandler;
 
-    protected SocketClient(Socket clientSocket) throws IOException {
+    public SocketClient(Socket clientSocket) throws IOException {
         this.clientSocket = clientSocket;
         this.serverHandler = new SocketServerHandler(new ObjectOutputStream(clientSocket.getOutputStream()));
         this.in = new ObjectInputStream(clientSocket.getInputStream());
     }
 
-    public static void main(String[] args) throws IOException  {
-        String host = args[0];
-        int port = Integer.parseInt(args[1]);
-        Socket clientSocket = new Socket(host, port);
-        System.out.println("Connected to server...");
-        new SocketClient(clientSocket).run();
-    }
-
     //this method gets nickname and color from the user and tries to add the player to the game; in case of success
     //it activates (in different threads) the methods to manage commands from the user (CLI) and messages from
     //the server
-    private void run() throws IOException {
+    public void run() throws IOException {
         GameUpdateMessage message;
         String nickname;
         String colorString;
@@ -213,7 +207,7 @@ public class SocketClient implements VirtualViewSocket {
     public void runCli(VirtualServer serverHandler)  {
         Scanner scan = new Scanner(System.in);
 
-        ClientRMI.printCommands();
+        printCommands();
 
         while (true) {
             try{
@@ -231,7 +225,7 @@ public class SocketClient implements VirtualViewSocket {
                 String command = tokens[0];
                 switch (command) {
                     case "commands":
-                        ClientRMI.printCommands();
+                        printCommands();
                         break;
                     case "shipBoard":
                         if (tokens.length == 1) {
