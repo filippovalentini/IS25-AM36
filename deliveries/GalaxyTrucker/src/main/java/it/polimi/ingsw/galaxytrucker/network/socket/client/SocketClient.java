@@ -396,10 +396,10 @@ public class SocketClient implements VirtualViewSocket {
                         List<Integer> x = new ArrayList<>();
                         List<Integer> y = new ArrayList<>();
                         List<Integer> removedCrew = new ArrayList<>();
-                        for(int i=1; i< (tokens.length-1)/3; i+=3){
-                            x.add(Integer.parseInt(tokens[i]));
-                            y.add(Integer.parseInt(tokens[i+1]));
-                            removedCrew.add(Integer.parseInt(tokens[i+2]));
+                        for(int i=0; i< (tokens.length-1); i+=3){
+                            x.add(Integer.parseInt(tokens[i+1]));
+                            y.add(Integer.parseInt(tokens[i+2]));
+                            removedCrew.add(Integer.parseInt(tokens[i+3]));
                         }
                         serverHandler.landing(nickname, x, y, removedCrew);
                         break;
@@ -423,9 +423,9 @@ public class SocketClient implements VirtualViewSocket {
                         }
                         List<Integer> x6 = new ArrayList<>();
                         List<Integer> y6 = new ArrayList<>();
-                        for(int i=1; i< tokens.length; i+=2){
-                            x6.add(Integer.parseInt(tokens[i]));
-                            y6.add(Integer.parseInt(tokens[i+1]));
+                        for(int i=0; i< tokens.length-1; i+=2){
+                            x6.add(Integer.parseInt(tokens[i+1]));
+                            y6.add(Integer.parseInt(tokens[i+2]));
                         }
                         serverHandler.loadGoods(nickname, x6, y6);
                         break;
