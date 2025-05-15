@@ -100,4 +100,15 @@ public class CargoHold extends ConfigurableComponent {
         retComponent.goods = this.goods;
         return retComponent;
     }
+
+    @Override
+    public boolean isFullOfGoods() {
+        if(isDouble){
+            return goods.size()==2;
+        }
+        else {
+            return goods.size()==3;
+        }
+    }
+
 }

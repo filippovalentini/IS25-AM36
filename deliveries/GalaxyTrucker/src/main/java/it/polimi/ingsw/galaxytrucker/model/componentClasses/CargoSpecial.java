@@ -39,4 +39,14 @@ public class CargoSpecial extends CargoHold {
     public List<Color> getGoods() { //return a copy of the listed goods
         return new ArrayList<>(this.goods);
     }
+
+    @Override
+    public boolean isFullOfGoods() {
+        if(isDouble){
+            return goods.size()==2;
+        }
+        else {
+            return goods.size()==1;
+        }
+    }
 }

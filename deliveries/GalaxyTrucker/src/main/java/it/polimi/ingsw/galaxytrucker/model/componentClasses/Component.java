@@ -149,6 +149,7 @@ public class Component {
     public int getNumberBatteries(){ return 0;}
     public int getNumberGoods() { return 0;}
     public int getNumberGoods(Color color){ return 0;}
+    public boolean isFullOfGoods() { return true;}
     public void removeSpecificGoods(Color color, int numberGoods){}
     public void substituteGood(Color good, int position) throws FullCargoHoldException, UnsupportedCargoColorException, AssembledComponentException {
         throw new AssembledComponentException("Can't substitute good outside a cargo hold");

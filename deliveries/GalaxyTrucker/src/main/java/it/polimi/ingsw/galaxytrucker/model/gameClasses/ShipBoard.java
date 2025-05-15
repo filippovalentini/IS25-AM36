@@ -571,11 +571,38 @@ public class ShipBoard {
             }
         }
     }
+    //verifies that in all the specified positions there are cabins that contain at least the specified number of crew
+    public boolean availableCabins(List<Integer> x, List<Integer> y, List<Integer> crewInEachCabin){
+        Component c;
+        for(int i=0; i<x.size(); i++){
+            c = assembledComponents.get(x.get(i)).get(y.get(i));
+            if(c.getNumberCrew() < crewInEachCabin.get(i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    //verifies that in all the specified positions there are cargo holds that are not full
+    public boolean availableCargoHolds(List<Integer> x, List<Integer> y){
+        for(int i=0; i<x.size(); i++){
+            if(x.get(i)==0 && y.get(i)==0){
+                continue;
+            }
+            Component c = assembledComponents.get(x.get(i)).get(y.get(i));
+            if(c.isFullOfGoods()){
+                return false;
+            }
+        }
+        return true;
+    }
     //remove the specified crew members from the specified cabins in the ship board
     public void removeCrewMembers(List<Integer> x, List<Integer> y, List<Integer> crewInEachCabin, int numberCrewToRemove) throws NoCrewException {
         int sumRemovedCrewMembers = crewInEachCabin.stream().mapToInt(Integer::intValue).sum();
         if(sumRemovedCrewMembers != numberCrewToRemove){
             throw new NoCrewException("Wrong number of crew members to remove");
+        }
+        if(!availableCabins(x, y, crewInEachCabin)){
+            throw new NoCrewException("All specified cabins must have sufficient crew members");
         }
         for(int i=0; i<x.size(); i++){
             assembledComponents.get(x.get(i)).get(y.get(i)).removeCrew(crewInEachCabin.get(i));
@@ -592,6 +619,9 @@ public class ShipBoard {
     //adds a set of goods in specific cargo holds of the player's ship board; discards the good if the specified
     //coordinates are (0,0)
     public void loadGoods(List<Integer> x, List<Integer> y, List<Color> goods) throws UnsupportedCargoColorException, FullCargoHoldException{
+        if(!availableCargoHolds(x,y)){
+            throw new NoCrewException("All specified cargo holds must have sufficient space");
+        }
         for(int i=0; i<x.size(); i++){
             if(x.get(i) == 0 && y.get(i) == 0){
                 continue;
