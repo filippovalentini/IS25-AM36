@@ -99,10 +99,6 @@ public class GameState {
     }
     //returns the number of current active players in the game
     public int getCurrentPlayers(){return playersPlay.size();}
-    //returns a copy of the list of components placed face-up
-    public List<Component> getShownComponent() { //return a copy of the shown components
-        return new ArrayList<>(shownComponents);
-    }
     //returns the list of player nicknames (in position order)
     public List<String> getNicknames(){
         return new ArrayList<>(playersPos.keySet());

@@ -9,27 +9,12 @@ import java.net.ServerSocket;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.Scanner;
 
 public class MainSever {
     //asks the user the game settings (number of players and first flight/std game) and launches
     // the Socket and RMI servers
     public static void main(String[] args) {
-        int numPlayers;
-        String ff;
-        boolean firstFlight;
-        Scanner inputScanner = new Scanner(System.in);
-        do{
-            System.out.println("Number of players (from 1 to 4): ");
-            numPlayers = Integer.parseInt(inputScanner.nextLine());
-        }while(numPlayers>4 || numPlayers<1);
-        do{
-            System.out.println("Standard game (S) or first flight (F): ");
-            ff = inputScanner.nextLine();
-        }while(!ff.equals("F") && !ff.equals("S"));
-        firstFlight = (ff.equals("F"));
-
-        GameController controller = new GameController(firstFlight, numPlayers);
+        GameController controller = new GameController();
 
         new Thread(() -> {
             try {

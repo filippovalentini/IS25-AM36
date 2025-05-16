@@ -30,6 +30,14 @@ public class SocketClientHandler implements VirtualViewSocket {
             try{
                 PlayerActionMessage message = (PlayerActionMessage) in.readObject();
                 switch(message.getGameAction()){
+                    case ASK_STARTED_GAME:
+                        boolean startedGame = controller.startedGame();
+                        notifyStartedGame(startedGame);
+                        break;
+                    case START_GAME:
+                        controller.startNewGame(Boolean.parseBoolean(message.getGameParams(0)), Integer.parseInt(message.getGameParams(1)));
+                        notifyStartedGame(true);
+                        break;
                     case ADD_PLAYER:
                         controller.addPlayer(this, message.getGameParams(0), Color.convertToColor(message.getGameParams(1)));
                         break;
@@ -144,7 +152,7 @@ public class SocketClientHandler implements VirtualViewSocket {
 
     //runs a command line interface to send requests to the server
     @Override
-    public void runCli(VirtualServer server) throws IOException{}
+    public void runCli() throws IOException{}
 
     //notifies a view about an error committed while executing a method on the remote server; the parameter
     //errorMessage describes the type of error
@@ -152,6 +160,14 @@ public class SocketClientHandler implements VirtualViewSocket {
     public void notifyError(String errorMessage) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(errorMessage));
         GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.ERROR, params);
+        out.writeObject(message);
+    }
+
+    //notifies a view about the fact that the game has started or not
+    @Override
+    public void notifyStartedGame(boolean startedGame) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(String.valueOf(startedGame)));
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.STARTED_GAME, params);
         out.writeObject(message);
     }
 

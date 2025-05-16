@@ -9,9 +9,12 @@ import java.io.IOException;
 import java.util.List;
 
 public interface VirtualViewSocket extends VirtualView {
+    //notifies a view about the fact that the game has started or not
+    void notifyStartedGame(boolean startedGame) throws IOException;
+
     //runs a command line interface to send requests to the server
     @Override
-    void runCli(VirtualServer server) throws IOException;
+    void runCli() throws IOException;
 
     //notifies a view about an error committed while executing a method on the remote server; the parameter
     //errorMessage describes the type of error

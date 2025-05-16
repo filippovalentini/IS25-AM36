@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface VirtualView {
     //runs a command line interface to send requests to the server
-    void runCli(VirtualServer server) throws Exception;
+    void runCli() throws Exception;
 
     //notifies a view about an error committed while executing a method on the remote server; the parameter
     //errorMessage describes the type of error

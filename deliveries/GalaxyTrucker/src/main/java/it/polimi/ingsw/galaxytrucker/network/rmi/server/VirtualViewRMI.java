@@ -15,7 +15,7 @@ import java.util.List;
 public interface VirtualViewRMI extends Remote, VirtualView {
     //runs a command line interface to send requests to the server
     @Override
-    void runCli(VirtualServer server) throws RemoteException;
+    void runCli() throws RemoteException;
 
     //notifies a view about an error committed while executing a method on the remote server; the parameter
     //errorMessage describes the type of error

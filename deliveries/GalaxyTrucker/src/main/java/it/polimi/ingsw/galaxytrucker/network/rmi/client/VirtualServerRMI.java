@@ -16,6 +16,13 @@ import java.util.List;
 //RMI client to change the state of the model
 
 public interface VirtualServerRMI extends Remote, VirtualServer {
+    @Override
+    boolean startedGame() throws RemoteException;
+
+    //invoked when the first player decides to start the game
+    @Override
+    void startNewGame(VirtualView client, boolean firstFlight, int numberPlayers) throws RemoteException;
+
     //invoked when one of the players decides enter the game; the remote client view is added to the list
     //of connected clients
     @Override

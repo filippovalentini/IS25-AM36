@@ -63,27 +63,7 @@ public class MainClient {
         Registry registry = LocateRegistry.getRegistry(IP, port);
         VirtualServerRMI server = (VirtualServerRMI) registry.lookup(serverName);
         System.out.println("Obtained remote object...");
-
-        String nickname;
-        Color color;
-        String colorString;
-        boolean addedToGame = false;
-        VirtualViewRMI client = null;
-        while (!addedToGame) {
-            System.out.println("Insert nickname: ");
-            Scanner inputScanner = new Scanner(System.in);
-            nickname = inputScanner.nextLine();
-            System.out.println("Insert color: ");
-            colorString = inputScanner.nextLine();
-            color = Color.convertToColor(colorString);
-            if (color == null) {
-                System.out.println("Invalid color");
-                continue;
-            }
-            client = new ClientRMI(nickname, color);
-            addedToGame = server.addPlayer(client, nickname, color);
-        }
-        client.runCli(server);
+        new ClientRMI(server).run();
     }
 
     //prints the list of commands available for the CLI of the game

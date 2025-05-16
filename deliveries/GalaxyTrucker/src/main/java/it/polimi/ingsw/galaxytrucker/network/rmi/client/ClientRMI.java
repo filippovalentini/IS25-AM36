@@ -13,19 +13,95 @@ import java.util.*;
 import static it.polimi.ingsw.galaxytrucker.network.MainClient.printCommands;
 
 public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
+    private final VirtualServerRMI server;
     private View view;
-    private final String nickname;
-    private final Color color;
+    private String nickname;
+    private Color color;
 
-    public ClientRMI(String nickname, Color color) throws RemoteException {
+    public ClientRMI(VirtualServerRMI server) throws RemoteException {
         super();
-        this.nickname = nickname;
-        this.color = color;
+        this.server = server;
+    }
+
+    //this method gets nickname and color from the user and tries to add the player to the game; in case of success
+    //it activates (in different threads) the methods to manage commands from the user (CLI) and messages from
+    //the server
+    public void run() throws RemoteException {
+        boolean startedGame = requestStartedGame();
+        if(!startedGame){
+            requestStartNewGame();
+        }
+        requestAddPlayerToGame();
+        runCli();
+    }
+
+    //this method asks the server if the game has already been started/set up
+    public boolean requestStartedGame() {
+        boolean startedGame = false;
+        try{
+            startedGame = server.startedGame();
+        }
+        catch(Exception e){
+            System.out.println("Remote error: " + e.getMessage());
+        }
+        return startedGame;
+    }
+
+    //this method asks tho the user the parameters to set up a new game and asks the server to create the game
+    public void requestStartNewGame() {
+        System.out.println("START NEW GAME");
+        int numPlayers;
+        String ff;
+        boolean firstFlight;
+        Scanner inputScanner = new Scanner(System.in);
+        do{
+            System.out.println("Number of players (from 1 to 4): ");
+            numPlayers = Integer.parseInt(inputScanner.nextLine());
+        }while(numPlayers>4 || numPlayers<1);
+        do{
+            System.out.println("Standard game (S) or first flight (F): ");
+            ff = inputScanner.nextLine();
+        }while(!ff.equals("F") && !ff.equals("S"));
+        firstFlight = (ff.equals("F"));
+        try{
+            server.startNewGame(this, firstFlight, numPlayers);
+        }
+        catch(Exception e){
+            System.out.println("Remote error: " + e.getMessage());
+        }
+    }
+
+    //this method asks the user for nickname and color and asks the server to enter the game as a new player
+    public void requestAddPlayerToGame() {
+        String nickname;
+        Color color;
+        String colorString;
+        boolean addedToGame = false;
+        while (!addedToGame) {
+            System.out.println("Insert nickname: ");
+            Scanner inputScanner = new Scanner(System.in);
+            nickname = inputScanner.nextLine();
+            System.out.println("Insert color: ");
+            colorString = inputScanner.nextLine();
+            color = Color.convertToColor(colorString);
+            if (color == null) {
+                System.out.println("Invalid color");
+                continue;
+            }
+            this.nickname = nickname;
+            this.color = color;
+            try{
+                addedToGame = server.addPlayer(this, nickname, color);
+            }
+            catch(Exception e){
+                System.out.println("Remote error: " + e.getMessage());
+            }
+        }
     }
 
     //runs a command line interface to send requests to the server
     @Override
-    public void runCli(VirtualServer server) throws RemoteException {
+    public void runCli() throws RemoteException {
         Scanner scan = new Scanner(System.in);
 
         printCommands();

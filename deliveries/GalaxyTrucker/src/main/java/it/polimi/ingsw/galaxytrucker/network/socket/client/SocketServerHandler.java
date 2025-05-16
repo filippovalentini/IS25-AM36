@@ -30,6 +30,22 @@ public class SocketServerHandler implements VirtualServerSocket {
                 .replaceAll("[\\[\\]\\s]", "");
     }
 
+    @Override
+    public boolean startedGame() throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList());
+        PlayerActionMessage message = new PlayerActionMessage(PlayerActionType.ASK_STARTED_GAME, params);
+        out.writeObject(message);
+        return true;
+    }
+
+    //invoked when the first player decides to start the game
+    @Override
+    public void startNewGame(VirtualView client, boolean firstFlight, int numberPlayers) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(String.valueOf(firstFlight), String.valueOf(numberPlayers)));
+        PlayerActionMessage message = new PlayerActionMessage(PlayerActionType.START_GAME, params);
+        out.writeObject(message);
+    }
+
     //invoked when one of the players decides enter the game; the remote client view is added to the list
     //of connected clients
     @Override

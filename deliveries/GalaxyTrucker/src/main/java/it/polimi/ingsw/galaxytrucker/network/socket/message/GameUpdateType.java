@@ -2,6 +2,7 @@ package it.polimi.ingsw.galaxytrucker.network.socket.message;
 
 public enum GameUpdateType {
     ERROR,
+    STARTED_GAME,
     WAITING_FOR_PLAYERS,
     NEW_PLAYER,
     START_ASSEMBLING,

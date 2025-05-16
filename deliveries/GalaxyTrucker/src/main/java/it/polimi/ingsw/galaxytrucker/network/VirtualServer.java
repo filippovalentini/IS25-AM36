@@ -11,6 +11,11 @@ import java.util.List;
 //the state of the model
 
 public interface VirtualServer {
+    boolean startedGame() throws Exception;
+
+    //invoked when the first player decides to start the game
+    void startNewGame(VirtualView client, boolean firstFlight, int numberPlayers) throws Exception;
+
     //invoked when one of the players decides enter the game; the remote client view is added to the list
     //of connected clients
     boolean addPlayer(VirtualView client, String nickname, Color color) throws Exception;

@@ -19,6 +19,26 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
         this.controller = controller;
     }
 
+    @Override
+    public boolean startedGame() throws RemoteException{
+        return controller.startedGame();
+    }
+
+    //invoked when the first player decides to start the game
+    @Override
+    public void startNewGame(VirtualView client, boolean firstFlight, int numberPlayers) throws RemoteException{
+        try{
+            controller.startNewGame(firstFlight, numberPlayers);
+        }
+        catch(Exception e){
+            try{
+                client.notifyError(e.getMessage());
+            }
+            catch(Exception e1){
+                System.out.println("Error during remote method invocation on client");
+            }
+        }
+    }
 
     //invoked when one of the players decides enter the game; the remote client view is added to the list
     //of connected clients

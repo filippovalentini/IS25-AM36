@@ -33,11 +33,88 @@ public class SocketClient implements VirtualViewSocket {
         this.in = new ObjectInputStream(clientSocket.getInputStream());
     }
 
-    //this method gets nickname and color from the user and tries to add the player to the game; in case of success
-    //it activates (in different threads) the methods to manage commands from the user (CLI) and messages from
-    //the server
-    public void run() throws IOException {
-        GameUpdateMessage message;
+    //this method gets asks the user to start a new game, by getting in input number of players and
+    // first flight/std game. If the game has already been set up, it asks the user to insert directly
+    // nickname and color and tries to add the player to the game; in case of success
+    // it activates (in different threads) the methods to manage commands from the user (CLI) and messages from
+    // the server
+    public void run() {
+        boolean startedGame = requestStartedGame();
+        if(!startedGame){
+            requestStartNewGame();
+        }
+        requestAddPlayerToGame();
+        //start a thread to manage messages received by the server
+        new Thread(() -> {
+            try {
+                manageServerMessages();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+        //manage commands sent by the user
+        runCli();
+    }
+
+    //this method asks the server if the game has already been started/set up
+    public boolean requestStartedGame() {
+        GameUpdateMessage message = null;
+        boolean startedGame = false;
+        try{
+            serverHandler.startedGame();
+            message = (GameUpdateMessage) in.readObject();
+        }catch (ClassNotFoundException e){
+            System.out.println("Error: received invalid message from server");
+        }catch (IOException e){
+            System.out.println("Remote error: " + e.getMessage());
+        }
+        if(message.getGameUpdateType() == GameUpdateType.ERROR){
+            notifyError(message.getGameParams(0));
+        }
+        else if (message.getGameUpdateType() == GameUpdateType.STARTED_GAME){
+            if(message.getGameParams(0).equals("true")){
+                startedGame = true;
+            }
+        }
+        return startedGame;
+    }
+
+    //this method asks tho the user the parameters to set up a new game and asks the server to create the game
+    public void requestStartNewGame() {
+        GameUpdateMessage message = null;
+        System.out.println("START NEW GAME");
+        int numPlayers;
+        String ff;
+        boolean firstFlight;
+        Scanner inputScanner = new Scanner(System.in);
+        do{
+            System.out.println("Number of players (from 1 to 4): ");
+            numPlayers = Integer.parseInt(inputScanner.nextLine());
+        }while(numPlayers>4 || numPlayers<1);
+        do{
+            System.out.println("Standard game (S) or first flight (F): ");
+            ff = inputScanner.nextLine();
+        }while(!ff.equals("F") && !ff.equals("S"));
+        firstFlight = (ff.equals("F"));
+        try{
+            serverHandler.startNewGame(null, firstFlight, numPlayers);
+            message = (GameUpdateMessage) in.readObject();
+        }catch (ClassNotFoundException e){
+            System.out.println("Error: received invalid message from server");
+        }catch (IOException e){
+            System.out.println("Remote error: " + e.getMessage());
+        }
+        if(message.getGameUpdateType() == GameUpdateType.ERROR){
+            notifyError(message.getGameParams(0));
+        }
+        else if (message.getGameUpdateType() == GameUpdateType.STARTED_GAME){
+            notifyStartedGame(Boolean.parseBoolean(message.getGameParams(0)));
+        }
+    }
+
+    //this method asks the user for nickname and color and asks the server to enter the game as a new player
+    public void requestAddPlayerToGame() {
+        GameUpdateMessage message = null;
         String nickname;
         String colorString;
         Color color;
@@ -55,12 +132,14 @@ public class SocketClient implements VirtualViewSocket {
             }
             this.nickname = nickname;
             this.color = color;
-            serverHandler.addPlayer(null, nickname, color);
             try{
+                serverHandler.addPlayer(null, nickname, color);
                 message = (GameUpdateMessage) in.readObject();
             }catch (ClassNotFoundException e){
                 System.out.println("Error: received invalid message from server");
                 continue;
+            }catch (IOException e){
+                System.out.println("Remote error: " + e.getMessage());
             }
             if(message.getGameUpdateType() == GameUpdateType.ERROR){
                 notifyError(message.getGameParams(0));
@@ -70,16 +149,6 @@ public class SocketClient implements VirtualViewSocket {
                 break;
             }
         }
-        //start a thread to manage messages received by the server
-        new Thread(() -> {
-            try {
-                manageServerMessages();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }).start();
-        //manage commands sent by the user
-        runCli(serverHandler);
     }
 
     //this method creates a loop that waits for server's messages and (based on the type of message received)
@@ -204,7 +273,7 @@ public class SocketClient implements VirtualViewSocket {
 
     //runs a command line interface to send requests to the server
     @Override
-    public void runCli(VirtualServer serverHandler)  {
+    public void runCli()  {
         Scanner scan = new Scanner(System.in);
 
         printCommands();
@@ -461,6 +530,14 @@ public class SocketClient implements VirtualViewSocket {
     @Override
     public void notifyError(String errorMessage) {
         System.out.println(errorMessage);
+    }
+
+    //notifies a view about the fact that the game has started or not
+    @Override
+    public void notifyStartedGame(boolean startedGame) {
+        if(startedGame){
+            System.out.println("GAME STARTED");
+        }
     }
 
     //notifies a view about the fact that the corresponding player has been correctly added to the game, but

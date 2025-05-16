@@ -5,10 +5,16 @@ import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.util.List;
 
 public interface VirtualServerSocket extends VirtualServer {
+    @Override
+    boolean startedGame() throws IOException;
+
+    //invoked when the first player decides to start the game
+    @Override
+    void startNewGame(VirtualView client, boolean firstFlight, int numberPlayers) throws IOException;
+
     //invoked when one of the players decides enter the game; the remote client view is added to the list
     //of connected clients
     @Override
