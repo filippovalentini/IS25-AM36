@@ -4,27 +4,29 @@ import it.polimi.ingsw.galaxytrucker.controller.GameController;
 
 import java.io.*;
 import java.net.*;
+import java.util.Map;
 
 //this class contains all the logic needed to instantiate the concurrent socket server and to handle client connections
 public class SocketServer {
-    private final ServerSocket listenSocket;
-    private final GameController controller;
+    private final ServerSocket listenSocket;            //accepts client connections
+    private final Map<Integer, GameController> controllers;     //maps each controller with the ID of the respective game
 
-    //bind listen socket and initialize controller with given params
-    public SocketServer(ServerSocket listenSocket, GameController controller) {
+    //constructor, initializes the controllers mapping with a provided empty map
+    public SocketServer(ServerSocket listenSocket, Map<Integer, GameController> controllers) {
         this.listenSocket = listenSocket;
-        this.controller = controller;
+        this.controllers = controllers;
     }
 
-    // receive connection from client and then create a thread for every client (connection limited due to number of players)
+    //accepts client connections and for each client creates a thread to handle message communication
     public void runServer() throws IOException {
         Socket clientSocket;
         while ((clientSocket = this.listenSocket.accept()) != null) {
             System.out.println("Accepted connection from " + clientSocket.getInetAddress().getHostAddress());
-            SocketClientHandler clientHandler = new SocketClientHandler(clientSocket, controller);
+            SocketClientHandler clientHandler = new SocketClientHandler(clientSocket);
 
             new Thread(() -> {
                 try {
+                    clientHandler.manageClientSetUp(controllers);
                     clientHandler.manageClientMessages();
                 } catch (IOException e) {
                     throw new RuntimeException(e);

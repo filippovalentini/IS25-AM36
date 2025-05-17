@@ -10,17 +10,76 @@ import java.io.*;
 import java.net.Socket;
 import java.util.*;
 
+//this class contains the methods to create and send serialized messages to a specific client starting
+// from given parameters.
+//it also manages the arrivals of messages from the handled client, converting them in specific invocations
+//on the game controller
 public class SocketClientHandler implements VirtualViewSocket {
-    Socket socket;
-    GameController controller;
+    Socket socket;                  //socket for client-server communication
+    GameController controller;      //controller of the game associated to the handled client
     ObjectInputStream in;
     ObjectOutputStream out;
 
-    public SocketClientHandler(Socket socket, GameController controller) throws IOException {
+    public SocketClientHandler(Socket socket) throws IOException {
         this.socket = socket;
-        this.controller = controller;
         this.out = new ObjectOutputStream(socket.getOutputStream());
         this.in = new ObjectInputStream(socket.getInputStream());
+    }
+
+    //this method initializes the controller of the game associated to the handled client
+    public void setController(GameController controller) {
+        this.controller = controller;
+    }
+
+    //this method creates a loop that waits for client messages in order to correctly create a new game
+    //and/or add a player to a game; it also initializes the controller associated to the client
+    public void manageClientSetUp(Map<Integer, GameController> controllers) throws IOException {
+        boolean clientAddedToGame = false;
+        while (true) {
+            try{
+                PlayerActionMessage message = (PlayerActionMessage) in.readObject();
+                switch(message.getGameAction()){
+                    case ASK_STARTED_GAME:
+                        boolean startedGame = controllers.containsKey(Integer.parseInt(message.getGameParams(0)));
+                        notifyStartedGame(startedGame);
+                        break;
+                    case START_GAME:
+                        int gameID = Integer.parseInt(message.getGameParams(0));
+                        boolean firstFlight = Boolean.parseBoolean(message.getGameParams(1));
+                        int numPlayers = Integer.parseInt(message.getGameParams(2));
+                        GameController gameController = new GameController(firstFlight, numPlayers);
+                        setController(gameController);
+                        controllers.put(gameID, gameController);
+                        notifyStartedGame(true);
+                        break;
+                    case ADD_PLAYER:
+                        setController(controllers.get(Integer.parseInt(message.getGameParams(0))));
+                        controller.addPlayer(this, message.getGameParams(1), Color.convertToColor(message.getGameParams(2)));
+                        clientAddedToGame = true;
+                        break;
+                    default:
+                        notifyError("Error: unknown command sent by client");
+                }
+            }
+            catch (IOException e) {
+                System.out.println("Error: failed I/O operation through socket");
+                break;
+            } catch (ClassNotFoundException e) {
+                System.err.println("Error: failed to deserialize class");
+                break;
+            } catch (Exception e) {
+                try{
+                    notifyError(e.getMessage());
+                }
+                catch(Exception e1){
+                    System.out.println("Error: failed I/O operation through socket");
+                    break;
+                }
+            }
+            if(clientAddedToGame){
+                break;
+            }
+        }
     }
 
     //this method creates a loop that waits for client's messages and (based on the type of message received)
@@ -30,17 +89,6 @@ public class SocketClientHandler implements VirtualViewSocket {
             try{
                 PlayerActionMessage message = (PlayerActionMessage) in.readObject();
                 switch(message.getGameAction()){
-                    case ASK_STARTED_GAME:
-                        boolean startedGame = controller.startedGame();
-                        notifyStartedGame(startedGame);
-                        break;
-                    case START_GAME:
-                        controller.startNewGame(Boolean.parseBoolean(message.getGameParams(0)), Integer.parseInt(message.getGameParams(1)));
-                        notifyStartedGame(true);
-                        break;
-                    case ADD_PLAYER:
-                        controller.addPlayer(this, message.getGameParams(0), Color.convertToColor(message.getGameParams(1)));
-                        break;
                     case PICK_HIDDEN:
                         controller.pickHidden(message.getGameParams(0));
                         break;
@@ -152,7 +200,7 @@ public class SocketClientHandler implements VirtualViewSocket {
 
     //runs a command line interface to send requests to the server
     @Override
-    public void runCli() throws IOException{}
+    public void runCli() {}
 
     //notifies a view about an error committed while executing a method on the remote server; the parameter
     //errorMessage describes the type of error

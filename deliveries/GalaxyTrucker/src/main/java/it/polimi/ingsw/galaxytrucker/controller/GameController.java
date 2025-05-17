@@ -12,30 +12,15 @@ import java.util.List;
 
 
 public class GameController {
-    private GameState model;
+    private final GameState model;
     private final Object lock;
 
-    public GameController() {
+    public GameController(boolean firstFlight, int numberPlayers) {
         this.lock = new Object();
+        this.model = new GameState(firstFlight, numberPlayers);
     }
 
     //STARTING PHASE
-
-    public boolean startedGame() {
-        synchronized (lock) {
-            return model != null;
-        }
-    }
-
-    //invoked when the first player decides to start the game
-    public void startNewGame(boolean firstFlight, int numberPlayers) throws InvalidActionException {
-        synchronized (lock) {
-            if (startedGame()) {
-                throw new InvalidActionException("GAME ALREADY STARTED");
-            }
-            this.model = new GameState(firstFlight, numberPlayers);
-        }
-    }
 
     //invoked when one of the players decides enter the game
     public void addPlayer(VirtualView client, String nickname, Color color) throws UniqueNicknameException, UniquePlayerColorException, InvalidActionException {

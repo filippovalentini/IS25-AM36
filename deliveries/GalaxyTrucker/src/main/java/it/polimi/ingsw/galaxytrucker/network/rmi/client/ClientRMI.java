@@ -1,87 +1,120 @@
 package it.polimi.ingsw.galaxytrucker.network.rmi.client;
 
+import it.polimi.ingsw.galaxytrucker.network.GameSessionManager;
+import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 import it.polimi.ingsw.galaxytrucker.view.View;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
-import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
 
 import java.rmi.*;
-import java.rmi.registry.*;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
 import static it.polimi.ingsw.galaxytrucker.network.MainClient.printCommands;
 
-public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
-    private final VirtualServerRMI server;
-    private View view;
-    private String nickname;
-    private Color color;
+public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI, GameSessionManager {
+    private final VirtualServerRMI server;      //instance of the related RMI server
+    private View view;                          //view of the player
+    private Integer gameID;                     //ID of the game in which the player is playing
+    private String nickname;                    //nickname of the player
+    private Color color;                        //color of the player
 
     public ClientRMI(VirtualServerRMI server) throws RemoteException {
         super();
         this.server = server;
     }
 
-    //this method gets nickname and color from the user and tries to add the player to the game; in case of success
-    //it activates (in different threads) the methods to manage commands from the user (CLI) and messages from
-    //the server
+    //this method asks the user whether it wants to start a game or join one; in case of game creation,
+    //it takes in input number of players and type of game. Once the game has been created (or an existing one
+    //has been found) the method takes in input nickname and color of the player and adds it to the game.
+    @Override
     public void run() throws RemoteException {
-        boolean startedGame = requestStartedGame();
-        if(!startedGame){
+        boolean userStartsGame = requestStartOrJoinGame();
+        if(userStartsGame){
             requestStartNewGame();
         }
-        requestAddPlayerToGame();
+        requestAddPlayerToGame(userStartsGame);
         runCli();
     }
 
-    //this method asks the server if the game has already been started/set up
-    public boolean requestStartedGame() {
-        boolean startedGame = false;
-        try{
-            startedGame = server.startedGame();
-        }
-        catch(Exception e){
-            System.out.println("Remote error: " + e.getMessage());
-        }
-        return startedGame;
+    //this method asks the user to start a new game or join an existing one
+    @Override
+    public boolean requestStartOrJoinGame() {
+        Scanner inputScanner = new Scanner(System.in);
+        String input;
+        System.out.println("||| WELCOME TO GALAXY TRUCKER |||\n");
+        do{
+            System.out.println("Choose to start a new game (S) or join a game (J): ");
+            input = inputScanner.nextLine();
+        }while(!input.equals("S") && !input.equals("J"));
+
+        return input.equals("S");
     }
 
     //this method asks tho the user the parameters to set up a new game and asks the server to create the game
+    @Override
     public void requestStartNewGame() {
-        System.out.println("START NEW GAME");
+        System.out.println("START A NEW GAME");
         int numPlayers;
+        String gameID;
+        int gID;
         String ff;
         boolean firstFlight;
         Scanner inputScanner = new Scanner(System.in);
-        do{
-            System.out.println("Number of players (from 1 to 4): ");
-            numPlayers = Integer.parseInt(inputScanner.nextLine());
-        }while(numPlayers>4 || numPlayers<1);
-        do{
-            System.out.println("Standard game (S) or first flight (F): ");
-            ff = inputScanner.nextLine();
-        }while(!ff.equals("F") && !ff.equals("S"));
-        firstFlight = (ff.equals("F"));
-        try{
-            server.startNewGame(this, firstFlight, numPlayers);
+        while(true){
+            do{
+                System.out.println("Insert game ID (3-digit number): ");
+                gameID = inputScanner.nextLine();
+            }while(gameID.length() != 3);
+            gID = Integer.parseInt(gameID);
+            do{
+                System.out.println("Number of players (from 1 to 4): ");
+                numPlayers = Integer.parseInt(inputScanner.nextLine());
+            }while(numPlayers>4 || numPlayers<1);
+            do{
+                System.out.println("Standard game (S) or first flight (F): ");
+                ff = inputScanner.nextLine();
+            }while(!ff.equals("F") && !ff.equals("S"));
+            firstFlight = (ff.equals("F"));
+
+            boolean gameStarted = isGameStarted(gID);
+            if(gameStarted){
+                System.out.println("Error: game with this ID already started");
+                continue;
+            }
+
+            gameStarted = startNewGame(null, gID, firstFlight, numPlayers);
+            if(gameStarted){
+                System.out.println("GAME STARTED");
+                break;
+            }
         }
-        catch(Exception e){
-            System.out.println("Remote error: " + e.getMessage());
-        }
+        this.gameID = gID;
     }
 
-    //this method asks the user for nickname and color and asks the server to enter the game as a new player
-    public void requestAddPlayerToGame() {
+    //this method asks the user for nickname and color and asks the server to add the player to the game
+    @Override
+    public void requestAddPlayerToGame(boolean userStartsGame) {
+        System.out.println("JOIN GAME");
+        Scanner inputScanner = new Scanner(System.in);
+        String gameID;
+        int gID;
         String nickname;
         Color color;
         String colorString;
         boolean addedToGame = false;
         while (!addedToGame) {
+            if(!userStartsGame){
+                do{
+                    System.out.println("Insert game ID (3-digit number): ");
+                    gameID = inputScanner.nextLine();
+                }while(gameID.length() != 3);
+                gID = Integer.parseInt(gameID);
+                this.gameID = gID;
+            }
             System.out.println("Insert nickname: ");
-            Scanner inputScanner = new Scanner(System.in);
             nickname = inputScanner.nextLine();
-            System.out.println("Insert color: ");
+            System.out.println("Insert color (RED, BLUE, YELLOW or GREEN): ");
             colorString = inputScanner.nextLine();
             color = Color.convertToColor(colorString);
             if (color == null) {
@@ -90,14 +123,54 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
             }
             this.nickname = nickname;
             this.color = color;
-            try{
-                addedToGame = server.addPlayer(this, nickname, color);
+            boolean startedGame = isGameStarted(this.gameID);
+
+            if(!startedGame){
+                System.out.println("Error: game with this ID doesn't exist");
+                continue;
             }
-            catch(Exception e){
-                System.out.println("Remote error: " + e.getMessage());
-            }
+
+            addedToGame = addPlayerToGame(this.gameID);
         }
     }
+
+    //this method asks the server if a game with the specified ID has already started
+    @Override
+    public boolean isGameStarted(int gameID){
+        try{
+            return server.startedGame(gameID);
+        }
+        catch(RemoteException e){
+            return false;
+        }
+    }
+
+    //this method asks the server to add the player (associated to the client) to the game
+    @Override
+    public boolean addPlayerToGame(int gameID){
+        try{
+            return server.addPlayer(this, gameID, nickname, color);
+        }
+        catch(RemoteException e){
+            return false;
+        }
+    }
+
+    //this method asks the server to create a new game
+    @Override
+    public boolean startNewGame(VirtualView client, int gameID, boolean firstFlight, int numberPlayers){
+        try{
+            server.startNewGame(client, gameID, firstFlight, numberPlayers);
+            return true;
+        }
+        catch(RemoteException e){
+            return false;
+        }
+    }
+
+
+
+
 
     //runs a command line interface to send requests to the server
     @Override
@@ -133,7 +206,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                         view.visualizeFlightBoard();
                         break;
                     case "pickHidden":
-                        server.pickHidden(nickname);
+                        server.pickHidden(gameID, nickname);
                         break;
                     case "pickShown":
                         if (tokens.length < 2) {
@@ -141,13 +214,13 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                             break;
                         }
                         int index = Integer.parseInt(tokens[1]);
-                        server.pickShown(nickname, index);
+                        server.pickShown(gameID, nickname, index);
                         break;
                     case "release":
-                        server.putShown(nickname);
+                        server.putShown(gameID, nickname);
                         break;
                     case "reserve":
-                        server.reserveComponent(nickname);
+                        server.reserveComponent(gameID, nickname);
                         break;
                     case "pickReserved":
                         if (tokens.length < 2) {
@@ -155,10 +228,10 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                             break;
                         }
                         int pos = Integer.parseInt(tokens[1]);
-                        server.pickReservedComponent(nickname, pos);
+                        server.pickReservedComponent(gameID, nickname, pos);
                         break;
                     case "rotate":
-                        server.rotatePickedComponent(nickname);
+                        server.rotatePickedComponent(gameID, nickname);
                         break;
                     case "assemble":
                         if (tokens.length < 3) {
@@ -167,7 +240,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                         }
                         int x1 = Integer.parseInt(tokens[1]);
                         int y1 = Integer.parseInt(tokens[2]);
-                        server.assembledComponent(nickname, x1, y1);
+                        server.assembledComponent(gameID, nickname, x1, y1);
                         break;
                     case "pickDeck":
                         if (tokens.length < 2) {
@@ -175,10 +248,10 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                             break;
                         }
                         int deck = Integer.parseInt(tokens[1]);
-                        server.pickDeck(nickname, deck);
+                        server.pickDeck(gameID, nickname, deck);
                         break;
                     case "releaseDeck":
-                        server.releaseDeck(nickname);
+                        server.releaseDeck(gameID, nickname);
                         break;
                     case "setPosition":
                         if (tokens.length < 2) {
@@ -186,10 +259,10 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                             break;
                         }
                         int initCell = Integer.parseInt(tokens[1]);
-                        server.setPosition(nickname, initCell);
+                        server.setPosition(gameID, nickname, initCell);
                         break;
                     case "hourglass":
-                        server.startNewCycle(nickname);
+                        server.startNewCycle(gameID, nickname);
                         break;
                     case "destroy":
                         if (tokens.length < 3) {
@@ -198,7 +271,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                         }
                         int x2 = Integer.parseInt(tokens[1]);
                         int y2 = Integer.parseInt(tokens[2]);
-                        server.destroyComponent(nickname, x2, y2);
+                        server.destroyComponent(gameID, nickname, x2, y2);
                         break;
                     case "addCrew":
                         if (tokens.length < 3) {
@@ -207,7 +280,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                         }
                         int x3 = Integer.parseInt(tokens[1]);
                         int y3 = Integer.parseInt(tokens[2]);
-                        server.addCrew(nickname, x3, y3);
+                        server.addCrew(gameID, nickname, x3, y3);
                         break;
                     case "addBatteries":
                         if (tokens.length < 3) {
@@ -216,7 +289,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                         }
                         int x5 = Integer.parseInt(tokens[1]);
                         int y5 = Integer.parseInt(tokens[2]);
-                        server.addBatteries(nickname, x5, y5);
+                        server.addBatteries(gameID, nickname, x5, y5);
                         break;
                     case "addAlien":
                         if (tokens.length < 4) {
@@ -230,19 +303,19 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                         boolean isPurple = (tokens[1].equals("purple"));
                         int x4 = Integer.parseInt(tokens[2]);
                         int y4 = Integer.parseInt(tokens[3]);
-                        server.addAlien(nickname, isPurple, x4, y4);
+                        server.addAlien(gameID, nickname, isPurple, x4, y4);
                         break;
                     case "pickCard":
-                        server.pickNextCard(nickname);
+                        server.pickNextCard(gameID, nickname);
                         break;
                     case "quit":
-                        server.quitGame(nickname);
+                        server.quitGame(gameID, nickname);
                         break;
                     case "dice":
                         view.updateRollDice();
                         break;
                     case "skip":
-                        server.skip(nickname);
+                        server.skip(gameID, nickname);
                         break;
                     case "hit":
                         if (tokens.length < 3) {
@@ -264,7 +337,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                         }
                         boolean activateShield = (tokens[1].equals("yes"));
                         boolean activateCannon = (tokens[2].equals("yes"));
-                        server.hitShip(nickname, diceResult, activateShield, activateCannon);
+                        server.hitShip(gameID, nickname, diceResult, activateShield, activateCannon);
                         view.updateInvalidDice();
                         break;
                     case "fly":
@@ -277,7 +350,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                             System.out.println("Error: batteries cannot be negative");
                             break;
                         }
-                        server.fly(nickname, batteries);
+                        server.fly(gameID, nickname, batteries);
                         break;
                     case "landing":
                         if ((tokens.length - 1)%3 != 0) {
@@ -292,7 +365,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                             y.add(Integer.parseInt(tokens[i+1]));
                             removedCrew.add(Integer.parseInt(tokens[i+2]));
                         }
-                        server.landing(nickname, x, y, removedCrew);
+                        server.landing(gameID, nickname, x, y, removedCrew);
                         break;
                     case "defeat":
                         if (tokens.length < 3) {
@@ -305,7 +378,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                         }
                         int batteries1 = Integer.parseInt(tokens[1]);
                         boolean loseDays = (tokens[2].equals("yes"));
-                        server.defeat(nickname, batteries1, loseDays);
+                        server.defeat(gameID, nickname, batteries1, loseDays);
                         break;
                     case "loadGoods":
                         if ((tokens.length - 1)%2 != 0) {
@@ -318,7 +391,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                             x6.add(Integer.parseInt(tokens[i]));
                             y6.add(Integer.parseInt(tokens[i+1]));
                         }
-                        server.loadGoods(nickname, x6, y6);
+                        server.loadGoods(gameID, nickname, x6, y6);
                         break;
                     case "planet":
                         if (tokens.length < 2) {
@@ -326,7 +399,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                             break;
                         }
                         int planetNumber = Integer.parseInt(tokens[1]);
-                        server.planetLanding(nickname, planetNumber);
+                        server.planetLanding(gameID, nickname, planetNumber);
                         break;
                     case "useBatteries":
                         if (tokens.length < 2) {
@@ -334,7 +407,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI {
                             break;
                         }
                         int numberBatteries = Integer.parseInt(tokens[1]);
-                        server.useBatteries(nickname, numberBatteries);
+                        server.useBatteries(gameID, nickname, numberBatteries);
                         break;
                     default:
                         System.out.println("Error: unknown command");

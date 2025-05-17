@@ -62,7 +62,6 @@ public class MainClient {
         int port = 1234;
         Registry registry = LocateRegistry.getRegistry(IP, port);
         VirtualServerRMI server = (VirtualServerRMI) registry.lookup(serverName);
-        System.out.println("Obtained remote object...");
         new ClientRMI(server).run();
     }
 

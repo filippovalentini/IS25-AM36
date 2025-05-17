@@ -1,5 +1,6 @@
 package it.polimi.ingsw.galaxytrucker.network.socket.message;
 
+//defines all the possible types of player action message
 public enum PlayerActionType {
     ASK_STARTED_GAME,
     START_GAME,

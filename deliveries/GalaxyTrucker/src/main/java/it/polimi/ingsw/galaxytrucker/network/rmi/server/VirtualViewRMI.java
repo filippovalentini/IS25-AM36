@@ -2,7 +2,6 @@ package it.polimi.ingsw.galaxytrucker.network.rmi.server;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
-import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 
 import java.rmi.Remote;

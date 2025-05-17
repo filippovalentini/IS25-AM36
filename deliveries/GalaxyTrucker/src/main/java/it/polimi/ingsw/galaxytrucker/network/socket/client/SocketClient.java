@@ -2,8 +2,11 @@ package it.polimi.ingsw.galaxytrucker.network.socket.client;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
+import it.polimi.ingsw.galaxytrucker.network.GameSessionManager;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
+import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 import it.polimi.ingsw.galaxytrucker.network.rmi.client.ClientRMI;
+import it.polimi.ingsw.galaxytrucker.network.socket.message.GameMessage;
 import it.polimi.ingsw.galaxytrucker.network.socket.message.GameUpdateMessage;
 import it.polimi.ingsw.galaxytrucker.network.socket.message.GameUpdateType;
 import it.polimi.ingsw.galaxytrucker.network.socket.server.VirtualViewSocket;
@@ -19,136 +22,19 @@ import static it.polimi.ingsw.galaxytrucker.network.MainClient.printCommands;
 
 //this class contains all the logic needed to connect to the server through socket, manage the user interaction
 //and handle server responses
-public class SocketClient implements VirtualViewSocket {
-    private View view;
-    private String nickname;
-    private Color color;
-    private final Socket clientSocket;
-    private final ObjectInputStream in;
-    private final SocketServerHandler serverHandler;
+public class SocketClient implements VirtualViewSocket, GameSessionManager {
+    private View view;                              //player's view
+    private Integer gameID;                         //ID of the game in which the player is playing
+    private String nickname;                        //nickname of the player
+    private Color color;                            //color of the player
+    private final Socket clientSocket;              //socket used for client-server communication
+    private final ObjectInputStream in;             //input stream for client-server communication
+    private final SocketServerHandler serverHandler;    //manages the creation of messages and sends them to the server
 
     public SocketClient(Socket clientSocket) throws IOException {
         this.clientSocket = clientSocket;
         this.serverHandler = new SocketServerHandler(new ObjectOutputStream(clientSocket.getOutputStream()));
         this.in = new ObjectInputStream(clientSocket.getInputStream());
-    }
-
-    //this method gets asks the user to start a new game, by getting in input number of players and
-    // first flight/std game. If the game has already been set up, it asks the user to insert directly
-    // nickname and color and tries to add the player to the game; in case of success
-    // it activates (in different threads) the methods to manage commands from the user (CLI) and messages from
-    // the server
-    public void run() {
-        boolean startedGame = requestStartedGame();
-        if(!startedGame){
-            requestStartNewGame();
-        }
-        requestAddPlayerToGame();
-        //start a thread to manage messages received by the server
-        new Thread(() -> {
-            try {
-                manageServerMessages();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }).start();
-        //manage commands sent by the user
-        runCli();
-    }
-
-    //this method asks the server if the game has already been started/set up
-    public boolean requestStartedGame() {
-        GameUpdateMessage message = null;
-        boolean startedGame = false;
-        try{
-            serverHandler.startedGame();
-            message = (GameUpdateMessage) in.readObject();
-        }catch (ClassNotFoundException e){
-            System.out.println("Error: received invalid message from server");
-        }catch (IOException e){
-            System.out.println("Remote error: " + e.getMessage());
-        }
-        if(message.getGameUpdateType() == GameUpdateType.ERROR){
-            notifyError(message.getGameParams(0));
-        }
-        else if (message.getGameUpdateType() == GameUpdateType.STARTED_GAME){
-            if(message.getGameParams(0).equals("true")){
-                startedGame = true;
-            }
-        }
-        return startedGame;
-    }
-
-    //this method asks tho the user the parameters to set up a new game and asks the server to create the game
-    public void requestStartNewGame() {
-        GameUpdateMessage message = null;
-        System.out.println("START NEW GAME");
-        int numPlayers;
-        String ff;
-        boolean firstFlight;
-        Scanner inputScanner = new Scanner(System.in);
-        do{
-            System.out.println("Number of players (from 1 to 4): ");
-            numPlayers = Integer.parseInt(inputScanner.nextLine());
-        }while(numPlayers>4 || numPlayers<1);
-        do{
-            System.out.println("Standard game (S) or first flight (F): ");
-            ff = inputScanner.nextLine();
-        }while(!ff.equals("F") && !ff.equals("S"));
-        firstFlight = (ff.equals("F"));
-        try{
-            serverHandler.startNewGame(null, firstFlight, numPlayers);
-            message = (GameUpdateMessage) in.readObject();
-        }catch (ClassNotFoundException e){
-            System.out.println("Error: received invalid message from server");
-        }catch (IOException e){
-            System.out.println("Remote error: " + e.getMessage());
-        }
-        if(message.getGameUpdateType() == GameUpdateType.ERROR){
-            notifyError(message.getGameParams(0));
-        }
-        else if (message.getGameUpdateType() == GameUpdateType.STARTED_GAME){
-            notifyStartedGame(Boolean.parseBoolean(message.getGameParams(0)));
-        }
-    }
-
-    //this method asks the user for nickname and color and asks the server to enter the game as a new player
-    public void requestAddPlayerToGame() {
-        GameUpdateMessage message = null;
-        String nickname;
-        String colorString;
-        Color color;
-        //nickname and color taken in input until they are both valid
-        while (true) {
-            System.out.println("Insert nickname: ");
-            Scanner inputScanner = new Scanner(System.in);
-            nickname = inputScanner.nextLine();
-            System.out.println("Insert color: ");
-            colorString = inputScanner.nextLine();
-            color = Color.convertToColor(colorString);
-            if (color == null) {
-                System.out.println("Invalid color");
-                continue;
-            }
-            this.nickname = nickname;
-            this.color = color;
-            try{
-                serverHandler.addPlayer(null, nickname, color);
-                message = (GameUpdateMessage) in.readObject();
-            }catch (ClassNotFoundException e){
-                System.out.println("Error: received invalid message from server");
-                continue;
-            }catch (IOException e){
-                System.out.println("Remote error: " + e.getMessage());
-            }
-            if(message.getGameUpdateType() == GameUpdateType.ERROR){
-                notifyError(message.getGameParams(0));
-            }
-            else if (message.getGameUpdateType() == GameUpdateType.WAITING_FOR_PLAYERS){
-                updateWaitingForPlayers(Boolean.parseBoolean(message.getGameParams(0)));
-                break;
-            }
-        }
     }
 
     //this method creates a loop that waits for server's messages and (based on the type of message received)
@@ -271,6 +157,202 @@ public class SocketClient implements VirtualViewSocket {
         clientSocket.close();
     }
 
+    //this method asks the user whether it wants to start a game or join one; in case of game creation,
+    //it takes in input number of players and type of game. Once the game has been created (or an existing one
+    //has been found) the method takes in input nickname and color of the player and adds it to the game.
+    @Override
+    public void run() {
+        boolean userStartsGame = requestStartOrJoinGame();
+        if(userStartsGame){
+            requestStartNewGame();
+        }
+        requestAddPlayerToGame(userStartsGame);
+        //start a thread to manage messages received by the server
+        new Thread(() -> {
+            try {
+                manageServerMessages();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+        //manage commands sent by the user
+        runCli();
+    }
+
+    //this method asks the user if he wants to start or join a game
+    @Override
+    public boolean requestStartOrJoinGame() {
+        Scanner inputScanner = new Scanner(System.in);
+        String input;
+        System.out.println("||| WELCOME TO GALAXY TRUCKER |||\n");
+        do{
+            System.out.println("Choose to start a new game (S) or join a game (J): ");
+            input = inputScanner.nextLine();
+        }while(!input.equals("S") && !input.equals("J"));
+
+        return input.equals("S");
+    }
+
+    //this method asks tho the user the parameters to set up a new game and asks the server to create the game
+    @Override
+    public void requestStartNewGame() {
+        System.out.println("START NEW GAME");
+        String gameID;
+        int gID;
+        int numPlayers;
+        String ff;
+        boolean firstFlight;
+        Scanner inputScanner = new Scanner(System.in);
+
+        while(true){
+            do{
+                System.out.println("Insert game ID (3-digit number): ");
+                gameID = inputScanner.nextLine();
+            }while(gameID.length() != 3);
+            gID = Integer.parseInt(gameID);
+            do{
+                System.out.println("Number of players (from 1 to 4): ");
+                numPlayers = Integer.parseInt(inputScanner.nextLine());
+            }while(numPlayers>4 || numPlayers<1);
+            do{
+                System.out.println("Standard game (S) or first flight (F): ");
+                ff = inputScanner.nextLine();
+            }while(!ff.equals("F") && !ff.equals("S"));
+            firstFlight = (ff.equals("F"));
+
+            boolean gameStarted = isGameStarted(gID);
+            if(gameStarted){
+                notifyError("Error: game with the same ID already started");
+                continue;
+            }
+
+            gameStarted = startNewGame(null, gID, firstFlight, numPlayers);
+            if(gameStarted){
+                break;
+            }
+        }
+        this.gameID = gID;
+    }
+
+    //this method asks the user for nickname and color and asks the server to add the player (associated
+    // to the client) to the game
+    @Override
+    public void requestAddPlayerToGame(boolean userStartsGame) {
+        System.out.println("JOIN GAME");
+        String gameID;
+        int gID;
+        String nickname;
+        String colorString;
+        Color color;
+        Scanner inputScanner = new Scanner(System.in);
+        //nickname and color taken in input until they are both valid
+        while (true) {
+            if(!userStartsGame){
+                do{
+                    System.out.println("Insert game ID (3-digit number): ");
+                    gameID = inputScanner.nextLine();
+                }while(gameID.length() != 3);
+                gID = Integer.parseInt(gameID);
+                this.gameID = gID;
+            }
+            System.out.println("Insert nickname: ");
+            nickname = inputScanner.nextLine();
+            System.out.println("Insert color: ");
+            colorString = inputScanner.nextLine();
+            color = Color.convertToColor(colorString);
+            if (color == null) {
+                System.out.println("Invalid color");
+                continue;
+            }
+            this.nickname = nickname;
+            this.color = color;
+
+            boolean startedGame = isGameStarted(this.gameID);
+            if(!startedGame){
+                notifyError("Error: game with this ID doesn't exist");
+                continue;
+            }
+
+            boolean addedToGame = addPlayerToGame(this.gameID);
+            if(addedToGame){
+                break;
+            }
+        }
+    }
+
+    //this method asks the server if a game with the specified ID has already started
+    @Override
+    public boolean isGameStarted(int gameID){
+        GameUpdateMessage message = null;
+        try{
+            serverHandler.startedGame(gameID);
+            message = (GameUpdateMessage) in.readObject();
+        }catch (ClassNotFoundException e){
+            System.out.println("Error: received invalid message from server");
+        }catch (IOException e){
+            System.out.println("Remote error: " + e.getMessage());
+        }
+        if(message.getGameUpdateType() == GameUpdateType.ERROR){
+            notifyError(message.getGameParams(0));
+            return false;
+        }
+        else if (message.getGameUpdateType() == GameUpdateType.STARTED_GAME){
+            return Boolean.parseBoolean(message.getGameParams(0));
+        }
+        return false;
+    }
+
+    //this method asks the server to add the player (associated to the client) to the game
+    @Override
+    public boolean addPlayerToGame(int gameID) {
+        GameUpdateMessage message;
+        try{
+            serverHandler.addPlayer(null, gameID, nickname, color);
+            message = (GameUpdateMessage) in.readObject();
+        }catch (ClassNotFoundException e){
+            System.out.println("Error: received invalid message from server");
+            return false;
+        }catch (IOException e){
+            System.out.println("Remote error: " + e.getMessage());
+            return false;
+        }
+        if(message.getGameUpdateType() == GameUpdateType.ERROR){
+            notifyError(message.getGameParams(0));
+            return false;
+        }
+        else if (message.getGameUpdateType() == GameUpdateType.WAITING_FOR_PLAYERS){
+            updateWaitingForPlayers(Boolean.parseBoolean(message.getGameParams(0)));
+        }
+        return true;
+    }
+
+    //this method asks the server to create a new game
+    @Override
+    public boolean startNewGame(VirtualView client, int gameID, boolean firstFlight, int numberPlayers) {
+        GameUpdateMessage message;
+        try{
+            serverHandler.startNewGame(client, gameID, firstFlight, numberPlayers);
+            message = (GameUpdateMessage) in.readObject();
+        }catch (ClassNotFoundException e){
+            System.out.println("Error: received invalid message from server");
+            return false;
+        }catch (IOException e){
+            System.out.println("Remote error: " + e.getMessage());
+            return false;
+        }
+        if(message.getGameUpdateType() == GameUpdateType.ERROR){
+            notifyError(message.getGameParams(0));
+            return false;
+        }
+        else if (message.getGameUpdateType() == GameUpdateType.STARTED_GAME){
+            notifyStartedGame(Boolean.parseBoolean(message.getGameParams(0)));
+        }
+        return true;
+    }
+
+
+
+
     //runs a command line interface to send requests to the server
     @Override
     public void runCli()  {
@@ -311,7 +393,7 @@ public class SocketClient implements VirtualViewSocket {
                         view.visualizeFlightBoard();
                         break;
                     case "pickHidden":
-                        serverHandler.pickHidden(nickname);
+                        serverHandler.pickHidden(gameID, nickname);
                         break;
                     case "pickShown":
                         if (tokens.length < 2) {
@@ -319,13 +401,13 @@ public class SocketClient implements VirtualViewSocket {
                             break;
                         }
                         int index = Integer.parseInt(tokens[1]);
-                        serverHandler.pickShown(nickname, index);
+                        serverHandler.pickShown(gameID, nickname, index);
                         break;
                     case "release":
-                        serverHandler.putShown(nickname);
+                        serverHandler.putShown(gameID, nickname);
                         break;
                     case "reserve":
-                        serverHandler.reserveComponent(nickname);
+                        serverHandler.reserveComponent(gameID, nickname);
                         break;
                     case "pickReserved":
                         if (tokens.length < 2) {
@@ -333,10 +415,10 @@ public class SocketClient implements VirtualViewSocket {
                             break;
                         }
                         int pos = Integer.parseInt(tokens[1]);
-                        serverHandler.pickReservedComponent(nickname, pos);
+                        serverHandler.pickReservedComponent(gameID, nickname, pos);
                         break;
                     case "rotate":
-                        serverHandler.rotatePickedComponent(nickname);
+                        serverHandler.rotatePickedComponent(gameID, nickname);
                         break;
                     case "assemble":
                         if (tokens.length < 3) {
@@ -345,7 +427,7 @@ public class SocketClient implements VirtualViewSocket {
                         }
                         int x1 = Integer.parseInt(tokens[1]);
                         int y1 = Integer.parseInt(tokens[2]);
-                        serverHandler.assembledComponent(nickname, x1, y1);
+                        serverHandler.assembledComponent(gameID, nickname, x1, y1);
                         break;
                     case "pickDeck":
                         if (tokens.length < 2) {
@@ -353,10 +435,10 @@ public class SocketClient implements VirtualViewSocket {
                             break;
                         }
                         int deck = Integer.parseInt(tokens[1]);
-                        serverHandler.pickDeck(nickname, deck);
+                        serverHandler.pickDeck(gameID, nickname, deck);
                         break;
                     case "releaseDeck":
-                        serverHandler.releaseDeck(nickname);
+                        serverHandler.releaseDeck(gameID, nickname);
                         break;
                     case "setPosition":
                         if (tokens.length < 2) {
@@ -364,10 +446,10 @@ public class SocketClient implements VirtualViewSocket {
                             break;
                         }
                         int initCell = Integer.parseInt(tokens[1]);
-                        serverHandler.setPosition(nickname, initCell);
+                        serverHandler.setPosition(gameID, nickname, initCell);
                         break;
                     case "hourglass":
-                        serverHandler.startNewCycle(nickname);
+                        serverHandler.startNewCycle(gameID, nickname);
                         break;
                     case "destroy":
                         if (tokens.length < 3) {
@@ -376,7 +458,7 @@ public class SocketClient implements VirtualViewSocket {
                         }
                         int x2 = Integer.parseInt(tokens[1]);
                         int y2 = Integer.parseInt(tokens[2]);
-                        serverHandler.destroyComponent(nickname, x2, y2);
+                        serverHandler.destroyComponent(gameID, nickname, x2, y2);
                         break;
                     case "addCrew":
                         if (tokens.length < 3) {
@@ -385,7 +467,7 @@ public class SocketClient implements VirtualViewSocket {
                         }
                         int x3 = Integer.parseInt(tokens[1]);
                         int y3 = Integer.parseInt(tokens[2]);
-                        serverHandler.addCrew(nickname, x3, y3);
+                        serverHandler.addCrew(gameID, nickname, x3, y3);
                         break;
                     case "addBatteries":
                         if (tokens.length < 3) {
@@ -394,7 +476,7 @@ public class SocketClient implements VirtualViewSocket {
                         }
                         int x5 = Integer.parseInt(tokens[1]);
                         int y5 = Integer.parseInt(tokens[2]);
-                        serverHandler.addBatteries(nickname, x5, y5);
+                        serverHandler.addBatteries(gameID, nickname, x5, y5);
                         break;
                     case "addAlien":
                         if (tokens.length < 4) {
@@ -408,19 +490,19 @@ public class SocketClient implements VirtualViewSocket {
                         boolean isPurple = (tokens[1].equals("purple"));
                         int x4 = Integer.parseInt(tokens[2]);
                         int y4 = Integer.parseInt(tokens[3]);
-                        serverHandler.addAlien(nickname, isPurple, x4, y4);
+                        serverHandler.addAlien(gameID, nickname, isPurple, x4, y4);
                         break;
                     case "pickCard":
-                        serverHandler.pickNextCard(nickname);
+                        serverHandler.pickNextCard(gameID, nickname);
                         break;
                     case "quit":
-                        serverHandler.quitGame(nickname);
+                        serverHandler.quitGame(gameID, nickname);
                         break;
                     case "dice":
                         view.updateRollDice();
                         break;
                     case "skip":
-                        serverHandler.skip(nickname);
+                        serverHandler.skip(gameID, nickname);
                         break;
                     case "hit":
                         if (tokens.length < 3) {
@@ -442,7 +524,7 @@ public class SocketClient implements VirtualViewSocket {
                         }
                         boolean activateShield = (tokens[1].equals("yes"));
                         boolean activateCannon = (tokens[2].equals("yes"));
-                        serverHandler.hitShip(nickname, diceResult, activateShield, activateCannon);
+                        serverHandler.hitShip(gameID, nickname, diceResult, activateShield, activateCannon);
                         view.updateInvalidDice();
                         break;
                     case "fly":
@@ -455,7 +537,7 @@ public class SocketClient implements VirtualViewSocket {
                             System.out.println("Error: batteries cannot be negative");
                             break;
                         }
-                        serverHandler.fly(nickname, batteries);
+                        serverHandler.fly(gameID, nickname, batteries);
                         break;
                     case "landing":
                         if ((tokens.length - 1)%3 != 0) {
@@ -470,7 +552,7 @@ public class SocketClient implements VirtualViewSocket {
                             y.add(Integer.parseInt(tokens[i+2]));
                             removedCrew.add(Integer.parseInt(tokens[i+3]));
                         }
-                        serverHandler.landing(nickname, x, y, removedCrew);
+                        serverHandler.landing(gameID, nickname, x, y, removedCrew);
                         break;
                     case "defeat":
                         if (tokens.length < 3) {
@@ -483,7 +565,7 @@ public class SocketClient implements VirtualViewSocket {
                         }
                         int batteries1 = Integer.parseInt(tokens[1]);
                         boolean loseDays = (tokens[2].equals("yes"));
-                        serverHandler.defeat(nickname, batteries1, loseDays);
+                        serverHandler.defeat(gameID, nickname, batteries1, loseDays);
                         break;
                     case "loadGoods":
                         if ((tokens.length - 1)%2 != 0) {
@@ -496,7 +578,7 @@ public class SocketClient implements VirtualViewSocket {
                             x6.add(Integer.parseInt(tokens[i+1]));
                             y6.add(Integer.parseInt(tokens[i+2]));
                         }
-                        serverHandler.loadGoods(nickname, x6, y6);
+                        serverHandler.loadGoods(gameID, nickname, x6, y6);
                         break;
                     case "planet":
                         if (tokens.length < 2) {
@@ -504,7 +586,7 @@ public class SocketClient implements VirtualViewSocket {
                             break;
                         }
                         int planetNumber = Integer.parseInt(tokens[1]);
-                        serverHandler.planetLanding(nickname, planetNumber);
+                        serverHandler.planetLanding(gameID, nickname, planetNumber);
                         break;
                     case "useBatteries":
                         if (tokens.length < 2) {
@@ -512,7 +594,7 @@ public class SocketClient implements VirtualViewSocket {
                             break;
                         }
                         int numberBatteries = Integer.parseInt(tokens[1]);
-                        serverHandler.useBatteries(nickname, numberBatteries);
+                        serverHandler.useBatteries(gameID, nickname, numberBatteries);
                         break;
                     default:
                         System.out.println("Error: unknown command");
@@ -536,7 +618,7 @@ public class SocketClient implements VirtualViewSocket {
     @Override
     public void notifyStartedGame(boolean startedGame) {
         if(startedGame){
-            System.out.println("GAME STARTED");
+            System.out.println("STARTED GAME");
         }
     }
 

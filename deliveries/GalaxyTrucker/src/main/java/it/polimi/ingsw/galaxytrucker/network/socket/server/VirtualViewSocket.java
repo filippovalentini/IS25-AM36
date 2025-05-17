@@ -8,6 +8,8 @@ import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 import java.io.IOException;
 import java.util.List;
 
+//this interface defines the methods that are invoked by the model in order to notify/update the views after
+//a change in the model; in particular, this interface is exploited if the chosen network technology is Socket
 public interface VirtualViewSocket extends VirtualView {
     //notifies a view about the fact that the game has started or not
     void notifyStartedGame(boolean startedGame) throws IOException;
