@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: blue;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <BorderPane layoutX="172.0" layoutY="100.0" prefHeight="200.0" prefWidth="256.0">
+         <bottom>
+            <Button mnemonicParsing="false" style="-fx-background-color: cyan;" text="Set game configuration" BorderPane.alignment="CENTER" />
+         </bottom>
+         <center>
+            <FlowPane prefHeight="200.0" prefWidth="221.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label text="Game type:" />
+                  <ChoiceBox prefWidth="150.0" />
+                  <Label text="Number of player" />
+                  <ChoiceBox prefWidth="150.0" />
+               </children>
+            </FlowPane>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>

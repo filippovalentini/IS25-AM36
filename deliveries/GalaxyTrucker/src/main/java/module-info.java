@@ -5,8 +5,8 @@ module it.polimi.ingsw.galaxytrucker {
     requires java.rmi;
 
 
-    opens it.polimi.ingsw.galaxytrucker to javafx.fxml;
-    exports it.polimi.ingsw.galaxytrucker;
+    opens it.polimi.ingsw.galaxytrucker.gui to javafx.fxml;
+    exports it.polimi.ingsw.galaxytrucker.gui;
     exports it.polimi.ingsw.galaxytrucker.model.enumerations;
     exports it.polimi.ingsw.galaxytrucker.network.rmi.server to java.rmi;
     opens it.polimi.ingsw.galaxytrucker.model.enumerations to javafx.fxml;

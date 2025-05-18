@@ -49,7 +49,7 @@ public class MainClient {
     }
 
     //launches the socket client
-    private static void startSocketClient(String IP) throws IOException {
+    public static void startSocketClient(String IP) throws IOException {
         int port = 1235;
         Socket clientSocket = new Socket(IP, port);
         System.out.println("Connected to server...");
@@ -57,7 +57,7 @@ public class MainClient {
     }
 
     //launches the RMI client
-    private static void startClientRMI(String IP) throws RemoteException, NotBoundException {
+    public static void startClientRMI(String IP) throws RemoteException, NotBoundException {
         final String serverName = "GalaxyTruckerServer";
         int port = 1234;
         Registry registry = LocateRegistry.getRegistry(IP, port);
