@@ -1,6 +1,9 @@
 package it.polimi.ingsw.galaxytrucker.network.socket.message;
 
+//defines all the possible types of player action message
 public enum PlayerActionType {
+    ASK_STARTED_GAME,
+    START_GAME,
     ADD_PLAYER,
     //components
     PICK_HIDDEN,
@@ -16,6 +19,7 @@ public enum PlayerActionType {
     RELEASE_DECK,
     //others
     SET_POSITION,
+    HOURGLASS,
     QUIT,
     PICK_CARD,
     ADD_CREW,
@@ -25,5 +29,8 @@ public enum PlayerActionType {
     LANDING,
     HIT_SHIP,
     FLY,
-    DEFEAT
+    DEFEAT,
+    LOAD_GOODS,
+    PLANET_LANDING,
+    USE_BATTERIES
 }

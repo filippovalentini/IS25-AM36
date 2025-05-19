@@ -2,9 +2,7 @@ package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.NoBatteriesException;
-import it.polimi.ingsw.galaxytrucker.model.exceptions.NoGoodsException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 
 import java.util.List;
@@ -62,10 +60,27 @@ public class Smugglers extends DayLossCard{
         else{
             //if cannonStrength<this.enemyStrength, the smugglers have defeated the player, which loses
             //the most precious goods on its ship board
-            if(gameState.getNumberGoods(nickname) < this.goodLoss){
-                throw new NoGoodsException("Too few goods");
-            }
             gameState.losePreciousGoods(nickname, this.goodLoss);
+            if(gameState.isLastInTurn(nickname)) {
+                gameState.setGameState(State.CARD_PICKING);
+            }
+            gameState.nextTurn();
         }
+    }
+
+    @Override
+    //substitute the cargo goods (specified by coordinates of component) of the player with the station goods
+    public void loadGoods(GameState gameState, String nickname, List<Integer> x, List<Integer> y) throws InvalidActionException, UnsupportedCargoColorException, FullCargoHoldException, NoGoodsException {
+        if (isDefeated() || !goodsExchangePhase) {
+            throw new InvalidActionException("Invalid action");
+        }
+        if(x.size() != prizeGoods.size() || y.size() != prizeGoods.size()){
+            throw new NoGoodsException("Specify where to put EACH prize good");
+        }
+        gameState.loadGoods(nickname, x, y, prizeGoods);
+        gameState.changePlayerPosition(nickname, -this.lostDays);
+        setDefeated();
+        gameState.setGameState(State.CARD_PICKING);
+        gameState.updateTurns();
     }
 }

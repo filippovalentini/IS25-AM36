@@ -23,7 +23,8 @@ public class GameState {
     private List<Component> hiddenComponents;       //components turned face down during the assembling phase
     private List<Component> shownComponents;        //components turned face up during the assembling phase
     private State state;            //current state of the game
-    final Map<String, VirtualView> clients = new HashMap<>();     //list of observers (clients of the game)
+    private final Map<String, VirtualView> clients = new HashMap<>(); //list of observers (clients of the game)
+    private Hourglass hourglass;
 
     public GameState(boolean firstFlight, int numPlayers) {     //constructor, creates the deck(s) of cards and instantiates the components
         this.firstFlight = firstFlight;
@@ -32,75 +33,72 @@ public class GameState {
         this.turnPlayer = "";
         this.numPlayers = numPlayers;
         this.gameDeck = null;
+        this.hourglass = new Hourglass(20, this);
         this.state = State.WAITING_FOR_PLAYERS;
     }
 
+    //
+     // 1) EXTRA METHODS NEEDED FOR TESTING
+    //
 
-
-     //[method for testing]
+    //[method for testing] assembles a custom component in the specified position
     public void assembleComponent(String nickname, Component component, int x, int y){
         playersPlay.get(nickname).assembleComponent(component, x, y);
     }
-    //[method for testing] set a custom deck
+    //[method for testing] set the game deck with a custom one
     public void setGameDeck(Deck deck){
         gameDeck = deck;
     }
-    //[method for testing]
-    public EventCard getCurrentCard(){
-        return this.currentCard;
-    }
-
-    //
-    // GETTERS AND SETTERS
-    // these methods don't belong to the model-controller interface, but are needed by the methods of
-    // the EventCardClasses package in order to modify the model due to the effect of a card
-    //
-
-    public void setGameState(State state) {
-        this.state = state;
-
-        for(VirtualView view: clients.values()){
-            try{
-                if(state==State.SHIP_BUILDING){
-                    view.updateStartAssembling();
-                }
-                else if(state==State.SHIP_CONTROL){
-                    view.updateShipControl();
-                }
-                else if(state==State.CARD_PICKING){
-                    view.updateCardPicking();
-                }
-                else if(state==State.CARD_SOLVING){
-                    view.updateCardSolving(currentCard.getImageID());
-                }
-                else if(state==State.END){
-                    view.updateEndGame();
-                }
-                else{
-                    view.notifyError("Ambiguous game state change");
-                }
-            }
-            catch(Exception e){System.out.println("Error during remote method invocation on client");}
+    //[method for testing] set the current picked card with a custom one
+    public void pickGivenCard(EventCard eventCardIn) throws InvalidActionException{
+        if(state != State.CARD_PICKING){
+            throw new InvalidActionException("Can't pick a new card");
+        }
+        try{
+            currentCard = eventCardIn;
+            setGameState(State.CARD_SOLVING);
+            currentCard.specialEffect(this);
+        }
+        catch (EmptyDeckException e) {
+            computeTotalRewards();
+            setGameState(State.END);
         }
     }
+
+    //
+    // 2) GETTERS (some of them also modify the model)
+    //
+
+    //returns the state of the game
     public State getGameState() {
         return this.state;
     }
+    //returns a copy of the nickname-position mapping
     public Map<String,Position> getPlayersPos() { //return a copy of the player postion map
         if(this.playersPos == null) { return null;}
         return new LinkedHashMap<>(playersPos);
     }
+    //returns the nickname of the current player in turn
     public String getTurnPlayer() {
         return turnPlayer;
     }
+    //returns true if a player is the last one for the current game turn
+    public boolean isLastInTurn(String nickname){
+        String lastPlayer = null;
+
+        for (String k : playersPos.keySet()) {
+            lastPlayer = k;
+        }
+
+        return nickname.equals(lastPlayer);
+    }
+    //returns a copy of the nickname-player mapping
     public Map<String,Player> getPlayersPlay() { // return a copy of the player nickanme map
         if(this.playersPlay == null) { return null;}
         return new HashMap<>(playersPlay);
     }
+    //returns the number of current active players in the game
     public int getCurrentPlayers(){return playersPlay.size();}
-    public List<Component> getShownComponent() { //return a copy of the shown components
-        return new ArrayList<>(shownComponents);
-    }
     //returns the list of player nicknames (in position order)
     public List<String> getNicknames(){
         return new ArrayList<>(playersPos.keySet());
@@ -108,6 +106,10 @@ public class GameState {
     //determines whether a player has abandoned the game
     public boolean hasAbandoned(String nickname){
         return playersPlay.get(nickname).hasAbandoned();
+    }
+    //determines whether ha player is correctly positioned on the flight board
+    public boolean isPositioned(String nickname){
+        return playersPos.get(nickname) != null;
     }
     //return the ship board color of a player
     public Color getColor(String nickname){
@@ -138,10 +140,6 @@ public class GameState {
     public int getNumberGoods(String nickname){
         return playersPlay.get(nickname).getNumberGoods();
     }
-    //this method removes the numberGoods-most precious goods from a player's ship board
-    public void losePreciousGoods(String nickname, int numberGoods){
-        playersPlay.get(nickname).losePreciousGoods(numberGoods);
-    }
     //this method returns the nickname of the player with fewer crew members
     public String getCrewMinPlayer() {
         int numberCrew;
@@ -160,22 +158,26 @@ public class GameState {
         }
         return crewMinPlayer;
     }
-    //returns the cannon strength of a player, removing the given batteries from its ship board in order to activate double cannons
+    //returns the cannon strength of a player, removing the given batteries from its ship board in order
+    // to activate double cannons
     public double getCannonStrength(String nickname, int usedBatteries){
         return playersPlay.get(nickname).getCannonStrength(usedBatteries);
     }
-    //returns the engine strength of a player, removing the given batteries from its ship board in order to activate double engines
+    //returns the engine strength of a player, removing the given batteries from its ship board in order
+    // to activate double engines
     public int getEngineStrength(String nickname, int usedBatteries){
         return playersPlay.get(nickname).getEngineStrength(usedBatteries);
     }
-    //substitutes (or adds) a good in a specific container of a player's cargo hold
-    public void substituteGoods(String nickname, int cargo_row, int cargo_col, Color good, int posInCargo) throws FullCargoHoldException, UnsupportedCargoColorException{
-        playersPlay.get(nickname).substituteGoods(cargo_row, cargo_col, good, posInCargo);
-    }
+
 
     //
-     //STARTING PHASE
+     // 3) SETTERS
     //
+
+
+
+     //STARTING PHASE
+
 
     //this method instantiates all the components (tiles) of the game, which will be placed face down (hidden)
     public void createComponents(boolean firstFlight) {
@@ -431,14 +433,14 @@ public class GameState {
         else{   //first flight
             List<EventCard> gameDeckCards = new ArrayList<>();
             //first flight cards creation
-            //gameDeckCards.add(new AbandonedShip(3, 4, 1, 1002));
-            //gameDeckCards.add(new AbandonedStation(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN)), 5, 1, 2001));
-            //gameDeckCards.add(new CombatZone(true, 3001));
-            //gameDeckCards.add(new MeteorsSwarm(new ArrayList<>(Arrays.asList(new Meteor(true, Orientation.NORTH), new Meteor(false, Orientation.WEST), new Meteor(false, Orientation.EAST))), 5001));
-            //gameDeckCards.add(new OpenSpace(6001));
-            //gameDeckCards.add(new Planets(new ArrayList<>(Arrays.asList(new ArrayList<>(Arrays.asList(Color.RED, Color.RED)), new ArrayList<>(Arrays.asList(Color.RED, Color.BLUE, Color.BLUE)), new ArrayList<>(Arrays.asList(Color.YELLOW)))),2, 7002));
-            //gameDeckCards.add(new Smugglers(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN, Color.BLUE)),2,4,1,8005));
-            //gameDeckCards.add(new SpecialEvent(SpecialEventType.STARDUST, 4002));
+            gameDeckCards.add(new AbandonedShip(3, 4, 1, 1002));
+            gameDeckCards.add(new Smugglers(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN, Color.BLUE)),2,4,1,8005));
+            gameDeckCards.add(new AbandonedStation(new ArrayList<>(Arrays.asList(Color.YELLOW, Color.GREEN)), 5, 1, 2001));
+            gameDeckCards.add(new CombatZone(true, 3001));
+            gameDeckCards.add(new MeteorsSwarm(new ArrayList<>(Arrays.asList(new Meteor(true, Orientation.NORTH), new Meteor(false, Orientation.WEST), new Meteor(false, Orientation.EAST))), 5001));
+            gameDeckCards.add(new OpenSpace(6001));
+            gameDeckCards.add(new Planets(new ArrayList<>(Arrays.asList(new ArrayList<>(Arrays.asList(Color.RED, Color.RED)), new ArrayList<>(Arrays.asList(Color.RED, Color.BLUE, Color.BLUE)), new ArrayList<>(Arrays.asList(Color.YELLOW)))),2, 7002));
+            gameDeckCards.add(new SpecialEvent(SpecialEventType.STARDUST, 4002));
             //game deck creation
             Deck d = new Deck(gameDeckCards);
             decks = new ArrayList<>();
@@ -492,17 +494,23 @@ public class GameState {
     public void startAssembling() {
         createComponents(firstFlight);
         createDecks(firstFlight);
+        if(!firstFlight){
+            startNewCycle();
+        }
         setGameState(State.SHIP_BUILDING);
     }
 
-    //
+
      //ASSEMBLING PHASE
-    //
+
 
     //invoked when a player wants to pick a component among the one placed face down (assembling phase)
     public void pickHidden(String nickname) throws PickedComponentException, InvalidActionException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Wait for assembling phase");
+        }
+        if(isPositioned(nickname)){
+            throw new InvalidActionException("You have already finished assembling");
         }
         Collections.shuffle(hiddenComponents);
         Component c = hiddenComponents.removeFirst();
@@ -516,6 +524,10 @@ public class GameState {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Wait for assembling phase");
         }
+        if(isPositioned(nickname)){
+            throw new InvalidActionException("You have already finished assembling");
+        }
+
         Component c = shownComponents.remove(index);
         playersPlay.get(nickname).pickComponent(c);
 
@@ -534,6 +546,10 @@ public class GameState {
         if(firstFlight){
             throw new InvalidActionException("Invalid action for first flight game");
         }
+        if(isPositioned(nickname)){
+            throw new InvalidActionException("You have already finished assembling");
+        }
+
         Component c = playersPlay.get(nickname).reserveComponent();
 
         try{clients.get(nickname).updatePickedComponent(c.getImageID(), true);}
@@ -551,6 +567,10 @@ public class GameState {
         if(firstFlight){
             throw new InvalidActionException("Invalid action for first flight game");
         }
+        if(isPositioned(nickname)){
+            throw new InvalidActionException("You have already finished assembling");
+        }
+
         Component c = playersPlay.get(nickname).pickReservedComponent(position);
 
         try{clients.get(nickname).updatePickedComponent(c.getImageID(), false);}
@@ -565,6 +585,10 @@ public class GameState {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Wait for assembling phase");
         }
+        if(isPositioned(nickname)){
+            throw new InvalidActionException("You have already finished assembling");
+        }
+
         Component c = playersPlay.get(nickname).releaseComponent();
         shownComponents.add(c);
 
@@ -580,6 +604,10 @@ public class GameState {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Wait for assembling phase");
         }
+        if(isPositioned(nickname)){
+            throw new InvalidActionException("You have already finished assembling");
+        }
+
         Component c = playersPlay.get(nickname).assembleComponent(x,y);
 
         try{clients.get(nickname).updatePickedComponent(c.getImageID(), true);}
@@ -594,6 +622,10 @@ public class GameState {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Wait for assembling phase");
         }
+        if(isPositioned(nickname)){
+            throw new InvalidActionException("You have already finished assembling");
+        }
+
         playersPlay.get(nickname).rotatePickedComponent();
 
         try{clients.get(nickname).updateRotatePickedComponent();}
@@ -606,6 +638,9 @@ public class GameState {
         }
         if(firstFlight){
             throw new InvalidActionException("Invalid action for first flight game");
+        }
+        if(isPositioned(nickname)){
+            throw new InvalidActionException("You have already finished assembling");
         }
         if(deckNumber <= 0 || deckNumber >= decks.size()){
             throw new InvalidActionException("Invalid deck number");
@@ -628,6 +663,9 @@ public class GameState {
         if(firstFlight){
             throw new InvalidActionException("Invalid action for first flight game");
         }
+        if(isPositioned(nickname)){
+            throw new InvalidActionException("You have already finished assembling");
+        }
         int releasedDeckNumber = playersPlay.get(nickname).releaseDeck();
         decks.get(releasedDeckNumber).setNotPicked();
 
@@ -636,8 +674,11 @@ public class GameState {
     }
     //invoked when a player has finished the assembling phase and has to pick a free position on the flight board
     public void setPosition(String nickname, int initCell) throws InvalidPositionException, InvalidActionException {
-        if(state != State.SHIP_BUILDING){
+        if(state != State.SHIP_BUILDING && state != State.SHIP_PLACEMENT){
             throw new InvalidActionException("Wait for assembling phase");
+        }
+        if(isPositioned(nickname)){
+            throw new InvalidActionException("You have already finished assembling");
         }
         if(firstFlight) {
             if(!LevelOnePosition.validStartingCells.contains(initCell)) {
@@ -672,10 +713,43 @@ public class GameState {
             checkShipBoards();
         }
     }
+    //invoked when a player wants to turn around the hourglass
+    public void startNewCycle(String nickname) throws InvalidActionException, HourGlassException{
+        if (!isPositioned(nickname)) {
+            throw new InvalidActionException("First finish assembling!!!");
+        } else if (state != State.SHIP_BUILDING) {
+            System.out.println("Wait for assembling phase");
+        } else if (firstFlight) {
+            throw new InvalidActionException("Invalid action for first flight game");
+        } else{
+            hourglass.startNewCycle();
 
-    //
+            for(VirtualView view: clients.values()){
+                try{view.updateStartNewCycle();}
+                catch(Exception e){System.out.println("Error during remote method invocation on client");}
+            }
+        }
+    }
+    //invoked when the assembling phase starts, turns around the hourglass
+    public void startNewCycle(){
+        hourglass.startNewCycle();
+
+        for(VirtualView view: clients.values()){
+            try{view.updateStartNewCycle();}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        }
+    }
+    //invoked when the hourglass has finished running
+    public void finishedCycle() {
+        for(VirtualView view: clients.values()){
+            try{view.updateFinishedCycle();}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        }
+    }
+
+
      //SHIP CONTROL PHASE
-    //
+
 
     //invoked when a component of a player's ship board must be destroyed
     public void destroyComponent(String nickname, int x, int y) throws AssembledComponentException, InvalidActionException {
@@ -760,10 +834,42 @@ public class GameState {
         gameDeck.shuffle();
     }
 
-    //
-     //FLIGHT PHASE
-    //
 
+     //FLIGHT PHASE
+
+
+
+    //this method changes the state of the game
+    public void setGameState(State state) {
+        this.state = state;
+
+        for(VirtualView view: clients.values()){
+            try{
+                if(state==State.SHIP_BUILDING){
+                    view.updateStartAssembling();
+                }
+                else if(state==State.SHIP_PLACEMENT){
+                    view.updateShipPlacement();
+                }
+                else if(state==State.SHIP_CONTROL){
+                    view.updateShipControl();
+                }
+                else if(state==State.CARD_PICKING){
+                    view.updateCardPicking();
+                }
+                else if(state==State.CARD_SOLVING){
+                    view.updateCardSolving(currentCard.getImageID());
+                }
+                else if(state==State.END){
+                    view.updateEndGame();
+                }
+                else{
+                    view.notifyError("Ambiguous game state change");
+                }
+            }
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        }
+    }
     //this method orders playersPos in (decreasing) position order and assigns the leader's nickname to turnPlayer
     public void updateTurns(){
         playersPos = playersPos.entrySet()
@@ -802,19 +908,14 @@ public class GameState {
         //if turnPlayer is the last player in position order, turns are updated and the leader nickname is assigned to turnPlayer
         updateTurns();
     }
-    //returns true if a player is the last one for the current game turn
-    public boolean isLastInTurn(String nickname){
-        String lastPlayer = null;
-
-        for (String k : playersPos.keySet()) {
-            lastPlayer = k;
-        }
-
-        return nickname.equals(lastPlayer);
-    }
     //sets turnPlayer to a specific player's nickname
     public void setTurnPlayer(String nickname){
         this.turnPlayer = nickname;
+
+        for(VirtualView view: clients.values()){
+            try{view.updateNextTurn(this.turnPlayer);}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        }
     }
     //this method is invoked when a player wants to leave the game
     public void quitGame(String nickname) throws InvalidActionException {
@@ -908,6 +1009,19 @@ public class GameState {
         }
         playersPlay.get(nickname).cannonFireAttack(cannonFire, direction, activateShield);
     }
+    //substitutes (or adds) a good in a specific container of a player's cargo hold
+    public void substituteGoods(String nickname, int cargo_row, int cargo_col, Color good, int posInCargo) throws FullCargoHoldException, UnsupportedCargoColorException{
+        playersPlay.get(nickname).substituteGoods(cargo_row, cargo_col, good, posInCargo);
+    }
+    //adds a set of goods in specific cargo holds of a player's ship board
+    public void loadGoods(String nickname, List<Integer> x, List<Integer> y, List<Color> goods) throws UnsupportedCargoColorException, FullCargoHoldException {
+        playersPlay.get(nickname).loadGoods(x, y, goods);
+    }
+    //this method removes the numberGoods-most precious goods from a player's ship board
+    public void losePreciousGoods(String nickname, int numberGoods){
+        playersPlay.get(nickname).losePreciousGoods(numberGoods);
+    }
+
 
     //ACTIONS THAT A PLAYER CAN PERFORM TO SOLVE A CARD
 
@@ -942,7 +1056,7 @@ public class GameState {
         }
         currentCard.hitShip(this, nickname, diceResult, activateShield, activateCannon);
     }
-    //invoked when a player decides to land on an abandoned station/ship
+    //invoked when a player decides to land on an abandoned ship
     public void landing(String nickname, List<Integer> x, List<Integer> y, List<Integer> z) throws InvalidActionException, NoCrewException {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
@@ -993,9 +1107,19 @@ public class GameState {
         }
         currentCard.skip(this, nickname);
     }
+    //invoked when a player decides to load goods inside cargo hold components of its ship
+    public void loadGoods(String nickname, List<Integer> x, List<Integer> y) throws InvalidActionException, UnsupportedCargoColorException, FullCargoHoldException, NoGoodsException {
+        if(state != State.CARD_SOLVING){
+            throw new InvalidActionException("Card must be picked first");
+        }
+        if(!nickname.equals(turnPlayer)){
+            throw new InvalidActionException("Wait for the turn");
+        }
+        currentCard.loadGoods(this, nickname, x, y);
+    }
 
     //
-    //GAME OVER
+    // ENDING PHASE
     //
 
 

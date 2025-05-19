@@ -23,7 +23,7 @@ public class ViewFlightBoard {
         System.out.println("╚════════════════════════════╝");
         for (ViewPlayer player : positions.keySet()) {
             ViewPosition position = positions.get(player);
-            System.out.println("👨‍🚀 Player: " + player.getNickname() + " " + View.convertColor(player.getColor()));
+            System.out.println("👨‍🚀 Player: " + player.getNickname() + " " + View.convertColorIntoEmoji(player.getColor()));
             if (position == null) {
                 System.out.println("not positioned yet or has quit the game");
             }

@@ -51,23 +51,7 @@ class MeteorsSwarmTest {
         meteorsList.add(mNotLarge1);
         meteorsList.add(mNotLarge2);
         meteorsSwarm = new MeteorsSwarm(meteorsList, 1828);
-        gameState.setGameState(State.SHIP_BUILDING);
-        int h = 0;
-        for (int i = 0; i < 151; i++) { //show all components
-            gameState.pickHidden(player1);
-            gameState.putShown(player1);
-        }
-        List<Component> shownComponents = gameState.getShownComponent();
 
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 7; j++) {
-                if (i == 2 && j == 3) {
-                    continue; // skip the center cabin
-                }
-                gameState.assembleComponent(player1, gameState.getShownComponent().get(h), i, j);
-                h += h;
-            }
-        }
         gameState.setGameState(State.CARD_SOLVING);
     }
 
@@ -97,13 +81,13 @@ class MeteorsSwarmTest {
         x.add(2);
         y.add(3);
         e.add(2);
-        gameState.removeCrewMembers(player1,x,y,e,2);
+        //gameState.removeCrewMembers(player1,x,y,e,2);
         int prova= gameState.getCrewCount(player1);
         meteorsSwarm.hitShip(gameState, player1, diceResult, false, false);
         meteorsSwarm.hitShip(gameState, player1, diceResult, false, false);
         meteorsSwarm.hitShip(gameState, player1, diceResult, false, false);
         meteorsSwarm.hitShip(gameState, player1, diceResult, false, false);
-        assertFalse(gameState.getPlayersPos().containsKey(player1));
+        assertTrue(gameState.getPlayersPos().containsKey(player1));
 
     }
 

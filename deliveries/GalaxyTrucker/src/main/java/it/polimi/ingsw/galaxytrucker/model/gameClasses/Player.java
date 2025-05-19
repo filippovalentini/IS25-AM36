@@ -182,5 +182,9 @@ public class Player {
     public void substituteGoods(int cargo_row, int cargo_col, Color good, int posInCargo) throws FullCargoHoldException, UnsupportedCargoColorException {
         this.shipBoard.substituteGoods(cargo_row, cargo_col, good, posInCargo);
     }
+    //adds a set of goods in specific cargo holds of the player's ship board
+    public void loadGoods(List<Integer> x, List<Integer> y, List<Color> goods) throws UnsupportedCargoColorException, FullCargoHoldException{
+        shipBoard.loadGoods(x, y, goods);
+    }
 
 }

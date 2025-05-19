@@ -72,7 +72,7 @@ class SlaversTest {
         assertEquals(State.CARD_PICKING, gameState.getGameState());
         gameState.pickNextCard(player1);
         assertEquals(State.CARD_SOLVING, gameState.getGameState());
-        slavers1.defeat(gameState, player1, 0, true);
+        gameState.defeat(player1, 0, true);
         assertEquals(State.CARD_PICKING, gameState.getGameState());
         assertEquals(5, gameState.getPlayersPlay().get(player1).getCredits());
         assertEquals(5, gameState.getPlayersPos().get(player1).getCell());

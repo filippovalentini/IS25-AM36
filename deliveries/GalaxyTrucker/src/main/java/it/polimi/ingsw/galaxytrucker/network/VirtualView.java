@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface VirtualView {
     //runs a command line interface to send requests to the server
-    void runCli(VirtualServer server) throws Exception;
+    void runCli() throws Exception;
 
     //notifies a view about an error committed while executing a method on the remote server; the parameter
     //errorMessage describes the type of error
@@ -63,6 +63,16 @@ public interface VirtualView {
     //correctly positioned on the flight board; still, other players have to finish building their ships
     void updateFinishAssembling(String nickname, int position) throws Exception;
 
+    //notifies the view that the hourglass has been turned around
+    void updateStartNewCycle() throws Exception;
+
+    //notifies the view that the hourglass has finished running
+    void updateFinishedCycle() throws Exception;
+
+    //invoked when the game switches to the ship placement phase, which means that the players can only
+    //place their ship on the flight board
+    void updateShipPlacement() throws Exception;
+
     //notifies the view that all the players have concluded the assembling phase, which means that the players
     //enter the ship control phase
     void updateShipControl() throws Exception;
@@ -78,6 +88,12 @@ public interface VirtualView {
 
     //notifies the view about a change in the number of aliens of a cabin
     void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws Exception;
+
+    //notifies the view that a good has been loaded in a cargo hold
+    void updateLoadedGood(String nickname, int x, int y, Color good) throws Exception;
+
+    //notifies the view that some goods have been removed form a cargo hold
+    void updateRemovedGoods(String nickname, int x, int y, Color good, int numberGoods) throws Exception;
 
     //notifies the view about the fact that a player has to pick a card in order to continue the game
     void updateCardPicking() throws Exception;

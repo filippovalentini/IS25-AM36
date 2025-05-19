@@ -13,6 +13,7 @@ public class Cannon extends ConfigurableComponent { //constructor
 
     @Override
     public boolean hasDoubleCannons() { return isDouble();}
+    public List<Connector> getSides() { return sides; } //getter for sides
     @Override
     public boolean hasSingleCannon() { return !isDouble();}
     @Override
@@ -20,7 +21,7 @@ public class Cannon extends ConfigurableComponent { //constructor
         return this.orientation == Orientation.NORTH;
     }
     @Override
-    public Component clone(){//return a copy of the component
+    public Component clone(){ //return a copy of the component
         Cannon retComponent = new Cannon(isDouble,this.imageID, new ArrayList<>(this.sides));
         retComponent.orientation = this.orientation;
         return retComponent;

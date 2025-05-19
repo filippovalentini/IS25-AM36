@@ -65,6 +65,7 @@ class SmugglersTest {
         smugglers.setDefeated();
         assertThrows(InvalidActionException.class, () -> smugglers.defeat(gameState, nickname, usedBatteries, looseDays));
     }
+
     @Test
     void testShouldNotAttackIfNotEnoughBatteries() {
         int usedBatteries = 5;

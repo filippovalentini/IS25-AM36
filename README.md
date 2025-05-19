@@ -11,12 +11,12 @@ The implementation features both a command-line interface (CLI) and a JavaFX gra
 ## Task reached:
 | Feature | Implemented |
 |:------- |:----------- |
-| Complete rules | :x: |
-| TUI | :x: |
+| Complete rules | ✅ |
+| TUI | ✅ |
 | GUI | :x: |
-| RMI | :x: |
-| Socket | :x: |
-| Level one flight | :x: |
-| Multiple games | :x: |
+| RMI | ✅ |
+| Socket | ✅ |
+| Level one flight | ✅ |
+| Multiple games | ✅ |
 | Persistence | :x: |
 | Resilience to clients disconnections | :x: |

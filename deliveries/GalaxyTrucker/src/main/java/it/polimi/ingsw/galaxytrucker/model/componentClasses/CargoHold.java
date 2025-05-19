@@ -60,15 +60,18 @@ public class CargoHold extends ConfigurableComponent {
         }
         return price;
     }
+
     @Override
     public List<Color> getGoods() {
         List<Color> copia = new ArrayList<Color>(this.goods);//return a copy of the listed goods
         return copia;
     }
+
     @Override
     public int getNumberGoods(){
         return goods.size();
     }
+
     @Override
     public int getNumberGoods(Color color){
         int numberGoods = 0;
@@ -97,4 +100,15 @@ public class CargoHold extends ConfigurableComponent {
         retComponent.goods = this.goods;
         return retComponent;
     }
+
+    @Override
+    public boolean isFullOfGoods() {
+        if(isDouble){
+            return goods.size()==2;
+        }
+        else {
+            return goods.size()==3;
+        }
+    }
+
 }

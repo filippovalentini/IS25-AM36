@@ -1,6 +1,10 @@
 package it.polimi.ingsw.galaxytrucker.view;
 
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ViewComponent {
     private String imageID;
@@ -9,6 +13,7 @@ public class ViewComponent {
     private int crew;
     private boolean purpleAlien;
     private boolean brownAlien;
+    private List<Color> goods;
 
     public ViewComponent(String imageID) {
         this.imageID = imageID;
@@ -17,6 +22,7 @@ public class ViewComponent {
         this.crew = 0;
         this.purpleAlien = false;
         this.brownAlien = false;
+        this.goods = new ArrayList<>();
     }
 
     public String getImageID() {
@@ -67,5 +73,19 @@ public class ViewComponent {
     }
     public boolean isBrownAlien() {
         return brownAlien;
+    }
+    public void loadGood(Color good){
+        goods.add(good);
+    }
+    public void removeGood(Color good){
+        for(Color g : goods){
+            if(g == good){
+                goods.remove(g);
+                break;
+            }
+        }
+    }
+    public List<Color> getGoods() {
+        return new ArrayList<>(goods);
     }
 }

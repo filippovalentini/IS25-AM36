@@ -571,11 +571,38 @@ public class ShipBoard {
             }
         }
     }
+    //verifies that in all the specified positions there are cabins that contain at least the specified number of crew
+    public boolean availableCabins(List<Integer> x, List<Integer> y, List<Integer> crewInEachCabin){
+        Component c;
+        for(int i=0; i<x.size(); i++){
+            c = assembledComponents.get(x.get(i)).get(y.get(i));
+            if(c.getNumberCrew() < crewInEachCabin.get(i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    //verifies that in all the specified positions there are cargo holds that are not full
+    public boolean availableCargoHolds(List<Integer> x, List<Integer> y){
+        for(int i=0; i<x.size(); i++){
+            if(x.get(i)==0 && y.get(i)==0){
+                continue;
+            }
+            Component c = assembledComponents.get(x.get(i)).get(y.get(i));
+            if(c.isFullOfGoods()){
+                return false;
+            }
+        }
+        return true;
+    }
     //remove the specified crew members from the specified cabins in the ship board
     public void removeCrewMembers(List<Integer> x, List<Integer> y, List<Integer> crewInEachCabin, int numberCrewToRemove) throws NoCrewException {
         int sumRemovedCrewMembers = crewInEachCabin.stream().mapToInt(Integer::intValue).sum();
         if(sumRemovedCrewMembers != numberCrewToRemove){
             throw new NoCrewException("Wrong number of crew members to remove");
+        }
+        if(!availableCabins(x, y, crewInEachCabin)){
+            throw new NoCrewException("All specified cabins must have sufficient crew members");
         }
         for(int i=0; i<x.size(); i++){
             assembledComponents.get(x.get(i)).get(y.get(i)).removeCrew(crewInEachCabin.get(i));
@@ -588,6 +615,25 @@ public class ShipBoard {
     //substitutes the cargo good at the given coordinates with the good given in input
     public void substituteGoods(int cargo_row, int cargo_col, Color good, int posInCargo) throws FullCargoHoldException, UnsupportedCargoColorException {
         assembledComponents.get(cargo_row).get(cargo_col).substituteGood(good, posInCargo);
+    }
+    //adds a set of goods in specific cargo holds of the player's ship board; discards the good if the specified
+    //coordinates are (0,0)
+    public void loadGoods(List<Integer> x, List<Integer> y, List<Color> goods) throws UnsupportedCargoColorException, FullCargoHoldException{
+        if(!availableCargoHolds(x,y)){
+            throw new NoCrewException("All specified cargo holds must have sufficient space");
+        }
+        for(int i=0; i<x.size(); i++){
+            if(x.get(i) == 0 && y.get(i) == 0){
+                continue;
+            }
+
+            assembledComponents.get(x.get(i)).get(y.get(i)).addGood(goods.get(i));
+
+            for(VirtualView view: clients.values()){
+                try{view.updateLoadedGood(nickname, x.get(i), y.get(i), goods.get(i));}
+                catch(Exception e){System.out.println("Error during remote method invocation on client");}
+            }
+        }
     }
     //invoked when a meteor/cannon shot hits the ship board
     public void meteorAttack(Meteor meteor, int direction, boolean activateShield, boolean activateCannon){
@@ -720,22 +766,35 @@ public class ShipBoard {
     public int removeSpecificGoods(Color color, int numberGoods){
         int toRemove = numberGoods;
         int componentGoods;
-        for (List<Component> componentRow : assembledComponents) {
-            for (Component component : componentRow) {
+        for (int i = 0; i < assembledComponents.size(); i++) {
+            List<Component> componentRow = assembledComponents.get(i);
+            for (int j = 0; j < componentRow.size(); j++) {
+                Component component = componentRow.get(j);
                 componentGoods = component.getNumberGoods(color);
-                if(componentGoods > 0){
-                    if(componentGoods >= toRemove){
+                if (componentGoods > 0) {
+                    if (componentGoods >= toRemove) {
                         component.removeSpecificGoods(color, toRemove);
+
+                        for (VirtualView view : clients.values()) {
+                            try {view.updateRemovedGoods(nickname, i, j, color, toRemove);}
+                            catch (Exception e) {System.out.println("Error during remote method invocation on client");}
+                        }
+
                         toRemove = 0;
                         break;
-                    }
-                    else{
+                    } else {
                         component.removeSpecificGoods(color, componentGoods);
-                        toRemove-= componentGoods;
+
+                        for (VirtualView view : clients.values()) {
+                            try {view.updateRemovedGoods(nickname, i, j, color, componentGoods);}
+                            catch (Exception e) {System.out.println("Error during remote method invocation on client");}
+                        }
+
+                        toRemove -= componentGoods;
                     }
                 }
             }
-            if(toRemove ==0){
+            if (toRemove == 0) {
                 break;
             }
         }

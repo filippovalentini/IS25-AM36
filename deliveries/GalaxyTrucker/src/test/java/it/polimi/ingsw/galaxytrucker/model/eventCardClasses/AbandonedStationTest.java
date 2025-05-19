@@ -1,11 +1,14 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.componentClasses.CargoHold;
+import it.polimi.ingsw.galaxytrucker.model.componentClasses.CargoSpecial;
 import it.polimi.ingsw.galaxytrucker.model.componentClasses.Component;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.InvalidActionException;
+import it.polimi.ingsw.galaxytrucker.model.exceptions.NoGoodsException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import it.polimi.ingsw.galaxytrucker.network.rmi.client.ClientRMI;
 import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
@@ -24,6 +27,7 @@ class AbandonedStationTest {
     private VirtualViewRMI cl2;
     private GameState gameState;
     private AbandonedStation abandonedStation;
+    private AbandonedStation abandonedStationFreeCrew;
     List<Integer> x_cargo;
     List<Integer> y_cargo;
     List<Integer> goodsPosCargo;
@@ -46,24 +50,21 @@ class AbandonedStationTest {
         gameState.setPosition(player2, 3);
         gameState.addCrew(player1, 2, 3);
         gameState.addCrew(player2, 2, 3);
-        gameState.setGameState(State.SHIP_BUILDING);
-        for(int i=0; i<151; i++){ //show all components
-            gameState.pickHidden(player1);
-            gameState.putShown(player1);
-        }
-        List<Component> shownComponents = gameState.getShownComponent();
-        for(int i=0; i<shownComponents.size(); i++) { //assemble the cargo left to the initial cabin
-            if (shownComponents.get(i).getClass() == CargoHold.class && shownComponents.get(i).getEastSide()!= Connector.SMOOTH) {
-                gameState.pickShown(player1, i);
-                gameState.assembleComponent(player1, 2, 2);
-                i=100000;
-            }
-        }
-        gameState.setGameState(State.CARD_PICKING); //end of assembling phase
+        gameState.updateTurns();
+
+        CargoHold cargoHoldUniversal = new CargoHold(true, -1, List.of(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL));
+        gameState.assembleComponent(player1, cargoHoldUniversal, 2, 2);
+        gameState.checkShipBoards();
+
         List<Color> stationGoods = new ArrayList<Color>();
         stationGoods.add(Color.YELLOW);
         stationGoods.add(Color.GREEN);
-        abandonedStation = new AbandonedStation(stationGoods, 5, 1, 0);
+        abandonedStation = new AbandonedStation(stationGoods, 5, 1, -1);
+        //init abandonedStationFreeCrew
+        List<Color> sG = new ArrayList<Color>();
+        sG.add(Color.YELLOW);
+        sG.add(Color.GREEN);
+        abandonedStationFreeCrew = new AbandonedStation(sG, 0, 1, -1);
         x_cargo = new ArrayList<>();
         y_cargo = new ArrayList<>();
         goodsPosCargo = new ArrayList<>();
@@ -77,30 +78,42 @@ class AbandonedStationTest {
 
     @Test
     void testUseStation() {
+        gameState.pickGivenCard(abandonedStation);
         abandonedStation.setUsed();
         assertTrue(abandonedStation.isUsed());
     }
 
     @Test
     void testShouldNotUseStationAlreadyUsed() {
+        gameState.pickGivenCard(abandonedStation);
         abandonedStation.setUsed();
         assertThrows(InvalidActionException.class, () -> abandonedStation.setUsed());
     }
 
     @Test
-    void testLandingWithRequiredCrew() {
-        List<Color> sG = new ArrayList<Color>();
-        sG.add(Color.YELLOW);
-        sG.add(Color.GREEN);
-        AbandonedStation abandonedStationFreeCrew = new AbandonedStation(sG, 0, 1, 0);
+    void testLoadGoodsWithRequiredCrew() {
         assertTrue(gameState.getCrewCount(player1)>0);
-        abandonedStationFreeCrew.landing(gameState, player1, x_cargo, y_cargo, goodsPosCargo);
+        gameState.pickGivenCard(abandonedStationFreeCrew);
+        abandonedStationFreeCrew.loadGoods(gameState, player1, x_cargo, y_cargo);
         assertTrue(abandonedStationFreeCrew.isUsed());
     }
 
     @Test
-    void testShouldNotLandingInvalidRequiredCrew() {
-        assertThrows(InvalidActionException.class, () -> abandonedStation.landing(gameState, player1, x_cargo, y_cargo, goodsPosCargo));
+    void testShouldNotLoadGoodsMismatchingGoodsSize(){
+        gameState.pickGivenCard(abandonedStationFreeCrew);
+        assertThrows(NoGoodsException.class, () -> abandonedStationFreeCrew.loadGoods(gameState, player1, new ArrayList<>(), new ArrayList<>()));
+    }
+
+    @Test
+    void testShouldNotLoadGoodsCardAlreadyUsed(){
+        gameState.pickGivenCard(abandonedStationFreeCrew);
+        abandonedStationFreeCrew.setUsed();
+        assertThrows(InvalidActionException.class, () -> abandonedStationFreeCrew.loadGoods(gameState, player1, x_cargo, y_cargo));
+    }
+    @Test
+    void testShouldNotLoadGoodsInvalidRequiredCrew() {
+        gameState.pickGivenCard(abandonedStationFreeCrew);
+        assertThrows(InvalidActionException.class, () -> abandonedStation.loadGoods(gameState, player1, x_cargo, y_cargo));
     }
 
 }

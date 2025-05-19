@@ -2,7 +2,6 @@ package it.polimi.ingsw.galaxytrucker.network.rmi.server;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
-import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 
 import java.rmi.Remote;
@@ -15,7 +14,7 @@ import java.util.List;
 public interface VirtualViewRMI extends Remote, VirtualView {
     //runs a command line interface to send requests to the server
     @Override
-    void runCli(VirtualServer server) throws RemoteException;
+    void runCli() throws RemoteException;
 
     //notifies a view about an error committed while executing a method on the remote server; the parameter
     //errorMessage describes the type of error
@@ -80,6 +79,19 @@ public interface VirtualViewRMI extends Remote, VirtualView {
     @Override
     void updateFinishAssembling(String nickname, int position) throws RemoteException;
 
+    //notifies the view that the hourglass has been turned around
+    @Override
+    void updateStartNewCycle() throws RemoteException;
+
+    //notifies the view that the hourglass has finished running
+    @Override
+    void updateFinishedCycle() throws RemoteException;
+
+    //invoked when the game switches to the ship placement phase, which means that the players can only
+    //place their ship on the flight board
+    @Override
+    void updateShipPlacement() throws RemoteException;
+
     //notifies the view that all the players have concluded the assembling phase, which means that the players
     //enter the ship control phase
     @Override
@@ -100,6 +112,14 @@ public interface VirtualViewRMI extends Remote, VirtualView {
     //notifies the view about a change in the number of aliens of a cabin
     @Override
     void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws RemoteException;
+
+    //notifies the view that a good has been loaded in a cargo hold
+    @Override
+    void updateLoadedGood(String nickname, int x, int y, Color good) throws RemoteException;
+
+    //notifies the view that some goods have been removed form a cargo hold
+    @Override
+    void updateRemovedGoods(String nickname, int x, int y, Color good, int numberGoods) throws RemoteException;
 
     //notifies the view about the fact that a player has to pick a card in order to continue the game
     @Override

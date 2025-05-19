@@ -10,17 +10,76 @@ import java.io.*;
 import java.net.Socket;
 import java.util.*;
 
+//this class contains the methods to create and send serialized messages to a specific client starting
+// from given parameters.
+//it also manages the arrivals of messages from the handled client, converting them in specific invocations
+//on the game controller
 public class SocketClientHandler implements VirtualViewSocket {
-    Socket socket;
-    GameController controller;
+    Socket socket;                  //socket for client-server communication
+    GameController controller;      //controller of the game associated to the handled client
     ObjectInputStream in;
     ObjectOutputStream out;
 
-    public SocketClientHandler(Socket socket, GameController controller) throws IOException {
+    public SocketClientHandler(Socket socket) throws IOException {
         this.socket = socket;
-        this.controller = controller;
         this.out = new ObjectOutputStream(socket.getOutputStream());
         this.in = new ObjectInputStream(socket.getInputStream());
+    }
+
+    //this method initializes the controller of the game associated to the handled client
+    public void setController(GameController controller) {
+        this.controller = controller;
+    }
+
+    //this method creates a loop that waits for client messages in order to correctly create a new game
+    //and/or add a player to a game; it also initializes the controller associated to the client
+    public void manageClientSetUp(Map<Integer, GameController> controllers) throws IOException {
+        boolean clientAddedToGame = false;
+        while (true) {
+            try{
+                PlayerActionMessage message = (PlayerActionMessage) in.readObject();
+                switch(message.getGameAction()){
+                    case ASK_STARTED_GAME:
+                        boolean startedGame = controllers.containsKey(Integer.parseInt(message.getGameParams(0)));
+                        notifyStartedGame(startedGame);
+                        break;
+                    case START_GAME:
+                        int gameID = Integer.parseInt(message.getGameParams(0));
+                        boolean firstFlight = Boolean.parseBoolean(message.getGameParams(1));
+                        int numPlayers = Integer.parseInt(message.getGameParams(2));
+                        GameController gameController = new GameController(firstFlight, numPlayers);
+                        setController(gameController);
+                        controllers.put(gameID, gameController);
+                        notifyStartedGame(true);
+                        break;
+                    case ADD_PLAYER:
+                        setController(controllers.get(Integer.parseInt(message.getGameParams(0))));
+                        controller.addPlayer(this, message.getGameParams(1), Color.convertToColor(message.getGameParams(2)));
+                        clientAddedToGame = true;
+                        break;
+                    default:
+                        notifyError("Error: unknown command sent by client");
+                }
+            }
+            catch (IOException e) {
+                System.out.println("Error: failed I/O operation through socket");
+                break;
+            } catch (ClassNotFoundException e) {
+                System.err.println("Error: failed to deserialize class");
+                break;
+            } catch (Exception e) {
+                try{
+                    notifyError(e.getMessage());
+                }
+                catch(Exception e1){
+                    System.out.println("Error: failed I/O operation through socket");
+                    break;
+                }
+            }
+            if(clientAddedToGame){
+                break;
+            }
+        }
     }
 
     //this method creates a loop that waits for client's messages and (based on the type of message received)
@@ -30,9 +89,6 @@ public class SocketClientHandler implements VirtualViewSocket {
             try{
                 PlayerActionMessage message = (PlayerActionMessage) in.readObject();
                 switch(message.getGameAction()){
-                    case ADD_PLAYER:
-                        controller.addPlayer(this, message.getGameParams(0), Color.convertToColor(message.getGameParams(1)));
-                        break;
                     case PICK_HIDDEN:
                         controller.pickHidden(message.getGameParams(0));
                         break;
@@ -63,6 +119,9 @@ public class SocketClientHandler implements VirtualViewSocket {
                     case SET_POSITION:
                         controller.setPosition(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)));
                         break;
+                    case HOURGLASS:
+                        controller.startNewCycle(message.getGameParams(0));
+                        break;
                     case DESTROY:
                         controller.destroyComponent(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)));
                         break;
@@ -74,6 +133,7 @@ public class SocketClientHandler implements VirtualViewSocket {
                         break;
                     case ADD_ALIEN:
                         controller.addAlien(message.getGameParams(0), Boolean.parseBoolean(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)), Integer.parseInt(message.getGameParams(3)));
+                        break;
                     case PICK_CARD:
                         controller.pickNextCard(message.getGameParams(0));
                         break;
@@ -94,6 +154,15 @@ public class SocketClientHandler implements VirtualViewSocket {
                         break;
                     case DEFEAT:
                         controller.defeat(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Boolean.parseBoolean(message.getGameParams(2)));
+                        break;
+                    case LOAD_GOODS:
+                        controller.loadGoods(message.getGameParams(0), deserializeList(message.getGameParams(1)), deserializeList(message.getGameParams(2)));
+                        break;
+                    case PLANET_LANDING:
+                        controller.planetLanding(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)));
+                        break;
+                    case USE_BATTERIES:
+                        controller.useBatteries(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)));
                         break;
                     default:
                         notifyError("Error: unknown command sent by client");
@@ -131,7 +200,7 @@ public class SocketClientHandler implements VirtualViewSocket {
 
     //runs a command line interface to send requests to the server
     @Override
-    public void runCli(VirtualServer server) throws IOException{}
+    public void runCli() {}
 
     //notifies a view about an error committed while executing a method on the remote server; the parameter
     //errorMessage describes the type of error
@@ -139,6 +208,14 @@ public class SocketClientHandler implements VirtualViewSocket {
     public void notifyError(String errorMessage) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(errorMessage));
         GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.ERROR, params);
+        out.writeObject(message);
+    }
+
+    //notifies a view about the fact that the game has started or not
+    @Override
+    public void notifyStartedGame(boolean startedGame) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(String.valueOf(startedGame)));
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.STARTED_GAME, params);
         out.writeObject(message);
     }
 
@@ -247,6 +324,31 @@ public class SocketClientHandler implements VirtualViewSocket {
         out.writeObject(message);
     }
 
+    //notifies the view that the hourglass has been turned around
+    @Override
+    public void updateStartNewCycle() throws IOException{
+        List<String> params = new ArrayList<>();
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.STARTED_CYCLE, params);
+        out.writeObject(message);
+    }
+
+    //notifies the view that the hourglass has finished running
+    @Override
+    public void updateFinishedCycle() throws IOException{
+        List<String> params = new ArrayList<>();
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.FINISHED_CYCLE, params);
+        out.writeObject(message);
+    }
+
+    //invoked when the game switches to the ship placement phase, which means that the players can only
+    //place their ship on the flight board
+    @Override
+    public void updateShipPlacement() throws IOException{
+        List<String> params = new ArrayList<>();
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.SHIP_PLACEMENT, params);
+        out.writeObject(message);
+    }
+
     //notifies the view that all the players have concluded the assembling phase, which means that the players
     //enter the ship control phase
     @Override
@@ -285,6 +387,22 @@ public class SocketClientHandler implements VirtualViewSocket {
     public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(x), String.valueOf(y), String.valueOf(isPurple), String.valueOf(added)));
         GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.ALIEN_CHANGE, params);
+        out.writeObject(message);
+    }
+
+    //notifies the view that a good has been loaded in a cargo hold
+    @Override
+    public void updateLoadedGood(String nickname, int x, int y, Color good) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(x), String.valueOf(y), good.toString()));
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.LOADED_GOOD, params);
+        out.writeObject(message);
+    }
+
+    //notifies the view that some goods have been removed form a cargo hold
+    @Override
+    public void updateRemovedGoods(String nickname, int x, int y, Color good, int numberGoods) throws IOException{
+        List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(x), String.valueOf(y), good.toString(), String.valueOf(numberGoods)));
+        GameUpdateMessage message = new GameUpdateMessage(GameUpdateType.REMOVED_GOODS, params);
         out.writeObject(message);
     }
 

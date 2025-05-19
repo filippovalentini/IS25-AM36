@@ -8,10 +8,15 @@ import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 import java.io.IOException;
 import java.util.List;
 
+//this interface defines the methods that are invoked by the model in order to notify/update the views after
+//a change in the model; in particular, this interface is exploited if the chosen network technology is Socket
 public interface VirtualViewSocket extends VirtualView {
+    //notifies a view about the fact that the game has started or not
+    void notifyStartedGame(boolean startedGame) throws IOException;
+
     //runs a command line interface to send requests to the server
     @Override
-    void runCli(VirtualServer server) throws IOException;
+    void runCli() throws IOException;
 
     //notifies a view about an error committed while executing a method on the remote server; the parameter
     //errorMessage describes the type of error
@@ -76,6 +81,19 @@ public interface VirtualViewSocket extends VirtualView {
     @Override
     void updateFinishAssembling(String nickname, int position) throws IOException;
 
+    //notifies the view that the hourglass has been turned around
+    @Override
+    void updateStartNewCycle() throws IOException;
+
+    //notifies the view that the hourglass has finished running
+    @Override
+    void updateFinishedCycle() throws IOException;
+
+    //invoked when the game switches to the ship placement phase, which means that the players can only
+    //place their ship on the flight board
+    @Override
+    void updateShipPlacement() throws IOException;
+
     //notifies the view that all the players have concluded the assembling phase, which means that the players
     //enter the ship control phase
     @Override
@@ -96,6 +114,14 @@ public interface VirtualViewSocket extends VirtualView {
     //notifies the view about a change in the number of aliens of a cabin
     @Override
     void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws IOException;
+
+    //notifies the view that a good has been loaded in a cargo hold
+    @Override
+    void updateLoadedGood(String nickname, int x, int y, Color good) throws IOException;
+
+    //notifies the view that some goods have been removed form a cargo hold
+    @Override
+    void updateRemovedGoods(String nickname, int x, int y, Color good, int numberGoods) throws IOException;
 
     //notifies the view about the fact that a player has to pick a card in order to continue the game
     @Override

@@ -113,6 +113,23 @@ public class ViewPlayer {
         else if(comp.getBatteries() == 3){
             return "BBB  ";
         }
+        else if(!comp.getGoods().isEmpty()){
+            List<Color> goods = comp.getGoods();
+            String goodsString = "";
+            for (Color good : goods) {
+                goodsString = goodsString + View.convertColorIntoLetter(good);
+            }
+            int numberGoods = comp.getGoods().size();
+            if (numberGoods == 1) {
+                return goodsString + "    ";
+            }
+            else if (numberGoods == 2) {
+                return goodsString + "   ";
+            }
+            else{
+                return goodsString + "  ";
+            }
+        }
         else{
             return "     ";
         }
@@ -190,7 +207,7 @@ public class ViewPlayer {
         assembledComponents.get(x).get(y).setOrientation(orientation);
     }
 
-    public void updateDestroyedComponent(String nickname, int x, int y) {
+    public void updateDestroyedComponent(int x, int y) {
         assembledComponents.get(x).set(y, new ViewComponent("000"));
     }
 
@@ -220,6 +237,16 @@ public class ViewPlayer {
 
     public void updateCredits(int change) {
         this.credits+=change;
+    }
+
+    public void updateLoadedGood(int x, int y, Color good) {
+        assembledComponents.get(x).get(y).loadGood(good);
+    }
+
+    public void updateRemovedGoods(int x, int y, Color good, int numberGoods) {
+        for(int i = 0; i<numberGoods; i++){
+            assembledComponents.get(x).get(y).removeGood(good);
+        }
     }
 
 }

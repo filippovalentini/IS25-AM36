@@ -3,7 +3,6 @@ package it.polimi.ingsw.galaxytrucker.view;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 
-import java.rmi.RemoteException;
 import java.util.*;
 
 public class View {
@@ -18,6 +17,7 @@ public class View {
     private List<ViewComponent> shownComponents = new ArrayList<>();    //set of components placed face up
     private Integer currentCard;        //current card to solve
     private ViewDice dice;          //dice of the game
+    private String hourglassState;      //state of the hourglass
 
     public View(String nickname, Color color, boolean firstFlight) {
         this.player = new ViewPlayer(nickname, color, firstFlight);
@@ -28,11 +28,14 @@ public class View {
         this.turnPlayer = null;
         this.currentCard = null;
         this.dice = new ViewDice();
+        this.hourglassState = null;
     }
 
     public static void main(String[] args){
         View view = new View("fil", Color.BLUE, true);
-        view.updateBatteries("fil", 2, 3, 1);
+        view.updateLoadedGood("fil", 2, 3, Color.RED);
+        view.updateLoadedGood("fil", 2, 3, Color.BLUE);
+        view.updateLoadedGood("fil", 2, 3, Color.RED);
         view.visualizeShip();
     }
 
@@ -64,6 +67,10 @@ public class View {
         if(turnPlayer != null){
             System.out.println(" --------- IT'S " + turnPlayer + "'S TURN");
         }
+        System.out.println();
+        if(hourglassState != null){
+            System.out.println("⏳ Hourglass state: " + hourglassState + "\n");
+        }
         if(currentCard != null){
             System.out.println("🃏 Card to solve: " + currentCard + "\n");
         }
@@ -71,7 +78,7 @@ public class View {
             System.out.println("\uD83C\uDFB2" + " Dice result: " + dice.getResult1() + "   " + dice.getResult2() + "\n");
         }
         System.out.println();
-        System.out.println("👨‍🚀 Player: " + player.getNickname() + " " + convertColor(player.getColor()));
+        System.out.println("👨‍🚀 Player: " + player.getNickname() + " " + convertColorIntoEmoji(player.getColor()));
         System.out.println("💰 Credits: " + player.getCredits());
         System.out.println("💣 Lost components: " + player.getLostComponents());
 
@@ -136,9 +143,9 @@ public class View {
         System.out.println("║    Final cosmic credits:   ║");
         System.out.println("╚════════════════════════════╝");
 
-        System.out.println("👨‍🚀 Player: " + player.getNickname() + " " + convertColor(player.getColor()) + "          💰 Credits: " + player.getCredits());
+        System.out.println("👨‍🚀 Player: " + player.getNickname() + " " + convertColorIntoEmoji(player.getColor()) + "          💰 Credits: " + player.getCredits());
         for(ViewPlayer p: otherPlayers.values()){
-            System.out.println("👨‍🚀 Player: " + p.getNickname() + " " + convertColor(p.getColor()) + "          💰 Credits: " + p.getCredits());
+            System.out.println("👨‍🚀 Player: " + p.getNickname() + " " + convertColorIntoEmoji(p.getColor()) + "          💰 Credits: " + p.getCredits());
         }
     }
 
@@ -148,12 +155,22 @@ public class View {
     }
 
     //converts a color in an emoji
-    public static String convertColor(Color color) {
+    public static String convertColorIntoEmoji(Color color) {
         return switch (color) {
             case Color.RED -> "🟥";
             case Color.GREEN -> "🟩";
             case Color.BLUE -> "🟦";
             case Color.YELLOW -> "🟨";
+        };
+    }
+
+    //converts a color into a letter
+    public static String convertColorIntoLetter(Color color) {
+        return switch (color) {
+            case Color.RED -> "r";
+            case Color.GREEN -> "g";
+            case Color.BLUE -> "b";
+            case Color.YELLOW -> "y";
         };
     }
 
@@ -244,10 +261,27 @@ public class View {
 
     }
 
+    //notifies the view that the hourglass has been turned around
+    public void updateStartNewCycle(){
+        this.hourglassState = "Hourglass is running...";
+    }
+
+    //notifies the view that the hourglass has finished running
+    public void updateFinishedCycle(){
+        this.hourglassState = "Hourglass has finished running, you can start the last cycle";
+    }
+
+    //invoked when the game switches to the ship placement phase
+    public void updateShipPlacement() {
+        this.hourglassState = "Hourglass has finished running, place your ship on the flight board!!!";
+        gameState = "SHIP PLACEMENT";
+    }
+
     //invoked when the game switches to the ship control phase
     public void updateShipControl() {
         gameState = "SHIP CONTROL";
         pickedViewComponent = null;
+        hourglassState = null;
         shownComponents.clear();
         pickedDeck.clear();
         player.updateShipControl();
@@ -256,11 +290,11 @@ public class View {
     //notifies the view that a component of a player's ship board has been destroyed
     public void updateDestroyedComponent(String nickname, int x, int y){
         if(nickname.equals(this.player.getNickname())){
-            player.updateDestroyedComponent(nickname, x, y);
+            player.updateDestroyedComponent(x, y);
             player.loseComponent();
         }
         else{
-            otherPlayers.get(nickname).updateDestroyedComponent(nickname, x, y);
+            otherPlayers.get(nickname).updateDestroyedComponent(x, y);
             otherPlayers.get(nickname).loseComponent();
         }
     }
@@ -319,6 +353,26 @@ public class View {
         }
         else{
             otherPlayers.get(nickname).updateBatteries(x,y,change);
+        }
+    }
+
+    //notifies the view that a good has been loaded in a cargo hold
+    public void updateLoadedGood(String nickname, int x, int y, Color good) {
+        if(nickname.equals(this.player.getNickname())){
+            player.updateLoadedGood(x,y,good);
+        }
+        else{
+            otherPlayers.get(nickname).updateLoadedGood(x,y,good);
+        }
+    }
+
+    //notifies the view that some goods have been removed form a cargo hold
+    public void updateRemovedGoods(String nickname, int x, int y, Color good, int numberGoods){
+        if(nickname.equals(this.player.getNickname())){
+            player.updateRemovedGoods(x,y,good,numberGoods);
+        }
+        else{
+            otherPlayers.get(nickname).updateRemovedGoods(x,y,good,numberGoods);
         }
     }
 

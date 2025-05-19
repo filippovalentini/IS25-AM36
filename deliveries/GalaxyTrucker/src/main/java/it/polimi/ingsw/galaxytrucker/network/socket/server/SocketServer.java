@@ -4,28 +4,29 @@ import it.polimi.ingsw.galaxytrucker.controller.GameController;
 
 import java.io.*;
 import java.net.*;
-import java.util.Scanner;
+import java.util.Map;
 
 //this class contains all the logic needed to instantiate the concurrent socket server and to handle client connections
 public class SocketServer {
-    private final ServerSocket listenSocket;
-    private final GameController controller;
+    private final ServerSocket listenSocket;            //accepts client connections
+    private final Map<Integer, GameController> controllers;     //maps each controller with the ID of the respective game
 
-    //bind listen socket and initialize controller with given params
-    public SocketServer(ServerSocket listenSocket, boolean firstFlight, int numPlayers) {
+    //constructor, initializes the controllers mapping with a provided empty map
+    public SocketServer(ServerSocket listenSocket, Map<Integer, GameController> controllers) {
         this.listenSocket = listenSocket;
-        this.controller = new GameController(firstFlight, numPlayers);
+        this.controllers = controllers;
     }
 
-    // receive connection from client and then create a thread for every client (connection limited due to number of players)
-    private void runServer() throws IOException {
+    //accepts client connections and for each client creates a thread to handle message communication
+    public void runServer() throws IOException {
         Socket clientSocket;
         while ((clientSocket = this.listenSocket.accept()) != null) {
             System.out.println("Accepted connection from " + clientSocket.getInetAddress().getHostAddress());
-            SocketClientHandler clientHandler = new SocketClientHandler(clientSocket, controller);
+            SocketClientHandler clientHandler = new SocketClientHandler(clientSocket);
 
             new Thread(() -> {
                 try {
+                    clientHandler.manageClientSetUp(controllers);
                     clientHandler.manageClientMessages();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -35,24 +36,4 @@ public class SocketServer {
 
     }
 
-    //server launch with given params
-    public static void main(String[] args) throws IOException {
-        int port = Integer.parseInt(args[0]);
-        int numPlayers;
-        String ff;
-        boolean firstFlight;
-        Scanner inputScanner = new Scanner(System.in);
-        do{
-            System.out.println("Number of players (from 1 to 4): ");
-            numPlayers = Integer.parseInt(inputScanner.nextLine());
-        }while(numPlayers>4 || numPlayers<1);
-        do{
-            System.out.println("Standard game (S) or first flight (F): ");
-            ff = inputScanner.nextLine();
-        }while(!ff.equals("F") && !ff.equals("S"));
-        firstFlight = (ff.equals("F"));
-        ServerSocket listenSocket = new ServerSocket(port);
-        System.out.println("Server bound...");
-        new SocketServer(listenSocket, firstFlight, numPlayers).runServer();
-    }
 }

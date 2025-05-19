@@ -1,7 +1,9 @@
 package it.polimi.ingsw.galaxytrucker.network.socket.message;
 
+//defines all the possible types of game update message
 public enum GameUpdateType {
     ERROR,
+    STARTED_GAME,
     WAITING_FOR_PLAYERS,
     NEW_PLAYER,
     START_ASSEMBLING,
@@ -13,6 +15,9 @@ public enum GameUpdateType {
     PICKED_DECK,
     RELEASED_DECK,
     FINISH_ASSEMBLING,
+    STARTED_CYCLE,
+    FINISHED_CYCLE,
+    SHIP_PLACEMENT,
     SHIP_CONTROL,
     DESTROYED_COMPONENT,
     CARD_PICKING,
@@ -21,6 +26,8 @@ public enum GameUpdateType {
     CARD_SOLVING,
     CREW_CHANGE,
     ALIEN_CHANGE,
+    LOADED_GOOD,
+    REMOVED_GOODS,
     BATTERY_CHANGE,
     CREDITS_CHANGE,
     POSITION_CHANGE,

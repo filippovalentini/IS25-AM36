@@ -8,7 +8,7 @@ import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import java.util.List;
 
 //ABANDONED SHIP
-public class AbandonedShip extends DayLossCard{
+public class AbandonedShip extends SkipCard {
     private final int requiredCrew;      //required crew to land in the ship
     private final int gainedCredits;       //credits that a player can gain by using the card
     private boolean used;       //set to true if a player has already used the card
@@ -45,12 +45,12 @@ public class AbandonedShip extends DayLossCard{
         gameState.updateTurns();
     }
 
-    @Override
+    /*@Override
     //invoked when a player doesn't want to land on the station
     public void skip(GameState gameState, String nickname) {
         if(gameState.isLastInTurn(nickname)) {
             gameState.setGameState(State.CARD_PICKING);
         }
         gameState.nextTurn();
-    }
+    }*/
 }

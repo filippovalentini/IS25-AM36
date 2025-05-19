@@ -28,8 +28,8 @@ public class EventCard  {
     public void hitShip(GameState gameState, String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException, NoBatteriesException {
         throw new InvalidActionException("Invalid action for solving the current card");
     }
-    //invoked when a player decides to land on an abandoned station/ship
-    public void landing(GameState gameState, String nickname, List<Integer> x, List<Integer> y, List<Integer> z) throws InvalidActionException, NoCrewException {
+    //invoked when a player decides to remove crew members from its ship
+    public void landing(GameState gameState, String nickname, List<Integer> x, List<Integer> y, List<Integer> crewInEachCabin) throws InvalidActionException, NoCrewException {
         throw new InvalidActionException("Invalid action for solving the current card");
     }
     //invoked when a card is picked from the deck during the solving phase; it has an effect on all the players of
@@ -50,6 +50,10 @@ public class EventCard  {
     }
     //invoked when a player doesn't want to exploit the benefits of a card and therefore skips the turn
     public void skip(GameState gameState, String nickname) throws InvalidActionException {
+        throw new InvalidActionException("Invalid action for solving the current card");
+    }
+    //invoked when a player decides to load goods inside cargo hold components of its ship
+    public void loadGoods(GameState gameState, String nickname, List<Integer> x, List<Integer> y) throws InvalidActionException, UnsupportedCargoColorException, FullCargoHoldException, NoGoodsException {
         throw new InvalidActionException("Invalid action for solving the current card");
     }
 
