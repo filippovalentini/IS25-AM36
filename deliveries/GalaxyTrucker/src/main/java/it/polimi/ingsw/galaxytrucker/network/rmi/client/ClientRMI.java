@@ -29,12 +29,12 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI, Ga
     //has been found) the method takes in input nickname and color of the player and adds it to the game.
     @Override
     public void run() throws RemoteException {
-        boolean userStartsGame = requestStartOrJoinGame();
+        /*boolean userStartsGame = requestStartOrJoinGame();
         if(userStartsGame){
             requestStartNewGame();
         }
         requestAddPlayerToGame(userStartsGame);
-        runCli();
+        runCli();*/ //commented due to gui usage
     }
 
     //this method asks the user to start a new game or join an existing one

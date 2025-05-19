@@ -7,19 +7,14 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class Application extends javafx.application.Application {
-    private Stage mainStage;
     @Override
     public void start(Stage stage) throws IOException {
-        mainStage = stage;
         FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("/it/polimi/ingsw/galaxytrucker/selectnetwork.fxml"));
+        Controller.setControlledStage(stage); //share the stage with the controller
         Scene scene = new Scene(fxmlLoader.load());
-        mainStage.setTitle("Galaxy Trucker");
-        mainStage.setScene(scene);
-        mainStage.show();
-    }
-
-    public void changeScene(Scene scene) {
-        mainStage.setScene(scene);
+        stage.setTitle("Galaxy Trucker");
+        stage.setScene(scene);
+        stage.show();
     }
 
     public static void main(String[] args) {
