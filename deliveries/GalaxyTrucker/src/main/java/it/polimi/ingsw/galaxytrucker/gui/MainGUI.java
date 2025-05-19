@@ -1,4 +1,4 @@
-package it.polimi.ingsw.galaxytrucker;
+package it.polimi.ingsw.galaxytrucker.gui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,8 +10,7 @@ import java.io.IOException;
 public class MainGUI extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(MainGUI.class.getResource("hello-view.fxml"));
-
+        FXMLLoader fxmlLoader = new FXMLLoader(MainGUI.class.getResource("/it/polimi/ingsw/galaxytrucker/shipassembling.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1210, 740);
         stage.setTitle("GalaxyTrucker");
         Image icon = new Image(getClass().getResourceAsStream("/images/tiles/engine7.jpg"));
@@ -21,10 +20,6 @@ public class MainGUI extends Application {
     }
 
     public static void main(String[] args) {
-
-
         launch(args);
-
-
     }
 }
