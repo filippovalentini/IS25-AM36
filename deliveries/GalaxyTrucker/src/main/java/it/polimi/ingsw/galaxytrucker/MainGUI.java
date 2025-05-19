@@ -7,10 +7,10 @@ import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import java.io.IOException;
 
-public class Main extends Application {
+public class MainGUI extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("hello-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(MainGUI.class.getResource("hello-view.fxml"));
 
         Scene scene = new Scene(fxmlLoader.load(), 1210, 740);
         stage.setTitle("GalaxyTrucker");
