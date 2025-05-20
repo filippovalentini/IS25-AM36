@@ -1,18 +1,35 @@
 package it.polimi.ingsw.galaxytrucker.ui.gui;
 
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
+import it.polimi.ingsw.galaxytrucker.network.GameSessionManager;
+import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
+import it.polimi.ingsw.galaxytrucker.ui.UserInterface;
+import it.polimi.ingsw.galaxytrucker.ui.cli.cliView.CliView;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class HelloController {
+public class HelloController implements UserInterface {
+    private VirtualServer server;
+    private GameSessionManager client;
+    private CliView cliView;
+    int gameID;
+    String nickname;
+    Color color;
 
     @FXML
     private Pane handComponentArea;
@@ -97,9 +114,10 @@ public class HelloController {
         });
     }
 
-    private void setupPickComponentButton() {
+    private void setupPickComponentButton() throws Exception {
         pickComponent.setOnAction(event -> {
             if (isComponentPlaced || firstComponent) {
+                server.pickHidden(gameID,nickname);
                 Button newButton = new Button("handComponent");
                 newButton.setPrefSize(handComponentArea.getPrefWidth(), handComponentArea.getPrefHeight());
 
@@ -157,5 +175,151 @@ public class HelloController {
             }
         }
         return myGridPane.getRowConstraints().size() - 1;
+    }
+
+
+    @Override
+    public void notifyError(String errorMessage) throws Exception {
+
+    }
+
+    @Override
+    public void updateWaitingForPlayers(boolean firstFlight) throws Exception {
+
+    }
+
+    @Override
+    public void updateNewPlayer(String nickname, Color color) throws Exception {
+
+    }
+
+    @Override
+    public void updateStartAssembling() throws Exception {
+
+    }
+
+    @Override
+    public void updatePickedComponent(int imageID, boolean released) throws Exception {
+
+    }
+
+    @Override
+    public void updateShownComponent(int imageID, boolean released) throws Exception {
+
+    }
+
+    @Override
+    public void updateReservedComponent(String nickname, int imageID, boolean released) throws Exception {
+
+    }
+
+    @Override
+    public void updateRotatePickedComponent() throws Exception {
+
+    }
+
+    @Override
+    public void updateAssembledComponent(String nickname, int imageID, Orientation orientation, int x, int y) throws Exception {
+
+    }
+
+    @Override
+    public void updatePickedDeck(List<Integer> deckIDs) throws Exception {
+
+    }
+
+    @Override
+    public void updateReleasedDeck() throws Exception {
+
+    }
+
+    @Override
+    public void updateFinishAssembling(String nickname, int position) throws Exception {
+
+    }
+
+    @Override
+    public void updateStartNewCycle() throws Exception {
+
+    }
+
+    @Override
+    public void updateFinishedCycle() throws Exception {
+
+    }
+
+    @Override
+    public void updateShipPlacement() throws Exception {
+
+    }
+
+    @Override
+    public void updateShipControl() throws Exception {
+
+    }
+
+    @Override
+    public void updateDestroyedComponent(String nickname, int x, int y) throws Exception {
+
+    }
+
+    @Override
+    public void updateCrewChange(String nickname, int x, int y, int change) throws Exception {
+
+    }
+
+    @Override
+    public void updateBatteries(String nickname, int x, int y, int change) throws Exception {
+
+    }
+
+    @Override
+    public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws Exception {
+
+    }
+
+    @Override
+    public void updateLoadedGood(String nickname, int x, int y, Color good) throws Exception {
+
+    }
+
+    @Override
+    public void updateRemovedGoods(String nickname, int x, int y, Color good, int numberGoods) throws Exception {
+
+    }
+
+    @Override
+    public void updateCardPicking() throws Exception {
+
+    }
+
+    @Override
+    public void updateNextTurn(String nickname) throws Exception {
+
+    }
+
+    @Override
+    public void updateCardSolving(int imageID) throws Exception {
+
+    }
+
+    @Override
+    public void updatePlayerQuit(String nickname) throws Exception {
+
+    }
+
+    @Override
+    public void updatePlayerCredits(String nickname, int change) throws Exception {
+
+    }
+
+    @Override
+    public void updatePlayerPosition(String nickname, int lap, int cell) throws Exception {
+
+    }
+
+    @Override
+    public void updateEndGame() throws Exception {
+
     }
 }

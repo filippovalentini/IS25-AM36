@@ -22,7 +22,7 @@
     <!-- Immagine centrale -->
     <ImageView fitHeight="600.0" fitWidth="854.0" preserveRatio="true" AnchorPane.leftAnchor="191.0" AnchorPane.rightAnchor="191.0" AnchorPane.topAnchor="70.0">
         <image>
-            <Image url="@shipL1.jpg" />
+            <Image url="@../../../../images/cardboard/shipL1.jpg" />
         </image>
     </ImageView>
 
