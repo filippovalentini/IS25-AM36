@@ -8,6 +8,10 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class HelloController {
 
     @FXML
@@ -26,63 +30,101 @@ public class HelloController {
     private Button discardButton;
 
     @FXML
+    private Button pickComponent;
+
+    @FXML
     private Button reserveButton;
 
     private Button lastDroppedButton = null;
-    private Double width;
-    private Double height;
-
-
+    private Boolean isComponentPlaced = false;
+    private Boolean firstComponent = true;
+    Map<String, Button> draggableButtons = new HashMap<>();
 
 
     @FXML
     public void initialize() {
-        width = handComponentButton.getWidth();
-        height = handComponentButton.getHeight();
-        enableDrag(handComponentButton);
+        setupGridPaneDragOver();
+        setupGridPaneDragDropped();
+        setupSetButton();
+        setupPickComponentButton();
+    }
 
+    private void setupGridPaneDragOver() {
         myGridPane.setOnDragOver(event -> {
             if (event.getGestureSource() != myGridPane && event.getDragboard().hasString()) {
                 event.acceptTransferModes(TransferMode.MOVE);
             }
             event.consume();
         });
+    }
 
+    private void setupGridPaneDragDropped() {
         myGridPane.setOnDragDropped(event -> {
             Dragboard db = event.getDragboard();
             boolean success = false;
 
-            if (db.hasString() && db.getString().equals("handComponent")) {
-                Pane parent = (Pane) handComponentButton.getParent();
-                parent.getChildren().remove(handComponentButton);
+            if (db.hasString()) {
+                String btnId = db.getString();
+                Button draggedButton = draggableButtons.get(btnId);
 
-                double x = event.getX();
-                double y = event.getY();
-                int col = getColumnIndexFromX(x);
-                int row = getRowIndexFromY(y);
+                if (draggedButton != null) {
+                    Pane parent = (Pane) draggedButton.getParent();
+                    parent.getChildren().remove(draggedButton);
 
-                myGridPane.add(handComponentButton, col, row);
+                    double x = event.getX();
+                    double y = event.getY();
+                    int col = getColumnIndexFromX(x);
+                    int row = getRowIndexFromY(y);
 
-                // Salva il riferimento all'ultimo bottone droppato
-                lastDroppedButton = handComponentButton;
+                    myGridPane.add(draggedButton, col, row);
 
-                success = true;
+                    lastDroppedButton = draggedButton;
+                    success = true;
+                }
             }
 
             event.setDropCompleted(success);
             event.consume();
         });
+    }
+
+    private void setupSetButton() {
         setButton.setOnAction(event -> {
             if (lastDroppedButton != null) {
-                // Disabilita il drag del bottone esistente
-                handComponentButton.setOnDragDetected(null);
-
-
+                lastDroppedButton.setOnDragDetected(null);
+                isComponentPlaced = true;
             }
         });
     }
 
-    private void enableDrag(Button button) {
+    private void setupPickComponentButton() {
+        pickComponent.setOnAction(event -> {
+            if (isComponentPlaced || firstComponent) {
+                Button newButton = new Button("handComponent");
+                newButton.setPrefSize(handComponentArea.getPrefWidth(), handComponentArea.getPrefHeight());
+
+                String btnId = UUID.randomUUID().toString();
+                newButton.setUserData(btnId);
+                draggableButtons.put(btnId, newButton);
+
+                newButton.setOnDragDetected(event2 -> {
+                    Dragboard db = newButton.startDragAndDrop(TransferMode.MOVE);
+                    ClipboardContent content = new ClipboardContent();
+                    content.putString(btnId);
+                    firstComponent = false;
+                    db.setContent(content);
+                    event2.consume();
+                });
+
+                handComponentArea.getChildren().clear();
+                handComponentArea.getChildren().add(newButton);
+            }
+        });
+    }
+
+
+
+    /*private void enableDrag(Button button) {
         button.setOnDragDetected(event -> {
             Dragboard db = button.startDragAndDrop(TransferMode.MOVE);
             ClipboardContent content = new ClipboardContent();
@@ -90,7 +132,7 @@ public class HelloController {
             db.setContent(content);
             event.consume();
         });
-    }
+    }*/
 
     // Metodo per calcolare la colonna da coordinata x
     private int getColumnIndexFromX(double x) {
