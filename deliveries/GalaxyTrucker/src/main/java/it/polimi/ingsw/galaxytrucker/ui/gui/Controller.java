@@ -1,18 +1,12 @@
-package it.polimi.ingsw.galaxytrucker.gui;
+package it.polimi.ingsw.galaxytrucker.ui.gui;
 
-import it.polimi.ingsw.galaxytrucker.network.MainClient;
+import it.polimi.ingsw.galaxytrucker.ui.cli.CliInterface;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -38,18 +32,18 @@ public class Controller {
 
     @FXML
     protected void onSocketButtonClick() {
-        try {
-            MainClient.startSocketClient(ipTextField.getText());
+        /*try {
+            CliInterface.startSocketClient(ipTextField.getText());
             System.out.println("[gui]: client socket started");
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
+        }*/
     }
 
     @FXML
     protected void onRMIButtonClick() {
-        try {
-            MainClient.startClientRMI(ipTextField.getText());
+        /*try {
+            CliInterface.startClientRMI(ipTextField.getText());
             System.out.println("[gui]: client rmi started");
             FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("/it/polimi/ingsw/galaxytrucker/setupgame.fxml"));
             Parent root = fxmlLoader.load();
@@ -58,6 +52,6 @@ public class Controller {
             controlledStage.show();
         } catch (IOException | NotBoundException e) {
             throw new RuntimeException(e);
-        }
+        }*/
     }
 }

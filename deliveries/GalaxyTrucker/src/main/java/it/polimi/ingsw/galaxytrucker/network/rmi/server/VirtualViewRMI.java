@@ -12,9 +12,6 @@ import java.util.List;
 //a change in the model; in particular, this interface is exploited if the chosen network technology is RMI
 
 public interface VirtualViewRMI extends Remote, VirtualView {
-    //runs a command line interface to send requests to the server
-    @Override
-    void runCli() throws RemoteException;
 
     //notifies a view about an error committed while executing a method on the remote server; the parameter
     //errorMessage describes the type of error

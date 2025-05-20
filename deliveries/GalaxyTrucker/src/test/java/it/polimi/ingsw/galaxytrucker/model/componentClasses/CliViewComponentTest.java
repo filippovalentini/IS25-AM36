@@ -11,7 +11,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ViewComponentTest {
+class CliViewComponentTest {
     private Component component;
     private List<Connector> sides;
 

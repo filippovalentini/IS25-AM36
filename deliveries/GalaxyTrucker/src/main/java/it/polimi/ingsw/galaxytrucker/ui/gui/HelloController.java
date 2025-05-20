@@ -1,4 +1,4 @@
-package it.polimi.ingsw.galaxytrucker.gui;
+package it.polimi.ingsw.galaxytrucker.ui.gui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.galaxytrucker.gui;
+package it.polimi.ingsw.galaxytrucker.ui.gui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

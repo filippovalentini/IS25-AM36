@@ -198,10 +198,6 @@ public class SocketClientHandler implements VirtualViewSocket {
         return list;
     }
 
-    //runs a command line interface to send requests to the server
-    @Override
-    public void runCli() {}
-
     //notifies a view about an error committed while executing a method on the remote server; the parameter
     //errorMessage describes the type of error
     @Override
