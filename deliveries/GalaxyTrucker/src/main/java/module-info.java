@@ -7,7 +7,7 @@ module it.polimi.ingsw.galaxytrucker {
 
 
     opens it.polimi.ingsw.galaxytrucker.ui to javafx.fxml;
-    //exports it.polimi.ingsw.galaxytrucker;
+    exports it.polimi.ingsw.galaxytrucker;
     exports it.polimi.ingsw.galaxytrucker.ui;
     exports it.polimi.ingsw.galaxytrucker.model.enumerations;
     exports it.polimi.ingsw.galaxytrucker.network.rmi.server to java.rmi;

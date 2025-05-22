@@ -64,7 +64,12 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI, Ga
     //errorMessage describes the type of error
     @Override
     public void notifyError(String errorMessage) throws RemoteException {
-        System.out.println(errorMessage);
+        try{
+            this.ui.notifyError(errorMessage);
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
     //notifies a view about the fact that the corresponding player has been correctly added to the game, but

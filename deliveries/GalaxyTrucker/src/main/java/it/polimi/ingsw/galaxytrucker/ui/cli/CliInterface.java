@@ -190,7 +190,7 @@ public class CliInterface implements UserInterface {
 
 
     //prints the list of commands available for the CLI of the game
-    public static void printCommands(){
+    public void printCommands(){
         System.out.println("Available commands:");
         System.out.println("0 - commands (list of available commands)");
         System.out.println("1 - shipBoard (view your shipboard)");

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.galaxytrucker.network;
+package it.polimi.ingsw.galaxytrucker;
 
 import it.polimi.ingsw.galaxytrucker.controller.GameController;
 import it.polimi.ingsw.galaxytrucker.network.rmi.server.ServerRMI;

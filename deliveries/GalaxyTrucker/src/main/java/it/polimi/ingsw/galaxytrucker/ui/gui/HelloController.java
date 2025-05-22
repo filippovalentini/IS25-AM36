@@ -114,10 +114,10 @@ public class HelloController implements UserInterface {
         });
     }
 
-    private void setupPickComponentButton() throws Exception {
+    private void setupPickComponentButton() {
         pickComponent.setOnAction(event -> {
             if (isComponentPlaced || firstComponent) {
-                server.pickHidden(gameID,nickname);
+                //server.pickHidden(gameID,nickname);
                 Button newButton = new Button("handComponent");
                 newButton.setPrefSize(handComponentArea.getPrefWidth(), handComponentArea.getPrefHeight());
 

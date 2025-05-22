@@ -243,7 +243,7 @@ public class SocketClient implements VirtualViewSocket, GameSessionManager {
     //notifies a view about an error committed while executing a method on the remote server; the parameter
     //errorMessage describes the type of error
     @Override
-    public void notifyError(String errorMessage) throws RemoteException {
+    public void notifyError(String errorMessage) {
         try{
             this.ui.notifyError(errorMessage);
         }
@@ -254,7 +254,7 @@ public class SocketClient implements VirtualViewSocket, GameSessionManager {
 
     //notifies a view about the fact that the game has started or not
     @Override
-    public void notifyStartedGame(boolean startedGame) throws IOException{}
+    public void notifyStartedGame(boolean startedGame) {}
 
     //notifies a view about the fact that the corresponding player has been correctly added to the game, but
     //the server is waiting for other players in order to start the assembling phase; the parameter firstFlight

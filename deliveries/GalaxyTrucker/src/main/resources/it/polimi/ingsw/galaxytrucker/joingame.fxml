@@ -1,29 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: blue;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<StackPane xmlns="http://javafx.com/javafx/23.0.1"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.JavaFxController">
+
+   <!-- SFONDO -->
    <children>
-      <BorderPane layoutX="200.0" layoutY="100.0" prefHeight="200.0" prefWidth="200.0">
-         <bottom>
-            <Button mnemonicParsing="false" style="-fx-background-color: cyan;" text="Join the game" BorderPane.alignment="CENTER" />
-         </bottom>
-         <center>
-            <FlowPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <ImageView fitWidth="1210.0" fitHeight="740.0" >
+         <image>
+            <Image url="@backgroundSpace1.jpg" />
+         </image>
+      </ImageView>
+
+      <!-- CONTENUTO -->
+      <AnchorPane>
+         <children>
+            <VBox spacing="15.0"
+                  AnchorPane.leftAnchor="300.0" AnchorPane.topAnchor="150.0"
+                  AnchorPane.rightAnchor="300.0" AnchorPane.bottomAnchor="200.0"
+                  style="-fx-background-color: #4682B4;"
+                  alignment="CENTER">
                <children>
-                  <Label text="Name:" />
-                  <TextField />
-                  <Label text="Color:" />
-                  <ChoiceBox prefWidth="150.0" />
+
+                  <Label text="Join game"
+                         style="-fx-font-size: 24px; -fx-text-fill: #003366;" />
+
+                  <HBox spacing="10.0" alignment="CENTER">
+                     <children>
+                        <Label text="Insert game ID (3-digit integer):"
+                               style="-fx-text-fill: #003366;" />
+                        <TextField fx:id="joinGameIdTextField" promptText="e.g. 123" prefWidth="150.0"/>
+                     </children>
+                  </HBox>
+
+                  <HBox spacing="10.0" alignment="CENTER">
+                     <children>
+                        <Label text="Nickname:"
+                               style="-fx-text-fill: #003366;" />
+                        <TextField fx:id="nicknameTextField" promptText="Enter nickname" prefWidth="150.0"/>
+                     </children>
+                  </HBox>
+
+                  <HBox spacing="10.0" alignment="CENTER">
+                     <children>
+                        <Label text="Ship color:"
+                               style="-fx-text-fill: #003366;" />
+                        <ComboBox fx:id="shipColorComboBox" prefWidth="150.0">
+                           <items>
+                              <FXCollections fx:factory="observableArrayList">
+                                 <String fx:value="🔵🚀"/>
+                                 <String fx:value="🟢🚀"/>
+                                 <String fx:value="🔴🚀"/>
+                                 <String fx:value="🟡🚀"/>
+                              </FXCollections>
+                           </items>
+                        </ComboBox>
+                        <!-- Le iconcine verranno caricate dal controller -->
+                     </children>
+                  </HBox>
+
+                  <Button fx:id="confirmJoinButton" text="Join"
+                          style="-fx-background-color: #003366; -fx-text-fill: #87CEFA;" />
+
                </children>
-            </FlowPane>
-         </center>
-      </BorderPane>
+               <padding>
+                  <Insets top="20" right="20" bottom="20" left="20"/>
+               </padding>
+            </VBox>
+         </children>
+      </AnchorPane>
    </children>
-</AnchorPane>
+</StackPane>
