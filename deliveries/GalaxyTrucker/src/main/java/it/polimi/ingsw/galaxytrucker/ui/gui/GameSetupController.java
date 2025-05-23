@@ -25,7 +25,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.List;
 
-public class JavaFxController implements UserInterface {
+public class GameSetupController implements GuiController {
     private VirtualServer server;
     private GameSessionManager client;
     int gameID;
@@ -71,6 +71,8 @@ public class JavaFxController implements UserInterface {
     @FXML
     private TextField joinGameIdTextField;
     @FXML
+    private TextField nicknameTextField;
+    @FXML
     private ComboBox<Integer> playersComboBox;
     @FXML
     private ComboBox<String> gameTypeComboBox;
@@ -89,7 +91,7 @@ public class JavaFxController implements UserInterface {
             // Carica la nuova schermata
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/startOrJoin.fxml"));
             Parent root = fxmlLoader.load();
-            JavaFxController controller = fxmlLoader.getController();
+            GameSetupController controller = fxmlLoader.getController();
             controller.setClientAndServer(this.client, this.server);
 
             // Ottieni lo stage corrente dalla TextField o dal bottone (come preferisci)
@@ -118,7 +120,7 @@ public class JavaFxController implements UserInterface {
             // Carica la nuova schermata
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/startOrJoin.fxml"));
             Parent root = fxmlLoader.load();
-            JavaFxController controller = fxmlLoader.getController();
+            GameSetupController controller = fxmlLoader.getController();
             controller.setClientAndServer(this.client, this.server);
 
             // Ottieni lo stage corrente dalla TextField o dal bottone (come preferisci)
@@ -144,7 +146,7 @@ public class JavaFxController implements UserInterface {
             // Carica la nuova schermata
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/setupgame.fxml"));
             Parent root = fxmlLoader.load();
-            JavaFxController controller = fxmlLoader.getController();
+            GameSetupController controller = fxmlLoader.getController();
             controller.setClientAndServer(this.client, this.server);
 
             // Ottieni lo stage corrente dalla TextField o dal bottone (come preferisci)
@@ -165,7 +167,7 @@ public class JavaFxController implements UserInterface {
             // Carica la nuova schermata
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/joingame.fxml"));
             Parent root = fxmlLoader.load();
-            JavaFxController controller = fxmlLoader.getController();
+            GameSetupController controller = fxmlLoader.getController();
             controller.setClientAndServer(this.client, this.server);
 
             // Ottieni lo stage corrente dalla TextField o dal bottone (come preferisci)
@@ -213,7 +215,7 @@ public class JavaFxController implements UserInterface {
             // Carica la nuova schermata
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/joingame.fxml"));
             Parent root = fxmlLoader.load();
-            JavaFxController controller = fxmlLoader.getController();
+            GameSetupController controller = fxmlLoader.getController();
             controller.setClientAndServer(this.client, this.server);
 
             // Ottieni lo stage corrente dalla TextField o dal bottone (come preferisci)
@@ -229,14 +231,40 @@ public class JavaFxController implements UserInterface {
     }
 
     @FXML
-    private void onConfirmJoinClick() {}
+    private void onConfirmJoinClick() {
+        String gID = joinGameIdTextField.getText();
+        if(gID.length() != 3){
+            invalidIdErrorLabel.setVisible(true);
+
+            PauseTransition pause = new PauseTransition(Duration.seconds(3));
+            pause.setOnFinished(event -> invalidIdErrorLabel.setVisible(false));
+            pause.play();
+
+            return;
+        }
+
+        int gameID = Integer.parseInt(gID);
+        String nickname = nicknameTextField.getText();
+        Color color = Color.convertEmojiIntoColor(shipColorComboBox.getValue());
+
+        if(!client.askIfGameStarted(gameID)){
+            existingIdErrorLabel.setVisible(true);
+
+            PauseTransition pause = new PauseTransition(Duration.seconds(3));
+            pause.setOnFinished(event -> existingIdErrorLabel.setVisible(false));
+            pause.play();
+
+            return;
+        }
+
+    }
 
 
     //launches the socket client
     public void startSocketClient(String IP) throws IOException {
         int port = 1235;
         Socket clientSocket = new Socket(IP, port);
-        SocketClient socketClient = new SocketClient(this, clientSocket);
+        SocketClient socketClient = new SocketClient(GuiInterface.getInstance(), clientSocket);
         this.server = socketClient.getServerHandler();
         this.client = socketClient;
     }
@@ -248,154 +276,9 @@ public class JavaFxController implements UserInterface {
         Registry registry = LocateRegistry.getRegistry(IP, port);
         VirtualServerRMI server = (VirtualServerRMI) registry.lookup(serverName);
         this.server = server;
-        this.client = new ClientRMI(this, server);
+        this.client = new ClientRMI(GuiInterface.getInstance(), server);
     }
 
 
 
-
-    @Override
-    public void notifyError(String errorMessage) throws Exception {
-
-    }
-
-    @Override
-    public void updateWaitingForPlayers(boolean firstFlight) throws Exception {
-
-    }
-
-    @Override
-    public void updateNewPlayer(String nickname, Color color) throws Exception {
-
-    }
-
-    @Override
-    public void updateStartAssembling() throws Exception {
-
-    }
-
-    @Override
-    public void updatePickedComponent(int imageID, boolean released) throws Exception {
-
-    }
-
-    @Override
-    public void updateShownComponent(int imageID, boolean released) throws Exception {
-
-    }
-
-    @Override
-    public void updateReservedComponent(String nickname, int imageID, boolean released) throws Exception {
-
-    }
-
-    @Override
-    public void updateRotatePickedComponent() throws Exception {
-
-    }
-
-    @Override
-    public void updateAssembledComponent(String nickname, int imageID, Orientation orientation, int x, int y) throws Exception {
-
-    }
-
-    @Override
-    public void updatePickedDeck(List<Integer> deckIDs) throws Exception {
-
-    }
-
-    @Override
-    public void updateReleasedDeck() throws Exception {
-
-    }
-
-    @Override
-    public void updateFinishAssembling(String nickname, int position) throws Exception {
-
-    }
-
-    @Override
-    public void updateStartNewCycle() throws Exception {
-
-    }
-
-    @Override
-    public void updateFinishedCycle() throws Exception {
-
-    }
-
-    @Override
-    public void updateShipPlacement() throws Exception {
-
-    }
-
-    @Override
-    public void updateShipControl() throws Exception {
-
-    }
-
-    @Override
-    public void updateDestroyedComponent(String nickname, int x, int y) throws Exception {
-
-    }
-
-    @Override
-    public void updateCrewChange(String nickname, int x, int y, int change) throws Exception {
-
-    }
-
-    @Override
-    public void updateBatteries(String nickname, int x, int y, int change) throws Exception {
-
-    }
-
-    @Override
-    public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws Exception {
-
-    }
-
-    @Override
-    public void updateLoadedGood(String nickname, int x, int y, Color good) throws Exception {
-
-    }
-
-    @Override
-    public void updateRemovedGoods(String nickname, int x, int y, Color good, int numberGoods) throws Exception {
-
-    }
-
-    @Override
-    public void updateCardPicking() throws Exception {
-
-    }
-
-    @Override
-    public void updateNextTurn(String nickname) throws Exception {
-
-    }
-
-    @Override
-    public void updateCardSolving(int imageID) throws Exception {
-
-    }
-
-    @Override
-    public void updatePlayerQuit(String nickname) throws Exception {
-
-    }
-
-    @Override
-    public void updatePlayerCredits(String nickname, int change) throws Exception {
-
-    }
-
-    @Override
-    public void updatePlayerPosition(String nickname, int lap, int cell) throws Exception {
-
-    }
-
-    @Override
-    public void updateEndGame() throws Exception {
-
-    }
 }

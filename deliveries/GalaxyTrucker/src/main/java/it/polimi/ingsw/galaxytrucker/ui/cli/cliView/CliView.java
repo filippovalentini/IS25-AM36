@@ -5,6 +5,8 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 
 import java.util.*;
 
+import static it.polimi.ingsw.galaxytrucker.model.enumerations.Color.convertColorIntoEmoji;
+
 public class CliView {
     public boolean firstFlight;     //true if the view refers to a first flight game, false otherwise
     private String gameState;   //string describing the phase of the game
@@ -154,25 +156,6 @@ public class CliView {
         return String.format("%03d", imageID);
     }
 
-    //converts a color in an emoji
-    public static String convertColorIntoEmoji(Color color) {
-        return switch (color) {
-            case Color.RED -> "🟥";
-            case Color.GREEN -> "🟩";
-            case Color.BLUE -> "🟦";
-            case Color.YELLOW -> "🟨";
-        };
-    }
-
-    //converts a color into a letter
-    public static String convertColorIntoLetter(Color color) {
-        return switch (color) {
-            case Color.RED -> "r";
-            case Color.GREEN -> "g";
-            case Color.BLUE -> "b";
-            case Color.YELLOW -> "y";
-        };
-    }
 
     //adds a new player
     public void updateNewPlayer(String nickname, Color color) {

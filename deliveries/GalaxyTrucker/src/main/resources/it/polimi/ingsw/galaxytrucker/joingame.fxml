@@ -16,7 +16,7 @@
 <?import java.lang.String?>
 <StackPane xmlns="http://javafx.com/javafx/23.0.1"
            xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.JavaFxController">
+           fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.GameSetupController">
 
    <!-- SFONDO -->
    <children>
@@ -62,10 +62,10 @@
                         <ComboBox fx:id="shipColorComboBox" prefWidth="150.0">
                            <items>
                               <FXCollections fx:factory="observableArrayList">
-                                 <String fx:value="🔵🚀"/>
-                                 <String fx:value="🟢🚀"/>
-                                 <String fx:value="🔴🚀"/>
-                                 <String fx:value="🟡🚀"/>
+                                 <String fx:value="🟦"/>
+                                 <String fx:value="🟩"/>
+                                 <String fx:value="🟥"/>
+                                 <String fx:value="🟨"/>
                               </FXCollections>
                            </items>
                         </ComboBox>
@@ -73,8 +73,16 @@
                      </children>
                   </HBox>
 
-                  <Button fx:id="confirmJoinButton" text="Join"
+                  <Button fx:id="confirmJoinButton" text="Join" onAction="#onConfirmJoinClick"
                           style="-fx-background-color: #003366; -fx-text-fill: #87CEFA;" />
+
+                  <Label fx:id="invalidIdErrorLabel" text="Insert a valid game ID"
+                         style="-fx-text-fill: red; -fx-font-size: 14px;"
+                         visible="false" />
+
+                  <Label fx:id="existingIdErrorLabel" text="Game with the specified ID doesn't exist"
+                         style="-fx-text-fill: red; -fx-font-size: 14px;"
+                         visible="false" />
 
                </children>
                <padding>

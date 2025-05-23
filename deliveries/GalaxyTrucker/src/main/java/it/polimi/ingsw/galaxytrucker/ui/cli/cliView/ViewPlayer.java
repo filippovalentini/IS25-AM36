@@ -117,7 +117,7 @@ public class ViewPlayer {
             List<Color> goods = comp.getGoods();
             String goodsString = "";
             for (Color good : goods) {
-                goodsString = goodsString + CliView.convertColorIntoLetter(good);
+                goodsString = goodsString + Color.convertColorIntoLetter(good);
             }
             int numberGoods = comp.getGoods().size();
             if (numberGoods == 1) {

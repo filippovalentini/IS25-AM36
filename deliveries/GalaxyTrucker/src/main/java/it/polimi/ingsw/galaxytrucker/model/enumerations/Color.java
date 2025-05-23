@@ -24,4 +24,35 @@ public enum Color {
             default -> null;
         };
     }
+
+    //converts a color in an emoji
+    public static String convertColorIntoEmoji(Color color) {
+        return switch (color) {
+            case Color.RED -> "🟥";
+            case Color.GREEN -> "🟩";
+            case Color.BLUE -> "🟦";
+            case Color.YELLOW -> "🟨";
+        };
+    }
+
+    //converts a color in an emoji
+    public static Color convertEmojiIntoColor(String color) {
+        return switch (color) {
+            case "🟥" -> Color.RED;
+            case "🟩" -> Color.GREEN;
+            case "🟦" -> Color.BLUE;
+            case "🟨" -> Color.YELLOW;
+            default -> null;
+        };
+    }
+
+    //converts a color into a letter
+    public static String convertColorIntoLetter(Color color) {
+        return switch (color) {
+            case Color.RED -> "r";
+            case Color.GREEN -> "g";
+            case Color.BLUE -> "b";
+            case Color.YELLOW -> "y";
+        };
+    }
 }

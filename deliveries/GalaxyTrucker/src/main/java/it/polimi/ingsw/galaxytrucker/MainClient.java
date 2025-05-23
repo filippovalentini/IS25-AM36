@@ -1,7 +1,9 @@
 package it.polimi.ingsw.galaxytrucker;
 
 import it.polimi.ingsw.galaxytrucker.ui.cli.CliInterface;
-import it.polimi.ingsw.galaxytrucker.ui.gui.JavaFxInterface;
+import it.polimi.ingsw.galaxytrucker.ui.gui.GuiInterface;
+import it.polimi.ingsw.galaxytrucker.ui.gui.JavaFxLauncher;
+import javafx.application.Application;
 
 import java.util.Scanner;
 
@@ -22,7 +24,8 @@ public class MainClient {
         }while(interfaceNumber != 1 && interfaceNumber != 2);
 
         if(interfaceNumber == 2){
-            JavaFxInterface.launchApplication(args);
+            GuiInterface guiInterface = new GuiInterface();
+            Application.launch(JavaFxLauncher.class);
         }
         else{
             new CliInterface().launch(args[0]);

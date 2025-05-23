@@ -1,5 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.ui.cli.cliView;
 
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+
 import java.util.HashMap;
 import java.util.*;
 
@@ -23,7 +25,7 @@ public class ViewFlightBoard {
         System.out.println("╚════════════════════════════╝");
         for (ViewPlayer player : positions.keySet()) {
             ViewPosition position = positions.get(player);
-            System.out.println("👨‍🚀 Player: " + player.getNickname() + " " + CliView.convertColorIntoEmoji(player.getColor()));
+            System.out.println("👨‍🚀 Player: " + player.getNickname() + " " + Color.convertColorIntoEmoji(player.getColor()));
             if (position == null) {
                 System.out.println("not positioned yet or has quit the game");
             }
