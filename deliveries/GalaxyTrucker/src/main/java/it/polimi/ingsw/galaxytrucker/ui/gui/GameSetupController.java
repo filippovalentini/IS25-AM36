@@ -1,13 +1,11 @@
 package it.polimi.ingsw.galaxytrucker.ui.gui;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
-import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.GameSessionManager;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.network.rmi.client.ClientRMI;
 import it.polimi.ingsw.galaxytrucker.network.rmi.client.VirtualServerRMI;
 import it.polimi.ingsw.galaxytrucker.network.socket.client.SocketClient;
-import it.polimi.ingsw.galaxytrucker.ui.UserInterface;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,14 +21,10 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.List;
 
 public class GameSetupController implements GuiController {
     private VirtualServer server;
     private GameSessionManager client;
-    int gameID;
-    String nickname;
-    Color color;
 
     private static Stage controlledStage; //stage of the JavaFX application
 
@@ -144,7 +138,7 @@ public class GameSetupController implements GuiController {
     private void onStartClick() {
         try {
             // Carica la nuova schermata
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/setupgame.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/setupGame.fxml"));
             Parent root = fxmlLoader.load();
             GameSetupController controller = fxmlLoader.getController();
             controller.setClientAndServer(this.client, this.server);
@@ -165,7 +159,7 @@ public class GameSetupController implements GuiController {
     private void onJoinClick() {
         try {
             // Carica la nuova schermata
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/joingame.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/joinGame.fxml"));
             Parent root = fxmlLoader.load();
             GameSetupController controller = fxmlLoader.getController();
             controller.setClientAndServer(this.client, this.server);
@@ -213,7 +207,7 @@ public class GameSetupController implements GuiController {
 
         try {
             // Carica la nuova schermata
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/joingame.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/joinGame.fxml"));
             Parent root = fxmlLoader.load();
             GameSetupController controller = fxmlLoader.getController();
             controller.setClientAndServer(this.client, this.server);

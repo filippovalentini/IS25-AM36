@@ -3,6 +3,7 @@ package it.polimi.ingsw.galaxytrucker.ui.gui;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.ui.UserInterface;
+import javafx.application.Application;
 
 import java.util.List;
 
@@ -20,6 +21,10 @@ public class GuiInterface implements UserInterface {
 
     public void setController(GuiController controller) {
         this.controller = controller;
+    }
+
+    public void launch() {
+        Application.launch(JavaFxLauncher.class);
     }
 
 

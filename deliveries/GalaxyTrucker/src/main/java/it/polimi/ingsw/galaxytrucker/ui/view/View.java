@@ -1,4 +1,4 @@
-package it.polimi.ingsw.galaxytrucker.ui.cli.cliView;
+package it.polimi.ingsw.galaxytrucker.ui.view;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
@@ -7,7 +7,7 @@ import java.util.*;
 
 import static it.polimi.ingsw.galaxytrucker.model.enumerations.Color.convertColorIntoEmoji;
 
-public class CliView {
+public class View {
     public boolean firstFlight;     //true if the view refers to a first flight game, false otherwise
     private String gameState;   //string describing the phase of the game
     private String turnPlayer;      //nickname of the player next in turn
@@ -21,7 +21,7 @@ public class CliView {
     private ViewDice dice;          //dice of the game
     private String hourglassState;      //state of the hourglass
 
-    public CliView(String nickname, Color color, boolean firstFlight) {
+    public View(String nickname, Color color, boolean firstFlight) {
         this.player = new ViewPlayer(nickname, color, firstFlight);
         this.gameState = "WAITING FOR OTHER PLAYERS....";
         this.firstFlight = firstFlight;
@@ -31,14 +31,6 @@ public class CliView {
         this.currentCard = null;
         this.dice = new ViewDice();
         this.hourglassState = null;
-    }
-
-    public static void main(String[] args){
-        CliView cliView = new CliView("fil", Color.BLUE, true);
-        cliView.updateLoadedGood("fil", 2, 3, Color.RED);
-        cliView.updateLoadedGood("fil", 2, 3, Color.BLUE);
-        cliView.updateLoadedGood("fil", 2, 3, Color.RED);
-        cliView.visualizeShip();
     }
 
     //returns the dice result or 0 if the dice are no longer valid

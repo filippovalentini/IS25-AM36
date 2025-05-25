@@ -33,7 +33,7 @@ public class GameState {
         this.turnPlayer = "";
         this.numPlayers = numPlayers;
         this.gameDeck = null;
-        this.hourglass = new Hourglass(20, this);
+        this.hourglass = new Hourglass(120, this);
         this.state = State.WAITING_FOR_PLAYERS;
     }
 

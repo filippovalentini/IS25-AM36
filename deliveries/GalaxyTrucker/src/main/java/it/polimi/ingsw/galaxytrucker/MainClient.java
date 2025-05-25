@@ -24,8 +24,7 @@ public class MainClient {
         }while(interfaceNumber != 1 && interfaceNumber != 2);
 
         if(interfaceNumber == 2){
-            GuiInterface guiInterface = new GuiInterface();
-            Application.launch(JavaFxLauncher.class);
+            new GuiInterface().launch();
         }
         else{
             new CliInterface().launch(args[0]);

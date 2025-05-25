@@ -1,4 +1,4 @@
-package it.polimi.ingsw.galaxytrucker.ui.cli.cliView;
+package it.polimi.ingsw.galaxytrucker.ui.view;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 

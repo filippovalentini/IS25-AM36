@@ -23,7 +23,7 @@
    <children>
       <ImageView fitWidth="1210.0" fitHeight="740.0" >
          <image>
-            <Image url="@backgroundSpace1.jpg" />
+            <Image url="@images/backgroundSpace1.jpg" />
          </image>
       </ImageView>
 

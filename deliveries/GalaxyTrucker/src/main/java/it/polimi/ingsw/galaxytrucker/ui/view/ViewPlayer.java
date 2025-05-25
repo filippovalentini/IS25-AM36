@@ -1,4 +1,4 @@
-package it.polimi.ingsw.galaxytrucker.ui.cli.cliView;
+package it.polimi.ingsw.galaxytrucker.ui.view;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
@@ -190,11 +190,11 @@ public class ViewPlayer {
 
     public void updateReservedComponent(int imageID, boolean released) {
         if(released){
-            reservedComponents.add(new ViewComponent(CliView.convertImageID(imageID)));
+            reservedComponents.add(new ViewComponent(View.convertImageID(imageID)));
         }
         else{
             for(ViewComponent comp : reservedComponents){
-                if(comp.getImageID().equals(CliView.convertImageID(imageID))){
+                if(comp.getImageID().equals(View.convertImageID(imageID))){
                     reservedComponents.remove(comp);
                     break;
                 }
@@ -203,7 +203,7 @@ public class ViewPlayer {
     }
 
     public void updateAssembledComponent(int imageID, Orientation orientation, int x, int y) {
-        assembledComponents.get(x).set(y, new ViewComponent(CliView.convertImageID(imageID)));
+        assembledComponents.get(x).set(y, new ViewComponent(View.convertImageID(imageID)));
         assembledComponents.get(x).get(y).setOrientation(orientation);
     }
 

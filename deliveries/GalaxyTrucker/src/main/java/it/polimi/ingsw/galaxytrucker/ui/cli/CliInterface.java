@@ -8,7 +8,7 @@ import it.polimi.ingsw.galaxytrucker.network.rmi.client.ClientRMI;
 import it.polimi.ingsw.galaxytrucker.network.rmi.client.VirtualServerRMI;
 import it.polimi.ingsw.galaxytrucker.network.socket.client.SocketClient;
 import it.polimi.ingsw.galaxytrucker.ui.UserInterface;
-import it.polimi.ingsw.galaxytrucker.ui.cli.cliView.CliView;
+import it.polimi.ingsw.galaxytrucker.ui.view.View;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -23,7 +23,7 @@ import java.util.Scanner;
 public class CliInterface implements UserInterface {
     private VirtualServer server;
     private GameSessionManager client;
-    private CliView cliView;
+    private View view;
     int gameID;
     String nickname;
     Color color;
@@ -246,17 +246,17 @@ public class CliInterface implements UserInterface {
                         break;
                     case "shipBoard":
                         if (tokens.length == 1) {
-                            cliView.visualizeShip();
+                            view.visualizeShip();
                         }
                         else if(tokens.length == 2) {
-                            cliView.visualizeShip(tokens[1]);
+                            view.visualizeShip(tokens[1]);
                         }
                         else {
                             System.out.println("Error: insert a nickname of another player");
                         }
                         break;
                     case "flightBoard":
-                        cliView.visualizeFlightBoard();
+                        view.visualizeFlightBoard();
                         break;
                     case "pickHidden":
                         server.pickHidden(gameID, nickname);
@@ -365,7 +365,7 @@ public class CliInterface implements UserInterface {
                         server.quitGame(gameID, nickname);
                         break;
                     case "dice":
-                        cliView.updateRollDice();
+                        view.updateRollDice();
                         break;
                     case "skip":
                         server.skip(gameID, nickname);
@@ -383,7 +383,7 @@ public class CliInterface implements UserInterface {
                             System.out.println("Error: specify yes or no for cannon activation");
                             break;
                         }
-                        int diceResult = cliView.diceResult();
+                        int diceResult = view.diceResult();
                         if(diceResult == 0){
                             System.out.println("Error: first throw the dice");
                             break;
@@ -391,7 +391,7 @@ public class CliInterface implements UserInterface {
                         boolean activateShield = (tokens[1].equals("yes"));
                         boolean activateCannon = (tokens[2].equals("yes"));
                         server.hitShip(gameID, nickname, diceResult, activateShield, activateCannon);
-                        cliView.updateInvalidDice();
+                        view.updateInvalidDice();
                         break;
                     case "fly":
                         if (tokens.length < 2) {
@@ -488,20 +488,20 @@ public class CliInterface implements UserInterface {
     //in needed for the view to determine which type of ship board/flight board to show to the user
     @Override
     public void updateWaitingForPlayers(boolean firstFlight) {
-        this.cliView = new CliView(nickname, color, firstFlight);
+        this.view = new View(nickname, color, firstFlight);
     }
 
     //notifies a view about the presence of another player in the game; this method is invoked before the
     //beginning of the assembling phase, therefore just the nickname and color of the new player is required
     @Override
     public void updateNewPlayer(String nickname, Color color) {
-        this.cliView.updateNewPlayer(nickname, color);
+        this.view.updateNewPlayer(nickname, color);
     }
 
     //notifies a view about the beginning of the assembling phase
     @Override
     public void updateStartAssembling() {
-        this.cliView.updateStartAssembling();
+        this.view.updateStartAssembling();
         new Thread(() -> {
             try{
                 Thread.sleep(1000);
@@ -522,7 +522,7 @@ public class CliInterface implements UserInterface {
     //view in order to show the right component to the user
     @Override
     public void updatePickedComponent(int imageID, boolean released) {
-        this.cliView.updatePickedComponent(imageID, released);
+        this.view.updatePickedComponent(imageID, released);
     }
 
     //notifies the view about the fact that a shown component has been picked/released (depending on the value
@@ -530,7 +530,7 @@ public class CliInterface implements UserInterface {
     //component to the user
     @Override
     public void updateShownComponent(int imageID, boolean released) {
-        this.cliView.updateShownComponent(imageID, released);
+        this.view.updateShownComponent(imageID, released);
     }
 
     //notifies the view about the fact that a player (identified by the nickname parameter) has picked a reserved
@@ -538,13 +538,13 @@ public class CliInterface implements UserInterface {
     //is needed for the view in order to show the right component to the user
     @Override
     public void updateReservedComponent(String nickname, int imageID, boolean released) {
-        this.cliView.updateReservedComponent(nickname, imageID, released);
+        this.view.updateReservedComponent(nickname, imageID, released);
     }
 
     //notifies the view about the fact that the picked component of the corresponding player has been rotated
     @Override
     public void updateRotatePickedComponent() {
-        this.cliView.updateRotatePickedComponent();
+        this.view.updateRotatePickedComponent();
     }
 
     //notifies the view about the fact that a player (identified by the nickname parameter) has assembled a
@@ -552,7 +552,7 @@ public class CliInterface implements UserInterface {
     //to show the right component to the user
     @Override
     public void updateAssembledComponent(String nickname, int imageID, Orientation orientation, int x, int y) {
-        this.cliView.updateAssembledComponent(nickname, imageID, orientation, x, y);
+        this.view.updateAssembledComponent(nickname, imageID, orientation, x, y);
     }
 
     //notifies the view about the fact that the corresponding player has successfully picked a deck; the parameter
@@ -560,124 +560,124 @@ public class CliInterface implements UserInterface {
     //correct adventure cards to the user
     @Override
     public void updatePickedDeck(List<Integer> deckIDs) {
-        this.cliView.updatePickedDeck(deckIDs);
+        this.view.updatePickedDeck(deckIDs);
     }
 
     //notifies the view about the fact that the corresponding player has successfully released a deck
     @Override
     public void updateReleasedDeck() {
-        this.cliView.updateReleasedDeck();
+        this.view.updateReleasedDeck();
     }
 
     //notifies the view about the fact that the corresponding player has finished the assembling phase and is
     //correctly positioned on the flight board; still, other players have to finish building their ships
     @Override
     public void updateFinishAssembling(String nickname, int position) {
-        this.cliView.updateFinishAssembling(nickname, position);
+        this.view.updateFinishAssembling(nickname, position);
     }
 
     //notifies the view that the hourglass has been turned around
     @Override
     public void updateStartNewCycle() {
-        this.cliView.updateStartNewCycle();
+        this.view.updateStartNewCycle();
     }
 
     //notifies the view that the hourglass has finished running
     @Override
     public void updateFinishedCycle() {
-        this.cliView.updateFinishedCycle();
+        this.view.updateFinishedCycle();
     }
 
     //invoked when the game switches to the ship placement phase, which means that the players can only
     //place their ship on the flight board
     @Override
     public void updateShipPlacement() {
-        this.cliView.updateShipPlacement();
+        this.view.updateShipPlacement();
     }
 
     //notifies the view that all the players have concluded the assembling phase, which means that the players
     //enter the ship control phase
     @Override
     public void updateShipControl() {
-        this.cliView.updateShipControl();
+        this.view.updateShipControl();
     }
 
     //notifies the view that a component of a player's ship board has been destroyed
     @Override
     public void updateDestroyedComponent(String nickname, int x, int y) {
-        this.cliView.updateDestroyedComponent(nickname, x, y);
+        this.view.updateDestroyedComponent(nickname, x, y);
     }
 
     //notifies the view about a change in the number of crew of a cabin
     @Override
     public void updateCrewChange(String nickname, int x, int y, int change){
-        this.cliView.updateCrewChange(nickname, x, y, change);
+        this.view.updateCrewChange(nickname, x, y, change);
     }
 
     //notifies the view that a player has initialized a battery container with batteries
     @Override
     public void updateBatteries(String nickname, int x, int y, int change) throws IOException{
-        this.cliView.updateBatteries(nickname, x, y, change);
+        this.view.updateBatteries(nickname, x, y, change);
     }
 
     //notifies the view about a change in the number of aliens of a cabin
     @Override
     public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) {
-        this.cliView.updateAlienChange(nickname, x, y, isPurple, added);
+        this.view.updateAlienChange(nickname, x, y, isPurple, added);
     }
 
     //notifies the view that a good has been loaded in a cargo hold
     @Override
     public void updateLoadedGood(String nickname, int x, int y, Color good){
-        this.cliView.updateLoadedGood(nickname, x, y, good);
+        this.view.updateLoadedGood(nickname, x, y, good);
     }
 
     //notifies the view that some goods have been removed form a cargo hold
     @Override
     public void updateRemovedGoods(String nickname, int x, int y, Color good, int numberGoods) {
-        this.cliView.updateRemovedGoods(nickname, x, y, good, numberGoods);
+        this.view.updateRemovedGoods(nickname, x, y, good, numberGoods);
     }
 
     //notifies the view about the fact that a player has to pick a card in order to continue the game
     @Override
     public void updateCardPicking() {
-        this.cliView.updateCardPicking();
+        this.view.updateCardPicking();
     }
 
     //notifies the view about the next player whose turn it is to perform an action
     @Override
     public void updateNextTurn(String nickname) {
-        this.cliView.updateNextTurn(nickname);
+        this.view.updateNextTurn(nickname);
     }
 
     //notifies the view that a new card has been picked and must be solved
     @Override
     public void updateCardSolving(int imageID) {
-        this.cliView.updateCardSolving(imageID);
+        this.view.updateCardSolving(imageID);
     }
 
     //notifies the view that a player has quit the game
     @Override
     public void updatePlayerQuit(String nickname) {
-        this.cliView.updatePlayerQuit(nickname);
+        this.view.updatePlayerQuit(nickname);
     }
 
     //notifies the view that a player has gained/lost credits
     @Override
     public void updatePlayerCredits(String nickname, int change) throws IOException{
-        this.cliView.updatePlayerCredits(nickname, change);
+        this.view.updatePlayerCredits(nickname, change);
     }
 
     //notifies the view that the position of a player has changed
     @Override
     public void updatePlayerPosition(String nickname, int lap, int cell) throws IOException{
-        this.cliView.updatePlayerPosition(nickname, lap, cell);
+        this.view.updatePlayerPosition(nickname, lap, cell);
     }
 
     //notifies the view about the fact that the game is finished
     @Override
     public void updateEndGame() {
-        this.cliView.updateEndGame();
+        this.view.updateEndGame();
     }
 
 }

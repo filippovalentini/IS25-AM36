@@ -1,32 +1,25 @@
 package it.polimi.ingsw.galaxytrucker.ui.gui;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
-import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.GameSessionManager;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
-import it.polimi.ingsw.galaxytrucker.ui.UserInterface;
-import it.polimi.ingsw.galaxytrucker.ui.cli.cliView.CliView;
+import it.polimi.ingsw.galaxytrucker.ui.view.View;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class HelloController implements GuiController {
+public class ShipBuildingControllerL1 implements GuiController {
     private VirtualServer server;
     private GameSessionManager client;
-    private CliView cliView;
+    private View view;
     int gameID;
     String nickname;
     Color color;
