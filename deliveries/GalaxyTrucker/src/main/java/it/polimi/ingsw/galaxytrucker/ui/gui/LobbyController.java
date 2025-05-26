@@ -42,7 +42,6 @@ public class LobbyController implements GuiController{
     @FXML
     public void setCurrentPlayers() {
         Map<String, Color> currentPlayers = GuiInterface.getInstance().getView().getCurrentPlayers();
-
         Platform.runLater(() -> {
             playerList.getItems().clear();
             for (String nickname : currentPlayers.keySet()) {
@@ -93,10 +92,7 @@ public class LobbyController implements GuiController{
         ShipBuildingControllerL1 controller = fxmlLoader.getController();
         GuiInterface.getInstance().setShipBuildingController(controller);
         controller.setServer(this.server);
-
-
         Stage stage = (Stage) timerTitle.getScene().getWindow();
-
         Scene scene = new Scene(root, 1210, 740); // usa la risoluzione adatta al tuo FXML
         stage.setScene(scene);
         stage.show();

@@ -148,7 +148,7 @@ public class ShipBuildingControllerL1 implements GuiController {
         });
     }*/
 
-    // Metodo per calcolare la colonna da coordinata x
+    // method for calculating the column from the coordinate x
     private int getColumnIndexFromX(double x) {
         double widthSoFar = 0;
         for (int i = 0; i < myGridPane.getColumnConstraints().size(); i++) {
@@ -157,11 +157,10 @@ public class ShipBuildingControllerL1 implements GuiController {
                 return i;
             }
         }
-        // Se oltre la somma delle colonne, metti nell'ultima
         return myGridPane.getColumnConstraints().size() - 1;
     }
 
-    // Metodo per calcolare la riga da coordinata y
+    // method for calculating row from the coordinate y
     private int getRowIndexFromY(double y) {
         double heightSoFar = 0;
         for (int i = 0; i < myGridPane.getRowConstraints().size(); i++) {
@@ -172,7 +171,6 @@ public class ShipBuildingControllerL1 implements GuiController {
         }
         return myGridPane.getRowConstraints().size() - 1;
     }
-
 
     @Override
     public void notifyError(String errorMessage) throws Exception {

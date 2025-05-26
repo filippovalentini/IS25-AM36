@@ -19,65 +19,52 @@ public class FlightBoardControllerL2 implements GuiController {
     @FXML
     private Button backButton;
 
-
     @FXML
     public void initialize() {
-        // Inizializza la lista delle posizioni
-        targetLabels = List.of(
+        targetLabels = List.of( //positions available to drag and drop
                 pos0, pos1, pos2, pos3, pos4, pos5, pos6, pos7, pos8,
                 pos9, pos10, pos11, pos12, pos13, pos14, pos15, pos16, pos17,
                 pos18, pos19, pos20, pos21, pos22, pos23
         );
-
-        // Imposta comportamento di drag per la navicella
-        start.setOnDragDetected(event -> {
+        start.setOnDragDetected(event -> { //called when object is dragged
             Dragboard db = start.startDragAndDrop(TransferMode.MOVE);
-
             ClipboardContent content = new ClipboardContent();
             content.putString("🚀");
             db.setContent(content);
-
-            // Imposta immagine durante il drag
             Image rocketImage = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/galaxytrucker/images/spaceShip.png"));
             db.setDragView(rocketImage, rocketImage.getWidth() / 2, rocketImage.getHeight() / 2);
-
-            event.consume();
+            event.consume(); //block propagation of the event
         });
-
-        // Abilita il drop su ogni etichetta di posizione
         for (Label label : targetLabels) {
             enableDropOn(label);
         }
     }
 
     private void enableDropOn(Label label) {
-        label.setOnDragOver(event -> {
+        label.setOnDragOver(event -> { //called while is dragged
             if (event.getGestureSource() != label && event.getDragboard().hasString()) {
                 event.acceptTransferModes(TransferMode.MOVE);
             }
             event.consume();
         });
-
-        label.setOnDragDropped(event -> {
+        label.setOnDragDropped(event -> { //called while is dropped
             Dragboard db = event.getDragboard();
             boolean success = false;
             if (db.hasString()) {
-                label.setText("🔴");     // Mostra l'emoji a destinazione
-                start.setText("");       // Rimuove la navicella
-                start.setOnDragDetected(null); // ❌ Disabilita il drag dopo il primo utilizzo
+                label.setText("🔴");
+                start.setText("");
+                start.setOnDragDetected(null);
                 success = true;
             }
             event.setDropCompleted(success);
             event.consume();
         });
-
-        label.setOnDragEntered(event -> {
+        label.setOnDragEntered(event -> { //called when near a node of the target positions
             if (event.getGestureSource() != label && event.getDragboard().hasString()) {
                 label.setStyle("-fx-border-color: white; -fx-border-width: 2px;");
             }
         });
-
-        label.setOnDragExited(event -> label.setStyle(""));
+        label.setOnDragExited(event -> label.setStyle("")); //called when away from a node of the target positions
     }
 
     @Override
