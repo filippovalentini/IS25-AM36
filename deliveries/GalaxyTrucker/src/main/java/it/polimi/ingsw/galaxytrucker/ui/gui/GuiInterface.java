@@ -3,13 +3,20 @@ package it.polimi.ingsw.galaxytrucker.ui.gui;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.ui.UserInterface;
+import it.polimi.ingsw.galaxytrucker.ui.view.View;
 import javafx.application.Application;
 
 import java.util.List;
 
 public class GuiInterface implements UserInterface {
     private static GuiInterface instance;
-    private GuiController controller;
+    private GameSetupController setupController;
+    private LobbyController lobbyController;
+    private ShipBuildingControllerL1 shipBuildingController;
+    private View view;
+    private String nickname;
+    private Color color;
+
 
     public GuiInterface() {
         instance = this;
@@ -19,8 +26,36 @@ public class GuiInterface implements UserInterface {
         return instance;
     }
 
-    public void setController(GuiController controller) {
-        this.controller = controller;
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public View getView() {
+        return view;
+    }
+
+    public void setSetupController(GameSetupController controller) {
+        this.setupController = controller;
+    }
+
+    public void setLobbyController(LobbyController lobbyController) {
+        this.lobbyController = lobbyController;
+    }
+
+    public void setShipBuildingController(ShipBuildingControllerL1 shipBuildingController) {
+        this.shipBuildingController = shipBuildingController;
     }
 
     public void launch() {
@@ -31,22 +66,33 @@ public class GuiInterface implements UserInterface {
 
     @Override
     public void notifyError(String errorMessage) throws Exception {
-
+        if(setupController != null) {
+            setupController.notifyError(errorMessage);
+        }
+        if(lobbyController != null) {
+            lobbyController.notifyError(errorMessage);
+        }
     }
 
     @Override
     public void updateWaitingForPlayers(boolean firstFlight) throws Exception {
-
+        this.view = new View(nickname, color, firstFlight);
     }
 
     @Override
     public void updateNewPlayer(String nickname, Color color) throws Exception {
-
+        this.view.updateNewPlayer(nickname, color);
+        if(lobbyController != null){
+            lobbyController.addPlayer(nickname, color);
+        }
     }
 
     @Override
     public void updateStartAssembling() throws Exception {
-
+        /*try{Thread.sleep(2000);}catch(Exception e){}
+        if(lobbyController != null){
+            lobbyController.startTimer();
+        }*/
     }
 
     @Override

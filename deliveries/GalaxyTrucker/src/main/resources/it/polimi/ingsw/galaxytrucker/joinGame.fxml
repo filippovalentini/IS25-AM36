@@ -80,6 +80,10 @@
                          style="-fx-text-fill: red; -fx-font-size: 14px;"
                          visible="false" />
 
+                  <Label fx:id="credentialsErrorLabel"
+                         style="-fx-text-fill: red; -fx-font-size: 14px;"
+                         visible="false" />
+
                   <Label fx:id="existingIdErrorLabel" text="Game with the specified ID doesn't exist"
                          style="-fx-text-fill: red; -fx-font-size: 14px;"
                          visible="false" />

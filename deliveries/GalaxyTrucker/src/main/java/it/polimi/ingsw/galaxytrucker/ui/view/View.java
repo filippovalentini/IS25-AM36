@@ -12,7 +12,7 @@ public class View {
     private String gameState;   //string describing the phase of the game
     private String turnPlayer;      //nickname of the player next in turn
     private ViewFlightBoard flightBoard;    //current flight board state
-    private ViewPlayer player;      //state of the player associated to the view
+    private final ViewPlayer player;      //state of the player associated to the view
     private Map<String, ViewPlayer> otherPlayers = new HashMap<>();     //other player's state
     private ViewComponent pickedViewComponent;  //component in the player's hand
     private List<Integer> pickedDeck = new ArrayList<>();   //set of cards in the player's hand
@@ -31,6 +31,16 @@ public class View {
         this.currentCard = null;
         this.dice = new ViewDice();
         this.hourglassState = null;
+    }
+
+    //returns a map associating the nickname of each current player with its color
+    public Map<String, Color> getCurrentPlayers() {
+        Map<String, Color> players = new HashMap<>();
+        players.put(player.getNickname(), player.getColor());
+        for (ViewPlayer player : otherPlayers.values()) {
+            players.put(player.getNickname(), player.getColor());
+        }
+        return players;
     }
 
     //returns the dice result or 0 if the dice are no longer valid

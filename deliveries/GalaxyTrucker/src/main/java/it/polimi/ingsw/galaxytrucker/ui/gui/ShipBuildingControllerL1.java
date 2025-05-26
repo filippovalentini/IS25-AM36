@@ -18,7 +18,6 @@ import java.util.UUID;
 
 public class ShipBuildingControllerL1 implements GuiController {
     private VirtualServer server;
-    private GameSessionManager client;
     private View view;
     int gameID;
     String nickname;
@@ -57,6 +56,10 @@ public class ShipBuildingControllerL1 implements GuiController {
         setupGridPaneDragDropped();
         setupSetButton();
         setupPickComponentButton();
+    }
+
+    public void setServer(VirtualServer server) {
+        this.server = server;
     }
 
     private void setupGridPaneDragOver() {
@@ -170,6 +173,11 @@ public class ShipBuildingControllerL1 implements GuiController {
         return myGridPane.getRowConstraints().size() - 1;
     }
 
+
+    @Override
+    public void notifyError(String errorMessage) throws Exception {
+
+    }
 
 
 }

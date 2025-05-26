@@ -53,6 +53,8 @@ public class GameSetupController implements GuiController {
     @FXML
     private Label existingIdErrorLabel;
     @FXML
+    private Label credentialsErrorLabel;
+    @FXML
     private Button rmiButton;
     @FXML
     private Button socketButton;
@@ -76,6 +78,11 @@ public class GameSetupController implements GuiController {
     private Button confirmJoinButton;
     @FXML
     private ComboBox<String> shipColorComboBox;
+
+    @FXML
+    public void initialize() {
+        credentialsErrorLabel.setText("Default error");
+    }
 
     @FXML
     protected void onSocketButtonClick() {
@@ -225,7 +232,7 @@ public class GameSetupController implements GuiController {
     }
 
     @FXML
-    private void onConfirmJoinClick() {
+    private void onConfirmJoinClick() throws IOException {
         String gID = joinGameIdTextField.getText();
         if(gID.length() != 3){
             invalidIdErrorLabel.setVisible(true);
@@ -240,6 +247,8 @@ public class GameSetupController implements GuiController {
         int gameID = Integer.parseInt(gID);
         String nickname = nicknameTextField.getText();
         Color color = Color.convertEmojiIntoColor(shipColorComboBox.getValue());
+        GuiInterface.getInstance().setNickname(nickname);
+        GuiInterface.getInstance().setColor(color);
 
         if(!client.askIfGameStarted(gameID)){
             existingIdErrorLabel.setVisible(true);
@@ -249,6 +258,20 @@ public class GameSetupController implements GuiController {
             pause.play();
 
             return;
+        }
+
+        if(client.tryToAddPlayerToGame(gameID, nickname, color)){
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/lobby.fxml"));
+            Parent root = fxmlLoader.load();
+            LobbyController controller = fxmlLoader.getController();
+            GuiInterface.getInstance().setLobbyController(controller);
+            controller.setServer(this.server);
+
+            Stage stage = (Stage) confirmJoinButton.getScene().getWindow();
+
+            Scene scene = new Scene(root, 1210, 740); // usa la risoluzione adatta al tuo FXML
+            stage.setScene(scene);
+            stage.show();
         }
 
     }
@@ -273,6 +296,11 @@ public class GameSetupController implements GuiController {
         this.client = new ClientRMI(GuiInterface.getInstance(), server);
     }
 
+
+    @Override
+    public void notifyError(String errorMessage) throws Exception {
+
+    }
 
 
 }

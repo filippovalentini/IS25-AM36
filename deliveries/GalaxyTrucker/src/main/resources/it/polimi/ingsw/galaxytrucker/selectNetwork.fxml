@@ -56,6 +56,10 @@
                         <Label fx:id="ipErrorLabel" text="Insert a valid IP"
                                style="-fx-text-fill: red; -fx-font-size: 14px;" visible="false"/>
 
+                        <Label fx:id="credentialsErrorLabel"
+                               style="-fx-text-fill: red; -fx-font-size: 14px;"
+                               visible="false" />
+
                     </children>
                     <padding>
                         <Insets top="20" right="20" bottom="20" left="20"/>

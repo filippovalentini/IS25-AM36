@@ -13,8 +13,8 @@ public class JavaFxLauncher extends Application {
         GameSetupController.setControlledStage(stage); //share the stage with the controller
         Scene scene = new Scene(fxmlLoader.load());
 
-        GuiController controller = fxmlLoader.getController();
-        GuiInterface.getInstance().setController(controller);
+        GameSetupController controller = fxmlLoader.getController();
+        GuiInterface.getInstance().setSetupController(controller);
 
         stage.setTitle("Galaxy Trucker");
         stage.setScene(scene);

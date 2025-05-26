@@ -79,4 +79,9 @@ public class FlightBoardControllerL2 implements GuiController {
 
         label.setOnDragExited(event -> label.setStyle(""));
     }
+
+    @Override
+    public void notifyError(String errorMessage) throws Exception {
+
+    }
 }
