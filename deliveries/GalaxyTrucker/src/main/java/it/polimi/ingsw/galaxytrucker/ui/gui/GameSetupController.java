@@ -41,9 +41,6 @@ public class GameSetupController implements GuiController {
         this.client = client;
     }
 
-
-
-
     @FXML
     private TextField ipTextField;
     @FXML
@@ -89,23 +86,17 @@ public class GameSetupController implements GuiController {
         String ip = ipTextField.getText();
         try{
             startSocketClient(ip);
-            // Carica la nuova schermata
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/startOrJoin.fxml"));
             Parent root = fxmlLoader.load();
             GameSetupController controller = fxmlLoader.getController();
             controller.setClientAndServer(this.client, this.server);
-
-            // Ottieni lo stage corrente dalla TextField o dal bottone (come preferisci)
             Stage stage = (Stage) socketButton.getScene().getWindow();
-
-            // Imposta la nuova scena
-            Scene scene = new Scene(root, 1210, 740); // usa la risoluzione adatta al tuo FXML
+            Scene scene = new Scene(root, 1210, 740);
             stage.setScene(scene);
             stage.show();
         }
         catch (Exception e){
             ipErrorLabel.setVisible(true);
-
             PauseTransition pause = new PauseTransition(Duration.seconds(3));
             pause.setOnFinished(event -> ipErrorLabel.setVisible(false));
             pause.play();
@@ -117,24 +108,17 @@ public class GameSetupController implements GuiController {
         String ip = ipTextField.getText();
         try{
             startClientRMI(ip);
-
-            // Carica la nuova schermata
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/startOrJoin.fxml"));
             Parent root = fxmlLoader.load();
             GameSetupController controller = fxmlLoader.getController();
             controller.setClientAndServer(this.client, this.server);
-
-            // Ottieni lo stage corrente dalla TextField o dal bottone (come preferisci)
             Stage stage = (Stage) rmiButton.getScene().getWindow();
-
-            // Imposta la nuova scena
-            Scene scene = new Scene(root, 1210, 740); // usa la risoluzione adatta al tuo FXML
+            Scene scene = new Scene(root, 1210, 740);
             stage.setScene(scene);
             stage.show();
         }
         catch (Exception e){
             ipErrorLabel.setVisible(true);
-
             PauseTransition pause = new PauseTransition(Duration.seconds(3));
             pause.setOnFinished(event -> ipErrorLabel.setVisible(false));
             pause.play();
@@ -144,42 +128,32 @@ public class GameSetupController implements GuiController {
     @FXML
     private void onStartClick() {
         try {
-            // Carica la nuova schermata
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/setupGame.fxml"));
             Parent root = fxmlLoader.load();
             GameSetupController controller = fxmlLoader.getController();
             controller.setClientAndServer(this.client, this.server);
-
-            // Ottieni lo stage corrente dalla TextField o dal bottone (come preferisci)
             Stage stage = (Stage) startButton.getScene().getWindow();
-
-            // Imposta la nuova scena
-            Scene scene = new Scene(root, 1210, 740); // usa la risoluzione adatta al tuo FXML
+            Scene scene = new Scene(root, 1210, 740);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace(); // Puoi loggare o mostrare un messaggio di errore grafico se preferisci
+            e.printStackTrace();
         }
     }
 
     @FXML
     private void onJoinClick() {
         try {
-            // Carica la nuova schermata
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/joinGame.fxml"));
             Parent root = fxmlLoader.load();
             GameSetupController controller = fxmlLoader.getController();
             controller.setClientAndServer(this.client, this.server);
-
-            // Ottieni lo stage corrente dalla TextField o dal bottone (come preferisci)
             Stage stage = (Stage) joinButton.getScene().getWindow();
-
-            // Imposta la nuova scena
-            Scene scene = new Scene(root, 1210, 740); // usa la risoluzione adatta al tuo FXML
+            Scene scene = new Scene(root, 1210, 740);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace(); // Puoi loggare o mostrare un messaggio di errore grafico se preferisci
+            e.printStackTrace();
         }
     }
 
@@ -188,46 +162,34 @@ public class GameSetupController implements GuiController {
         String gID = gameIdTextField.getText();
         if(gID.length() != 3){
             invalidIdErrorLabel.setVisible(true);
-
             PauseTransition pause = new PauseTransition(Duration.seconds(3));
             pause.setOnFinished(event -> invalidIdErrorLabel.setVisible(false));
             pause.play();
-
             return;
         }
         int gameID = Integer.parseInt(gID);
         int players = playersComboBox.getValue();
         String gameType = gameTypeComboBox.getValue();
         boolean firstFlight = gameType.equals("first flight");
-
         if(client.askIfGameStarted(gameID)){
             existingIdErrorLabel.setVisible(true);
-
             PauseTransition pause = new PauseTransition(Duration.seconds(3));
             pause.setOnFinished(event -> existingIdErrorLabel.setVisible(false));
             pause.play();
-
             return;
         }
-
         client.tryToStartNewGame(null, gameID, firstFlight, players);
-
         try {
-            // Carica la nuova schermata
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/joinGame.fxml"));
             Parent root = fxmlLoader.load();
             GameSetupController controller = fxmlLoader.getController();
             controller.setClientAndServer(this.client, this.server);
-
-            // Ottieni lo stage corrente dalla TextField o dal bottone (come preferisci)
             Stage stage = (Stage) confirmStartButton.getScene().getWindow();
-
-            // Imposta la nuova scena
-            Scene scene = new Scene(root, 1210, 740); // usa la risoluzione adatta al tuo FXML
+            Scene scene = new Scene(root, 1210, 740);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace(); // Puoi loggare o mostrare un messaggio di errore grafico se preferisci
+            e.printStackTrace();
         }
     }
 
@@ -236,46 +198,35 @@ public class GameSetupController implements GuiController {
         String gID = joinGameIdTextField.getText();
         if(gID.length() != 3){
             invalidIdErrorLabel.setVisible(true);
-
             PauseTransition pause = new PauseTransition(Duration.seconds(3));
             pause.setOnFinished(event -> invalidIdErrorLabel.setVisible(false));
             pause.play();
-
             return;
         }
-
         int gameID = Integer.parseInt(gID);
         String nickname = nicknameTextField.getText();
         Color color = Color.convertEmojiIntoColor(shipColorComboBox.getValue());
         GuiInterface.getInstance().setNickname(nickname);
         GuiInterface.getInstance().setColor(color);
-
         if(!client.askIfGameStarted(gameID)){
             existingIdErrorLabel.setVisible(true);
-
             PauseTransition pause = new PauseTransition(Duration.seconds(3));
             pause.setOnFinished(event -> existingIdErrorLabel.setVisible(false));
             pause.play();
-
             return;
         }
-
         if(client.tryToAddPlayerToGame(gameID, nickname, color)){
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/lobby.fxml"));
             Parent root = fxmlLoader.load();
             LobbyController controller = fxmlLoader.getController();
             GuiInterface.getInstance().setLobbyController(controller);
             controller.setServer(this.server);
-
             Stage stage = (Stage) confirmJoinButton.getScene().getWindow();
-
-            Scene scene = new Scene(root, 1210, 740); // usa la risoluzione adatta al tuo FXML
+            Scene scene = new Scene(root, 1210, 740);
             stage.setScene(scene);
             stage.show();
         }
-
     }
-
 
     //launches the socket client
     public void startSocketClient(String IP) throws IOException {
@@ -296,11 +247,9 @@ public class GameSetupController implements GuiController {
         this.client = new ClientRMI(GuiInterface.getInstance(), server);
     }
 
-
     @Override
     public void notifyError(String errorMessage) throws Exception {
 
     }
-
 
 }

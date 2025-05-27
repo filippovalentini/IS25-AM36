@@ -11,21 +11,17 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
 import java.util.Map;
 
-public class LobbyController implements GuiController{
+public class LobbyController implements GuiController {
     private VirtualServer server;
 
     @FXML
     private ListView<String> playerList;
-
-    @FXML
-    private VBox timerBox;
 
     @FXML
     private Label timerLabel;
@@ -36,13 +32,13 @@ public class LobbyController implements GuiController{
     @FXML
     private void initialize() {
         setCurrentPlayers();
-        timerBox.setVisible(false);
+        timerLabel.setVisible(false);
+        timerTitle.setVisible(false);
     }
 
     @FXML
     public void setCurrentPlayers() {
         Map<String, Color> currentPlayers = GuiInterface.getInstance().getView().getCurrentPlayers();
-
         Platform.runLater(() -> {
             playerList.getItems().clear();
             for (String nickname : currentPlayers.keySet()) {
@@ -63,10 +59,11 @@ public class LobbyController implements GuiController{
     }
 
     public void startTimer() {
-        /*Platform.runLater(() -> {
-            timerBox.setVisible(true);
-            int[] seconds = {3};
+        Platform.runLater(() -> {
+            timerTitle.setVisible(true);
+            timerLabel.setVisible(true);
 
+            int[] seconds = {3};
             timerLabel.setText(String.valueOf(seconds[0]));
 
             Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
@@ -74,7 +71,8 @@ public class LobbyController implements GuiController{
                 if (seconds[0] > 0) {
                     timerLabel.setText(String.valueOf(seconds[0]));
                 } else {
-                    timerBox.setVisible(false);
+                    timerTitle.setVisible(false);
+                    timerLabel.setVisible(false);
                     try {
                         switchToAssemblingPhase();
                     } catch (IOException e) {
@@ -84,7 +82,7 @@ public class LobbyController implements GuiController{
             }));
             timeline.setCycleCount(3);
             timeline.play();
-        });*/
+        });
     }
 
     public void switchToAssemblingPhase() throws IOException {
@@ -93,17 +91,14 @@ public class LobbyController implements GuiController{
         ShipBuildingControllerL1 controller = fxmlLoader.getController();
         GuiInterface.getInstance().setShipBuildingController(controller);
         controller.setServer(this.server);
-
-
         Stage stage = (Stage) timerTitle.getScene().getWindow();
-
-        Scene scene = new Scene(root, 1210, 740); // usa la risoluzione adatta al tuo FXML
+        Scene scene = new Scene(root, 1210, 740);
         stage.setScene(scene);
         stage.show();
     }
 
     @Override
-    public void notifyError(String errorMessage) throws Exception {
-
+    public void notifyError(String errorMessage) {
+        // Gestione errori se necessaria
     }
 }

@@ -20,11 +20,11 @@
         <!-- Box Centrale -->
         <VBox alignment="TOP_CENTER" layoutX="395.0" layoutY="208.0" prefHeight="350" prefWidth="400" spacing="20" style="-fx-background-color: #4682B4; -fx-padding: 20;">
 
-            <!-- TIMER BOX -->
-            <VBox fx:id="timerBox" alignment="CENTER" spacing="10" visible="false">
-                <Label fx:id="timerTitle" style="-fx-font-size: 20px; -fx-text-fill: #003366; -fx-font-weight: bold;" text="ASSEMBLING PHASE STARTS IN..." wrapText="true" />
-                <Label fx:id="timerLabel" style="-fx-font-size: 48px; -fx-text-fill: #003366; -fx-font-weight: bold;" text="3" />
-            </VBox>
+            <!-- Timer Title -->
+            <Label fx:id="timerTitle" visible="false" style="-fx-font-size: 20px; -fx-text-fill: #003366; -fx-font-weight: bold;" text="ASSEMBLING PHASE STARTS IN..." wrapText="true" />
+
+            <!-- Timer Label -->
+            <Label fx:id="timerLabel" visible="false" style="-fx-font-size: 48px; -fx-text-fill: #003366; -fx-font-weight: bold;" text="3" />
 
             <!-- Scritta principale -->
             <Label style="-fx-font-size: 20px; -fx-text-fill: #003366; -fx-font-weight: bold;" text="WAITING FOR PLAYERS..." />

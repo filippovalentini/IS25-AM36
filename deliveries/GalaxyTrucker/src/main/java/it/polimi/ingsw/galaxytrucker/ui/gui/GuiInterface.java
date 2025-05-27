@@ -89,10 +89,11 @@ public class GuiInterface implements UserInterface {
 
     @Override
     public void updateStartAssembling() throws Exception {
-        /*try{Thread.sleep(2000);}catch(Exception e){}
-        if(lobbyController != null){
+        this.view.updateStartAssembling();
+        new Thread(() -> {
+            try{Thread.sleep(1000);}catch(Exception e){}
             lobbyController.startTimer();
-        }*/
+        }).start();
     }
 
     @Override
