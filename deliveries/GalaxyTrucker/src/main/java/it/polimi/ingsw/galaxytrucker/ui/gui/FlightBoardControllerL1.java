@@ -1,11 +1,17 @@
 package it.polimi.ingsw.galaxytrucker.ui.gui;
 
+import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.List;
 
 public class FlightBoardControllerL1 implements GuiController {
@@ -17,10 +23,12 @@ public class FlightBoardControllerL1 implements GuiController {
     private Button backButton;
 
     private List<Label> targetLabels;
+    private VirtualServer server;
 
 
     @FXML
     public void initialize() {
+        setupBackButton();
         // Inizializza la lista delle posizioni
         targetLabels = List.of(
                 pos0, pos1, pos2, pos3, pos4, pos5, pos6, pos7, pos8,
@@ -78,8 +86,39 @@ public class FlightBoardControllerL1 implements GuiController {
         label.setOnDragExited(event -> label.setStyle(""));
     }
 
+
     @Override
     public void notifyError(String errorMessage) throws Exception {
 
+    }
+
+    public void setServer(VirtualServer server) {
+        this.server = server;
+    }
+
+    public void setupBackButton() {
+        backButton.setOnAction(event -> {
+            try {
+                // Carica la nuova schermata
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipBuildingL1.fxml"));
+                Parent root = fxmlLoader.load();
+
+                // Ora FlightBoardControllerL1 ha il metodo setServer()
+                ShipBuildingControllerL1 controller = fxmlLoader.getController();
+                controller.setServer(this.server);
+
+                // Ottieni lo stage corrente dal bottone
+                Stage stage = (Stage) backButton.getScene().getWindow();
+
+                // Imposta la nuova scena
+                Scene scene = new Scene(root, 1210, 740);
+                stage.setScene(scene);
+                stage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.err.println("Errore nel caricamento della Shipboard: " + e.getMessage());
+            }
+        });
     }
 }

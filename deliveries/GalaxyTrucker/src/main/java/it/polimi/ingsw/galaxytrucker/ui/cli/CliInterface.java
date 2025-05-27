@@ -107,7 +107,7 @@ public class CliInterface implements UserInterface {
         return input.equals("S");
     }
 
-    //this method asks tho the user the parameters to set up a new game and asks the server to create the game
+    //this method asks to the user the parameters to set up a new game and asks the server to create the game
     public void requestStartNewGame() {
         System.out.println("START A NEW GAME");
         int numPlayers;

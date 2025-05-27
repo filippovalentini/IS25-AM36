@@ -97,6 +97,7 @@ public class GuiInterface implements UserInterface {
 
     @Override
     public void updatePickedComponent(int imageID, boolean released) throws Exception {
+        //shipBuildingController.updatePickedComponentGUI(imageID, released);
 
     }
 
@@ -112,11 +113,11 @@ public class GuiInterface implements UserInterface {
 
     @Override
     public void updateRotatePickedComponent() throws Exception {
-
     }
 
     @Override
     public void updateAssembledComponent(String nickname, int imageID, Orientation orientation, int x, int y) throws Exception {
+        //shipBuildingController.updateAssembledComponentGUI( nickname,  imageID,  orientation,  x,  y);
 
     }
 
@@ -127,7 +128,6 @@ public class GuiInterface implements UserInterface {
 
     @Override
     public void updateReleasedDeck() throws Exception {
-
     }
 
     @Override
