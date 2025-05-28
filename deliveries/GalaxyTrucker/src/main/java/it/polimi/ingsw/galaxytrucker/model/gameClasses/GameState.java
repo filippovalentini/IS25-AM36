@@ -809,8 +809,8 @@ public class GameState {
     //well assembled and each cabin must be full of crew)
     public void checkShipBoards(){
         boolean correctShips = true;
-        for(Player p : playersPlay.values()) {
-            if(!p.hasCorrectShipBoard() || !p.hasAllCabinsBatteriesFull()){
+        for(String nickname : playersPos.keySet()) {
+            if(!playersPlay.get(nickname).hasCorrectShipBoard() || !playersPlay.get(nickname).hasAllCabinsBatteriesFull()){
                 correctShips = false;
                 break;
             }
@@ -914,6 +914,31 @@ public class GameState {
 
         for(VirtualView view: clients.values()){
             try{view.updateNextTurn(this.turnPlayer);}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        }
+    }
+    //this method is invoked by the network server when the connection with a client is lost
+    public void forceQuit(String nickname) throws InvalidActionException{
+        clients.remove(nickname);
+
+        if(state == State.CARD_PICKING || state == State.CARD_SOLVING){
+            quitGame(nickname);
+        }else{
+            playersPos.remove(nickname);
+            playersPlay.get(nickname).quitGame();
+
+            if(state == State.SHIP_CONTROL){
+                checkShipBoards();
+            }
+
+            for(VirtualView view: clients.values()){
+                try{view.updatePlayerQuit(nickname);}
+                catch(Exception e){System.out.println("Error during remote method invocation on client");}
+            }
+        }
+
+        for(VirtualView view: clients.values()){
+            try{view.notifyError("Player " + nickname + " disconnected");}
             catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
     }

@@ -30,6 +30,14 @@ public class SocketServerHandler implements VirtualServerSocket {
                 .replaceAll("[\\[\\]\\s]", "");
     }
 
+    //sends a heartbeat to the server to notify that the client is still alive and connected
+    public void sendPong() throws IOException {
+        List<String> params = new ArrayList<>();
+        PlayerActionMessage message = new PlayerActionMessage(PlayerActionType.PONG, params);
+        out.writeObject(message);
+        out.flush();
+    }
+
     @Override
     public boolean startedGame(int gameID) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(String.valueOf(gameID)));

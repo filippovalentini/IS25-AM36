@@ -45,6 +45,9 @@ public class Hourglass {
             } catch (InterruptedException e) {
                 throw new HourGlassException("Hourglass interrupted.");
             }
+            if(!gameState.getGameState().equals(State.SHIP_BUILDING)){
+                return;
+            }
             isRunning = false;
             gameState.finishedCycle();
             if (numberFlips == 2) {

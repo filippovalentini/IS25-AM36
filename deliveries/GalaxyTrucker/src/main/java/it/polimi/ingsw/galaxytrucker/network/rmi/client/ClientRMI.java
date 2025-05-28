@@ -20,6 +20,9 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI, Ga
         this.server = server;
     }
 
+    //this method is invoked by the server periodically to understand if the client is still alive
+    @Override
+    public void ping() throws RemoteException {}
 
     //this method asks the server if a game with the specified ID has already started
     @Override

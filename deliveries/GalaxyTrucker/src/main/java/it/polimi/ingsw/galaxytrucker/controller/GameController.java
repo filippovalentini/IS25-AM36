@@ -148,6 +148,13 @@ public class GameController {
         }
     }
 
+    //this method is invoked by the network server when the connection with a client is lost
+    public void forceQuit(String nickname) throws InvalidActionException{
+        synchronized (lock) {
+            model.forceQuit(nickname);
+        }
+    }
+
     //invoked when the leader draws a new card from the deck (during the game), which must be solved
     public void pickNextCard(String nickname) throws InvalidActionException {
         synchronized (lock) {
