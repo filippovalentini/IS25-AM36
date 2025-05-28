@@ -38,8 +38,8 @@ class AbandonedStationTest {
         player1 = "player1";
         player2 = "player2";
         try{
-            cl1 = new ClientRMI(player1, Color.RED);
-            cl2 = new ClientRMI(player2, Color.BLUE);
+            cl1 = null;
+            cl2 = null;
         }
         catch (Exception e){
             System.exit(-1);
