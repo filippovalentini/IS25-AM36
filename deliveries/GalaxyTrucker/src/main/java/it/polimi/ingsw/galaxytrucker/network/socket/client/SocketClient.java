@@ -44,6 +44,9 @@ public class SocketClient implements VirtualViewSocket, GameSessionManager {
             try{
                 GameUpdateMessage message = (GameUpdateMessage) in.readObject();
                 switch(message.getGameUpdateType()){
+                    case PING:
+                        serverHandler.sendPong();
+                        break;
                     case ERROR:
                         notifyError(message.getGameParams(0));
                         break;
@@ -137,19 +140,13 @@ public class SocketClient implements VirtualViewSocket, GameSessionManager {
                 }
             }
             catch (IOException e) {
-                System.out.println("Error: failed I/O operation through socket");
+                notifyError("Connection with server failed");
                 break;
             } catch (ClassNotFoundException e) {
                 System.err.println("Error: failed to deserialize class");
                 break;
             } catch (Exception e) {
-                try{
-                    notifyError(e.getMessage());
-                }
-                catch(Exception e1){
-                    System.out.println("Error: failed I/O operation through socket");
-                    break;
-                }
+                notifyError(e.getMessage());
             }
         }
         try{

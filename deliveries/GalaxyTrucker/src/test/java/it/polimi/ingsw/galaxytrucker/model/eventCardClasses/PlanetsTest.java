@@ -36,8 +36,8 @@ class PlanetsTest {
         gameState = new GameState(false, 2);
         nickname="filippo";
         nickname2="thomas";
-        cl1 = new ClientRMI(nickname, Color.RED);
-        cl2 = new ClientRMI(nickname2, Color.BLUE);
+        cl1 = null;
+        cl2 = null;
         gameState.addPlayer(cl1,nickname,Color.RED);
         gameState.addPlayer(cl2,nickname2,Color.BLUE);
 

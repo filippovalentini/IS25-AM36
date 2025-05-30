@@ -39,8 +39,8 @@ class PiratesTest {
         nickname = "player1";
         nickname2 = "player2";
         try{
-            cl1 = new ClientRMI(nickname, Color.RED);
-            cl2 = new ClientRMI(nickname2, Color.BLUE);
+            cl1 = null;
+            cl2 = null;
         }
         catch (Exception e){
             System.exit(-1);

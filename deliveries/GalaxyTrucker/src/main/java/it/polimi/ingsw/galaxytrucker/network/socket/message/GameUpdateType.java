@@ -2,6 +2,7 @@ package it.polimi.ingsw.galaxytrucker.network.socket.message;
 
 //defines all the possible types of game update message
 public enum GameUpdateType {
+    PING,
     ERROR,
     STARTED_GAME,
     WAITING_FOR_PLAYERS,

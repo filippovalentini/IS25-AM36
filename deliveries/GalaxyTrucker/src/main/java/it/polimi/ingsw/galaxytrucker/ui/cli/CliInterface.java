@@ -467,8 +467,12 @@ public class CliInterface implements UserInterface {
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid number format");
+            } catch (IOException e) {
+                System.out.println("Connection with server failed");
+                break;
             } catch (Exception e) {
-                System.out.println("Remote error: " + e.getMessage());
+                System.out.println(e.getMessage());
+                break;
             }
         }
     }

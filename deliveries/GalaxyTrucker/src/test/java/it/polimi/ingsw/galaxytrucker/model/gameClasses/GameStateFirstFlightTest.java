@@ -9,9 +9,12 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.network.rmi.client.ClientRMI;
+import it.polimi.ingsw.galaxytrucker.network.rmi.server.ServerRMI;
+import it.polimi.ingsw.galaxytrucker.ui.cli.CliInterface;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.net.ServerSocket;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,10 +36,10 @@ public class GameStateFirstFlightTest {
         player1 = "truck3r";
         player2 = "4lien";
         try{
-            cl1 = new ClientRMI(player1, Color.RED);
-            cl2 = new ClientRMI(player2, Color.BLUE);
+            cl1 = null;
+            cl2 = null;
         }
-        catch (RemoteException e){
+        catch (Exception e){
             System.err.println(e.getMessage());
         }
         gameState.addPlayer(cl1, player1, Color.RED);

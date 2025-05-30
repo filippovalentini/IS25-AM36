@@ -42,8 +42,8 @@ class SmugglersTest {
         nickname = "a";
         nickname2 = "b";
         try{
-            cl1 = new ClientRMI(nickname, Color.BLUE);
-            cl2 = new ClientRMI(nickname2, Color.RED);
+            cl1 = null;
+            cl2 = null;
         }
         catch (Exception e){
             System.exit(-1);

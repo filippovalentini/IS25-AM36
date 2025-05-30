@@ -19,11 +19,25 @@ public class SocketClientHandler implements VirtualViewSocket {
     GameController controller;      //controller of the game associated to the handled client
     ObjectInputStream in;
     ObjectOutputStream out;
+    String nickname;
+    boolean connectedClient;
 
     public SocketClientHandler(Socket socket) throws IOException {
         this.socket = socket;
         this.out = new ObjectOutputStream(socket.getOutputStream());
         this.in = new ObjectInputStream(socket.getInputStream());
+        this.nickname = "";
+        this.connectedClient = true;
+    }
+
+    //determines if the maneged client is siìtill correctly connected or not
+    public boolean isClientConnected() {
+        return connectedClient;
+    }
+
+    //sets the client connection status
+    public void setClientStatus(boolean connected){
+        this.connectedClient = connected;
     }
 
     //this method initializes the controller of the game associated to the handled client
@@ -55,6 +69,7 @@ public class SocketClientHandler implements VirtualViewSocket {
                     case ADD_PLAYER:
                         setController(controllers.get(Integer.parseInt(message.getGameParams(0))));
                         controller.addPlayer(this, message.getGameParams(1), Color.convertToColor(message.getGameParams(2)));
+                        this.nickname = message.getGameParams(1);
                         clientAddedToGame = true;
                         break;
                     default:
@@ -85,10 +100,14 @@ public class SocketClientHandler implements VirtualViewSocket {
     //this method creates a loop that waits for client's messages and (based on the type of message received)
     //updates the model state by invoking a method on the game controller
     public void manageClientMessages() throws IOException {
+        new SocketPingThread(socket, this, in, out).start();
         while (true) {
             try{
                 PlayerActionMessage message = (PlayerActionMessage) in.readObject();
                 switch(message.getGameAction()){
+                    case PONG:
+                        setClientStatus(true);
+                        break;
                     case PICK_HIDDEN:
                         controller.pickHidden(message.getGameParams(0));
                         break;
@@ -169,7 +188,7 @@ public class SocketClientHandler implements VirtualViewSocket {
                 }
             }
             catch (IOException e) {
-                System.out.println("Error: failed I/O operation through socket");
+                controller.forceQuit(nickname);
                 break;
             } catch (ClassNotFoundException e) {
                 System.err.println("Error: failed to deserialize class");
@@ -179,7 +198,7 @@ public class SocketClientHandler implements VirtualViewSocket {
                     notifyError(e.getMessage());
                 }
                 catch(Exception e1){
-                    System.out.println("Error: failed I/O operation through socket");
+                    controller.forceQuit(nickname);
                     break;
                 }
             }

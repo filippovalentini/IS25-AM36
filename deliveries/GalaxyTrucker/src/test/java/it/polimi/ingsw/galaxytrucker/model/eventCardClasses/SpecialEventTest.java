@@ -32,8 +32,8 @@ class SpecialEventTest {
         player1 = "a";
         player2 = "b";
         try{
-            cl1 = new ClientRMI(player1, Color.RED);
-            cl2 = new ClientRMI(player2, Color.YELLOW);
+            cl1 = null;
+            cl2 = null;
         }
         catch (Exception e){
             System.exit(-1);

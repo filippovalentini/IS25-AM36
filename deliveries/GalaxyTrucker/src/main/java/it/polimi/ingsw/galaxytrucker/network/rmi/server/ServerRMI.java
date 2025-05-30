@@ -3,6 +3,7 @@ package it.polimi.ingsw.galaxytrucker.network.rmi.server;
 import it.polimi.ingsw.galaxytrucker.controller.GameController;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.network.VirtualView;
+import it.polimi.ingsw.galaxytrucker.network.rmi.client.ClientRMI;
 import it.polimi.ingsw.galaxytrucker.network.rmi.client.VirtualServerRMI;
 
 import java.rmi.RemoteException;
@@ -17,6 +18,14 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
     public ServerRMI(Map<Integer, GameController> controllers) throws RemoteException {
         super();
         this.controllers = controllers;
+    }
+
+    //invoked by the ping thread when a client disconnection has been detected
+    public void manageClientDisconnection(int gameID, String nickname) throws RemoteException {
+        try{
+            controllers.get(gameID).forceQuit(nickname);
+            clients.remove(nickname);
+        } catch (Exception ignored) {}
     }
 
     //determines if a game with the specified ID has exists already
@@ -51,6 +60,7 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
             controllers.get(gameID).addPlayer(client, nickname, color);
             clients.put(nickname, (VirtualViewRMI) client);
             addedToGame = true;
+            new PingThreadRMI(this, (VirtualViewRMI) client, gameID, nickname).start();
         }
         catch(Exception e){
             try{

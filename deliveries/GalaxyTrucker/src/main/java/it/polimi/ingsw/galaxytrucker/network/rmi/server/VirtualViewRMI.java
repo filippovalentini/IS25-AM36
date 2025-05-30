@@ -12,6 +12,8 @@ import java.util.List;
 //a change in the model; in particular, this interface is exploited if the chosen network technology is RMI
 
 public interface VirtualViewRMI extends Remote, VirtualView {
+    //this method is invoked by the server periodically to understand if the client is still alive
+    void ping() throws RemoteException;
 
     //notifies a view about an error committed while executing a method on the remote server; the parameter
     //errorMessage describes the type of error

@@ -80,8 +80,8 @@ class ShipBoardTest {
         ClientRMI clientRMI;
         String nick = "filippo";
         try {
-            clientRMI = new ClientRMI(nick, Color.RED);
-        } catch (RemoteException e) {
+            clientRMI = null;
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
         shipBoard.addListener(nick, clientRMI);
