@@ -1,4 +1,5 @@
 package it.polimi.ingsw.galaxytrucker.model.componentClasses;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.HourGlassException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,7 @@ public class HourglassTest {
     @BeforeEach
     void init() {
         gs = new GameState(false, 2);
+        gs.setGameState(State.SHIP_BUILDING);
         hourglass = new Hourglass(1, gs); // 1 seconds for testing
     }
 

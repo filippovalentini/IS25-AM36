@@ -57,12 +57,18 @@ public class ShipBoard {
 
     }
 
+    //EXTRA METHODS NEEDED FOR TESTING
+
+    public Map<String, VirtualView> getClients(){
+        return new HashMap<>(this.clients);
+    }
     public void assembleComponent(Component component, int x, int y) {
         assembledComponents.get(x).set(y, component);
         updateCorrectness();
     }
 
 
+    //GETTERS
     public Component getAssembledComponent(int x, int y) { //return a copy of the assembled component in the given position
         return (assembledComponents.get(x).get(y)).clone();
     }
@@ -139,6 +145,36 @@ public class ShipBoard {
             return pickedComponent;
         }
     }
+    //determines if a position on the ship board is adjacent to an assembled component, in order to determine if
+    //the position is available for component placement
+    public boolean isolatedPosition(int x, int y){
+        Component c;
+        if(x>0){
+            c = assembledComponents.get(x-1).get(y);
+            if(c.isNotEmpty() && c.belongsToShip()){
+                return false;
+            }
+        }
+        if(y>0){
+            c = assembledComponents.get(x).get(y-1);
+            if(c.isNotEmpty() && c.belongsToShip()){
+                return false;
+            }
+        }
+        if(x < assembledComponents.size()-1){
+            c = assembledComponents.get(x+1).get(y);
+            if(c.isNotEmpty() && c.belongsToShip()){
+                return false;
+            }
+        }
+        if(y < assembledComponents.get(x).size()-1){
+            c = assembledComponents.get(x).get(y+1);
+            if(c.isNotEmpty() && c.belongsToShip()){
+                return false;
+            }
+        }
+        return true;
+    }
     //assembles the component picked by a player in the specified cell (x,y) of its ship board
     public Component assembleComponent(int x, int y) throws AssembledComponentException, PickedComponentException {
         Component c;
@@ -147,6 +183,9 @@ public class ShipBoard {
         }
         if(assembledComponents.get(x).get(y).isNotEmpty()){
             throw new AssembledComponentException("Already assembled component");
+        }
+        if(isolatedPosition(x,y)){
+            throw new AssembledComponentException("The assembled component can't be disconnected");
         }
         else if(pickedComponent==null){
             throw new PickedComponentException("No picked component");
@@ -910,10 +949,7 @@ public class ShipBoard {
         return goodsPrice;
     }
 
-    //methods for testing
-    public Map<String, VirtualView> getClients(){
-        return new HashMap<>(this.clients);
-    }
+
 }
 
 

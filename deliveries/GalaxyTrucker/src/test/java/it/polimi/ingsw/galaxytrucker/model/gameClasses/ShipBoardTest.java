@@ -239,20 +239,6 @@ class ShipBoardTest {
     }
 
     @Test
-    void testUpdateCorrectnessFloatingComponents(){
-        assertTrue(shipBoard.isCorrect());
-        List<Connector> connectorList1 = new ArrayList<>();
-        connectorList1.add(Connector.SINGLE);
-        connectorList1.add(Connector.SINGLE);
-        connectorList1.add(Connector.SINGLE);
-        connectorList1.add(Connector.SMOOTH);
-        component1 = new Component(9, connectorList1);
-        shipBoard.pickComponent(component1);
-        shipBoard.assembleComponent(1,1);
-        assertFalse(shipBoard.isCorrect());
-    }
-
-    @Test
     void testShouldNotRotateComponentIfNotPicked(){
         assertThrows(PickedComponentException.class, () -> {shipBoard.rotatePickedComponent();});
     }

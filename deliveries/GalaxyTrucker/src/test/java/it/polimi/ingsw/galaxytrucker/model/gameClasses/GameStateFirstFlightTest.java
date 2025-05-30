@@ -128,10 +128,10 @@ public class GameStateFirstFlightTest {
     @Test
     void testAssembleComponent() {
         gameState.pickHidden(player1);
-        gameState.assembleComponent(player1, 0, 3);
+        gameState.assembleComponent(player1, 1, 3);
         assertNull(gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
         gameState.pickHidden(player1);
-        assertThrows(AssembledComponentException.class, () -> gameState.assembleComponent(player1, 0, 3));
+        assertThrows(AssembledComponentException.class, () -> gameState.assembleComponent(player1, 1, 3));
     }
 
     @Test
@@ -176,9 +176,9 @@ public class GameStateFirstFlightTest {
     @Test
     void testPickNextCardNotLeader() {
         gameState.pickHidden(player1);
-        gameState.assembleComponent(player1, 0, 3);
+        gameState.assembleComponent(player1, 1, 3);
         gameState.pickHidden(player2);
-        gameState.assembleComponent(player2, 0, 3);
+        gameState.assembleComponent(player2, 1, 3);
         gameState.setPosition(player2, 1);
         gameState.setPosition(player1, 0);
         assertThrows(InvalidActionException.class, () -> gameState.pickNextCard(player1));

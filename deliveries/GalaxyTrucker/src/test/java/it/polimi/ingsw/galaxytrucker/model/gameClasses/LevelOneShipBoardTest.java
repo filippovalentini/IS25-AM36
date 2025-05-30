@@ -46,16 +46,16 @@ class LevelOneShipBoardTest {
     @Test
     void testAssembleComponent() {
         levelOneShipBoard.pickComponent(component1);
-        levelOneShipBoard.assembleComponent(1, 2); //above the initial cabin
-        assertEquals(component1, levelOneShipBoard.getAssembledComponent(1, 2));
+        levelOneShipBoard.assembleComponent(1, 3); //above the initial cabin
+        assertEquals(component1, levelOneShipBoard.getAssembledComponent(1, 3));
     }
 
     @Test
     void testDestroyComponent() {
         levelOneShipBoard.pickComponent(component1);
-        levelOneShipBoard.assembleComponent(1, 2); //above the initial cabin
-        levelOneShipBoard.destroyComponent(1, 2);
+        levelOneShipBoard.assembleComponent(1, 3); //above the initial cabin
+        levelOneShipBoard.destroyComponent(1, 3);
         assertEquals(1, levelOneShipBoard.getLostComponents());
-        assertTrue(levelOneShipBoard.isEmptyComponent(1, 2));
+        assertTrue(levelOneShipBoard.isEmptyComponent(1, 3));
     }
 }
