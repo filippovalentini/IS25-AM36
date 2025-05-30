@@ -44,6 +44,7 @@ public class ImageManager {
         }
     }
 
+
     public Map<Integer, String> getImageIDMap() {
         return imageIDmap;
     }
