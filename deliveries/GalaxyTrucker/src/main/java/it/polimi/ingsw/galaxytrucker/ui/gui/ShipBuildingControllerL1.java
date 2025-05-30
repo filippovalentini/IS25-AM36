@@ -10,7 +10,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -94,6 +97,9 @@ public class ShipBuildingControllerL1 implements GuiController {
         setupPickComponentButton();
         setupDiscardButton();
         setupflightBoardButton();
+
+        //metodo per mettere le immagini sul bottone
+        setupButtonImages();
 
     }
 
@@ -191,11 +197,11 @@ public class ShipBuildingControllerL1 implements GuiController {
             if (lastDroppedButton != null) {
                 /*try {
                     server.rotatePickedComponent(gameID, playerNickname);
-                    rotateCurrentOrientation();
-                    updateComponentRotation();
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }*/
+                //rotateCurrentOrientation();
+                //updateComponentRotation();
             }
         });
     }
@@ -271,16 +277,16 @@ public class ShipBuildingControllerL1 implements GuiController {
 
     private void rotateCurrentOrientation() {
         switch (currentOrientation) {
-            case NORTH:
+            case Orientation.NORTH:
                 currentOrientation = Orientation.EAST;
                 break;
-            case EAST:
+            case Orientation.EAST:
                 currentOrientation = Orientation.SOUTH;
                 break;
-            case SOUTH:
+            case Orientation.SOUTH:
                 currentOrientation = Orientation.WEST;
                 break;
-            case WEST:
+            case Orientation.WEST:
                 currentOrientation = Orientation.NORTH;
                 break;
         }
@@ -336,4 +342,73 @@ public class ShipBuildingControllerL1 implements GuiController {
             }
         });
     }
+
+    private void setupButtonImages() {
+        try {
+            //Bottone HandComponent
+            setupButtonWithImage(handComponentButton, "/it/polimi/ingsw/galaxytrucker/images/tiles/back.jpg", "handComponent", 150, 150);
+
+            /*// Bottone Set - icona di conferma
+            setupButtonWithImage(setButton, "/icons/confirm.png", "Conferma", 16, 40);
+
+
+            // Bottone Pick Component - icona di presa
+            setupButtonWithImage(pickComponent, "images/tiles/back.jpg", "Prendi", 16, 16);
+
+            // Bottone Rotate - icona di rotazione
+            setupButtonWithImage(rotateButton, "/icons/rotate.png", "Ruota", 16, 16);
+
+            // Bottone Discard - icona cestino
+            setupButtonWithImage(discardButton, "/icons/trash.png", "Scarta", 16, 16);
+
+            // Bottone Flight Board - icona navicella/volo
+            setupButtonWithImage(flightBoardButton, "/icons/flight.png", "Volo", 16, 16);
+
+            // Bottone Reserve - icona riserva
+            setupButtonWithImage(reserveButton, "/icons/reserve.png", "Riserva", 16, 16);
+
+            // Bottone View Component - icona occhio
+            setupButtonWithImage(viewShownComponentButton, "/icons/view.png", "Visualizza", 16, 16);
+
+            // Bottoni player - icone giocatori con colori diversi
+            setupButtonWithImage(player1ShipButton, "/icons/player1.png", "Player 1", 20, 20);
+            setupButtonWithImage(player2ShipButton, "/icons/player2.png", "Player 2", 20, 20);
+            setupButtonWithImage(player3ShipButton, "/icons/player3.png", "Player 3", 20, 20);
+            setupButtonWithImage(mineShipButton, "/icons/myship.png", "La Mia Nave", 20, 20);
+            */
+
+        } catch (Exception e) {
+            System.err.println("Errore nel caricamento delle immagini: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void setupButtonWithImage(Button button, String imagePath, String text, float width, float height) {
+        try {
+            // Carica l'immagine
+            Image image = new Image(getClass().getResourceAsStream(imagePath));
+            ImageView imageView = new ImageView(image);
+
+            // Imposta dimensioni
+            imageView.fitWidthProperty().bind(button.widthProperty());
+            imageView.fitHeightProperty().bind(button.heightProperty());
+            //imageView.setFitWidth(width);
+            //imageView.setFitHeight(height);
+            imageView.setPreserveRatio(false);
+            imageView.setSmooth(true);
+
+            // Aggiungi immagine al bottone
+            button.setGraphic(imageView);
+            button.setText("");
+
+            // Posiziona immagine sopra il testo (puoi cambiare la posizione)
+            button.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+
+        } catch (Exception e) {
+            System.err.println("Impossibile caricare l'immagine: " + imagePath);
+            // Mantieni solo il testo se l'immagine non è disponibile
+            button.setText(text);
+        }
+    }
+
 }
