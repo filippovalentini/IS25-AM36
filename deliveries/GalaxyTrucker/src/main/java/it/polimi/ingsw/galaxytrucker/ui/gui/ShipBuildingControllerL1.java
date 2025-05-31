@@ -1,10 +1,8 @@
 package it.polimi.ingsw.galaxytrucker.ui.gui;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
-import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.ui.view.View;
-import it.polimi.ingsw.galaxytrucker.ui.view.ViewPlayer;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -346,7 +344,7 @@ public class ShipBuildingControllerL1 implements GuiController {
     private void setupButtonImages() {
         try {
             //Bottone HandComponent
-            setupButtonWithImage(handComponentButton, "/it/polimi/ingsw/galaxytrucker/images/tiles/back.jpg", "handComponent", 150, 150);
+            setupButtonWithImage(handComponentButton, "/it/polimi/ingsw/galaxytrucker/images/components/back.jpg", "handComponent", 150, 150);
 
             /*// Bottone Set - icona di conferma
             setupButtonWithImage(setButton, "/icons/confirm.png", "Conferma", 16, 40);

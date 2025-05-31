@@ -3,7 +3,7 @@ module it.polimi.ingsw.galaxytrucker {
     requires javafx.fxml;
     requires java.smartcardio;
     requires java.rmi;
-    requires java.desktop;
+    requires com.fasterxml.jackson.databind;
 
 
     opens it.polimi.ingsw.galaxytrucker.ui to javafx.fxml;

@@ -1,9 +1,7 @@
-SHIP BOARDS
 
 1	shipL1.jpg
 2	shipL2.jpg
 
-CARDS
 
 1001	abandonedshipL1_1.jpg
 1002	abandonedshipL1_2.jpg
@@ -56,9 +54,6 @@ CARDS
 9001	levelOneCard.jpg
 9002	levelTwoCard.jpg
 
-
-
-COMPONENTS
 
 101	structural1.jpg
 102	structural2.jpg
