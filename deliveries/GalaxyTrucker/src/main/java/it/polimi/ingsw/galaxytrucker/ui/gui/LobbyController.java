@@ -2,6 +2,8 @@ package it.polimi.ingsw.galaxytrucker.ui.gui;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
+import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.GuiController;
+import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBuildingController;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -58,7 +60,7 @@ public class LobbyController implements GuiController {
         });
     }
 
-    public void startTimer() {
+    public void startTimer(boolean firstFlight) {
         Platform.runLater(() -> {
             timerTitle.setVisible(true);
             timerLabel.setVisible(true);
@@ -74,7 +76,7 @@ public class LobbyController implements GuiController {
                     timerTitle.setVisible(false);
                     timerLabel.setVisible(false);
                     try {
-                        switchToAssemblingPhase();
+                        switchToAssemblingPhase(firstFlight);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -85,10 +87,17 @@ public class LobbyController implements GuiController {
         });
     }
 
-    public void switchToAssemblingPhase() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipBuildingL1.fxml"));
-        Parent root = fxmlLoader.load();
-        ShipBuildingControllerL1 controller = fxmlLoader.getController();
+    public void switchToAssemblingPhase(boolean firstFlight) throws IOException {
+        ShipBuildingController controller;
+        Parent root;
+        FXMLLoader fxmlLoader;
+        if (firstFlight) {
+            fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipBuildingL1.fxml"));
+        }else{
+            fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipBuildingL2.fxml"));
+        }
+        root = fxmlLoader.load();
+        controller = fxmlLoader.getController();
         GuiInterface.getInstance().setShipBuildingController(controller);
         controller.setServer(this.server);
         Stage stage = (Stage) timerTitle.getScene().getWindow();
@@ -97,8 +106,4 @@ public class LobbyController implements GuiController {
         stage.show();
     }
 
-    @Override
-    public void notifyError(String errorMessage) {
-        // Gestione errori se necessaria
-    }
 }

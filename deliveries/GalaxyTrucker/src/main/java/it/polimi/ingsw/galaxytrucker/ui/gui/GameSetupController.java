@@ -6,6 +6,7 @@ import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.network.rmi.client.ClientRMI;
 import it.polimi.ingsw.galaxytrucker.network.rmi.client.VirtualServerRMI;
 import it.polimi.ingsw.galaxytrucker.network.socket.client.SocketClient;
+import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.GuiController;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,7 +38,7 @@ public class GameSetupController implements GuiController {
     }
 
     public void setClientAndServer(GameSessionManager client, VirtualServer server) {
-        this.server = server;
+        setServer(server);
         this.client = client;
     }
 
@@ -75,6 +76,11 @@ public class GameSetupController implements GuiController {
     private Button confirmJoinButton;
     @FXML
     private ComboBox<String> shipColorComboBox;
+
+    @Override
+    public void setServer(VirtualServer server) {
+        this.server = server;
+    }
 
     @FXML
     public void initialize() {
@@ -247,9 +253,6 @@ public class GameSetupController implements GuiController {
         this.client = new ClientRMI(GuiInterface.getInstance(), server);
     }
 
-    @Override
-    public void notifyError(String errorMessage) throws Exception {
 
-    }
 
 }

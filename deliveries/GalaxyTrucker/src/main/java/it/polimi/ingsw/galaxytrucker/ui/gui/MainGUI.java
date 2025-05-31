@@ -10,7 +10,7 @@ import java.io.IOException;
 public class MainGUI extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(MainGUI.class.getResource("/it/polimi/ingsw/galaxytrucker/shipBuildingL2.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(MainGUI.class.getResource("/it/polimi/ingsw/galaxytrucker/flightBoardL2.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1210, 740);
         stage.setTitle("GalaxyTrucker");
         Image icon = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/galaxytrucker/images/components/engine7.jpg"));

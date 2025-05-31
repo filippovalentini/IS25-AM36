@@ -3,6 +3,7 @@ package it.polimi.ingsw.galaxytrucker.ui.gui;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.ui.UserInterface;
+import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBuildingController;
 import it.polimi.ingsw.galaxytrucker.ui.view.View;
 import javafx.application.Application;
 
@@ -12,7 +13,7 @@ public class GuiInterface implements UserInterface {
     private static GuiInterface instance;
     private GameSetupController setupController;
     private LobbyController lobbyController;
-    private ShipBuildingControllerL1 shipBuildingController;
+    private ShipBuildingController shipBuildingController;
     private View view;
     private String nickname;
     private Color color;
@@ -54,7 +55,7 @@ public class GuiInterface implements UserInterface {
         this.lobbyController = lobbyController;
     }
 
-    public void setShipBuildingController(ShipBuildingControllerL1 shipBuildingController) {
+    public void setShipBuildingController(ShipBuildingController shipBuildingController) {
         this.shipBuildingController = shipBuildingController;
     }
 
@@ -66,12 +67,7 @@ public class GuiInterface implements UserInterface {
 
     @Override
     public void notifyError(String errorMessage) throws Exception {
-        if(setupController != null) {
-            setupController.notifyError(errorMessage);
-        }
-        if(lobbyController != null) {
-            lobbyController.notifyError(errorMessage);
-        }
+
     }
 
     @Override
@@ -91,8 +87,8 @@ public class GuiInterface implements UserInterface {
     public void updateStartAssembling() throws Exception {
         this.view.updateStartAssembling();
         new Thread(() -> {
-            try{Thread.sleep(1000);}catch(Exception e){}
-            lobbyController.startTimer();
+            try{Thread.sleep(2000);}catch(Exception e){}
+            lobbyController.startTimer(view.isFirstFlight());
         }).start();
     }
 

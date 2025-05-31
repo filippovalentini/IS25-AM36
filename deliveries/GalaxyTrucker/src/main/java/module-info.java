@@ -16,5 +16,7 @@ module it.polimi.ingsw.galaxytrucker {
     opens it.polimi.ingsw.galaxytrucker to javafx.fxml;
     exports it.polimi.ingsw.galaxytrucker.ui.gui;
     opens it.polimi.ingsw.galaxytrucker.ui.gui to javafx.fxml;
+    exports it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces;
+    opens it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces to javafx.fxml;
 
 }

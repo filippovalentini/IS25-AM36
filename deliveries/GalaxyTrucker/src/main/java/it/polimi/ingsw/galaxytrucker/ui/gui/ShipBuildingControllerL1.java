@@ -2,6 +2,8 @@ package it.polimi.ingsw.galaxytrucker.ui.gui;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
+import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.GuiController;
+import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBuildingController;
 import it.polimi.ingsw.galaxytrucker.ui.view.View;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class ShipBuildingControllerL1 implements GuiController {
+public class ShipBuildingControllerL1 implements ShipBuildingController {
     private VirtualServer server;
     private View view;
     int gameID;
@@ -256,10 +258,6 @@ public class ShipBuildingControllerL1 implements GuiController {
 
     //putShown() per rilasciare i componente, mettilo su discard
 
-    @Override
-    public void notifyError(String errorMessage) throws Exception {
-
-    }
 
   /*  public void updateAssembledComponentGUI(String nickname, int imageID, Orientation orientation, int x, int y){
         if (lastDroppedButton != null) {

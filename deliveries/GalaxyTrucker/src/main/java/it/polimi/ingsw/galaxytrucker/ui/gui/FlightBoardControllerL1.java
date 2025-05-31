@@ -1,6 +1,8 @@
 package it.polimi.ingsw.galaxytrucker.ui.gui;
 
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
+import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.FlightBoardController;
+import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.GuiController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,7 +16,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.List;
 
-public class FlightBoardControllerL1 implements GuiController {
+public class FlightBoardControllerL1 implements FlightBoardController {
     @FXML private Label start;
     @FXML private Label pos0, pos1, pos2, pos3, pos4, pos5, pos6, pos7, pos8, pos9;
     @FXML private Label pos10, pos11, pos12, pos13, pos14, pos15, pos16, pos17;
@@ -86,11 +88,6 @@ public class FlightBoardControllerL1 implements GuiController {
         label.setOnDragExited(event -> label.setStyle(""));
     }
 
-
-    @Override
-    public void notifyError(String errorMessage) throws Exception {
-
-    }
 
     public void setServer(VirtualServer server) {
         this.server = server;

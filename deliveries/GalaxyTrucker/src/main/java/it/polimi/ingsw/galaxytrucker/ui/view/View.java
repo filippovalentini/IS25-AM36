@@ -43,6 +43,11 @@ public class View {
         return players;
     }
 
+    //determines if the view is related to a first flight game or not
+    public boolean isFirstFlight() {
+        return firstFlight;
+    }
+
     //returns the dice result or 0 if the dice are no longer valid
     public int diceResult(){
         if(!dice.validDice()){

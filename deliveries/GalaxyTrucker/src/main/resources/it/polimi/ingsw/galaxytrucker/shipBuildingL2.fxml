@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -15,7 +13,7 @@
 <AnchorPane prefHeight="740.0" prefWidth="1210.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.ShipBuildingControllerL2">
 
     <!-- Sfondo -->
-    <ImageView fitHeight="740.0" fitWidth="1355.0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="-7.0" AnchorPane.topAnchor="0">
+    <ImageView fitHeight="740.0" fitWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <Image url="@images/backgroundSpace1.jpg" />
     </ImageView>
 
@@ -24,66 +22,46 @@
         <Image url="@images/cardboard/shipL2.jpg" />
     </ImageView>
 
-    <!-- GridPane Nave -->
-    <GridPane fx:id="myGridPane" layoutX="215.0" prefHeight="550.0" prefWidth="780.0" AnchorPane.bottomAnchor="96.0" AnchorPane.leftAnchor="215.0" AnchorPane.rightAnchor="353.0" AnchorPane.topAnchor="94.0">
+          <!-- GridPane -->
+    <GridPane fx:id="myGridPane" layoutX="222.0" prefHeight="550.0" prefWidth="767.0" AnchorPane.bottomAnchor="96.0" AnchorPane.leftAnchor="222.0" AnchorPane.rightAnchor="221.0" AnchorPane.topAnchor="94.0">
         <columnConstraints>
-            <ColumnConstraints prefWidth="114" />
-            <ColumnConstraints prefWidth="109" />
-            <ColumnConstraints prefWidth="111" />
-            <ColumnConstraints prefWidth="111" />
-            <ColumnConstraints prefWidth="109" />
-            <ColumnConstraints prefWidth="109" />
-            <ColumnConstraints prefWidth="119" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="147.0" minWidth="10.0" prefWidth="109.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="148.0" minWidth="10.0" prefWidth="115.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="128.0" minWidth="10.0" prefWidth="111.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.0" minWidth="10.0" prefWidth="110.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="153.0" minWidth="10.0" prefWidth="107.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="147.0" minWidth="10.0" prefWidth="114.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="143.0" minWidth="10.0" prefWidth="111.0" />
         </columnConstraints>
         <rowConstraints>
-            <RowConstraints prefHeight="111" />
-            <RowConstraints prefHeight="108" />
-            <RowConstraints prefHeight="110" />
-            <RowConstraints prefHeight="109" />
-            <RowConstraints prefHeight="112" />
+            <RowConstraints maxHeight="146.0" minHeight="10.0" prefHeight="112.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="130.0" minHeight="10.0" prefHeight="107.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="142.0" minHeight="10.0" prefHeight="110.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="199.0" minHeight="10.0" prefHeight="109.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="142.0" minHeight="10.0" prefHeight="112.0" vgrow="SOMETIMES" />
         </rowConstraints>
     </GridPane>
-
-    <!-- Rettangolo notifiche -->
-    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1478e363" height="62.0" layoutX="3.0" stroke="BLACK" strokeType="INSIDE" width="1345.0" />
-    <Label fx:id="messageBox1" layoutX="15.0" layoutY="10.0" prefHeight="40.0" prefWidth="600.0" textFill="WHITE" />
-    <Label fx:id="messageBox2" layoutX="620.0" layoutY="10.0" prefHeight="37.0" prefWidth="600.0" textFill="WHITE" />
-
-    <!-- Pulsanti -->
-    <Button fx:id="player2ShipButton" layoutX="1061.0" layoutY="70.0" onAction="#handlePlayer2ShipButton" prefHeight="96.0" prefWidth="95.0" style="-fx-background-color: #ADD8E6; -fx-text-fill: #0000FF;" text="Player 1" />
-    <Button fx:id="player1ShipButton" layoutX="1061.0" layoutY="186.0" onAction="#handlePlayer1ShipButton" prefHeight="96.0" prefWidth="95.0" style="-fx-background-color: #ADD8E6; -fx-text-fill: #0000FF;" text="Player 2" />
-    <Button fx:id="player3ShipButton" layoutX="1061.0" layoutY="309.0" onAction="#handlePlayer3ShipButton" prefHeight="96.0" prefWidth="95.0" style="-fx-background-color: #ADD8E6; -fx-text-fill: #0000FF;" text="Player 3" />
-    <Button fx:id="pickComponent" layoutX="46.0" layoutY="500.0" onAction="#handlePickComponent" prefHeight="40.0" prefWidth="103.0" style="-fx-background-color: #ADD8E6; -fx-text-fill: #0000FF;" text="PickComponent" />
-    <Button fx:id="setButton" layoutX="464.0" layoutY="679.0" onAction="#handleSetButton" prefHeight="40.0" prefWidth="103.0" style="-fx-background-color: #ADD8E6; -fx-text-fill: #0000FF;" text="Assemble" />
-    <Button fx:id="discardButton" layoutX="641.0" layoutY="679.0" onAction="#handleDiscardButton" prefHeight="40.0" prefWidth="103.0" style="-fx-background-color: #ADD8E6; -fx-text-fill: #0000FF;" text="Release" />
-    <Button fx:id="rotateButton" layoutX="50.0" layoutY="433.0" onAction="#handleRotateButton" prefHeight="37.0" prefWidth="96.0" style="-fx-background-color: #ADD8E6; -fx-text-fill: #0000FF;" text="Rotate" />
-    <Button fx:id="setButton1" layoutX="46.0" layoutY="565.0" onAction="#handleSetButton1" prefHeight="40.0" prefWidth="103.0" style="-fx-background-color: #ADD8E6; -fx-text-fill: #0000FF;" text="Reserve" />
-    <Button fx:id="flightBoardButton" layoutX="52.0" layoutY="126.0" onAction="#handleFlightBoardButton" style="-fx-background-color: #ADD8E6; -fx-text-fill: #0000FF;" text="flightBoard" />
-    <Button fx:id="viewShownComponentButton" layoutX="28.0" layoutY="173.0" onAction="#handleViewShownComponentButton" style="-fx-background-color: #ADD8E6; -fx-text-fill: #0000FF;" text="shown components" />
-
-    <!-- Area componente in mano -->
-    <Pane fx:id="handComponentArea" layoutX="19.0" layoutY="255.0" prefHeight="150.0" prefWidth="157.0">
+    <Button fx:id="player2ShipButton" layoutX="1068.0" layoutY="70.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="95.0" text="Player 1" />
+    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1478e363" height="50.0" layoutX="3.0" stroke="BLACK" strokeType="INSIDE" width="1203.0" />
+    <Button fx:id="pickComponent" layoutX="40.0" layoutY="411.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="124.0" text="pick" />
+    <Button fx:id="setButton" layoutX="553.0" layoutY="679.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="103.0" text="assemble" />
+    <Button fx:id="discardButton" layoutX="719.0" layoutY="679.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="103.0" text="release" />
+    <Pane fx:id="handComponentArea" layoutX="22.0" layoutY="185.0" prefHeight="150.0" prefWidth="157.0">
         <children>
-            <Button fx:id="handComponentButton" layoutX="4.0" maxHeight="150.0" maxWidth="150.0" minHeight="144.0" minWidth="150.0" onAction="#handleHandComponentButton" prefHeight="144.0" prefWidth="150.0" style="-fx-background-color: #ADD8E6; -fx-text-fill: #0000FF;" text="" />
-        </children>
+
+            <Button fx:id="handComponentButton" layoutX="4.0" maxHeight="150.0" maxWidth="150.0" minHeight="150.0" minWidth="150.0" prefHeight="150.0" prefWidth="150.0" text="" />      </children>
     </Pane>
-
-    <!-- Etichetta Reserved -->
-    <Label layoutX="1083.0" layoutY="425.0" prefHeight="37.0" prefWidth="95.0" text="Reserved" textFill="WHITE" />
-
-    <!-- GridPane Riserva -->
-    <GridPane fx:id="reservedGrid" layoutX="1061.0" layoutY="459.0" prefHeight="224.0" prefWidth="114.0" style="-fx-background-color: #ADD8E6;">
-        <columnConstraints>
-            <ColumnConstraints prefWidth="114.0" />
-        </columnConstraints>
-        <rowConstraints>
-            <RowConstraints prefHeight="112.0" />
-            <RowConstraints prefHeight="112.0" />
-        </rowConstraints>
-        <opaqueInsets>
-            <Insets />
-        </opaqueInsets>
-    </GridPane>
-   <Pane layoutX="1059.0" layoutY="455.0" prefHeight="234.0" prefWidth="124.0" />
+    <Button fx:id="flightBoardButton" layoutX="34.0" layoutY="92.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="138.0" text="flight board" />
+    <Button fx:id="viewShownComponentButton" layoutX="40.0" layoutY="467.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="124.0" text="shown components" />
+    <Button fx:id="player1ShipButton" layoutX="1068.0" layoutY="165.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="95.0" text="Player 2" />
+    <Button fx:id="player3ShipButton" layoutX="1068.0" layoutY="260.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="95.0" text="Player 3" />
+    <Button fx:id="rotateButton" layoutX="40.0" layoutY="350.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="124.0" text="rotate" />
+   <Button fx:id="reserveButton" layoutX="386.0" layoutY="679.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="103.0" text="reserve" />
+   <Pane layoutX="1057.0" layoutY="431.0" prefHeight="212.0" prefWidth="118.0">
+      <children>
+         <Button fx:id="reserved0Button" layoutX="4.0" mnemonicParsing="false" prefHeight="104.0" prefWidth="110.0" text="reserved0" />
+         <Button fx:id="reserved1Button" layoutX="4.0" layoutY="104.0" mnemonicParsing="false" prefHeight="104.0" prefWidth="110.0" text="reserved1" />
+      </children>
+   </Pane>
 
 </AnchorPane>
