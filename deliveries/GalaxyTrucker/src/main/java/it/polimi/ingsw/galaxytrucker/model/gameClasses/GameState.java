@@ -531,12 +531,12 @@ public class GameState {
         Component c = shownComponents.remove(index);
         playersPlay.get(nickname).pickComponent(c);
 
-        try{clients.get(nickname).updatePickedComponent(c.getImageID(), false);}
-        catch(Exception e){System.out.println("Error during remote method invocation on client");}
         for(VirtualView view: clients.values()){
             try{view.updateShownComponent(c.getImageID(), false);}
             catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
+        try{clients.get(nickname).updatePickedComponent(c.getImageID(), false);}
+        catch(Exception e){System.out.println("Error during remote method invocation on client");}
     }
     //invoked when a player wants to reserve the component that it has picked for its ship board
     public void reserveComponent(String nickname) throws PickedComponentException, ReservedComponentException, InvalidActionException {
@@ -552,12 +552,12 @@ public class GameState {
 
         Component c = playersPlay.get(nickname).reserveComponent();
 
-        try{clients.get(nickname).updatePickedComponent(c.getImageID(), true);}
-        catch(Exception e){System.out.println("Error during remote method invocation on client");}
         for(VirtualView view: clients.values()){
             try{view.updateReservedComponent(nickname, c.getImageID(), true);}
             catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
+        try{clients.get(nickname).updatePickedComponent(c.getImageID(), true);}
+        catch(Exception e){System.out.println("Error during remote method invocation on client");}
     }
     //invoked when a player wants to pick one of the components that it has reserved for its ship board
     public void pickReservedComponent(String nickname, int position) throws ReservedComponentException, PickedComponentException, InvalidActionException {
@@ -573,12 +573,12 @@ public class GameState {
 
         Component c = playersPlay.get(nickname).pickReservedComponent(position);
 
-        try{clients.get(nickname).updatePickedComponent(c.getImageID(), false);}
-        catch(Exception e){System.out.println("Error during remote method invocation on client");}
         for(VirtualView view: clients.values()){
             try{view.updateReservedComponent(nickname, c.getImageID(), false);}
             catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
+        try{clients.get(nickname).updatePickedComponent(c.getImageID(), false);}
+        catch(Exception e){System.out.println("Error during remote method invocation on client");}
     }
     //invoked when a player wants to release (therefore, place face up) the component that it has picked
     public void putShown(String nickname) throws PickedComponentException, InvalidActionException {

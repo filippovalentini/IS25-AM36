@@ -110,7 +110,7 @@ public class GuiInterface implements UserInterface {
     @Override
     public void updateReservedComponent(String nickname, int imageID, boolean released) throws Exception {
         this.view.updateReservedComponent(nickname, imageID, released);
-        if(shipBuildingController != null){
+        if(shipBuildingController != null && nickname.equals(this.nickname)){
             shipBuildingController.updateReservedComponent(nickname, imageID, released);
         }
     }
@@ -126,7 +126,7 @@ public class GuiInterface implements UserInterface {
     @Override
     public void updateAssembledComponent(String nickname, int imageID, Orientation orientation, int x, int y) throws Exception {
         this.view.updateAssembledComponent(nickname, imageID, orientation, x, y);
-        if(shipBuildingController != null){
+        if(shipBuildingController != null && nickname.equals(this.nickname)){
             shipBuildingController.updateAssembledComponent(nickname, imageID, orientation, x, y);
         }
 

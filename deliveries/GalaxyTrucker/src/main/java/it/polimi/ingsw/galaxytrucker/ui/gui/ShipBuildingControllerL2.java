@@ -100,6 +100,53 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
         showNotification("ASSEMBLING PHASE - build your ship");
     }
 
+    public void setInitialCabin(){
+        // Determina l'ID dell'immagine del componente in base al colore
+        String componentImageId;
+
+        if(this.color.equals(Color.RED)){
+            componentImageId = "320";
+        } else if(this.color.equals(Color.BLUE)){
+            componentImageId = "318";
+        } else if(this.color.equals(Color.GREEN)){
+            componentImageId = "319";
+        } else if(this.color.equals(Color.YELLOW)){
+            componentImageId = "321";
+        } else {
+            showError("Player has an invalid color");
+            return;
+        }
+
+        // Recupera l'immagine del componente dalla mappa
+        Image cabinImage = componentImageMap.get(componentImageId);
+        if (cabinImage == null) {
+            showError("Cabin image not found for component ID: " + componentImageId);
+            return;
+        }
+
+        Button cabinButton = new Button();
+        double buttonSize = 110;
+
+        cabinButton.setPrefSize(buttonSize, buttonSize);
+        cabinButton.setMinSize(buttonSize, buttonSize);
+        cabinButton.setMaxSize(buttonSize, buttonSize);
+        cabinButton.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
+
+        // Crea l'ImageView con l'immagine della cabina
+        ImageView cabinImageView = new ImageView(cabinImage);
+        cabinImageView.setFitWidth(buttonSize);
+        cabinImageView.setFitHeight(buttonSize);
+        cabinImageView.setPreserveRatio(true);
+        cabinButton.setGraphic(cabinImageView);
+
+        // Genera un ID univoco per il bottone
+        String btnId = UUID.randomUUID().toString();
+        cabinButton.setUserData(btnId);
+
+        // Posiziona la cabina nella cella centrale della griglia
+        myGridPane.add(cabinButton, 3, 2);
+    }
+
     public void showNotification(String message) {
         notificationLabel.setText(message);
         fadeInThenOut(notificationPane);
@@ -264,14 +311,11 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
 
     private void setupReserveButton() {
         reserveButton.setOnAction(event -> {
-            if (lastDroppedButton == null) return;
-
-            if (isPlaceholder(reserved0Button)) {
-                reserveComponentToButton(reserved0Button);
-            } else if (isPlaceholder(reserved1Button)) {
-                reserveComponentToButton(reserved1Button);
-            } else {
-                System.out.println("Entrambe le riserve sono piene.");
+            try{
+                server.reserveComponent(this.gameID, this.playerNickname);
+            }
+            catch(Exception e){
+                showError(e.getMessage());
             }
         });
     }
@@ -314,76 +358,28 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     }
 
     private void setupReservedButtonsDrag() {
-        setupClickFromReservedButton(reserved0Button);
-        setupClickFromReservedButton(reserved1Button);
+        setupClickFromReservedButton0();
+        setupClickFromReservedButton1();
     }
 
-    private void setupClickFromReservedButton(Button button) {
-        button.setOnAction(event -> {
-            // Controlla se il bottone non è un placeholder e se non c'è già un componente pescato
-            if (!isPlaceholder(button) && !componentPicked) {
-                try {
-                    // Recupera l'ID del componente riservato
-                    String componentId = reservedComponentIds.get(button);
-                    if (componentId == null) return;
+    private void setupClickFromReservedButton0() {
+        reserved0Button.setOnAction(event -> {
+            try{
+                server.pickReservedComponent(this.gameID, this.playerNickname, 0);
+            }
+            catch(Exception e){
+                showError(e.getMessage());
+            }
+        });
+    }
 
-                    // Crea il nuovo bottone con l'immagine del componente riservato
-                    Button newButton = new Button();
-                    double buttonSize = 150;
-
-                    newButton.setPrefSize(buttonSize, buttonSize);
-                    newButton.setMinSize(buttonSize, buttonSize);
-                    newButton.setMaxSize(buttonSize, buttonSize);
-                    newButton.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
-
-                    // Copia l'immagine dal bottone riservato
-                    if (button.getGraphic() instanceof ImageView reservedImageView) {
-                        ImageView newImageView = new ImageView(reservedImageView.getImage());
-                        newImageView.setFitWidth(buttonSize);
-                        newImageView.setFitHeight(buttonSize);
-                        newImageView.setPreserveRatio(true);
-                        newImageView.setSmooth(true);
-                        newImageView.setCache(true);
-                        newButton.setGraphic(newImageView);
-                    }
-
-                    // Genera nuovo ID per il drag&drop
-                    String btnId = UUID.randomUUID().toString();
-                    newButton.setUserData(btnId);
-                    draggableButtons.put(btnId, newButton);
-
-                    // Setup drag&drop per il nuovo bottone
-                    newButton.setOnDragDetected(event2 -> {
-                        Dragboard db = newButton.startDragAndDrop(TransferMode.MOVE);
-                        ClipboardContent content = new ClipboardContent();
-                        content.putString(btnId);
-                        db.setContent(content);
-                        firstComponent = false;
-                        componentPicked = true;
-                        event2.consume();
-                    });
-
-                    // Mostra il nuovo componente nell'area hand
-                    handComponentArea.getChildren().clear();
-                    handComponentArea.getChildren().add(newButton);
-
-                    // Ripristina il placeholder per il bottone riservato
-                    setReservedButtonPlaceholder(button);
-                    reservedComponentIds.remove(button);
-
-                    // Aggiorna il riferimento al componente corrente
-                    lastDroppedButton = newButton;
-
-                    // Aggiorna lo stato dei bottoni
-                    rotateButton.setDisable(false);
-                    discardButton.setDisable(false);
-                    reserveButton.setDisable(false);
-                    pickComponent.setDisable(true);
-                    setButton.setDisable(true);
-
-                } catch (Exception e) {
-                    showError(e.getMessage());
-                }
+    private void setupClickFromReservedButton1() {
+        reserved1Button.setOnAction(event -> {
+            try{
+                server.pickReservedComponent(this.gameID, this.playerNickname, 1);
+            }
+            catch(Exception e){
+                showError(e.getMessage());
             }
         });
     }
@@ -394,6 +390,28 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
             return imageView.getImage().equals(placeholder);
         }
         return false;
+    }
+
+    private boolean imageButtonCorrespondence(Button button, String imageId) {
+        // Controlla se il bottone ha un'immagine
+        if (!(button.getGraphic() instanceof ImageView imageView)) {
+            return false;
+        }
+
+        // Recupera l'immagine dal bottone
+        Image buttonImage = imageView.getImage();
+        if (buttonImage == null) {
+            return false;
+        }
+
+        // Recupera l'immagine dalla mappa usando l'ID
+        Image componentImage = componentImageMap.get(imageId);
+        if (componentImage == null) {
+            return false;
+        }
+
+        // Confronta le due immagini
+        return buttonImage.equals(componentImage);
     }
 
     private void setReservedButtonPlaceholders() {
@@ -518,6 +536,7 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
         this.playerNickname = playerNickname;
         this.color = color;
         this.gameID = gameID;
+        setInitialCabin();
     }
 
     //notifies a view about an error committed while executing a method on the remote server; the parameter
@@ -613,7 +632,130 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     //component/ reserved a component (depending on the value of the boolean parameter); the parameter imageID
     //is needed for the view in order to show the right component to the user
     @Override
-    public void updateReservedComponent(String nickname, int imageID, boolean released) throws Exception{}
+    public void updateReservedComponent(String nickname, int imageID, boolean released) throws Exception{
+        Platform.runLater(() -> {
+            if(released){
+                if (lastDroppedButton == null) return;
+
+                if (isPlaceholder(reserved0Button)) {
+                    reserveComponentToButton(reserved0Button);
+                } else if (isPlaceholder(reserved1Button)) {
+                    reserveComponentToButton(reserved1Button);
+                } else {
+                    System.out.println("Entrambe le riserve sono piene.");
+                }
+            }
+            else{
+                Button button;
+                if(imageButtonCorrespondence(reserved0Button, String.valueOf(imageID))){
+                    button = reserved0Button;
+                }
+                else{
+                    button = reserved1Button;
+                }
+                // Controlla se il bottone non è un placeholder e se non c'è già un componente pescato
+                if (!isPlaceholder(button) && !componentPicked) {
+                    try {
+                        // Recupera l'ID del componente riservato
+                        String componentId = reservedComponentIds.get(button);
+                        if (componentId == null) return;
+
+                        // Crea il nuovo bottone con l'immagine del componente riservato
+                        Button newButton = new Button();
+                        double buttonSize = 150;
+
+                        newButton.setPrefSize(buttonSize, buttonSize);
+                        newButton.setMinSize(buttonSize, buttonSize);
+                        newButton.setMaxSize(buttonSize, buttonSize);
+                        newButton.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
+
+                        // Copia l'immagine dal bottone riservato
+                        if (button.getGraphic() instanceof ImageView reservedImageView) {
+                            ImageView newImageView = new ImageView(reservedImageView.getImage());
+                            newImageView.setFitWidth(buttonSize);
+                            newImageView.setFitHeight(buttonSize);
+                            newImageView.setPreserveRatio(true);
+                            newImageView.setSmooth(true);
+                            newImageView.setCache(true);
+                            newButton.setGraphic(newImageView);
+                        }
+
+                        // Genera nuovo ID per il drag&drop
+                        String btnId = UUID.randomUUID().toString();
+                        newButton.setUserData(btnId);
+                        draggableButtons.put(btnId, newButton);
+
+                        // Setup drag&drop per il nuovo bottone
+                        newButton.setOnDragDetected(event2 -> {
+                            Dragboard db = newButton.startDragAndDrop(TransferMode.MOVE);
+                            ClipboardContent content = new ClipboardContent();
+                            content.putString(btnId);
+                            db.setContent(content);
+                            firstComponent = false;
+                            componentPicked = true;
+                            event2.consume();
+                        });
+
+                        // Mostra il nuovo componente nell'area hand
+                        handComponentArea.getChildren().clear();
+                        handComponentArea.getChildren().add(newButton);
+
+                        // LOGICA STACK: gestisci lo spostamento dei componenti riservati
+                        if (button == reserved0Button) {
+                            // Rimuovi l'ID del componente che stiamo pescando
+                            reservedComponentIds.remove(reserved0Button);
+
+                            // Se c'è un componente in reserved1, spostalo in reserved0
+                            if (!isPlaceholder(reserved1Button)) {
+                                // Copia il contenuto di reserved1 in reserved0
+                                if (reserved1Button.getGraphic() instanceof ImageView reserved1ImageView) {
+                                    ImageView newImageView = new ImageView(reserved1ImageView.getImage());
+                                    newImageView.setFitWidth(110);
+                                    newImageView.setFitHeight(110);
+                                    newImageView.setPreserveRatio(true);
+                                    reserved0Button.setGraphic(newImageView);
+                                    reserved0Button.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
+                                    reserved0Button.setPrefSize(110, 110);
+
+                                    // Trasferisci anche l'ID del componente
+                                    String reserved1Id = reservedComponentIds.get(reserved1Button);
+                                    if (reserved1Id != null) {
+                                        reservedComponentIds.put(reserved0Button, reserved1Id);
+                                        reservedComponentIds.remove(reserved1Button);
+                                    }
+                                }
+
+                                // reserved1 diventa placeholder
+                                setReservedButtonPlaceholder(reserved1Button);
+
+                            } else {
+                                // Se non c'è nulla in reserved1, reserved0 diventa placeholder
+                                setReservedButtonPlaceholder(reserved0Button);
+                            }
+
+                        } else if (button == reserved1Button) {
+                            // Se clicchi su reserved1, solo reserved1 diventa placeholder
+                            setReservedButtonPlaceholder(reserved1Button);
+                            reservedComponentIds.remove(reserved1Button);
+                        }
+
+                        // Aggiorna il riferimento al componente corrente
+                        lastDroppedButton = newButton;
+
+                        // Aggiorna lo stato dei bottoni
+                        rotateButton.setDisable(false);
+                        discardButton.setDisable(false);
+                        reserveButton.setDisable(false);
+                        pickComponent.setDisable(true);
+                        setButton.setDisable(true);
+
+                    } catch (Exception e) {
+                        showError(e.getMessage());
+                    }
+                }
+            }
+        });
+    }
 
     //notifies the view about the fact that the picked component of the corresponding player has been rotated
     @Override
