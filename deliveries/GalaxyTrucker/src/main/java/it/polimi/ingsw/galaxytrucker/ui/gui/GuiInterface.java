@@ -67,7 +67,9 @@ public class GuiInterface implements UserInterface {
 
     @Override
     public void notifyError(String errorMessage) throws Exception {
-
+        if(shipBuildingController != null){
+            shipBuildingController.notifyError(errorMessage);
+        }
     }
 
     @Override
@@ -94,82 +96,122 @@ public class GuiInterface implements UserInterface {
 
     @Override
     public void updatePickedComponent(int imageID, boolean released) throws Exception {
-        //shipBuildingController.updatePickedComponentGUI(imageID, released);
-
+        this.view.updatePickedComponent(imageID, released);
+        if(shipBuildingController != null){
+            shipBuildingController.updatePickedComponent(imageID, released);
+        }
     }
 
     @Override
     public void updateShownComponent(int imageID, boolean released) throws Exception {
-
+        this.view.updateShownComponent(imageID, released);
     }
 
     @Override
     public void updateReservedComponent(String nickname, int imageID, boolean released) throws Exception {
-
+        this.view.updateReservedComponent(nickname, imageID, released);
+        if(shipBuildingController != null){
+            shipBuildingController.updateReservedComponent(nickname, imageID, released);
+        }
     }
 
     @Override
     public void updateRotatePickedComponent() throws Exception {
+        this.view.updateRotatePickedComponent();
+        if(shipBuildingController != null){
+            shipBuildingController.updateRotatePickedComponent();
+        }
     }
 
     @Override
     public void updateAssembledComponent(String nickname, int imageID, Orientation orientation, int x, int y) throws Exception {
-        //shipBuildingController.updateAssembledComponentGUI( nickname,  imageID,  orientation,  x,  y);
+        this.view.updateAssembledComponent(nickname, imageID, orientation, x, y);
+        if(shipBuildingController != null){
+            shipBuildingController.updateAssembledComponent(nickname, imageID, orientation, x, y);
+        }
 
     }
 
     @Override
     public void updatePickedDeck(List<Integer> deckIDs) throws Exception {
-
+        this.view.updatePickedDeck(deckIDs);
     }
 
     @Override
     public void updateReleasedDeck() throws Exception {
+        this.view.updateReleasedDeck();
     }
 
     @Override
     public void updateFinishAssembling(String nickname, int position) throws Exception {
-
+        this.view.updateFinishAssembling(nickname, position);
+        if(shipBuildingController != null){
+            shipBuildingController.updateFinishAssembling(nickname, position);
+        }
     }
 
     @Override
     public void updateStartNewCycle() throws Exception {
-
+        this.view.updateStartNewCycle();
+        if(shipBuildingController != null){
+            shipBuildingController.updateStartNewCycle();
+        }
     }
 
     @Override
     public void updateFinishedCycle() throws Exception {
-
+        this.view.updateFinishedCycle();
+        if(shipBuildingController != null){
+            shipBuildingController.updateFinishedCycle();
+        }
     }
 
     @Override
     public void updateShipPlacement() throws Exception {
-
+        this.view.updateShipPlacement();
+        if(shipBuildingController != null){
+            shipBuildingController.updateShipPlacement();
+        }
     }
 
     @Override
     public void updateShipControl() throws Exception {
-
+        this.view.updateShipControl();
+        if(shipBuildingController != null){
+            shipBuildingController.updateShipControl();
+        }
     }
 
     @Override
     public void updateDestroyedComponent(String nickname, int x, int y) throws Exception {
-
+        this.view.updateDestroyedComponent(nickname, x, y);
+        if(shipBuildingController != null){
+            shipBuildingController.updateDestroyedComponent(nickname, x, y);
+        }
     }
 
     @Override
     public void updateCrewChange(String nickname, int x, int y, int change) throws Exception {
-
+        this.view.updateCrewChange(nickname, x, y, change);
+        if(shipBuildingController != null){
+            shipBuildingController.updateCrewChange(nickname, x, y, change);
+        }
     }
 
     @Override
     public void updateBatteries(String nickname, int x, int y, int change) throws Exception {
-
+        this.view.updateBatteries(nickname, x, y, change);
+        if(shipBuildingController != null){
+            shipBuildingController.updateBatteries(nickname, x, y, change);
+        }
     }
 
     @Override
     public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws Exception {
-
+        this.view.updateAlienChange(nickname, x, y, isPurple, added);
+        if(shipBuildingController != null){
+            shipBuildingController.updateAlienChange(nickname, x, y, isPurple, added);
+        }
     }
 
     @Override

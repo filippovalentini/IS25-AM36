@@ -610,12 +610,12 @@ public class GameState {
 
         Component c = playersPlay.get(nickname).assembleComponent(x,y);
 
-        try{clients.get(nickname).updatePickedComponent(c.getImageID(), true);}
-        catch(Exception e){System.out.println("Error during remote method invocation on client");}
         for(VirtualView view: clients.values()){
             try{view.updateAssembledComponent(nickname, c.getImageID(), c.getOrientation(), x, y);}
             catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
+        try{clients.get(nickname).updatePickedComponent(c.getImageID(), true);}
+        catch(Exception e){System.out.println("Error during remote method invocation on client");}
     }
     //invoked when a player wants to change the orientation of the component that it has picked
     public void rotatePickedComponent(String nickname) throws InvalidActionException, PickedComponentException {

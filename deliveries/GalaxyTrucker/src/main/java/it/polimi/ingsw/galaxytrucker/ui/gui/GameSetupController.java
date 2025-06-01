@@ -26,15 +26,20 @@ import java.rmi.registry.Registry;
 public class GameSetupController implements GuiController {
     private VirtualServer server;
     private GameSessionManager client;
+    private String playerNickname;
+    private int gameID;
+    private Color color;
 
     private static Stage controlledStage; //stage of the JavaFX application
 
-    public static void setControlledStage(Stage stage) {
-        controlledStage = stage;
+    public GameSetupController(){
+        playerNickname = null;
+        gameID = 0;
+        color = null;
     }
 
-    private static void changeScene(Scene scene) {
-        controlledStage.setScene(scene);
+    public static void setControlledStage(Stage stage) {
+        controlledStage = stage;
     }
 
     public void setClientAndServer(GameSessionManager client, VirtualServer server) {
@@ -77,10 +82,7 @@ public class GameSetupController implements GuiController {
     @FXML
     private ComboBox<String> shipColorComboBox;
 
-    @Override
-    public void setServer(VirtualServer server) {
-        this.server = server;
-    }
+
 
     @FXML
     public void initialize() {
@@ -173,11 +175,11 @@ public class GameSetupController implements GuiController {
             pause.play();
             return;
         }
-        int gameID = Integer.parseInt(gID);
+        this.gameID = Integer.parseInt(gID);
         int players = playersComboBox.getValue();
         String gameType = gameTypeComboBox.getValue();
         boolean firstFlight = gameType.equals("first flight");
-        if(client.askIfGameStarted(gameID)){
+        if(client.askIfGameStarted(this.gameID)){
             existingIdErrorLabel.setVisible(true);
             PauseTransition pause = new PauseTransition(Duration.seconds(3));
             pause.setOnFinished(event -> existingIdErrorLabel.setVisible(false));
@@ -190,6 +192,7 @@ public class GameSetupController implements GuiController {
             Parent root = fxmlLoader.load();
             GameSetupController controller = fxmlLoader.getController();
             controller.setClientAndServer(this.client, this.server);
+            controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
             Stage stage = (Stage) confirmStartButton.getScene().getWindow();
             Scene scene = new Scene(root, 1210, 740);
             stage.setScene(scene);
@@ -209,24 +212,25 @@ public class GameSetupController implements GuiController {
             pause.play();
             return;
         }
-        int gameID = Integer.parseInt(gID);
-        String nickname = nicknameTextField.getText();
-        Color color = Color.convertEmojiIntoColor(shipColorComboBox.getValue());
-        GuiInterface.getInstance().setNickname(nickname);
-        GuiInterface.getInstance().setColor(color);
-        if(!client.askIfGameStarted(gameID)){
+        this.gameID = Integer.parseInt(gID);
+        this.playerNickname = nicknameTextField.getText();
+        this.color = Color.convertEmojiIntoColor(shipColorComboBox.getValue());
+        GuiInterface.getInstance().setNickname(this.playerNickname);
+        GuiInterface.getInstance().setColor(this.color);
+        if(!client.askIfGameStarted(this.gameID)){
             existingIdErrorLabel.setVisible(true);
             PauseTransition pause = new PauseTransition(Duration.seconds(3));
             pause.setOnFinished(event -> existingIdErrorLabel.setVisible(false));
             pause.play();
             return;
         }
-        if(client.tryToAddPlayerToGame(gameID, nickname, color)){
+        if(client.tryToAddPlayerToGame(this.gameID, this.playerNickname, this.color)){
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/lobby.fxml"));
             Parent root = fxmlLoader.load();
             LobbyController controller = fxmlLoader.getController();
             GuiInterface.getInstance().setLobbyController(controller);
             controller.setServer(this.server);
+            controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
             Stage stage = (Stage) confirmJoinButton.getScene().getWindow();
             Scene scene = new Scene(root, 1210, 740);
             stage.setScene(scene);
@@ -253,6 +257,19 @@ public class GameSetupController implements GuiController {
         this.client = new ClientRMI(GuiInterface.getInstance(), server);
     }
 
+
+    @Override
+    public void setServer(VirtualServer server) {
+        this.server = server;
+    }
+
+    //invoked to set the players information needed for method invocation on server
+    @Override
+    public void setPlayerInfo(int gameID, String playerNickname, Color color){
+        this.playerNickname = playerNickname;
+        this.color = color;
+        this.gameID = gameID;
+    }
 
 
 }

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.ui.gui;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.GuiController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBuildingController;
@@ -28,7 +29,6 @@ import java.util.UUID;
 
 public class ShipBuildingControllerL1 implements ShipBuildingController {
     private VirtualServer server;
-    private View view;
     int gameID;
     private String playerNickname;
     Color color;
@@ -103,9 +103,7 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
 
     }
 
-    public void setServer(VirtualServer server) {
-        this.server = server;
-    }
+
 
     private void setupGridPaneDragOver() {
         myGridPane.setOnDragOver(event -> {
@@ -406,5 +404,88 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
             button.setText(text);
         }
     }
+
+
+
+    @Override
+    public void setServer(VirtualServer server) {
+        this.server = server;
+    }
+
+    //invoked to set the players information needed for method invocation on server
+    @Override
+    public void setPlayerInfo(int gameID, String playerNickname, Color color){
+        this.playerNickname = playerNickname;
+        this.color = color;
+        this.gameID = gameID;
+    }
+
+    //notifies a view about an error committed while executing a method on the remote server; the parameter
+    //errorMessage describes the type of error
+    @Override
+    public void notifyError(String errorMessage) throws Exception{}
+
+    //notifies the view about the fact that a component has been successfully picked/released (depending on
+    //the value of the boolean parameter) by the corresponding player; the parameter imageID is needed for the
+    //view in order to show the right component to the user
+    @Override
+    public void updatePickedComponent(int imageID, boolean released) throws Exception{}
+
+    //notifies the view about the fact that a player (identified by the nickname parameter) has picked a reserved
+    //component/ reserved a component (depending on the value of the boolean parameter); the parameter imageID
+    //is needed for the view in order to show the right component to the user
+    @Override
+    public void updateReservedComponent(String nickname, int imageID, boolean released) throws Exception{}
+
+    //notifies the view about the fact that the picked component of the corresponding player has been rotated
+    @Override
+    public void updateRotatePickedComponent() throws Exception{}
+
+    //notifies the view about the fact that a player (identified by the nickname parameter) has assembled a
+    //component in position (x,y) of its ship board; the parameter imageID is needed for the view in order
+    //to show the right component to the user
+    @Override
+    public void updateAssembledComponent(String nickname, int imageID, Orientation orientation, int x, int y) throws Exception{}
+
+    //notifies the view about the fact that a player has finished the assembling phase and is
+    //correctly positioned on the flight board; still, other players have to finish building their ships
+    @Override
+    public void updateFinishAssembling(String nickname, int position) throws Exception{}
+
+    //notifies the view that the hourglass has been turned around
+    @Override
+    public void updateStartNewCycle() throws Exception{}
+
+    //notifies the view that the hourglass has finished running
+    @Override
+    public void updateFinishedCycle() throws Exception{}
+
+    //invoked when the game switches to the ship placement phase, which means that the players can only
+    //place their ship on the flight board
+    @Override
+    public void updateShipPlacement() throws Exception{}
+
+    //notifies the view that all the players have concluded the assembling phase, which means that the players
+    //enter the ship control phase
+    @Override
+    public void updateShipControl() throws Exception{}
+
+    //notifies the view that a component of a player's ship board has been destroyed
+    @Override
+    public void updateDestroyedComponent(String nickname, int x, int y) throws Exception{}
+
+    //notifies the view about a change in the number of crew of a cabin
+    @Override
+    public void updateCrewChange(String nickname, int x, int y, int change) throws Exception{}
+
+    //notifies the view that a player has initialized a battery container with batteries
+    @Override
+    public void updateBatteries(String nickname, int x, int y, int change) throws Exception{}
+
+    //notifies the view about a change in the number of aliens of a cabin
+    @Override
+    public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws Exception{}
+
+
 
 }

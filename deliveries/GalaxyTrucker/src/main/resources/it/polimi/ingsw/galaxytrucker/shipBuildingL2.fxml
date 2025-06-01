@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.shape.Rectangle?>
 
+<?import javafx.scene.control.Label?>
 <AnchorPane prefHeight="740.0" prefWidth="1210.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.ShipBuildingControllerL2">
 
     <!-- Sfondo -->
@@ -21,6 +22,23 @@
     <ImageView fitHeight="600.0" fitWidth="854.0" preserveRatio="true" AnchorPane.leftAnchor="191.0" AnchorPane.rightAnchor="191.0" AnchorPane.topAnchor="70.0">
         <Image url="@images/cardboard/shipL2.jpg" />
     </ImageView>
+
+    <Pane fx:id="notificationPane" layoutX="20.0" layoutY="10.0" prefHeight="30.0" prefWidth="500.0" opacity="0.0">
+        <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b2ffb2" height="30.0" stroke="BLACK" strokeType="INSIDE" width="500.0" />
+            <Label fx:id="notificationLabel" layoutX="10.0" layoutY="5.0" prefHeight="20.0" prefWidth="480.0"
+                   text="" style="-fx-font-size: 14px; -fx-text-fill: green;" />
+        </children>
+    </Pane>
+
+    <!-- Rettangolo per messaggi di errore (rosso) -->
+    <Pane fx:id="errorPane" layoutX="690.0" layoutY="10.0" prefHeight="30.0" prefWidth="500.0" opacity="0.0">
+        <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffb2b2" height="30.0" stroke="BLACK" strokeType="INSIDE" width="500.0" />
+            <Label fx:id="errorLabel" layoutX="10.0" layoutY="5.0" prefHeight="20.0" prefWidth="480.0"
+                   text="" style="-fx-font-size: 14px; -fx-text-fill: red;" />
+        </children>
+    </Pane>
 
           <!-- GridPane -->
     <GridPane fx:id="myGridPane" layoutX="222.0" prefHeight="550.0" prefWidth="767.0" AnchorPane.bottomAnchor="96.0" AnchorPane.leftAnchor="222.0" AnchorPane.rightAnchor="221.0" AnchorPane.topAnchor="94.0">

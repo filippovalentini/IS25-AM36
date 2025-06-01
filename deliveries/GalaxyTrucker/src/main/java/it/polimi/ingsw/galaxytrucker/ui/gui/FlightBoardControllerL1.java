@@ -1,5 +1,6 @@
 package it.polimi.ingsw.galaxytrucker.ui.gui;
 
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.FlightBoardController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.GuiController;
@@ -23,6 +24,9 @@ public class FlightBoardControllerL1 implements FlightBoardController {
 
     @FXML
     private Button backButton;
+    int gameID;
+    private String playerNickname;
+    Color color;
 
     private List<Label> targetLabels;
     private VirtualServer server;
@@ -88,11 +92,6 @@ public class FlightBoardControllerL1 implements FlightBoardController {
         label.setOnDragExited(event -> label.setStyle(""));
     }
 
-
-    public void setServer(VirtualServer server) {
-        this.server = server;
-    }
-
     public void setupBackButton() {
         backButton.setOnAction(event -> {
             try {
@@ -117,5 +116,18 @@ public class FlightBoardControllerL1 implements FlightBoardController {
                 System.err.println("Errore nel caricamento della Shipboard: " + e.getMessage());
             }
         });
+    }
+
+    @Override
+    public void setServer(VirtualServer server) {
+        this.server = server;
+    }
+
+    //invoked to set the players information needed for method invocation on server
+    @Override
+    public void setPlayerInfo(int gameID, String playerNickname, Color color){
+        this.playerNickname = playerNickname;
+        this.color = color;
+        this.gameID = gameID;
     }
 }

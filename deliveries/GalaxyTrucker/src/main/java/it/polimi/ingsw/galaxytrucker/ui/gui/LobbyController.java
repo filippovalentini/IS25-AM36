@@ -21,6 +21,9 @@ import java.util.Map;
 
 public class LobbyController implements GuiController {
     private VirtualServer server;
+    private int gameID;
+    private String playerNickname;
+    private Color color;
 
     @FXML
     private ListView<String> playerList;
@@ -50,9 +53,6 @@ public class LobbyController implements GuiController {
         });
     }
 
-    public void setServer(VirtualServer server) {
-        this.server = server;
-    }
 
     public void addPlayer(String nickname, Color color) {
         Platform.runLater(() -> {
@@ -100,10 +100,25 @@ public class LobbyController implements GuiController {
         controller = fxmlLoader.getController();
         GuiInterface.getInstance().setShipBuildingController(controller);
         controller.setServer(this.server);
+        controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
         Stage stage = (Stage) timerTitle.getScene().getWindow();
         Scene scene = new Scene(root, 1210, 740);
         stage.setScene(scene);
         stage.show();
+    }
+
+
+    public void setServer(VirtualServer server) {
+        this.server = server;
+    }
+
+
+    //invoked to set the players information needed for method invocation on server
+    @Override
+    public void setPlayerInfo(int gameID, String playerNickname, Color color){
+        this.playerNickname = playerNickname;
+        this.color = color;
+        this.gameID = gameID;
     }
 
 }

@@ -2,16 +2,20 @@ package it.polimi.ingsw.galaxytrucker.ui.gui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
-import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.GuiController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBuildingController;
-import it.polimi.ingsw.galaxytrucker.ui.view.View;
+import javafx.animation.FadeTransition;
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -20,6 +24,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,14 +35,13 @@ import java.util.UUID;
 public class ShipBuildingControllerL2 implements ShipBuildingController {
 
     private VirtualServer server;
-    private View view;
 
     private int gameID;
     private String playerNickname;
     private Color color;
 
-    private int col;
-    private int row;
+    private int colDroppedComponent;
+    private int rowDroppedComponent;
     private boolean isComponentPlaced = false;
     private boolean firstComponent = true;
     private boolean componentPicked = false;
@@ -48,6 +52,10 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     private Map<String, Image> cardImageMap = new HashMap<>();
     private Map<String, Image> componentImageMap = new HashMap<>();
 
+    @FXML private Pane notificationPane;
+    @FXML private Pane errorPane;
+    @FXML private Label notificationLabel;
+    @FXML private Label errorLabel;
     @FXML private Pane handComponentArea;
     @FXML private TextField ipTextField;
     @FXML private Button handComponentButton;
@@ -89,10 +97,31 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
 
         showPlaceholderImage();
         setReservedButtonPlaceholders();
+        showNotification("ASSEMBLING PHASE - build your ship");
     }
 
-    public void setServer(VirtualServer server) {
-        this.server = server;
+    public void showNotification(String message) {
+        notificationLabel.setText(message);
+        fadeInThenOut(notificationPane);
+    }
+
+    public void showError(String message) {
+        errorLabel.setText(message);
+        fadeInThenOut(errorPane);
+    }
+
+    private void fadeInThenOut(Pane pane) {
+        pane.setOpacity(1.0);
+
+        // Timer: attende 3 secondi, poi parte il fade out
+        PauseTransition wait = new PauseTransition(Duration.seconds(3));
+        wait.setOnFinished(event -> {
+            FadeTransition fade = new FadeTransition(Duration.seconds(1.5), pane);
+            fade.setFromValue(1.0);
+            fade.setToValue(0.0);
+            fade.play();
+        });
+        wait.play();
     }
 
     private void setupGridPaneDragOver() {
@@ -129,8 +158,8 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
                     }
 
                     // Calcola posizione nella griglia
-                    col = getColumnIndexFromX(event.getX());
-                    row = getRowIndexFromY(event.getY());
+                    colDroppedComponent = getColumnIndexFromX(event.getX());
+                    rowDroppedComponent = getRowIndexFromY(event.getY());
 
                     // Impostazioni grafiche
                     double buttonSize = 110;
@@ -146,8 +175,13 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
                     }
 
                     // Aggiungi alla griglia
-                    myGridPane.add(draggedButton, col, row);
+                    myGridPane.add(draggedButton, colDroppedComponent, rowDroppedComponent);
                     lastDroppedButton = draggedButton;
+
+                    Glow glow = new Glow();
+                    glow.setLevel(1);
+                    draggedButton.setEffect(glow);
+                    draggedButton.setOpacity(1);
 
                     // Aggiorna stato pulsanti
                     rotateButton.setDisable(false);
@@ -172,17 +206,11 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
 
     private void setupSetButton() {
         setButton.setOnAction(event -> {
-            if (lastDroppedButton != null) {
-                lastDroppedButton.setOnDragDetected(null);
-                isComponentPlaced = true;
-                componentPicked = false;
-
-                rotateButton.setDisable(true);
-                discardButton.setDisable(true);
-                reserveButton.setDisable(true);
-                pickComponent.setDisable(false);
-                setButton.setDisable(true);
-                lastDroppedButton = null;
+            try{
+                server.assembledComponent(this.gameID, this.playerNickname, this.rowDroppedComponent, this.colDroppedComponent);
+            }
+            catch (Exception e) {
+                showError(e.getMessage());
             }
         });
     }
@@ -203,95 +231,33 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
 
     private void setupPickComponentButton() {
         pickComponent.setOnAction(event -> {
-            if (isComponentPlaced || firstComponent) {
-                Button newButton = new Button();
-                double buttonSize = 150;
-
-                newButton.setPrefSize(buttonSize, buttonSize);
-                newButton.setMinSize(buttonSize, buttonSize);
-                newButton.setMaxSize(buttonSize, buttonSize);
-                newButton.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
-
-                Image image = null;
-                String randomKey = null;
-
-                if (!componentImageMap.isEmpty()) {
-                    Object[] keys = componentImageMap.keySet().toArray();
-                    randomKey = (String) keys[(int) (Math.random() * keys.length)];
-                    image = componentImageMap.get(randomKey);
-                }
-
-                if (image != null) {
-                    ImageView imageView = new ImageView(image);
-                    imageView.setFitWidth(buttonSize);
-                    imageView.setFitHeight(buttonSize);
-                    imageView.setPreserveRatio(true);
-                    imageView.setSmooth(true);
-                    imageView.setCache(true);
-                    newButton.setGraphic(imageView);
-                }
-
-                String btnId = UUID.randomUUID().toString();
-                newButton.setUserData(btnId);
-                draggableButtons.put(btnId, newButton);
-
-                newButton.setOnDragDetected(event2 -> {
-                    Dragboard db = newButton.startDragAndDrop(TransferMode.MOVE);
-                    ClipboardContent content = new ClipboardContent();
-                    content.putString(btnId);
-                    db.setContent(content);
-                    firstComponent = false;
-                    componentPicked = true;
-                    event2.consume();
-                });
-
-                handComponentArea.getChildren().clear();
-                handComponentArea.getChildren().add(newButton);
-
-                lastDroppedButton = newButton;
-
-                rotateButton.setDisable(false);
-                discardButton.setDisable(false);
-                reserveButton.setDisable(false);
-                pickComponent.setDisable(true);
-                setButton.setDisable(true);
+            try{
+                server.pickHidden(gameID, playerNickname);
+            }
+            catch(Exception e){
+                showError(e.getMessage());
             }
         });
     }
 
     private void setupRotateButton() {
         rotateButton.setOnAction(event -> {
-            if (lastDroppedButton != null && lastDroppedButton.getGraphic() instanceof ImageView) {
-                ImageView imageView = (ImageView) lastDroppedButton.getGraphic();
-                imageView.setRotate((imageView.getRotate() - 90) % 360);
+            try{
+                server.rotatePickedComponent(gameID, playerNickname);
+            }
+            catch(Exception e){
+                showError(e.getMessage());
             }
         });
     }
 
     private void setupDiscardButton() {
         discardButton.setOnAction(event -> {
-            if (lastDroppedButton != null) {
-                myGridPane.getChildren().remove(lastDroppedButton);
-                handComponentArea.getChildren().remove(lastDroppedButton);
-
-                String btnId = (String) lastDroppedButton.getUserData();
-                if (btnId != null) {
-                    draggableButtons.remove(btnId);
-                }
-
-                lastDroppedButton = null;
-
-                firstComponent = true;
-                isComponentPlaced = false;
-                componentPicked = false;
-
-                rotateButton.setDisable(true);
-                discardButton.setDisable(true);
-                reserveButton.setDisable(true);
-                pickComponent.setDisable(false);
-                setButton.setDisable(true);
-
-                showPlaceholderImage();
+            try{
+                server.putShown(this.gameID, this.playerNickname);
+            }
+            catch(Exception e){
+                showError(e.getMessage());
             }
         });
     }
@@ -348,28 +314,76 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     }
 
     private void setupReservedButtonsDrag() {
-        setupDragFromReservedButton(reserved0Button);
-        setupDragFromReservedButton(reserved1Button);
+        setupClickFromReservedButton(reserved0Button);
+        setupClickFromReservedButton(reserved1Button);
     }
 
-    private void setupDragFromReservedButton(Button button) {
-        button.setOnDragDetected(event -> {
-            if (!componentPicked && !isPlaceholder(button)) {
-                Button temp = new Button();
-                temp.setGraphic(button.getGraphic());
-                String btnId = reservedComponentIds.get(button);
-                if (btnId == null) return;
-                temp.setUserData(btnId);
-                draggableButtons.put(btnId, temp);
+    private void setupClickFromReservedButton(Button button) {
+        button.setOnAction(event -> {
+            // Controlla se il bottone non è un placeholder e se non c'è già un componente pescato
+            if (!isPlaceholder(button) && !componentPicked) {
+                try {
+                    // Recupera l'ID del componente riservato
+                    String componentId = reservedComponentIds.get(button);
+                    if (componentId == null) return;
 
-                temp.setOnDragDetected(null);
+                    // Crea il nuovo bottone con l'immagine del componente riservato
+                    Button newButton = new Button();
+                    double buttonSize = 150;
 
-                Dragboard db = button.startDragAndDrop(TransferMode.MOVE);
-                ClipboardContent content = new ClipboardContent();
-                content.putString(btnId);
-                db.setContent(content);
-                lastDroppedButton = temp;
-                event.consume();
+                    newButton.setPrefSize(buttonSize, buttonSize);
+                    newButton.setMinSize(buttonSize, buttonSize);
+                    newButton.setMaxSize(buttonSize, buttonSize);
+                    newButton.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
+
+                    // Copia l'immagine dal bottone riservato
+                    if (button.getGraphic() instanceof ImageView reservedImageView) {
+                        ImageView newImageView = new ImageView(reservedImageView.getImage());
+                        newImageView.setFitWidth(buttonSize);
+                        newImageView.setFitHeight(buttonSize);
+                        newImageView.setPreserveRatio(true);
+                        newImageView.setSmooth(true);
+                        newImageView.setCache(true);
+                        newButton.setGraphic(newImageView);
+                    }
+
+                    // Genera nuovo ID per il drag&drop
+                    String btnId = UUID.randomUUID().toString();
+                    newButton.setUserData(btnId);
+                    draggableButtons.put(btnId, newButton);
+
+                    // Setup drag&drop per il nuovo bottone
+                    newButton.setOnDragDetected(event2 -> {
+                        Dragboard db = newButton.startDragAndDrop(TransferMode.MOVE);
+                        ClipboardContent content = new ClipboardContent();
+                        content.putString(btnId);
+                        db.setContent(content);
+                        firstComponent = false;
+                        componentPicked = true;
+                        event2.consume();
+                    });
+
+                    // Mostra il nuovo componente nell'area hand
+                    handComponentArea.getChildren().clear();
+                    handComponentArea.getChildren().add(newButton);
+
+                    // Ripristina il placeholder per il bottone riservato
+                    setReservedButtonPlaceholder(button);
+                    reservedComponentIds.remove(button);
+
+                    // Aggiorna il riferimento al componente corrente
+                    lastDroppedButton = newButton;
+
+                    // Aggiorna lo stato dei bottoni
+                    rotateButton.setDisable(false);
+                    discardButton.setDisable(false);
+                    reserveButton.setDisable(false);
+                    pickComponent.setDisable(true);
+                    setButton.setDisable(true);
+
+                } catch (Exception e) {
+                    showError(e.getMessage());
+                }
             }
         });
     }
@@ -487,6 +501,193 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
             handComponentArea.getChildren().add(placeholderView);
         }
     }
+
+
+    //
+     //UPDATES launched by the server
+    //
+
+    @Override
+    public void setServer(VirtualServer server) {
+        this.server = server;
+    }
+
+    //invoked to set the players information needed for method invocation on server
+    @Override
+    public void setPlayerInfo(int gameID, String playerNickname, Color color){
+        this.playerNickname = playerNickname;
+        this.color = color;
+        this.gameID = gameID;
+    }
+
+    //notifies a view about an error committed while executing a method on the remote server; the parameter
+    //errorMessage describes the type of error
+    @Override
+    public void notifyError(String errorMessage) throws Exception{
+        Platform.runLater(() -> {showError(errorMessage);});
+    }
+
+    //notifies the view about the fact that a component has been successfully picked/released (depending on
+    //the value of the boolean parameter) by the corresponding player; the parameter imageID is needed for the
+    //view in order to show the right component to the user
+    @Override
+    public void updatePickedComponent(int imageID, boolean released) throws Exception{
+        Platform.runLater(() -> {
+            if(released){
+                if (lastDroppedButton != null) {
+                    myGridPane.getChildren().remove(lastDroppedButton);
+                    handComponentArea.getChildren().remove(lastDroppedButton);
+
+                    String btnId = (String) lastDroppedButton.getUserData();
+                    if (btnId != null) {
+                        draggableButtons.remove(btnId);
+                    }
+
+                    lastDroppedButton = null;
+
+                    firstComponent = true;
+                    isComponentPlaced = false;
+                    componentPicked = false;
+
+                    rotateButton.setDisable(true);
+                    discardButton.setDisable(true);
+                    reserveButton.setDisable(true);
+                    pickComponent.setDisable(false);
+                    setButton.setDisable(true);
+
+                    showPlaceholderImage();
+                }
+            }
+            else{
+                if (isComponentPlaced || firstComponent) {
+                    Button newButton = new Button();
+                    double buttonSize = 150;
+
+                    newButton.setPrefSize(buttonSize, buttonSize);
+                    newButton.setMinSize(buttonSize, buttonSize);
+                    newButton.setMaxSize(buttonSize, buttonSize);
+                    newButton.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
+
+                    Image image = componentImageMap.get(String.valueOf(imageID));
+
+                    if (image != null) {
+                        ImageView imageView = new ImageView(image);
+                        imageView.setFitWidth(buttonSize);
+                        imageView.setFitHeight(buttonSize);
+                        imageView.setPreserveRatio(true);
+                        imageView.setSmooth(true);
+                        imageView.setCache(true);
+                        newButton.setGraphic(imageView);
+                    }
+
+                    String btnId = UUID.randomUUID().toString();
+                    newButton.setUserData(btnId);
+                    draggableButtons.put(btnId, newButton);
+
+                    newButton.setOnDragDetected(event2 -> {
+                        Dragboard db = newButton.startDragAndDrop(TransferMode.MOVE);
+                        ClipboardContent content = new ClipboardContent();
+                        content.putString(btnId);
+                        db.setContent(content);
+                        firstComponent = false;
+                        componentPicked = true;
+                        event2.consume();
+                    });
+
+                    handComponentArea.getChildren().clear();
+                    handComponentArea.getChildren().add(newButton);
+
+                    lastDroppedButton = newButton;
+
+                    rotateButton.setDisable(false);
+                    discardButton.setDisable(false);
+                    reserveButton.setDisable(false);
+                    pickComponent.setDisable(true);
+                    setButton.setDisable(true);
+                }
+            }
+        });
+    }
+
+    //notifies the view about the fact that a player (identified by the nickname parameter) has picked a reserved
+    //component/ reserved a component (depending on the value of the boolean parameter); the parameter imageID
+    //is needed for the view in order to show the right component to the user
+    @Override
+    public void updateReservedComponent(String nickname, int imageID, boolean released) throws Exception{}
+
+    //notifies the view about the fact that the picked component of the corresponding player has been rotated
+    @Override
+    public void updateRotatePickedComponent() throws Exception{
+        Platform.runLater(() -> {
+            if (lastDroppedButton != null && lastDroppedButton.getGraphic() instanceof ImageView) {
+                ImageView imageView = (ImageView) lastDroppedButton.getGraphic();
+                imageView.setRotate((imageView.getRotate() - 90) % 360);
+            }
+        });
+    }
+
+    //notifies the view about the fact that a player (identified by the nickname parameter) has assembled a
+    //component in position (x,y) of its ship board; the parameter imageID is needed for the view in order
+    //to show the right component to the user
+    @Override
+    public void updateAssembledComponent(String nickname, int imageID, Orientation orientation, int x, int y) throws Exception{
+        Platform.runLater(() -> {
+            if (lastDroppedButton != null) {
+                lastDroppedButton.setOnDragDetected(null);
+                lastDroppedButton.setEffect(null);
+                lastDroppedButton.setOpacity(1.0);
+                isComponentPlaced = true;
+                componentPicked = false;
+
+                rotateButton.setDisable(true);
+                discardButton.setDisable(true);
+                reserveButton.setDisable(true);
+                pickComponent.setDisable(false);
+                setButton.setDisable(true);
+                lastDroppedButton = null;
+            }
+        });
+    }
+
+    //notifies the view about the fact that a player has finished the assembling phase and is
+    //correctly positioned on the flight board; still, other players have to finish building their ships
+    @Override
+    public void updateFinishAssembling(String nickname, int position) throws Exception{}
+
+    //notifies the view that the hourglass has been turned around
+    @Override
+    public void updateStartNewCycle() throws Exception{}
+
+    //notifies the view that the hourglass has finished running
+    @Override
+    public void updateFinishedCycle() throws Exception{}
+
+    //invoked when the game switches to the ship placement phase, which means that the players can only
+    //place their ship on the flight board
+    @Override
+    public void updateShipPlacement() throws Exception{}
+
+    //notifies the view that all the players have concluded the assembling phase, which means that the players
+    //enter the ship control phase
+    @Override
+    public void updateShipControl() throws Exception{}
+
+    //notifies the view that a component of a player's ship board has been destroyed
+    @Override
+    public void updateDestroyedComponent(String nickname, int x, int y) throws Exception{}
+
+    //notifies the view about a change in the number of crew of a cabin
+    @Override
+    public void updateCrewChange(String nickname, int x, int y, int change) throws Exception{}
+
+    //notifies the view that a player has initialized a battery container with batteries
+    @Override
+    public void updateBatteries(String nickname, int x, int y, int change) throws Exception{}
+
+    //notifies the view about a change in the number of aliens of a cabin
+    @Override
+    public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws Exception{}
+
 
 
 }
