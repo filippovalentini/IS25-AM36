@@ -3,6 +3,7 @@ package it.polimi.ingsw.galaxytrucker.ui.gui;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import java.io.IOException;
 
@@ -15,8 +16,9 @@ public class JavaFxLauncher extends Application {
 
         GameSetupController controller = fxmlLoader.getController();
         GuiInterface.getInstance().setSetupController(controller);
-
         stage.setTitle("Galaxy Trucker");
+        Image icon = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/galaxytrucker/images/galaxyTruckerAppIcon.png"));
+        stage.getIcons().add(icon);
         stage.setScene(scene);
         stage.show();
     }

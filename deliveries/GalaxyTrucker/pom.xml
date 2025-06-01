@@ -88,7 +88,7 @@
           <execution>
             <id>default-cli</id>
             <configuration>
-              <mainClass>it.polimi.ingsw.galaxytrucker/it.polimi.ingsw.galaxytrucker.ui.gui.MainGUI</mainClass>
+              <mainClass>it.polimi.ingsw.galaxytrucker/it.polimi.ingsw.galaxytrucker.ui.gui.TestGUI</mainClass>
               <launcher>app</launcher>
               <jlinkZipName>app</jlinkZipName>
               <jlinkImageName>app</jlinkImageName>

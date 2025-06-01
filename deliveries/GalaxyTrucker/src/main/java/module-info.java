@@ -4,6 +4,7 @@ module it.polimi.ingsw.galaxytrucker {
     requires java.smartcardio;
     requires java.rmi;
     requires com.fasterxml.jackson.databind;
+    requires jdk.incubator.vector;
 
 
     opens it.polimi.ingsw.galaxytrucker.ui to javafx.fxml;

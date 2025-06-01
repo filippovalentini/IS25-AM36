@@ -7,13 +7,14 @@ import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import java.io.IOException;
 
-public class MainGUI extends Application {
+public class TestGUI extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(MainGUI.class.getResource("/it/polimi/ingsw/galaxytrucker/shipBuildingL2.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(TestGUI.class.getResource("/it/polimi/ingsw/galaxytrucker/flightBoardL2.fxml"));
+        //FXMLLoader fxmlLoader = new FXMLLoader(TestGUI.class.getResource("/it/polimi/ingsw/galaxytrucker/endgame.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1210, 740);
-        stage.setTitle("GalaxyTrucker");
-        Image icon = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/galaxytrucker/images/components/engine7.jpg"));
+        stage.setTitle("Galaxy Trucker");
+        Image icon = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/galaxytrucker/images/galaxyTruckerAppIcon.png"));
         stage.getIcons().add(icon);
         stage.setScene(scene);
         stage.show();
