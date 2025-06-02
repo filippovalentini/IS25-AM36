@@ -20,6 +20,7 @@ public class View {
     private Integer currentCard;        //current card to solve
     private ViewDice dice;          //dice of the game
     private String hourglassState;      //state of the hourglass
+    private int hourglassPosition;
 
     public View(String nickname, Color color, boolean firstFlight) {
         this.player = new ViewPlayer(nickname, color, firstFlight);
@@ -31,6 +32,7 @@ public class View {
         this.currentCard = null;
         this.dice = new ViewDice();
         this.hourglassState = null;
+        this.hourglassPosition = 0;
     }
 
     //returns a map associating the nickname of each current player with its color
@@ -72,6 +74,11 @@ public class View {
         }
         map.put(this.player.getNickname(), this.player.getColor());
         return map;
+    }
+
+    //returns the current position of the hourglass
+    public int getHourglassPosition() {
+        return hourglassPosition;
     }
 
     //returns the dice result or 0 if the dice are no longer valid
@@ -280,6 +287,7 @@ public class View {
     //notifies the view that the hourglass has been turned around
     public void updateStartNewCycle(){
         this.hourglassState = "Hourglass is running...";
+        this.hourglassPosition++;
     }
 
     //notifies the view that the hourglass has finished running

@@ -6,9 +6,10 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
-
 
 <ScrollPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.FlightBoardControllerL1">
    <content>
@@ -30,7 +31,7 @@
                   </image>
               </ImageView>
       
-              <Button fx:id="backButton" layoutX="1100.0" layoutY="80.0" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: #4682B4; -fx-font-size: 20px; -fx-text-fill: black;" text="🔙" />
+              <Button fx:id="backButton" layoutX="1110.0" layoutY="88.0" prefHeight="64.0" prefWidth="61.0" style="-fx-background-color: #4682B4; -fx-font-size: 20px; -fx-text-fill: black;" text="🔙" />
       
               <!-- Posizioni 0-17 (vuote) -->
               <Label fx:id="pos14" layoutX="305.0" layoutY="534.0" prefHeight="50.0" prefWidth="50.0" text="">
@@ -130,6 +131,19 @@
                   <Font size="72.0" />
                </font>
               </Label>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#004e97" height="51.0" layoutX="22.0" layoutY="14.0" stroke="BLACK" strokeType="INSIDE" width="1149.0" />
+            <Pane fx:id="messagePane" layoutX="36.0" layoutY="20.0" prefHeight="39.0" prefWidth="486.0">
+              <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b2ffb2" height="32.0" layoutY="5.0" stroke="BLACK" strokeType="INSIDE" width="486.0" />
+                  <Label fx:id="messageLabel" layoutX="8.0" layoutY="7.0" prefHeight="29.0" prefWidth="478.0" style="-fx-font-size: 14px; -fx-text-fill: green;" text="" />
+              </children>
+          </Pane>
+            <Pane fx:id="errorPane" layoutX="673.0" layoutY="20.0" prefHeight="39.0" prefWidth="486.0">
+                <children>
+                    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffb2b2" height="33.0" layoutY="4.0" stroke="BLACK" strokeType="INSIDE" width="480.0" />
+                    <Label fx:id="errorLabel" layoutX="8.0" layoutY="5.0" prefHeight="30.0" prefWidth="468.0" style="-fx-font-size: 14px; -fx-text-fill: red;" text="" />
+                </children>
+            </Pane>
       
           </AnchorPane>
       </StackPane>

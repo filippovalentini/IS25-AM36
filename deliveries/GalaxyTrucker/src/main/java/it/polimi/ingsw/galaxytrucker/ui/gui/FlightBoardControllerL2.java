@@ -72,7 +72,6 @@ public class FlightBoardControllerL2 implements FlightBoardController {
         );
 
         start.setOnDragDetected(event -> {
-            System.out.println("🚀 Drag iniziato");
             Dragboard db = start.startDragAndDrop(TransferMode.MOVE);
             ClipboardContent content = new ClipboardContent();
             content.putString("🚀");
@@ -148,6 +147,10 @@ public class FlightBoardControllerL2 implements FlightBoardController {
         } else {
             start.setText("");
             start.setOnDragDetected(null); // disattiva drag
+            deck1Button.setDisable(true);
+            deck2Button.setDisable(true);
+            deck3Button.setDisable(true);
+            releaseDeckButton.setDisable(true);
         }
     }
 
@@ -347,13 +350,13 @@ public class FlightBoardControllerL2 implements FlightBoardController {
             Label targetLabel = targetLabels.get(position);
             targetLabel.setText(emoji);
 
-            deck1Button.setDisable(true);
-            deck2Button.setDisable(true);
-            deck3Button.setDisable(true);
-            releaseDeckButton.setDisable(true);
-
-            if (start.getText().isEmpty()) {
-                start.setText("🚀");
+            if(playerNickname.equals(nickname)){
+                deck1Button.setDisable(true);
+                deck2Button.setDisable(true);
+                deck3Button.setDisable(true);
+                releaseDeckButton.setDisable(true);
+                start.setText("");
+                start.setOnDragDetected(null);
             }
         });
     }

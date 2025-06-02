@@ -4,6 +4,9 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.FlightBoardController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.GuiController;
+import javafx.animation.FadeTransition;
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,53 +15,120 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FlightBoardControllerL1 implements FlightBoardController {
     @FXML private Label start;
     @FXML private Label pos0, pos1, pos2, pos3, pos4, pos5, pos6, pos7, pos8, pos9;
     @FXML private Label pos10, pos11, pos12, pos13, pos14, pos15, pos16, pos17;
+    @FXML private Button backButton;
+    @FXML private Label messageLabel;
+    @FXML private Label errorLabel;
+    @FXML private Pane errorPane;
+    @FXML private Pane messagePane;
 
-    @FXML
-    private Button backButton;
     int gameID;
     private String playerNickname;
     Color color;
-
     private List<Label> targetLabels;
     private VirtualServer server;
+    private Map<Color, Integer> colorCellMap;
+    private Map<String, Color> playerColorMap;
 
 
     @FXML
     public void initialize() {
         setupBackButton();
-        // Inizializza la lista delle posizioni
+
         targetLabels = List.of(
                 pos0, pos1, pos2, pos3, pos4, pos5, pos6, pos7, pos8,
                 pos9, pos10, pos11, pos12, pos13, pos14, pos15, pos16, pos17
         );
 
-        // Imposta comportamento di drag per la navicella
         start.setOnDragDetected(event -> {
             Dragboard db = start.startDragAndDrop(TransferMode.MOVE);
-
             ClipboardContent content = new ClipboardContent();
             content.putString("🚀");
             db.setContent(content);
 
-            // Imposta immagine durante il drag
-            Image rocketImage = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/galaxytrucker/images/spaceShip.png"));
+            InputStream imgStream = getClass().getResourceAsStream("/it/polimi/ingsw/galaxytrucker/images/spaceShip.png");
+            Image rocketImage = new Image(imgStream);
             db.setDragView(rocketImage, rocketImage.getWidth() / 2, rocketImage.getHeight() / 2);
 
             event.consume();
         });
 
-        // Abilita il drop su ogni etichetta di posizione
         for (Label label : targetLabels) {
             enableDropOn(label);
+        }
+
+        colorCellMap = GuiInterface.getInstance().getView().getColorCellMap();
+        playerColorMap = GuiInterface.getInstance().getView().getPlayerColorMap();
+        this.playerNickname = GuiInterface.getInstance().getView().getNickname();
+        this.color = GuiInterface.getInstance().getView().getColor();
+
+        initializeFlightBoardFromMap();
+    }
+
+    public void showMessage(String message) {
+        messageLabel.setText(message);
+        fadeInThenOut(messagePane);
+    }
+
+    public void showError(String message) {
+        errorLabel.setText(message);
+        fadeInThenOut(errorPane);
+    }
+
+    private void fadeInThenOut(Pane pane) {
+        pane.setOpacity(1.0);
+
+        // Timer: attende 3 secondi, poi parte il fade out
+        PauseTransition wait = new PauseTransition(Duration.seconds(3));
+        wait.setOnFinished(event -> {
+            FadeTransition fade = new FadeTransition(Duration.seconds(1.5), pane);
+            fade.setFromValue(1.0);
+            fade.setToValue(0.0);
+            fade.play();
+        });
+        wait.play();
+    }
+
+    public void initializeFlightBoardFromMap() {
+        for (Label label : targetLabels) {
+            label.setText(""); // Pulisce le posizioni
+        }
+
+        boolean playerAlreadyPlaced = false;
+
+        for (Map.Entry<Color, Integer> entry : colorCellMap.entrySet()) {
+            Color playerColor = entry.getKey();
+            Integer position = entry.getValue();
+
+            if (position != null && position >= 0 && position < targetLabels.size()) {
+                Label targetLabel = targetLabels.get(position);
+                targetLabel.setText(Color.convertColorIntoEmoji(playerColor));
+
+                if (playerColor.equals(this.color)) {
+                    playerAlreadyPlaced = true;
+                }
+            }
+        }
+
+        // Se il giocatore non ha ancora piazzato, mostra 🚀 nella start
+        if (!playerAlreadyPlaced) {
+            start.setText("🚀");
+        } else {
+            start.setText("");
+            start.setOnDragDetected(null); // disattiva drag
         }
     }
 
@@ -71,15 +141,13 @@ public class FlightBoardControllerL1 implements FlightBoardController {
         });
 
         label.setOnDragDropped(event -> {
-            Dragboard db = event.getDragboard();
-            boolean success = false;
-            if (db.hasString()) {
-                label.setText("🔴");     // Mostra l'emoji a destinazione
-                start.setText("");       // Rimuove la navicella
-                start.setOnDragDetected(null); // ❌ Disabilita il drag dopo il primo utilizzo
-                success = true;
+            try {
+                int pos = targetLabels.indexOf(label);
+                server.setPosition(this.gameID, this.playerNickname, pos);
+            } catch (Exception e) {
+                showError(e.getMessage());
             }
-            event.setDropCompleted(success);
+            event.setDropCompleted(true);
             event.consume();
         });
 
@@ -95,18 +163,15 @@ public class FlightBoardControllerL1 implements FlightBoardController {
     public void setupBackButton() {
         backButton.setOnAction(event -> {
             try {
-                // Carica la nuova schermata
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipBuildingL1.fxml"));
                 Parent root = fxmlLoader.load();
 
-                // Ora FlightBoardControllerL1 ha il metodo setServer()
                 ShipBuildingControllerL1 controller = fxmlLoader.getController();
                 controller.setServer(this.server);
+                controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+                GuiInterface.getInstance().setShipBuildingController(controller);
 
-                // Ottieni lo stage corrente dal bottone
                 Stage stage = (Stage) backButton.getScene().getWindow();
-
-                // Imposta la nuova scena
                 Scene scene = new Scene(root, 1210, 740);
                 stage.setScene(scene);
                 stage.show();
@@ -123,7 +188,6 @@ public class FlightBoardControllerL1 implements FlightBoardController {
         this.server = server;
     }
 
-    //invoked to set the players information needed for method invocation on server
     @Override
     public void setPlayerInfo(int gameID, String playerNickname, Color color){
         this.playerNickname = playerNickname;
@@ -131,31 +195,44 @@ public class FlightBoardControllerL1 implements FlightBoardController {
         this.gameID = gameID;
     }
 
-    //notifies a view about an error committed while executing a method on the remote server; the parameter
-    //errorMessage describes the type of error
     @Override
-    public void notifyError(String errorMessage) throws Exception{}
+    public void notifyError(String errorMessage) {
+        Platform.runLater(() -> {
+            showError(errorMessage);
 
-    //notifies the view about the fact that the corresponding player has successfully picked a deck; the parameter
-    //contains the list of image IDs of the cards contained in the deck, so that the view can show the
-    //correct adventure cards to the user
-    @Override
-    public void updatePickedDeck(List<Integer> deckIDs) throws Exception{}
+            if (start.getText().isEmpty()) {
+                start.setText("🚀");
+            }
+        });
+    }
 
-    //notifies the view about the fact that the corresponding player has successfully released a deck
     @Override
-    public void updateReleasedDeck() throws Exception{}
+    public void updatePickedDeck(List<Integer> deckIDs) {}
 
-    //notifies the view about the fact that a player has finished the assembling phase and is
-    //correctly positioned on the flight board; still, other players have to finish building their ships
     @Override
-    public void updateFinishAssembling(String nickname, int position) throws Exception{}
+    public void updateReleasedDeck() {}
 
-    //notifies the view that the hourglass has been turned around
     @Override
-    public void updateStartNewCycle() throws Exception{}
+    public void updateFinishAssembling(String nickname, int position) {
+        Platform.runLater(() -> {
+            Color playerColor = playerColorMap.get(nickname);
+            if (playerColor == null || position < 0 || position >= targetLabels.size()) return;
 
-    //notifies the view that the hourglass has finished running
+            String emoji = Color.convertColorIntoEmoji(playerColor);
+            Label targetLabel = targetLabels.get(position);
+            targetLabel.setText(emoji);
+
+            if(playerNickname.equals(nickname)){
+                start.setText("");
+                start.setOnDragDetected(null);
+            }
+        });
+    }
+
     @Override
-    public void updateFinishedCycle() throws Exception{}
+    public void updateStartNewCycle() {}
+
+    @Override
+    public void updateFinishedCycle() {}
+
 }

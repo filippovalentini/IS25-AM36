@@ -178,7 +178,7 @@ public class GameSetupController implements GuiController {
         this.gameID = Integer.parseInt(gID);
         int players = playersComboBox.getValue();
         String gameType = gameTypeComboBox.getValue();
-        boolean firstFlight = gameType.equals("first flight");
+        boolean firstFlight = gameType.equals("First Flight");
         if(client.askIfGameStarted(this.gameID)){
             existingIdErrorLabel.setVisible(true);
             PauseTransition pause = new PauseTransition(Duration.seconds(3));

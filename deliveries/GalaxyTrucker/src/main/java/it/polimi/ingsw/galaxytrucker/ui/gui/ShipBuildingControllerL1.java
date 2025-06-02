@@ -3,9 +3,7 @@ package it.polimi.ingsw.galaxytrucker.ui.gui;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
-import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.GuiController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBuildingController;
-import it.polimi.ingsw.galaxytrucker.ui.view.View;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -96,7 +94,7 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
         setupSetButton();
         setupPickComponentButton();
         setupDiscardButton();
-        setupflightBoardButton();
+        setupFlightBoardButton();
 
         //metodo per mettere le immagini sul bottone
         setupButtonImages();
@@ -311,7 +309,7 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
     }*/
 
 
-    public void setupflightBoardButton() {
+    public void setupFlightBoardButton() {
         flightBoardButton.setOnAction(event -> {
             try {
                 // Carica la nuova schermata
@@ -321,6 +319,8 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
                 // Ora FlightBoardControllerL1 ha il metodo setServer()
                 FlightBoardControllerL1 controller = fxmlLoader.getController();
                 controller.setServer(this.server);
+                controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+                GuiInterface.getInstance().setFlightBoardController(controller);
 
                 // Ottieni lo stage corrente dal bottone
                 Stage stage = (Stage) flightBoardButton.getScene().getWindow();

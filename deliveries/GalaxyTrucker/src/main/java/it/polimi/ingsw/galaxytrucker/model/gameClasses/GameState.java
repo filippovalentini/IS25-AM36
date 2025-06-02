@@ -718,7 +718,7 @@ public class GameState {
         if (!isPositioned(nickname)) {
             throw new InvalidActionException("First finish assembling!!!");
         } else if (state != State.SHIP_BUILDING) {
-            System.out.println("Wait for assembling phase");
+            throw new InvalidActionException("Wait for assembling phase");
         } else if (firstFlight) {
             throw new InvalidActionException("Invalid action for first flight game");
         } else{
