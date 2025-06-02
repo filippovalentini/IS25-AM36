@@ -1,19 +1,26 @@
 package it.polimi.ingsw.galaxytrucker.ui.gui;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.ui.UserInterface;
+import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.FlightBoardController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBuildingController;
 import it.polimi.ingsw.galaxytrucker.ui.view.View;
 import javafx.application.Application;
+import javafx.scene.image.Image;
 
+import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GuiInterface implements UserInterface {
     private static GuiInterface instance;
     private GameSetupController setupController;
     private LobbyController lobbyController;
     private ShipBuildingController shipBuildingController;
+    private FlightBoardController flightBoardController;
     private View view;
     private String nickname;
     private Color color;
@@ -59,8 +66,45 @@ public class GuiInterface implements UserInterface {
         this.shipBuildingController = shipBuildingController;
     }
 
+    public void setFlightBoardController(FlightBoardController flightBoardController) {
+        this.flightBoardController = flightBoardController;
+    }
+
     public void launch() {
         Application.launch(JavaFxLauncher.class);
+    }
+
+    public Map<String, Image> loadImageMap(String imageType) {
+        Map<String, Image> result = new HashMap<>();
+
+        try (InputStream jsonStream = getClass().getResourceAsStream(
+                "/it/polimi/ingsw/galaxytrucker/jsonImageMappings/" + imageType + ".json")) {
+
+            if (jsonStream == null) {
+                System.err.println(imageType + ".json non trovato!");
+                return result;
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, String> idToPath = mapper.readValue(jsonStream, Map.class);
+
+            for (Map.Entry<String, String> entry : idToPath.entrySet()) {
+                String id = entry.getKey();
+                String fullPath = "/it/polimi/ingsw/galaxytrucker/images/" + imageType + "/" + entry.getValue();
+
+                try (InputStream imageStream = getClass().getResourceAsStream(fullPath)) {
+                    if (imageStream == null) {
+                        System.err.println("Immagine mancante: " + fullPath);
+                        continue;
+                    }
+                    result.put(id, new Image(imageStream));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
 
@@ -69,6 +113,9 @@ public class GuiInterface implements UserInterface {
     public void notifyError(String errorMessage) throws Exception {
         if(shipBuildingController != null){
             shipBuildingController.notifyError(errorMessage);
+        }
+        if(flightBoardController != null){
+            flightBoardController.notifyError(errorMessage);
         }
     }
 
@@ -135,11 +182,17 @@ public class GuiInterface implements UserInterface {
     @Override
     public void updatePickedDeck(List<Integer> deckIDs) throws Exception {
         this.view.updatePickedDeck(deckIDs);
+        if(flightBoardController != null){
+            flightBoardController.updatePickedDeck(deckIDs);
+        }
     }
 
     @Override
     public void updateReleasedDeck() throws Exception {
         this.view.updateReleasedDeck();
+        if(flightBoardController != null){
+            flightBoardController.updateReleasedDeck();
+        }
     }
 
     @Override
@@ -147,6 +200,9 @@ public class GuiInterface implements UserInterface {
         this.view.updateFinishAssembling(nickname, position);
         if(shipBuildingController != null){
             shipBuildingController.updateFinishAssembling(nickname, position);
+        }
+        if(flightBoardController != null){
+            flightBoardController.updateFinishAssembling(nickname, position);
         }
     }
 

@@ -43,9 +43,35 @@ public class View {
         return players;
     }
 
+    //returns the nickname of the main player
+    public String getNickname() {
+        return player.getNickname();
+    }
+
+    //returns the color of the main player
+    public Color getColor() {
+        return player.getColor();
+    }
+
     //determines if the view is related to a first flight game or not
     public boolean isFirstFlight() {
         return firstFlight;
+    }
+
+    //returns a map that for each player color associates the player's position on the flight board; it's
+    //invoked by the gui flight board controller for visualization purposes
+    public Map<Color,Integer> getColorCellMap(){
+        return flightBoard.getColorCellMap();
+    }
+
+    //returns a map that for each player's nickname associates the player's color
+    public Map<String, Color> getPlayerColorMap(){
+        Map<String, Color> map = new HashMap<>();
+        for (ViewPlayer player : otherPlayers.values()) {
+            map.put(player.getNickname(), player.getColor());
+        }
+        map.put(this.player.getNickname(), this.player.getColor());
+        return map;
     }
 
     //returns the dice result or 0 if the dice are no longer valid

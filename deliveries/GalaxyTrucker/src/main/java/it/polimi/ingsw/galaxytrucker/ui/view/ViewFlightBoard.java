@@ -18,6 +18,24 @@ public class ViewFlightBoard {
         this.positions.put(player, new ViewPosition(lap, cell));
     }
 
+    //returns a map that for each player color associates the player's position on the flight board; it's
+    //invoked by the gui flight board controller for visualization purposes
+    public Map<Color,Integer> getColorCellMap(){
+        Map<Color,Integer> map = new HashMap<>();
+        for(ViewPlayer player : positions.keySet()){
+            Color color = player.getColor();
+            Integer cell;
+            if(positions.get(player) == null){
+                cell = null;
+            }
+            else{
+                cell = positions.get(player).getCell();
+            }
+            map.put(color, cell);
+        }
+        return map;
+    }
+
     //visualizes the state of the ship board of a player
     public void visualize() {
         System.out.println("╔════════════════════════════╗");

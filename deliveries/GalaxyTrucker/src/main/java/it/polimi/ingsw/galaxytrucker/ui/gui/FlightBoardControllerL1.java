@@ -130,4 +130,32 @@ public class FlightBoardControllerL1 implements FlightBoardController {
         this.color = color;
         this.gameID = gameID;
     }
+
+    //notifies a view about an error committed while executing a method on the remote server; the parameter
+    //errorMessage describes the type of error
+    @Override
+    public void notifyError(String errorMessage) throws Exception{}
+
+    //notifies the view about the fact that the corresponding player has successfully picked a deck; the parameter
+    //contains the list of image IDs of the cards contained in the deck, so that the view can show the
+    //correct adventure cards to the user
+    @Override
+    public void updatePickedDeck(List<Integer> deckIDs) throws Exception{}
+
+    //notifies the view about the fact that the corresponding player has successfully released a deck
+    @Override
+    public void updateReleasedDeck() throws Exception{}
+
+    //notifies the view about the fact that a player has finished the assembling phase and is
+    //correctly positioned on the flight board; still, other players have to finish building their ships
+    @Override
+    public void updateFinishAssembling(String nickname, int position) throws Exception{}
+
+    //notifies the view that the hourglass has been turned around
+    @Override
+    public void updateStartNewCycle() throws Exception{}
+
+    //notifies the view that the hourglass has finished running
+    @Override
+    public void updateFinishedCycle() throws Exception{}
 }

@@ -49,7 +49,6 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     private Button lastDroppedButton = null;
     private final Map<String, Button> draggableButtons = new HashMap<>();
     private final Map<Button, String> reservedComponentIds = new HashMap<>();
-    private Map<String, Image> cardImageMap = new HashMap<>();
     private Map<String, Image> componentImageMap = new HashMap<>();
 
     @FXML private Pane notificationPane;
@@ -58,6 +57,8 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     @FXML private Label errorLabel;
     @FXML private Pane handComponentArea;
     @FXML private TextField ipTextField;
+    @FXML private Label playerNameLabel;
+    @FXML private Label playerColorLabel;
     @FXML private Button handComponentButton;
     @FXML private GridPane myGridPane;
     @FXML private Button setButton;
@@ -91,9 +92,7 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
         pickComponent.setDisable(false);
         reserveButton.setDisable(true);
         setButton.setDisable(true);
-
-        cardImageMap = loadImageMap("cards");
-        componentImageMap = loadImageMap("components");
+        componentImageMap = GuiInterface.getInstance().loadImageMap("components");
 
         showPlaceholderImage();
         setReservedButtonPlaceholders();
@@ -443,6 +442,8 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
 
                 FlightBoardControllerL2 controller = fxmlLoader.getController();
                 controller.setServer(this.server);
+                controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+                GuiInterface.getInstance().setFlightBoardController(controller);
 
                 Stage stage = (Stage) flightBoardButton.getScene().getWindow();
                 stage.setScene(new Scene(root, 1210, 740));
@@ -453,39 +454,6 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
                 System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
             }
         });
-    }
-
-    private Map<String, Image> loadImageMap(String imageType) {
-        Map<String, Image> result = new HashMap<>();
-
-        try (InputStream jsonStream = getClass().getResourceAsStream(
-                "/it/polimi/ingsw/galaxytrucker/jsonImageMappings/" + imageType + ".json")) {
-
-            if (jsonStream == null) {
-                System.err.println(imageType + ".json non trovato!");
-                return result;
-            }
-
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> idToPath = mapper.readValue(jsonStream, Map.class);
-
-            for (Map.Entry<String, String> entry : idToPath.entrySet()) {
-                String id = entry.getKey();
-                String fullPath = "/it/polimi/ingsw/galaxytrucker/images/" + imageType + "/" + entry.getValue();
-
-                try (InputStream imageStream = getClass().getResourceAsStream(fullPath)) {
-                    if (imageStream == null) {
-                        System.err.println("Immagine mancante: " + fullPath);
-                        continue;
-                    }
-                    result.put(id, new Image(imageStream));
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return result;
     }
 
     private int getColumnIndexFromX(double x) {
@@ -537,6 +505,8 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
         this.color = color;
         this.gameID = gameID;
         setInitialCabin();
+        playerNameLabel.setText(playerNickname);
+        playerColorLabel.setText(Color.convertColorIntoEmoji(color));
     }
 
     //notifies a view about an error committed while executing a method on the remote server; the parameter
