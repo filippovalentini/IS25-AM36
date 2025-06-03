@@ -90,6 +90,9 @@ public class ShipBoard {
     public boolean isCorrect() {
          return correct;
     }
+    public int getNumberReservedComponents() {
+        return reservedComponents.size();
+    }
 
     //adds a listener to the map of listeners of the ship board
     public void addListener(String nickname, VirtualView client) {

@@ -50,6 +50,9 @@ public class Player {
     public Color getColor(){
         return shipBoard.getColor();
     }
+    public int getNumberReservedComponents() {
+        return shipBoard.getNumberReservedComponents();
+    }
 
     //adds a listener to the map of listeners of the player's ship board
     public void addListener(String nickname, VirtualView client) {

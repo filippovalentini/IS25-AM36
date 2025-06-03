@@ -573,6 +573,9 @@ public class GameState {
         if(isPositioned(nickname)){
             throw new InvalidActionException("You have already finished assembling");
         }
+        if(position < 0 || position >= playersPlay.get(nickname).getNumberReservedComponents()){
+            throw new InvalidActionException("No reserved component in this position");
+        }
 
         Component c = playersPlay.get(nickname).pickReservedComponent(position);
 

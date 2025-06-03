@@ -5,6 +5,7 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBuildingController;
+import it.polimi.ingsw.galaxytrucker.ui.view.ViewComponent;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -26,11 +27,10 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import javax.swing.text.View;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class ShipBuildingControllerL2 implements ShipBuildingController {
 
@@ -89,56 +89,166 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
         setupShownComponentsButton();
 
         componentImageMap = GuiInterface.getInstance().loadImageMap("components");
-
         showPlaceholderImage();
-        setReservedButtonPlaceholders();
-        showNotification("ASSEMBLING PHASE - build your ship");
+        setReservedButtonPlaceholder(reserved0Button);
+        setReservedButtonPlaceholder(reserved1Button);
+
+        initializeShipBoard();
     }
 
     public void initializeShipBoard(){
-        initializeAssembledComponents();
         initializeGameInfo();
-        initializeReservedComponents();
+        initializeAssembledComponents();
+        initializeOtherComponents();
         initializeButtons();
     }
 
+
     public void initializeAssembledComponents(){
+        List<List<ViewComponent>> assembledComponents = GuiInterface.getInstance().getView().getAssembledComponents(this.playerNickname);
+        for(int i = 0; i < assembledComponents.size(); i++){
+            for(int j = 0; j < assembledComponents.get(i).size(); j++){
+                ViewComponent component = assembledComponents.get(i).get(j);
+                if(component != null){
+                    setImageOnGrid(component.getImageID(), component.getOrientation(), j, i);
+                }
+            }
+        }
 
     }
 
-    public void initializeReservedComponents(){
-
+    public void initializeOtherComponents(){
+        ViewComponent pickedComponent = GuiInterface.getInstance().getView().getPickedViewComponent();
+        if(pickedComponent != null){
+            initializePickedComponent(String.valueOf(pickedComponent.getImageID()), pickedComponent.getOrientation());
+        }
+        List<ViewComponent> reservedComponents = GuiInterface.getInstance().getView().getReservedComponents(this.playerNickname);
+        int numberReservedComponents = reservedComponents.size();
+        if(numberReservedComponents > 0){
+            initializeReserveComponentButton(reserved0Button, componentImageMap.get(reservedComponents.get(0).getImageID()));
+            if(numberReservedComponents > 1){
+                initializeReserveComponentButton(reserved1Button, componentImageMap.get(reservedComponents.get(1).getImageID()));
+            }
+        }
     }
+
+    public void initializePickedComponent(String imageID, Orientation orientation){
+        if (isComponentPlaced || firstComponent) {
+            Button newButton = new Button();
+            double buttonSize = 150;
+
+            newButton.setPrefSize(buttonSize, buttonSize);
+            newButton.setMinSize(buttonSize, buttonSize);
+            newButton.setMaxSize(buttonSize, buttonSize);
+            newButton.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
+
+            Image image = componentImageMap.get(imageID);
+
+            if (image != null) {
+                ImageView imageView = new ImageView(image);
+                imageView.setFitWidth(buttonSize);
+                imageView.setFitHeight(buttonSize);
+                imageView.setPreserveRatio(true);
+                imageView.setSmooth(true);
+                imageView.setCache(true);
+                if(orientation.equals(Orientation.WEST)){
+                    imageView.setRotate((imageView.getRotate() - 90) % 360);
+                }
+                else if(orientation.equals(Orientation.SOUTH)){
+                    imageView.setRotate((imageView.getRotate() - 180) % 360);
+                }
+                else if(orientation.equals(Orientation.EAST)){
+                    imageView.setRotate((imageView.getRotate() - 270) % 360);
+                }
+                newButton.setGraphic(imageView);
+            }
+
+            String btnId = UUID.randomUUID().toString();
+            newButton.setUserData(btnId);
+            draggableButtons.put(btnId, newButton);
+
+            newButton.setOnDragDetected(event2 -> {
+                Dragboard db = newButton.startDragAndDrop(TransferMode.MOVE);
+                ClipboardContent content = new ClipboardContent();
+                content.putString(btnId);
+                db.setContent(content);
+                firstComponent = false;
+                componentPicked = true;
+                event2.consume();
+            });
+
+            handComponentArea.getChildren().clear();
+            handComponentArea.getChildren().add(newButton);
+
+            lastDroppedButton = newButton;
+        }
+    }
+
+
 
     public void initializeGameInfo(){
+        String gameState = GuiInterface.getInstance().getView().getGameState();
+        String nn = GuiInterface.getInstance().getView().getNickname();
+        Color c = GuiInterface.getInstance().getView().getColor();
 
+        this.playerNickname = nn;
+        this.color = c;
+        notificationLabel.setText(gameState);
+        playerNameLabel.setText(nn);
+        playerColorLabel.setText(Color.convertColorIntoEmoji(c));
     }
 
     public void initializeButtons(){
+        if(GuiInterface.getInstance().getView().getPickedViewComponent() != null){
+            pickComponent.setDisable(true);
+            reserveButton.setDisable(false);
+            rotateButton.setDisable(false);
+            discardButton.setDisable(false);
+        }
+        else {
+            pickComponent.setDisable(false);
+            reserveButton.setDisable(true);
+            rotateButton.setDisable(true);
+            discardButton.setDisable(true);
+        }
+        reserved0Button.setDisable(false);
+        reserved1Button.setDisable(false);
+        shownComponentButton.setDisable(false);
+        setButton.setDisable(true);
+        flightBoardButton.setDisable(false);
 
+        List<String> otherPlayerNicknames = GuiInterface.getInstance().getView().getOtherPlayerNicknames();
+        int numberOtherPlayers = otherPlayerNicknames.size();
+        player1ShipButton.setDisable(false);
+        player1ShipButton.setText(otherPlayerNicknames.get(0));
+        if(numberOtherPlayers == 1){
+            player2ShipButton.setDisable(true);
+            player2ShipButton.setText("no player");
+            player3ShipButton.setDisable(true);
+            player3ShipButton.setText("no player");
+        }
+        if(numberOtherPlayers == 2){
+            player2ShipButton.setDisable(false);
+            player2ShipButton.setText(otherPlayerNicknames.get(1));
+            player3ShipButton.setDisable(true);
+            player3ShipButton.setText("no player");
+        }
+        if(numberOtherPlayers == 3){
+            player2ShipButton.setDisable(false);
+            player2ShipButton.setText(otherPlayerNicknames.get(1));
+            player3ShipButton.setDisable(false);
+            player3ShipButton.setText(otherPlayerNicknames.get(2));
+        }
     }
 
-    public void setInitialCabin(){
-        // Determina l'ID dell'immagine del componente in base al colore
-        String componentImageId;
-
-        if(this.color.equals(Color.RED)){
-            componentImageId = "320";
-        } else if(this.color.equals(Color.BLUE)){
-            componentImageId = "318";
-        } else if(this.color.equals(Color.GREEN)){
-            componentImageId = "319";
-        } else if(this.color.equals(Color.YELLOW)){
-            componentImageId = "321";
-        } else {
-            showError("Player has an invalid color");
+    public void setImageOnGrid(String imageID, Orientation orientation, int column, int row){
+        // Recupera l'immagine del componente dalla mappa
+        if(imageID.equals("000") || imageID.equals("003")){
             return;
         }
-
-        // Recupera l'immagine del componente dalla mappa
-        Image cabinImage = componentImageMap.get(componentImageId);
+        Image cabinImage = componentImageMap.get(imageID);
         if (cabinImage == null) {
-            showError("Cabin image not found for component ID: " + componentImageId);
+            showError("Cabin image not found for component ID: " + imageID);
             return;
         }
 
@@ -155,14 +265,22 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
         cabinImageView.setFitWidth(buttonSize);
         cabinImageView.setFitHeight(buttonSize);
         cabinImageView.setPreserveRatio(true);
+        if(orientation.equals(Orientation.WEST)){
+            cabinImageView.setRotate((cabinImageView.getRotate() - 90) % 360);
+        }
+        else if(orientation.equals(Orientation.SOUTH)){
+            cabinImageView.setRotate((cabinImageView.getRotate() - 180) % 360);
+        }
+        else if(orientation.equals(Orientation.EAST)){
+            cabinImageView.setRotate((cabinImageView.getRotate() - 270) % 360);
+        }
         cabinButton.setGraphic(cabinImageView);
 
         // Genera un ID univoco per il bottone
         String btnId = UUID.randomUUID().toString();
         cabinButton.setUserData(btnId);
 
-        // Posiziona la cabina nella cella centrale della griglia
-        myGridPane.add(cabinButton, 3, 2);
+        myGridPane.add(cabinButton, column, row);
     }
 
     public void showNotification(String message) {
@@ -361,11 +479,8 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
         });
     }
 
-    private void reserveComponentToButton(Button targetButton) {
-        if (lastDroppedButton == null || !(lastDroppedButton.getGraphic() instanceof ImageView)) return;
-
-        ImageView sourceImageView = (ImageView) lastDroppedButton.getGraphic();
-        ImageView reservedView = new ImageView(sourceImageView.getImage());
+    private void initializeReserveComponentButton(Button targetButton, Image image) {
+        ImageView reservedView = new ImageView(image);
         reservedView.setFitWidth(110);
         reservedView.setFitHeight(110);
         reservedView.setPreserveRatio(true);
@@ -373,6 +488,13 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
         targetButton.setGraphic(reservedView);
         targetButton.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
         targetButton.setPrefSize(110, 110);
+    }
+
+    private void reserveComponentToButton(Button targetButton) {
+        if (lastDroppedButton == null || !(lastDroppedButton.getGraphic() instanceof ImageView)) return;
+
+        ImageView sourceImageView = (ImageView) lastDroppedButton.getGraphic();
+        initializeReserveComponentButton(targetButton, sourceImageView.getImage());
 
         reservedComponentIds.put(targetButton, (String) lastDroppedButton.getUserData());
 
@@ -449,27 +571,6 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
         return buttonImage.equals(componentImage);
     }
 
-    private void setReservedButtonPlaceholders() {
-        Image placeholder = componentImageMap.get("3");
-        if (placeholder != null) {
-            ImageView view0 = new ImageView(placeholder);
-            view0.setFitWidth(110);
-            view0.setFitHeight(110);
-            view0.setPreserveRatio(true);
-            reserved0Button.setGraphic(view0);
-            reserved0Button.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
-            reserved0Button.setPrefSize(110, 110);
-
-            ImageView view1 = new ImageView(placeholder);
-            view1.setFitWidth(110);
-            view1.setFitHeight(110);
-            view1.setPreserveRatio(true);
-            reserved1Button.setGraphic(view1);
-            reserved1Button.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
-            reserved1Button.setPrefSize(110, 110);
-        }
-    }
-
     public void setupFlightBoardButton() {
         flightBoardButton.setOnAction(event -> {
             try {
@@ -540,9 +641,6 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
         this.playerNickname = playerNickname;
         this.color = color;
         this.gameID = gameID;
-        setInitialCabin();
-        playerNameLabel.setText(playerNickname);
-        playerColorLabel.setText(Color.convertColorIntoEmoji(color));
     }
 
     //notifies a view about an error committed while executing a method on the remote server; the parameter
@@ -584,52 +682,13 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
                 }
             }
             else{
-                if (isComponentPlaced || firstComponent) {
-                    Button newButton = new Button();
-                    double buttonSize = 150;
+                initializePickedComponent(String.valueOf(imageID), Orientation.NORTH);
 
-                    newButton.setPrefSize(buttonSize, buttonSize);
-                    newButton.setMinSize(buttonSize, buttonSize);
-                    newButton.setMaxSize(buttonSize, buttonSize);
-                    newButton.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
-
-                    Image image = componentImageMap.get(String.valueOf(imageID));
-
-                    if (image != null) {
-                        ImageView imageView = new ImageView(image);
-                        imageView.setFitWidth(buttonSize);
-                        imageView.setFitHeight(buttonSize);
-                        imageView.setPreserveRatio(true);
-                        imageView.setSmooth(true);
-                        imageView.setCache(true);
-                        newButton.setGraphic(imageView);
-                    }
-
-                    String btnId = UUID.randomUUID().toString();
-                    newButton.setUserData(btnId);
-                    draggableButtons.put(btnId, newButton);
-
-                    newButton.setOnDragDetected(event2 -> {
-                        Dragboard db = newButton.startDragAndDrop(TransferMode.MOVE);
-                        ClipboardContent content = new ClipboardContent();
-                        content.putString(btnId);
-                        db.setContent(content);
-                        firstComponent = false;
-                        componentPicked = true;
-                        event2.consume();
-                    });
-
-                    handComponentArea.getChildren().clear();
-                    handComponentArea.getChildren().add(newButton);
-
-                    lastDroppedButton = newButton;
-
-                    rotateButton.setDisable(false);
-                    discardButton.setDisable(false);
-                    reserveButton.setDisable(false);
-                    pickComponent.setDisable(true);
-                    setButton.setDisable(true);
-                }
+                rotateButton.setDisable(false);
+                discardButton.setDisable(false);
+                reserveButton.setDisable(false);
+                pickComponent.setDisable(true);
+                setButton.setDisable(true);
             }
         });
     }
@@ -641,124 +700,23 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     public void updateReservedComponent(String nickname, int imageID, boolean released) throws Exception{
         Platform.runLater(() -> {
             if(released){
-                if (lastDroppedButton == null) return;
-
                 if (isPlaceholder(reserved0Button)) {
                     reserveComponentToButton(reserved0Button);
+                    reserved0Button.setDisable(false);
                 } else if (isPlaceholder(reserved1Button)) {
                     reserveComponentToButton(reserved1Button);
+                    reserved1Button.setDisable(false);
                 } else {
                     System.out.println("Entrambe le riserve sono piene.");
                 }
             }
             else{
-                Button button;
                 if(imageButtonCorrespondence(reserved0Button, String.valueOf(imageID))){
-                    button = reserved0Button;
+                    ImageView buttonView = (ImageView) reserved1Button.getGraphic();
+                    Image buttonImage = buttonView.getImage();
+                    initializeReserveComponentButton(reserved0Button, buttonImage);
                 }
-                else{
-                    button = reserved1Button;
-                }
-                // Controlla se il bottone non è un placeholder e se non c'è già un componente pescato
-                if (!isPlaceholder(button) && !componentPicked) {
-                    try {
-                        // Recupera l'ID del componente riservato
-                        String componentId = reservedComponentIds.get(button);
-                        if (componentId == null) return;
-
-                        // Crea il nuovo bottone con l'immagine del componente riservato
-                        Button newButton = new Button();
-                        double buttonSize = 150;
-
-                        newButton.setPrefSize(buttonSize, buttonSize);
-                        newButton.setMinSize(buttonSize, buttonSize);
-                        newButton.setMaxSize(buttonSize, buttonSize);
-                        newButton.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
-
-                        // Copia l'immagine dal bottone riservato
-                        if (button.getGraphic() instanceof ImageView reservedImageView) {
-                            ImageView newImageView = new ImageView(reservedImageView.getImage());
-                            newImageView.setFitWidth(buttonSize);
-                            newImageView.setFitHeight(buttonSize);
-                            newImageView.setPreserveRatio(true);
-                            newImageView.setSmooth(true);
-                            newImageView.setCache(true);
-                            newButton.setGraphic(newImageView);
-                        }
-
-                        // Genera nuovo ID per il drag&drop
-                        String btnId = UUID.randomUUID().toString();
-                        newButton.setUserData(btnId);
-                        draggableButtons.put(btnId, newButton);
-
-                        // Setup drag&drop per il nuovo bottone
-                        newButton.setOnDragDetected(event2 -> {
-                            Dragboard db = newButton.startDragAndDrop(TransferMode.MOVE);
-                            ClipboardContent content = new ClipboardContent();
-                            content.putString(btnId);
-                            db.setContent(content);
-                            firstComponent = false;
-                            componentPicked = true;
-                            event2.consume();
-                        });
-
-                        // Mostra il nuovo componente nell'area hand
-                        handComponentArea.getChildren().clear();
-                        handComponentArea.getChildren().add(newButton);
-
-                        // LOGICA STACK: gestisci lo spostamento dei componenti riservati
-                        if (button == reserved0Button) {
-                            // Rimuovi l'ID del componente che stiamo pescando
-                            reservedComponentIds.remove(reserved0Button);
-
-                            // Se c'è un componente in reserved1, spostalo in reserved0
-                            if (!isPlaceholder(reserved1Button)) {
-                                // Copia il contenuto di reserved1 in reserved0
-                                if (reserved1Button.getGraphic() instanceof ImageView reserved1ImageView) {
-                                    ImageView newImageView = new ImageView(reserved1ImageView.getImage());
-                                    newImageView.setFitWidth(110);
-                                    newImageView.setFitHeight(110);
-                                    newImageView.setPreserveRatio(true);
-                                    reserved0Button.setGraphic(newImageView);
-                                    reserved0Button.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
-                                    reserved0Button.setPrefSize(110, 110);
-
-                                    // Trasferisci anche l'ID del componente
-                                    String reserved1Id = reservedComponentIds.get(reserved1Button);
-                                    if (reserved1Id != null) {
-                                        reservedComponentIds.put(reserved0Button, reserved1Id);
-                                        reservedComponentIds.remove(reserved1Button);
-                                    }
-                                }
-
-                                // reserved1 diventa placeholder
-                                setReservedButtonPlaceholder(reserved1Button);
-
-                            } else {
-                                // Se non c'è nulla in reserved1, reserved0 diventa placeholder
-                                setReservedButtonPlaceholder(reserved0Button);
-                            }
-
-                        } else if (button == reserved1Button) {
-                            // Se clicchi su reserved1, solo reserved1 diventa placeholder
-                            setReservedButtonPlaceholder(reserved1Button);
-                            reservedComponentIds.remove(reserved1Button);
-                        }
-
-                        // Aggiorna il riferimento al componente corrente
-                        lastDroppedButton = newButton;
-
-                        // Aggiorna lo stato dei bottoni
-                        rotateButton.setDisable(false);
-                        discardButton.setDisable(false);
-                        reserveButton.setDisable(false);
-                        pickComponent.setDisable(true);
-                        setButton.setDisable(true);
-
-                    } catch (Exception e) {
-                        showError(e.getMessage());
-                    }
-                }
+                setReservedButtonPlaceholder(reserved1Button);
             }
         });
     }

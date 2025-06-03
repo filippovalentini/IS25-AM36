@@ -45,6 +45,11 @@ public class View {
         return players;
     }
 
+    //returns the nicknames of the other players in the game
+    public List<String> getOtherPlayerNicknames() {
+        return new ArrayList<>(otherPlayers.keySet());
+    }
+
     //returns the nickname of the main player
     public String getNickname() {
         return player.getNickname();
@@ -53,6 +58,11 @@ public class View {
     //returns the color of the main player
     public Color getColor() {
         return player.getColor();
+    }
+
+    //returns the component picked by the player
+    public ViewComponent getPickedViewComponent() {
+        return pickedViewComponent;
     }
 
     //determines if the view is related to a first flight game or not
@@ -89,6 +99,11 @@ public class View {
         return dice.getResult1() + dice.getResult2();
     }
 
+    //returns a string describing the state of the game
+    public String getGameState() {
+        return gameState;
+    }
+
     //returns the list of image IDs of the shown components
     public List<Integer> getShownComponents() {
         List<Integer> shownComponentsImageIDs = new ArrayList<>();
@@ -96,6 +111,26 @@ public class View {
             shownComponentsImageIDs.add(Integer.parseInt(component.getImageID()));
         }
         return shownComponentsImageIDs;
+    }
+
+    //returns the list od assembled components of a player
+    public List<List<ViewComponent>> getAssembledComponents(String nickname) {
+        if(nickname.equals(this.player.getNickname())){
+            return this.player.getAssembledComponents();
+        }
+        else{
+            return otherPlayers.get(nickname).getAssembledComponents();
+        }
+    }
+
+    //returns the list of reserved components of a player
+    public List<ViewComponent> getReservedComponents(String nickname) {
+        if(nickname.equals(this.player.getNickname())){
+            return this.player.getReservedComponents();
+        }
+        else{
+            return otherPlayers.get(nickname).getReservedComponents();
+        }
     }
 
     //visualizes the state of the game and of the ship board of the player associated to the view

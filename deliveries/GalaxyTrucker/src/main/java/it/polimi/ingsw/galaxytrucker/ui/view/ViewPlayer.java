@@ -38,6 +38,14 @@ public class ViewPlayer {
         return lostComponents;
     }
 
+    public List<List<ViewComponent>> getAssembledComponents() {
+        return new ArrayList<>(assembledComponents);
+    }
+
+    public List<ViewComponent> getReservedComponents() {
+        return new ArrayList<>(reservedComponents);
+    }
+
     public void visualize(){
         if (!reservedComponents.isEmpty()) {
             System.out.print("📦 Reserved Components: ");
