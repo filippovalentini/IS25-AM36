@@ -89,6 +89,15 @@ public class View {
         return dice.getResult1() + dice.getResult2();
     }
 
+    //returns the list of image IDs of the shown components
+    public List<Integer> getShownComponents() {
+        List<Integer> shownComponentsImageIDs = new ArrayList<>();
+        for (ViewComponent component : shownComponents) {
+            shownComponentsImageIDs.add(Integer.parseInt(component.getImageID()));
+        }
+        return shownComponentsImageIDs;
+    }
+
     //visualizes the state of the game and of the ship board of the player associated to the view
     public void visualizeShip(){
         if(gameState.equals("END GAME")){

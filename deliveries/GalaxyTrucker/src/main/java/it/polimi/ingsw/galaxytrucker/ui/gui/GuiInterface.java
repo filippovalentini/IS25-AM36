@@ -21,6 +21,7 @@ public class GuiInterface implements UserInterface {
     private LobbyController lobbyController;
     private ShipBuildingController shipBuildingController;
     private FlightBoardController flightBoardController;
+    private ShownComponentsController shownComponentsController;
     private View view;
     private String nickname;
     private Color color;
@@ -70,6 +71,10 @@ public class GuiInterface implements UserInterface {
         this.flightBoardController = flightBoardController;
     }
 
+    public void setShownComponentsController(ShownComponentsController shownComponentsController) {
+        this.shownComponentsController = shownComponentsController;
+    }
+
     public void launch() {
         Application.launch(JavaFxLauncher.class);
     }
@@ -117,6 +122,9 @@ public class GuiInterface implements UserInterface {
         if(flightBoardController != null){
             flightBoardController.notifyError(errorMessage);
         }
+        if(shownComponentsController != null){
+            shownComponentsController.notifyError(errorMessage);
+        }
     }
 
     @Override
@@ -152,6 +160,9 @@ public class GuiInterface implements UserInterface {
     @Override
     public void updateShownComponent(int imageID, boolean released) throws Exception {
         this.view.updateShownComponent(imageID, released);
+        if(shownComponentsController != null){
+            shownComponentsController.updateShownComponents(imageID, released);
+        }
     }
 
     @Override

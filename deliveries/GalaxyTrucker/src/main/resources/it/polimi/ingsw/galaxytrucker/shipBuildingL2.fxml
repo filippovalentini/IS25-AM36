@@ -81,7 +81,7 @@
       
                   <Button fx:id="handComponentButton" layoutX="4.0" maxHeight="150.0" maxWidth="150.0" minHeight="150.0" minWidth="150.0" prefHeight="150.0" prefWidth="150.0" text="" />      </children>
           </Pane>
-          <Button fx:id="viewShownComponentButton" layoutX="41.0" layoutY="604.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="124.0" text="shown components" />
+          <Button fx:id="shownComponentButton" layoutX="41.0" layoutY="604.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="124.0" text="shown components" />
           <Button fx:id="player1ShipButton" layoutX="1068.0" layoutY="122.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="95.0" text="Player 2" />
           <Button fx:id="player3ShipButton" layoutX="1068.0" layoutY="173.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="95.0" text="Player 3" />
           <Button fx:id="rotateButton" layoutX="41.0" layoutY="502.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="124.0" text="rotate" />

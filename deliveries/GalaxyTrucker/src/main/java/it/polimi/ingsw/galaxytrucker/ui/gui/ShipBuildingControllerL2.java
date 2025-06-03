@@ -68,7 +68,7 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     @FXML private Button rotateButton;
     @FXML private Button reserved0Button;
     @FXML private Button reserved1Button;
-    @FXML private Button viewShownComponentButton;
+    @FXML private Button shownComponentButton;
     @FXML private Button player1ShipButton;
     @FXML private Button player2ShipButton;
     @FXML private Button player3ShipButton;
@@ -86,17 +86,36 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
         setupRotateButton();
         setupReserveButton();
         setupReservedButtonsDrag();
+        setupShownComponentsButton();
 
-        rotateButton.setDisable(true);
-        discardButton.setDisable(true);
-        pickComponent.setDisable(false);
-        reserveButton.setDisable(true);
-        setButton.setDisable(true);
         componentImageMap = GuiInterface.getInstance().loadImageMap("components");
 
         showPlaceholderImage();
         setReservedButtonPlaceholders();
         showNotification("ASSEMBLING PHASE - build your ship");
+    }
+
+    public void initializeShipBoard(){
+        initializeAssembledComponents();
+        initializeGameInfo();
+        initializeReservedComponents();
+        initializeButtons();
+    }
+
+    public void initializeAssembledComponents(){
+
+    }
+
+    public void initializeReservedComponents(){
+
+    }
+
+    public void initializeGameInfo(){
+
+    }
+
+    public void initializeButtons(){
+
     }
 
     public void setInitialCabin(){
@@ -286,6 +305,29 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
         });
     }
 
+    private void setupShownComponentsButton(){
+        shownComponentButton.setOnAction(event -> {
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shownComponents.fxml"));
+                Parent root = fxmlLoader.load();
+
+                ShownComponentsController controller = fxmlLoader.getController();
+                controller.setServer(this.server);
+                controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+                controller.setGameType(false);
+                GuiInterface.getInstance().setShownComponentsController(controller);
+
+                Stage stage = (Stage) flightBoardButton.getScene().getWindow();
+                stage.setScene(new Scene(root, 1210, 740));
+                stage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
+            }
+        });
+    }
+
     private void setupRotateButton() {
         rotateButton.setOnAction(event -> {
             try{
@@ -392,24 +434,18 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     }
 
     private boolean imageButtonCorrespondence(Button button, String imageId) {
-        // Controlla se il bottone ha un'immagine
         if (!(button.getGraphic() instanceof ImageView imageView)) {
             return false;
         }
-
-        // Recupera l'immagine dal bottone
         Image buttonImage = imageView.getImage();
         if (buttonImage == null) {
             return false;
         }
-
-        // Recupera l'immagine dalla mappa usando l'ID
         Image componentImage = componentImageMap.get(imageId);
         if (componentImage == null) {
             return false;
         }
 
-        // Confronta le due immagini
         return buttonImage.equals(componentImage);
     }
 

@@ -5,6 +5,7 @@ module it.polimi.ingsw.galaxytrucker {
     requires java.rmi;
     requires com.fasterxml.jackson.databind;
     requires jdk.incubator.vector;
+    requires java.desktop;
 
 
     opens it.polimi.ingsw.galaxytrucker.ui to javafx.fxml;

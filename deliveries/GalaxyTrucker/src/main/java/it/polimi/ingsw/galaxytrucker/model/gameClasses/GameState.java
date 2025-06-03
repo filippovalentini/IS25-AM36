@@ -527,6 +527,9 @@ public class GameState {
         if(isPositioned(nickname)){
             throw new InvalidActionException("You have already finished assembling");
         }
+        if(index < 0 || index >= hiddenComponents.size()){
+            throw new InvalidActionException("Impossible to pick the selected component");
+        }
 
         Component c = shownComponents.remove(index);
         playersPlay.get(nickname).pickComponent(c);
@@ -592,12 +595,12 @@ public class GameState {
         Component c = playersPlay.get(nickname).releaseComponent();
         shownComponents.add(c);
 
-        try{clients.get(nickname).updatePickedComponent(c.getImageID(), true);}
-        catch(Exception e){System.out.println("Error during remote method invocation on client");}
         for(VirtualView view: clients.values()){
             try{view.updateShownComponent(c.getImageID(), true);}
             catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
+        try{clients.get(nickname).updatePickedComponent(c.getImageID(), true);}
+        catch(Exception e){System.out.println("Error during remote method invocation on client");}
     }
     //invoked when a player wants to assemble on the ship board the component that it has picked
     public void assembleComponent(String nickname, int x, int y) throws AssembledComponentException, PickedComponentException, InvalidActionException {
