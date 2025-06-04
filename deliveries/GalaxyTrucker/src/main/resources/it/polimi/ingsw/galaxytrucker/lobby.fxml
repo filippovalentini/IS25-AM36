@@ -9,7 +9,6 @@
 
 <AnchorPane prefHeight="600" prefWidth="800" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.LobbyController">
     <children>
-
         <!-- Background -->
         <ImageView fitHeight="740.0" fitWidth="1255.0" layoutX="-17.0">
             <image>
@@ -17,21 +16,13 @@
             </image>
         </ImageView>
 
-        <!-- Box Centrale -->
+        <!-- Central box -->
         <VBox alignment="TOP_CENTER" layoutX="395.0" layoutY="208.0" prefHeight="350" prefWidth="400" spacing="20" style="-fx-background-color: #4682B4; -fx-padding: 20;">
-
-            <!-- Timer Title -->
             <Label fx:id="timerTitle" visible="false" style="-fx-font-size: 20px; -fx-text-fill: #003366; -fx-font-weight: bold;" text="ASSEMBLING PHASE STARTS IN..." wrapText="true" />
-
-            <!-- Timer Label -->
             <Label fx:id="timerLabel" visible="false" style="-fx-font-size: 48px; -fx-text-fill: #003366; -fx-font-weight: bold;" text="3" />
-
-            <!-- Scritta principale -->
             <Label style="-fx-font-size: 20px; -fx-text-fill: #003366; -fx-font-weight: bold;" text="WAITING FOR PLAYERS..." />
-
-            <!-- Lista giocatori -->
+            <!-- Player list -->
             <ListView fx:id="playerList" prefHeight="200" prefWidth="360" />
         </VBox>
-
     </children>
 </AnchorPane>

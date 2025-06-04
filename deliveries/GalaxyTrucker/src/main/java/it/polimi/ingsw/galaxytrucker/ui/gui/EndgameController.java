@@ -1,18 +1,28 @@
 package it.polimi.ingsw.galaxytrucker.ui.gui;
 
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
+import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.GuiController;
+import it.polimi.ingsw.galaxytrucker.ui.view.ViewPlayer;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-public class EndgameController {
+public class EndgameController implements GuiController {
     private VirtualServer server;
+    private int gameID;
+    private String playerNickname;
+    private Color color;
 
     @FXML
     private Button quitButton;
@@ -20,8 +30,20 @@ public class EndgameController {
     @FXML
     private Button findAnotherGameButton;
 
-    public void setServer(VirtualServer server) {
-        this.server = server;
+    @FXML
+    private ListView<String> playerList;
+
+    @FXML
+    private void initialize() {
+        setCurrentPlayers();
+    }
+
+    @FXML
+    private void setCurrentPlayers() {
+        List<String> finalRankingList = GuiInterface.getInstance().getView().getFinalRanking();
+        Platform.runLater(() -> {
+            playerList.getItems().setAll(finalRankingList);
+        });
     }
 
     @FXML
@@ -42,5 +64,16 @@ public class EndgameController {
     @FXML
     private void onQuitButtonClick(){
         Platform.exit();
+    }
+
+    @Override
+    public void setPlayerInfo(int gameID, String playerNickname, Color color) {
+        this.playerNickname = playerNickname;
+        this.color = color;
+        this.gameID = gameID;
+    }
+
+    public void setServer(VirtualServer server) {
+        this.server = server;
     }
 }

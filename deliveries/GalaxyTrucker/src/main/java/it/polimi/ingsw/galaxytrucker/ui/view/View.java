@@ -2,6 +2,7 @@ package it.polimi.ingsw.galaxytrucker.ui.view;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
+import it.polimi.ingsw.galaxytrucker.ui.gui.GuiInterface;
 
 import java.util.*;
 
@@ -233,6 +234,15 @@ public class View {
         for(ViewPlayer p: otherPlayers.values()){
             System.out.println("👨‍🚀 Player: " + p.getNickname() + " " + convertColorIntoEmoji(p.getColor()) + "          💰 Credits: " + p.getCredits());
         }
+    }
+
+    public List<String> getFinalRanking(){
+        List<String> finalRankingList = new ArrayList<>();
+        finalRankingList.add(player.getNickname() + " " + convertColorIntoEmoji(player.getColor()) + "          💰 Credits: " + player.getCredits());
+        for(ViewPlayer p: otherPlayers.values()){
+            finalRankingList.add(p.getNickname() + " " + convertColorIntoEmoji(p.getColor()) + "          💰 Credits: " + p.getCredits());
+        }
+        return finalRankingList;
     }
 
     //converts an image id in the XXX format

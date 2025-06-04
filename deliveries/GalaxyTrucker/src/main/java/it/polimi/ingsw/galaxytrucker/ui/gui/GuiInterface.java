@@ -8,6 +8,8 @@ import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.FlightBoardCont
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBuildingController;
 import it.polimi.ingsw.galaxytrucker.ui.view.View;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 
 import java.io.InputStream;
@@ -323,6 +325,6 @@ public class GuiInterface implements UserInterface {
 
     @Override
     public void updateEndGame() throws Exception {
-
+        this.view.updateEndGame();
     }
 }
