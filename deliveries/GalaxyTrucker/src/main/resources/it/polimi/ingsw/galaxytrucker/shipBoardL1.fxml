@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <content>
+        <AnchorPane prefHeight="740.0" prefWidth="1210.0">
+
+            <!-- Sfondo -->
+            <ImageView fitHeight="740.0" fitWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <Image url="@images/backgroundSpace1.jpg" />
+            </ImageView>
+
+            <!-- Sezione informazioni giocatore -->
+            <VBox layoutX="47.0" layoutY="259.0" prefHeight="175.0" prefWidth="118.0" spacing="10.0">
+                <Label prefHeight="23.0" prefWidth="109.0" style="-fx-font-size: 18px; -fx-text-fill: white;" text="Player" />
+                <Label fx:id="playerNicknameLabel" prefHeight="35.0" prefWidth="61.0" style="-fx-font-size: 16px; -fx-text-fill: white;" text="--" />
+                <Label prefHeight="32.0" prefWidth="108.0" style="-fx-font-size: 18px; -fx-text-fill: white;" text="Color" />
+                <Label fx:id="playerColorLabel" prefHeight="31.0" prefWidth="88.0" style="-fx-font-size: 16px; -fx-text-fill: white;" text="--" />
+            </VBox>
+
+            <!-- Immagine centrale -->
+            <ImageView fitHeight="600.0" fitWidth="854.0" layoutX="191.0" layoutY="112.0" preserveRatio="true" AnchorPane.leftAnchor="191.0" AnchorPane.rightAnchor="191.0177001953125" AnchorPane.topAnchor="112.0">
+                <Image url="@images/cardboard/shipL1.jpg" />
+            </ImageView>
+
+            <!-- GridPane -->
+            <GridPane fx:id="myGridPane" layoutX="215.0" layoutY="137.0" prefHeight="550.0" prefWidth="779.0" AnchorPane.bottomAnchor="53.0" AnchorPane.leftAnchor="215.0" AnchorPane.rightAnchor="216.0" AnchorPane.topAnchor="137.0">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="147.0" minWidth="10.0" prefWidth="117.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="148.0" minWidth="10.0" prefWidth="109.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="128.0" minWidth="10.0" prefWidth="111.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.0" minWidth="10.0" prefWidth="110.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="153.0" minWidth="10.0" prefWidth="110.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="147.0" minWidth="10.0" prefWidth="109.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="143.0" minWidth="10.0" prefWidth="115.0" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints maxHeight="146.0" minHeight="10.0" prefHeight="112.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="130.0" minHeight="10.0" prefHeight="107.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="142.0" minHeight="10.0" prefHeight="110.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="199.0" minHeight="10.0" prefHeight="109.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="142.0" minHeight="10.0" prefHeight="112.0" vgrow="SOMETIMES" />
+                </rowConstraints>
+            </GridPane>
+
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1478e363" height="50.0" layoutX="3.0" stroke="BLACK" strokeType="INSIDE" width="1203.0" />
+
+            <Button fx:id="backButton" layoutX="1091.0" layoutY="122.0" prefHeight="64.0" prefWidth="61.0" style="-fx-background-color: #4682B4; -fx-font-size: 20px; -fx-text-fill: black;" text="🔙" />
+
+        </AnchorPane>
+    </content>
+</ScrollPane>

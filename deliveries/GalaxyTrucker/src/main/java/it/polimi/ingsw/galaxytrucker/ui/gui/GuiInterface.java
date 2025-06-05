@@ -5,6 +5,7 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.ui.UserInterface;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.FlightBoardController;
+import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBoardController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBuildingController;
 import it.polimi.ingsw.galaxytrucker.ui.view.View;
 import javafx.application.Application;
@@ -24,6 +25,7 @@ public class GuiInterface implements UserInterface {
     private ShipBuildingController shipBuildingController;
     private FlightBoardController flightBoardController;
     private ShownComponentsController shownComponentsController;
+    private ShipBoardController shipBoardController;
     private View view;
     private String nickname;
     private Color color;
@@ -75,6 +77,10 @@ public class GuiInterface implements UserInterface {
 
     public void setShownComponentsController(ShownComponentsController shownComponentsController) {
         this.shownComponentsController = shownComponentsController;
+    }
+
+    public void setShipBoardController(ShipBoardController shipBoardController) {
+        this.shipBoardController = shipBoardController;
     }
 
     public void launch() {
@@ -173,6 +179,9 @@ public class GuiInterface implements UserInterface {
         if(shipBuildingController != null && nickname.equals(this.nickname)){
             shipBuildingController.updateReservedComponent(nickname, imageID, released);
         }
+        if(shipBoardController != null){
+            shipBoardController.updateReservedComponent(nickname, imageID, released);
+        }
     }
 
     @Override
@@ -189,7 +198,9 @@ public class GuiInterface implements UserInterface {
         if(shipBuildingController != null && nickname.equals(this.nickname)){
             shipBuildingController.updateAssembledComponent(nickname, imageID, orientation, x, y);
         }
-
+        if(shipBoardController != null){
+            shipBoardController.updateAssembledComponent(nickname, imageID, orientation, x, y);
+        }
     }
 
     @Override

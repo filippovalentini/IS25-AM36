@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
+import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBoardController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBuildingController;
 import it.polimi.ingsw.galaxytrucker.ui.view.ViewComponent;
 import javafx.animation.FadeTransition;
@@ -87,6 +88,9 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
         setupReserveButton();
         setupReservedButtonsDrag();
         setupShownComponentsButton();
+        setupOtherPlayerButton(player1ShipButton);
+        setupOtherPlayerButton(player2ShipButton);
+        setupOtherPlayerButton(player3ShipButton);
 
         componentImageMap = GuiInterface.getInstance().loadImageMap("components");
         showPlaceholderImage();
@@ -246,41 +250,41 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
         if(imageID.equals("000") || imageID.equals("003")){
             return;
         }
-        Image cabinImage = componentImageMap.get(imageID);
-        if (cabinImage == null) {
+        Image image = componentImageMap.get(imageID);
+        if (image == null) {
             showError("Cabin image not found for component ID: " + imageID);
             return;
         }
 
-        Button cabinButton = new Button();
+        Button button = new Button();
         double buttonSize = 110;
 
-        cabinButton.setPrefSize(buttonSize, buttonSize);
-        cabinButton.setMinSize(buttonSize, buttonSize);
-        cabinButton.setMaxSize(buttonSize, buttonSize);
-        cabinButton.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
+        button.setPrefSize(buttonSize, buttonSize);
+        button.setMinSize(buttonSize, buttonSize);
+        button.setMaxSize(buttonSize, buttonSize);
+        button.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
 
         // Crea l'ImageView con l'immagine della cabina
-        ImageView cabinImageView = new ImageView(cabinImage);
-        cabinImageView.setFitWidth(buttonSize);
-        cabinImageView.setFitHeight(buttonSize);
-        cabinImageView.setPreserveRatio(true);
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(buttonSize);
+        imageView.setFitHeight(buttonSize);
+        imageView.setPreserveRatio(true);
         if(orientation.equals(Orientation.WEST)){
-            cabinImageView.setRotate((cabinImageView.getRotate() - 90) % 360);
+            imageView.setRotate((imageView.getRotate() - 90) % 360);
         }
         else if(orientation.equals(Orientation.SOUTH)){
-            cabinImageView.setRotate((cabinImageView.getRotate() - 180) % 360);
+            imageView.setRotate((imageView.getRotate() - 180) % 360);
         }
         else if(orientation.equals(Orientation.EAST)){
-            cabinImageView.setRotate((cabinImageView.getRotate() - 270) % 360);
+            imageView.setRotate((imageView.getRotate() - 270) % 360);
         }
-        cabinButton.setGraphic(cabinImageView);
+        button.setGraphic(imageView);
 
         // Genera un ID univoco per il bottone
         String btnId = UUID.randomUUID().toString();
-        cabinButton.setUserData(btnId);
+        button.setUserData(btnId);
 
-        myGridPane.add(cabinButton, column, row);
+        myGridPane.add(button, column, row);
     }
 
     public void showNotification(String message) {
@@ -490,36 +494,6 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
         targetButton.setPrefSize(110, 110);
     }
 
-    private void reserveComponentToButton(Button targetButton) {
-        if (lastDroppedButton == null || !(lastDroppedButton.getGraphic() instanceof ImageView)) return;
-
-        ImageView sourceImageView = (ImageView) lastDroppedButton.getGraphic();
-        initializeReserveComponentButton(targetButton, sourceImageView.getImage());
-
-        reservedComponentIds.put(targetButton, (String) lastDroppedButton.getUserData());
-
-        myGridPane.getChildren().remove(lastDroppedButton);
-        handComponentArea.getChildren().remove(lastDroppedButton);
-
-        String btnId = (String) lastDroppedButton.getUserData();
-        if (btnId != null) {
-            draggableButtons.remove(btnId);
-        }
-
-        lastDroppedButton = null;
-        isComponentPlaced = false;
-        firstComponent = true;
-        componentPicked = false;
-
-        rotateButton.setDisable(true);
-        discardButton.setDisable(true);
-        reserveButton.setDisable(true);
-        pickComponent.setDisable(false);
-        setButton.setDisable(true);
-
-        showPlaceholderImage();
-    }
-
     private void setupReservedButtonsDrag() {
         setupClickFromReservedButton0();
         setupClickFromReservedButton1();
@@ -543,6 +517,30 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
             }
             catch(Exception e){
                 showError(e.getMessage());
+            }
+        });
+    }
+
+    private void setupOtherPlayerButton(Button button) {
+        button.setOnAction(event -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipBoardL2.fxml"));
+                ShipBoardController controller = new ShipBoardControllerL2(button.getText());
+                loader.setController(controller);
+
+                Parent root = loader.load();
+
+                controller.setServer(this.server);
+                controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+                GuiInterface.getInstance().setShipBoardController(controller);
+
+                Stage stage = (Stage) button.getScene().getWindow();
+                stage.setScene(new Scene(root, 1210, 740));
+                stage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
             }
         });
     }
@@ -701,10 +699,12 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
         Platform.runLater(() -> {
             if(released){
                 if (isPlaceholder(reserved0Button)) {
-                    reserveComponentToButton(reserved0Button);
+                    //reserveComponentToButton(reserved0Button);
+                    initializeReserveComponentButton(reserved0Button, componentImageMap.get(String.valueOf(imageID)));
                     reserved0Button.setDisable(false);
                 } else if (isPlaceholder(reserved1Button)) {
-                    reserveComponentToButton(reserved1Button);
+                    //reserveComponentToButton(reserved1Button);
+                    initializeReserveComponentButton(reserved1Button, componentImageMap.get(String.valueOf(imageID)));
                     reserved1Button.setDisable(false);
                 } else {
                     System.out.println("Entrambe le riserve sono piene.");
