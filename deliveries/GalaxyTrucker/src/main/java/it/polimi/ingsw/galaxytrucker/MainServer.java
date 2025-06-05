@@ -12,7 +12,7 @@ import java.rmi.registry.Registry;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainSever {
+public class MainServer {
     //asks the user the game settings (number of players and first flight/std game) and launches
     // the Socket and RMI servers
     public static void main(String[] args) {
