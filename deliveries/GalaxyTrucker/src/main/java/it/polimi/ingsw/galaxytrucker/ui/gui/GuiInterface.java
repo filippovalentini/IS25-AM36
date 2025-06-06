@@ -124,6 +124,9 @@ public class GuiInterface implements UserInterface {
 
     @Override
     public void notifyError(String errorMessage) throws Exception {
+        if(setupController!=null){
+            setupController.notifyError(errorMessage);
+        }
         if(shipBuildingController != null){
             shipBuildingController.notifyError(errorMessage);
         }

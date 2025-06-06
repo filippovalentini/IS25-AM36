@@ -596,6 +596,7 @@ public class GameState {
         }
 
         Component c = playersPlay.get(nickname).releaseComponent();
+        c.setOrientation();
         shownComponents.add(c);
 
         for(VirtualView view: clients.values()){

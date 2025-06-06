@@ -8,6 +8,7 @@ import it.polimi.ingsw.galaxytrucker.network.rmi.client.VirtualServerRMI;
 import it.polimi.ingsw.galaxytrucker.network.socket.client.SocketClient;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.GuiController;
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -50,13 +51,7 @@ public class GameSetupController implements GuiController {
     @FXML
     private TextField ipTextField;
     @FXML
-    private Label ipErrorLabel;
-    @FXML
-    private Label invalidIdErrorLabel;
-    @FXML
-    private Label existingIdErrorLabel;
-    @FXML
-    private Label credentialsErrorLabel;
+    private Label errorLabel;
     @FXML
     private Button rmiButton;
     @FXML
@@ -86,7 +81,13 @@ public class GameSetupController implements GuiController {
 
     @FXML
     public void initialize() {
-        credentialsErrorLabel.setText("Default error");
+        try{joinGameIdTextField.setText("");}catch(NullPointerException ignored){}
+        try{gameIdTextField.setText("");}catch(NullPointerException ignored){}
+        try{nicknameTextField.setText("");}catch(NullPointerException ignored){}
+        try{shipColorComboBox.setValue("");}catch(NullPointerException ignored){}
+        try{playersComboBox.setValue(0);}catch(NullPointerException ignored){}
+        try{gameTypeComboBox.setValue("");}catch(NullPointerException ignored){}
+        try{errorLabel.setText("Default error");}catch(NullPointerException ignored){}
     }
 
     @FXML
@@ -97,6 +98,7 @@ public class GameSetupController implements GuiController {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/startOrJoin.fxml"));
             Parent root = fxmlLoader.load();
             GameSetupController controller = fxmlLoader.getController();
+            GuiInterface.getInstance().setSetupController(controller);
             controller.setClientAndServer(this.client, this.server);
             Stage stage = (Stage) socketButton.getScene().getWindow();
             Scene scene = new Scene(root, 1210, 740);
@@ -104,10 +106,7 @@ public class GameSetupController implements GuiController {
             stage.show();
         }
         catch (Exception e){
-            ipErrorLabel.setVisible(true);
-            PauseTransition pause = new PauseTransition(Duration.seconds(3));
-            pause.setOnFinished(event -> ipErrorLabel.setVisible(false));
-            pause.play();
+            showError("Connection failed");
         }
     }
 
@@ -119,6 +118,7 @@ public class GameSetupController implements GuiController {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/startOrJoin.fxml"));
             Parent root = fxmlLoader.load();
             GameSetupController controller = fxmlLoader.getController();
+            GuiInterface.getInstance().setSetupController(controller);
             controller.setClientAndServer(this.client, this.server);
             Stage stage = (Stage) rmiButton.getScene().getWindow();
             Scene scene = new Scene(root, 1210, 740);
@@ -126,10 +126,7 @@ public class GameSetupController implements GuiController {
             stage.show();
         }
         catch (Exception e){
-            ipErrorLabel.setVisible(true);
-            PauseTransition pause = new PauseTransition(Duration.seconds(3));
-            pause.setOnFinished(event -> ipErrorLabel.setVisible(false));
-            pause.play();
+            showError("Connection failed");
         }
     }
 
@@ -139,6 +136,7 @@ public class GameSetupController implements GuiController {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/setupGame.fxml"));
             Parent root = fxmlLoader.load();
             GameSetupController controller = fxmlLoader.getController();
+            GuiInterface.getInstance().setSetupController(controller);
             controller.setClientAndServer(this.client, this.server);
             Stage stage = (Stage) startButton.getScene().getWindow();
             Scene scene = new Scene(root, 1210, 740);
@@ -155,6 +153,7 @@ public class GameSetupController implements GuiController {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/joinGame.fxml"));
             Parent root = fxmlLoader.load();
             GameSetupController controller = fxmlLoader.getController();
+            GuiInterface.getInstance().setSetupController(controller);
             controller.setClientAndServer(this.client, this.server);
             Stage stage = (Stage) joinButton.getScene().getWindow();
             Scene scene = new Scene(root, 1210, 740);
@@ -167,12 +166,13 @@ public class GameSetupController implements GuiController {
 
     @FXML
     private void onConfirmStartClick() {
+        if(gameIdTextField.getText().isEmpty() || playersComboBox.getValue()==0 || gameTypeComboBox.getValue().isEmpty()){
+            showError("Please fill out all fields");
+            return;
+        }
         String gID = gameIdTextField.getText();
         if(gID.length() != 3){
-            invalidIdErrorLabel.setVisible(true);
-            PauseTransition pause = new PauseTransition(Duration.seconds(3));
-            pause.setOnFinished(event -> invalidIdErrorLabel.setVisible(false));
-            pause.play();
+            showError("Invalid game ID");
             return;
         }
         this.gameID = Integer.parseInt(gID);
@@ -180,10 +180,7 @@ public class GameSetupController implements GuiController {
         String gameType = gameTypeComboBox.getValue();
         boolean firstFlight = gameType.equals("First Flight");
         if(client.askIfGameStarted(this.gameID)){
-            existingIdErrorLabel.setVisible(true);
-            PauseTransition pause = new PauseTransition(Duration.seconds(3));
-            pause.setOnFinished(event -> existingIdErrorLabel.setVisible(false));
-            pause.play();
+            showError("Game with the same ID already started");
             return;
         }
         client.tryToStartNewGame(null, gameID, firstFlight, players);
@@ -191,6 +188,7 @@ public class GameSetupController implements GuiController {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/joinGame.fxml"));
             Parent root = fxmlLoader.load();
             GameSetupController controller = fxmlLoader.getController();
+            GuiInterface.getInstance().setSetupController(controller);
             controller.setClientAndServer(this.client, this.server);
             controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
             Stage stage = (Stage) confirmStartButton.getScene().getWindow();
@@ -204,12 +202,13 @@ public class GameSetupController implements GuiController {
 
     @FXML
     private void onConfirmJoinClick() throws IOException {
+        if(joinGameIdTextField.getText().isEmpty() || shipColorComboBox.getValue().isEmpty() || nicknameTextField.getText().isEmpty()){
+            showError("Please fill out all fields");
+            return;
+        }
         String gID = joinGameIdTextField.getText();
         if(gID.length() != 3){
-            invalidIdErrorLabel.setVisible(true);
-            PauseTransition pause = new PauseTransition(Duration.seconds(3));
-            pause.setOnFinished(event -> invalidIdErrorLabel.setVisible(false));
-            pause.play();
+            showError("Invalid game ID");
             return;
         }
         this.gameID = Integer.parseInt(gID);
@@ -218,10 +217,7 @@ public class GameSetupController implements GuiController {
         GuiInterface.getInstance().setNickname(this.playerNickname);
         GuiInterface.getInstance().setColor(this.color);
         if(!client.askIfGameStarted(this.gameID)){
-            existingIdErrorLabel.setVisible(true);
-            PauseTransition pause = new PauseTransition(Duration.seconds(3));
-            pause.setOnFinished(event -> existingIdErrorLabel.setVisible(false));
-            pause.play();
+            showError("Game with the specified ID doesn't exist");
             return;
         }
         if(client.tryToAddPlayerToGame(this.gameID, this.playerNickname, this.color)){
@@ -236,6 +232,14 @@ public class GameSetupController implements GuiController {
             stage.setScene(scene);
             stage.show();
         }
+    }
+
+    public void showError(String error){
+        errorLabel.setText(error);
+        errorLabel.setVisible(true);
+        PauseTransition pause = new PauseTransition(Duration.seconds(3));
+        pause.setOnFinished(event -> errorLabel.setVisible(false));
+        pause.play();
     }
 
     //launches the socket client
@@ -269,6 +273,10 @@ public class GameSetupController implements GuiController {
         this.playerNickname = playerNickname;
         this.color = color;
         this.gameID = gameID;
+    }
+
+    public void notifyError(String error){
+        Platform.runLater(() -> showError(error));
     }
 
 

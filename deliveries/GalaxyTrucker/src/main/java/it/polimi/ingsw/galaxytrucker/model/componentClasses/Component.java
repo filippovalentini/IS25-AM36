@@ -27,6 +27,9 @@ public class Component {
     public Orientation getOrientation() {
         return orientation;
     }
+    public void setOrientation() {
+        this.orientation = Orientation.NORTH;
+    }
     public int getImageID() {
         return imageID;
     }

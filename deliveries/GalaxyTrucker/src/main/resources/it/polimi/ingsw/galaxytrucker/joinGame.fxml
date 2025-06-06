@@ -76,15 +76,7 @@
                   <Button fx:id="confirmJoinButton" text="Join" onAction="#onConfirmJoinClick"
                           style="-fx-background-color: #003366; -fx-text-fill: #87CEFA;" />
 
-                  <Label fx:id="invalidIdErrorLabel" text="Insert a valid game ID"
-                         style="-fx-text-fill: red; -fx-font-size: 14px;"
-                         visible="false" />
-
-                  <Label fx:id="credentialsErrorLabel"
-                         style="-fx-text-fill: red; -fx-font-size: 14px;"
-                         visible="false" />
-
-                  <Label fx:id="existingIdErrorLabel" text="Game with the specified ID doesn't exist"
+                  <Label fx:id="errorLabel" text="Insert a valid game ID"
                          style="-fx-text-fill: red; -fx-font-size: 14px;"
                          visible="false" />
 

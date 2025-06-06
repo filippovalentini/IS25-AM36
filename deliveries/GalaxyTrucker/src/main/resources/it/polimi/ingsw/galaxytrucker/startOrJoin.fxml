@@ -44,7 +44,7 @@
                             </children>
                         </HBox>
 
-                        <Label fx:id="credentialsErrorLabel"
+                        <Label fx:id="errorLabel"
                                style="-fx-text-fill: red; -fx-font-size: 14px;"
                                visible="false" />
 

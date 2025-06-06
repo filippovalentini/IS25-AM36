@@ -128,6 +128,7 @@ public class ShipBoard {
                 throw new ReservedComponentException("Too many reserved components");
             }
             else {
+                pickedComponent.setOrientation();
                 reservedComponents.add(pickedComponent);
                 Component c = pickedComponent;
                 pickedComponent = null;

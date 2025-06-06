@@ -83,15 +83,7 @@
                           style="-fx-background-color: #003366; -fx-text-fill: #87CEFA;" />
 
                   <!-- ERROR LABEL -->
-                  <Label fx:id="invalidIdErrorLabel" text="Insert a valid game ID"
-                         style="-fx-text-fill: red; -fx-font-size: 14px;"
-                         visible="false" />
-
-                  <Label fx:id="existingIdErrorLabel" text="Game ID already existing"
-                         style="-fx-text-fill: red; -fx-font-size: 14px;"
-                         visible="false" />
-
-                  <Label fx:id="credentialsErrorLabel"
+                  <Label fx:id="errorLabel" text="Insert a valid game ID"
                          style="-fx-text-fill: red; -fx-font-size: 14px;"
                          visible="false" />
 
