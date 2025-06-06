@@ -11,4 +11,7 @@ public interface GuiController {
 
     //notifies the view about an error obtained while performing an action
     void notifyError(String error) throws Exception;
+
+    //notifies the view about a change in the game phase
+    void notifyGamePhase(String gamePhase) throws Exception;
 }

@@ -34,6 +34,8 @@ public class ShownComponentsController implements GuiController {
     @FXML private Button pickButton;
     @FXML private Rectangle errorBackground;
     @FXML private Label errorLabel;
+    @FXML private Rectangle gameStateBackground;
+    @FXML private Label gameStateLabel;
     @FXML private Button backButton;
 
     private Map<String, Image> componentImageMap = new HashMap<>();
@@ -60,8 +62,14 @@ public class ShownComponentsController implements GuiController {
             updateShownComponents(id, true);
         }
 
+        showGameState(GuiInterface.getInstance().getView().getGameState());
+
         componentGrid.setMinWidth(COLUMNS * (CELL_WIDTH + 10));
         componentGrid.setPrefWidth(componentGrid.getMinWidth());
+    }
+
+    public void showGameState(String message){
+        gameStateLabel.setText(message);
     }
 
     public void showError(String message) {
@@ -172,7 +180,7 @@ public class ShownComponentsController implements GuiController {
 
     public void notifyError(String message) {
         Platform.runLater(() -> {
-            errorLabel.setText(message);
+            showError(message);
         });
     }
 
@@ -252,6 +260,14 @@ public class ShownComponentsController implements GuiController {
         this.gameId = gameID;
         this.playerNickname = playerNickname;
         this.color = color;
+    }
+
+    //notifies the view about a change in the game phase
+    @Override
+    public void notifyGamePhase(String gamePhase) {
+        Platform.runLater(() -> {
+            showGameState(gamePhase);
+        });
     }
 
 }

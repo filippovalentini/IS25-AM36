@@ -531,8 +531,9 @@ public class GameState {
             throw new InvalidActionException("Impossible to pick the selected component");
         }
 
-        Component c = shownComponents.remove(index);
+        Component c = shownComponents.get(index);
         playersPlay.get(nickname).pickComponent(c);
+        shownComponents.remove(index);
 
         for(VirtualView view: clients.values()){
             try{view.updateShownComponent(c.getImageID(), false);}

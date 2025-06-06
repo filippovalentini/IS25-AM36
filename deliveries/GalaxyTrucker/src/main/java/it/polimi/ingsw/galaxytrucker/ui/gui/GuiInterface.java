@@ -121,6 +121,24 @@ public class GuiInterface implements UserInterface {
     }
 
 
+    //notifies the view about a change in the game phase
+    public void notifyGamePhase(String gamePhase) throws Exception{
+        if(setupController!=null){
+            setupController.notifyGamePhase(gamePhase);
+        }
+        if(shipBuildingController != null){
+            shipBuildingController.notifyGamePhase(gamePhase);
+        }
+        if(flightBoardController != null){
+            flightBoardController.notifyGamePhase(gamePhase);
+        }
+        if(shownComponentsController != null){
+            shownComponentsController.notifyGamePhase(gamePhase);
+        }
+        if(shipBoardController != null){
+            shipBoardController.notifyGamePhase(gamePhase);
+        }
+    }
 
     @Override
     public void notifyError(String errorMessage) throws Exception {
@@ -135,6 +153,9 @@ public class GuiInterface implements UserInterface {
         }
         if(shownComponentsController != null){
             shownComponentsController.notifyError(errorMessage);
+        }
+        if(shipBoardController != null){
+            shipBoardController.notifyError(errorMessage);
         }
     }
 
@@ -231,22 +252,19 @@ public class GuiInterface implements UserInterface {
         if(flightBoardController != null){
             flightBoardController.updateFinishAssembling(nickname, position);
         }
+        if(nickname.equals(this.nickname)){
+            notifyGamePhase(this.view.getGameState());
+        }
     }
 
     @Override
     public void updateStartNewCycle() throws Exception {
         this.view.updateStartNewCycle();
-        if(shipBuildingController != null){
-            shipBuildingController.updateStartNewCycle();
-        }
     }
 
     @Override
     public void updateFinishedCycle() throws Exception {
         this.view.updateFinishedCycle();
-        if(shipBuildingController != null){
-            shipBuildingController.updateFinishedCycle();
-        }
     }
 
     @Override
@@ -263,38 +281,27 @@ public class GuiInterface implements UserInterface {
         if(shipBuildingController != null){
             shipBuildingController.updateShipControl();
         }
+        notifyGamePhase(this.view.getGameState());
     }
 
     @Override
     public void updateDestroyedComponent(String nickname, int x, int y) throws Exception {
         this.view.updateDestroyedComponent(nickname, x, y);
-        if(shipBuildingController != null){
-            shipBuildingController.updateDestroyedComponent(nickname, x, y);
-        }
     }
 
     @Override
     public void updateCrewChange(String nickname, int x, int y, int change) throws Exception {
         this.view.updateCrewChange(nickname, x, y, change);
-        if(shipBuildingController != null){
-            shipBuildingController.updateCrewChange(nickname, x, y, change);
-        }
     }
 
     @Override
     public void updateBatteries(String nickname, int x, int y, int change) throws Exception {
         this.view.updateBatteries(nickname, x, y, change);
-        if(shipBuildingController != null){
-            shipBuildingController.updateBatteries(nickname, x, y, change);
-        }
     }
 
     @Override
     public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws Exception {
         this.view.updateAlienChange(nickname, x, y, isPurple, added);
-        if(shipBuildingController != null){
-            shipBuildingController.updateAlienChange(nickname, x, y, isPurple, added);
-        }
     }
 
     @Override

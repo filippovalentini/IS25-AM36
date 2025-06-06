@@ -65,6 +65,13 @@
             <Label fx:id="errorLabel" layoutX="645.0" layoutY="5.0" prefHeight="39.0" prefWidth="545.0"
                    style="-fx-text-fill: red; -fx-font-size: 16px; -fx-font-weight: bold;" visible="false" />
 
+            <!-- Green message background -->
+            <Rectangle fx:id="gameStateBackground" arcHeight="10.0" arcWidth="10.0" fill="#00ff0070" height="39.0" layoutX="11.0" layoutY="6.0" visible="true" width="558.0" />
+
+            <!-- Green message label -->
+            <Label fx:id="gameStateLabel" layoutX="18.0" layoutY="8.0" prefHeight="44.0" prefWidth="544.0" style="-fx-text-fill: #00ff00; -fx-font-size: 16px; -fx-font-weight: bold; -fx-font-family: 'Courier New';" text="Info: ready to pick a component." visible="true" />
+
+
             <!-- Bottone indietro -->
             <Button fx:id="backButton" layoutX="1091.0" layoutY="122.0" prefHeight="64.0" prefWidth="61.0" style="-fx-background-color: #4682B4; -fx-font-size: 20px; -fx-text-fill: black;" text="🔙" />
 

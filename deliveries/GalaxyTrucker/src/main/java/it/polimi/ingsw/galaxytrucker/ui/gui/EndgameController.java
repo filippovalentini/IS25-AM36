@@ -79,4 +79,9 @@ public class EndgameController implements GuiController {
 
     @Override
     public void notifyError(String error) {}
+
+    @Override
+    public void notifyGamePhase(String gamePhase) throws Exception {
+
+    }
 }

@@ -12,7 +12,6 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.shape.Rectangle?>
 
-
 <ScrollPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.ShipBuildingControllerL2">
    <content>
       <AnchorPane prefHeight="740.0" prefWidth="1210.0">
@@ -52,7 +51,14 @@
               </children>
           </Pane>
 
-                <!-- GridPane -->
+          <!-- Green message background -->
+          <Rectangle fx:id="gameStateBackground" arcHeight="10.0" arcWidth="10.0" fill="#00ff0070" height="39.0" layoutX="11.0" layoutY="6.0" visible="true" width="558.0" />
+
+          <!-- Green message label -->
+          <Label fx:id="gameStateLabel" layoutX="18.0" layoutY="8.0" prefHeight="44.0" prefWidth="544.0" style="-fx-text-fill: #00ff00; -fx-font-size: 16px; -fx-font-weight: bold; -fx-font-family: 'Courier New';" text="Info: ready to pick a component." visible="true" />
+
+
+          <!-- GridPane -->
           <GridPane fx:id="myGridPane" layoutX="222.0" prefHeight="550.0" prefWidth="767.0" AnchorPane.bottomAnchor="96.0" AnchorPane.leftAnchor="222.0" AnchorPane.rightAnchor="221.0" AnchorPane.topAnchor="94.0">
               <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="147.0" minWidth="10.0" prefWidth="107.0" />

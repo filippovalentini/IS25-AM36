@@ -25,6 +25,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -56,6 +57,8 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     @FXML private Pane errorPane;
     @FXML private Label notificationLabel;
     @FXML private Label errorLabel;
+    @FXML private Rectangle gameStateBackground;
+    @FXML private Label gameStateLabel;
     @FXML private Pane handComponentArea;
     @FXML private TextField ipTextField;
     @FXML private Label playerNameLabel;
@@ -93,11 +96,16 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
         setupOtherPlayerButton(player3ShipButton);
 
         componentImageMap = GuiInterface.getInstance().loadImageMap("components");
+        showGameState(GuiInterface.getInstance().getView().getGameState());
         showPlaceholderImage();
         setReservedButtonPlaceholder(reserved0Button);
         setReservedButtonPlaceholder(reserved1Button);
 
         initializeShipBoard();
+    }
+
+    public void showGameState(String message){
+        gameStateLabel.setText(message);
     }
 
     public void initializeShipBoard(){
@@ -770,5 +778,12 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     @Override
     public void updateShipControl() throws Exception{}
 
+    //notifies the view about a change in the game phase
+    @Override
+    public void notifyGamePhase(String gamePhase) {
+        Platform.runLater(() -> {
+            showGameState(gamePhase);
+        });
+    }
 
 }

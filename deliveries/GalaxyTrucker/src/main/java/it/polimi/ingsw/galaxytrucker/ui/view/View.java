@@ -328,6 +328,7 @@ public class View {
     //sets the position of a player on the flight board
     public void updateFinishAssembling(String nickname, int position) {
         if(nickname.equals(this.player.getNickname())){
+            this.gameState = "WAIT FOR OTHER PLAYERS...";
             flightBoard.setPosition(player, 0, position);
             player.loseReservedComponents();
         }

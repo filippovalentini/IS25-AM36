@@ -33,6 +33,8 @@ public class FlightBoardControllerL1 implements FlightBoardController {
     @FXML private Button backButton;
     @FXML private Rectangle errorBackground;
     @FXML private Label errorLabel;
+    @FXML private Rectangle gameStateBackground;
+    @FXML private Label gameStateLabel;
 
     int gameID;
     private String playerNickname;
@@ -73,8 +75,13 @@ public class FlightBoardControllerL1 implements FlightBoardController {
         playerColorMap = GuiInterface.getInstance().getView().getPlayerColorMap();
         this.playerNickname = GuiInterface.getInstance().getView().getNickname();
         this.color = GuiInterface.getInstance().getView().getColor();
+        showGameState(GuiInterface.getInstance().getView().getGameState());
 
         initializeFlightBoardFromMap();
+    }
+
+    public void showGameState(String message){
+        gameStateLabel.setText(message);
     }
 
     public void showError(String message) {
@@ -252,5 +259,13 @@ public class FlightBoardControllerL1 implements FlightBoardController {
 
     @Override
     public void updateFinishedCycle() {}
+
+    //notifies the view about a change in the game phase
+    @Override
+    public void notifyGamePhase(String gamePhase) {
+        Platform.runLater(() -> {
+            showGameState(gamePhase);
+        });
+    }
 
 }

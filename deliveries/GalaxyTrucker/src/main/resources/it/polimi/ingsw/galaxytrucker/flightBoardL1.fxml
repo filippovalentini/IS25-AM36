@@ -138,6 +138,14 @@
               <Label fx:id="errorLabel" layoutX="666.0" layoutY="17.0" prefHeight="45.0" prefWidth="498.0" style="-fx-text-fill: red; -fx-font-size: 16px; -fx-font-weight: bold; -fx-font-family: 'Courier New';" visible="false" />
 
 
+              <!-- Green message background -->
+              <Rectangle fx:id="gameStateBackground" arcHeight="10.0" arcWidth="10.0" fill="#00ff0070" height="40.0" layoutX="29.0" layoutY="22.0" visible="true" width="540.0" />
+
+              <!-- Green message label -->
+              <Label fx:id="gameStateLabel" layoutX="61.0" layoutY="17.0" prefHeight="47.0" prefWidth="505.0" style="-fx-text-fill: #01ff01; -fx-font-size: 16px; -fx-font-weight: bold; -fx-font-family: 'Courier New';" text="Info: ready to pick a component." visible="true" />
+
+
+
           </AnchorPane>
       </StackPane>
    </content>

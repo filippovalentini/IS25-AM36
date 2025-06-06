@@ -425,6 +425,11 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
     @Override
     public void notifyError(String errorMessage) throws Exception{}
 
+    @Override
+    public void notifyGamePhase(String gamePhase) throws Exception {
+
+    }
+
     //notifies the view about the fact that a component has been successfully picked/released (depending on
     //the value of the boolean parameter) by the corresponding player; the parameter imageID is needed for the
     //view in order to show the right component to the user

@@ -279,5 +279,10 @@ public class GameSetupController implements GuiController {
         Platform.runLater(() -> showError(error));
     }
 
+    @Override
+    public void notifyGamePhase(String gamePhase) throws Exception {
+
+    }
+
 
 }

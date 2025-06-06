@@ -35,6 +35,10 @@ public class ShipBoardControllerL2 implements ShipBoardController {
     @FXML
     private Rectangle errorBackground;
     @FXML
+    private Rectangle gameStateBackground;
+    @FXML
+    private Label gameStateLabel;
+    @FXML
     private Label playerNicknameLabel;
     @FXML
     private Label playerColorLabel;
@@ -64,9 +68,14 @@ public class ShipBoardControllerL2 implements ShipBoardController {
         playerNicknameLabel.setText(shipBoardPlayerNickname);
         playerColorLabel.setText(Color.convertColorIntoEmoji(shipBoardcolor));
         componentImageMap = GuiInterface.getInstance().loadImageMap("components");
+        showGameState(GuiInterface.getInstance().getView().getGameState());
         setupBackButton();
         initializeAssembledComponents();
         initializeReservedComponents();
+    }
+
+    public void showGameState(String message){
+        gameStateLabel.setText(message);
     }
 
     public void initializeAssembledComponents() {
@@ -271,5 +280,13 @@ public class ShipBoardControllerL2 implements ShipBoardController {
     @Override
     public void notifyError(String error) {
         Platform.runLater(() -> showError(error));
+    }
+
+    //notifies the view about a change in the game phase
+    @Override
+    public void notifyGamePhase(String gamePhase) {
+        Platform.runLater(() -> {
+            showGameState(gamePhase);
+        });
     }
 }
