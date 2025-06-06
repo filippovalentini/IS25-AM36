@@ -22,6 +22,7 @@ public class View {
     private ViewDice dice;          //dice of the game
     private String hourglassState;      //state of the hourglass
     private int hourglassPosition;
+    private boolean hourglassRunning;
 
     public View(String nickname, Color color, boolean firstFlight) {
         this.player = new ViewPlayer(nickname, color, firstFlight);
@@ -34,6 +35,7 @@ public class View {
         this.dice = new ViewDice();
         this.hourglassState = null;
         this.hourglassPosition = 0;
+        this.hourglassRunning = false;
     }
 
     //returns a map associating the nickname of each current player with its color
@@ -90,6 +92,11 @@ public class View {
     //returns the current position of the hourglass
     public int getHourglassPosition() {
         return hourglassPosition;
+    }
+
+    //determines is the hourglass is running or not
+    public boolean isHourglassRunning() {
+        return hourglassRunning;
     }
 
     //returns the dice result or 0 if the dice are no longer valid
@@ -343,16 +350,19 @@ public class View {
     public void updateStartNewCycle(){
         this.hourglassState = "Hourglass is running...";
         this.hourglassPosition++;
+        this.hourglassRunning = true;
     }
 
     //notifies the view that the hourglass has finished running
     public void updateFinishedCycle(){
         this.hourglassState = "Hourglass has finished running, you can start the last cycle";
+        this.hourglassRunning = false;
     }
 
     //invoked when the game switches to the ship placement phase
     public void updateShipPlacement() {
         this.hourglassState = "Hourglass has finished running, place your ship on the flight board!!!";
+        this.hourglassRunning = false;
         gameState = "SHIP PLACEMENT";
     }
 

@@ -4,6 +4,7 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.FlightBoardController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.GuiController;
+import it.polimi.ingsw.galaxytrucker.ui.view.View;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -13,6 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
@@ -46,6 +48,8 @@ public class FlightBoardControllerL2 implements FlightBoardController {
     @FXML private ImageView deckCard1;
     @FXML private ImageView deckCard2;
     @FXML private ImageView deckCard3;
+    @FXML private Button hourglass1Button;
+    @FXML private Button hourglass2Button;
 
 
     private int gameID;
@@ -63,6 +67,8 @@ public class FlightBoardControllerL2 implements FlightBoardController {
         setupDeck2Button();
         setupDeck3Button();
         setupReleaseDeckButton();
+        setUpHourglass1Button();
+        setUpHourglass2Button();
 
         cardImageMap = GuiInterface.getInstance().loadImageMap("cards");
 
@@ -95,6 +101,7 @@ public class FlightBoardControllerL2 implements FlightBoardController {
         this.color = GuiInterface.getInstance().getView().getColor();
         showGameState(GuiInterface.getInstance().getView().getGameState());
 
+        initializeHourglass();
         initializeFlightBoardFromMap();
     }
 
@@ -143,6 +150,30 @@ public class FlightBoardControllerL2 implements FlightBoardController {
                 wait.play();
             });
         });
+    }
+
+    public void initializeHourglass(){
+        View view = GuiInterface.getInstance().getView();
+        if(view.isHourglassRunning() && view.getHourglassPosition()==1){
+            hourglassRotation(hourglass1Button);
+            hourglass2Button.setDisable(true);
+            hourglass1Button.setDisable(false);
+        }
+        else if(view.isHourglassRunning() && view.getHourglassPosition()==2){
+            hourglassRotation(hourglass2Button);
+            hourglass2Button.setDisable(false);
+            hourglass1Button.setDisable(true);
+        }
+        else if(!view.isHourglassRunning() && view.getHourglassPosition()==1){
+            stopHourglass(hourglass1Button, false);
+            hourglass2Button.setDisable(true);
+            hourglass1Button.setDisable(false);
+        }
+        else if(!view.isHourglassRunning() && view.getHourglassPosition()==2){
+            stopHourglass(hourglass2Button, true);
+            hourglass2Button.setDisable(false);
+            hourglass1Button.setDisable(true);
+        }
     }
 
     public void initializeFlightBoardFromMap() {
@@ -274,6 +305,102 @@ public class FlightBoardControllerL2 implements FlightBoardController {
         });
     }
 
+    public void setUpHourglass1Button() {
+        hourglass1Button.setOnAction(event -> {
+            try{
+                server.startNewCycle(this.gameID, this.playerNickname);
+            }
+            catch(Exception e){
+                showError(e.getMessage());
+            }
+        });
+    }
+
+    public void setUpHourglass2Button() {
+        hourglass2Button.setOnAction(event -> {
+            try{
+                server.startNewCycle(this.gameID, this.playerNickname);
+            }
+            catch(Exception e){
+                showError(e.getMessage());
+            }
+        });
+    }
+
+    private void hourglassRotation(Button hourglassButton) {
+        // Recupera l'immagine dalla mappa
+        Image image = cardImageMap.get("1000");
+        if (image == null) {
+            showError("Immagine ID 1000 non trovata.");
+            return;
+        }
+
+        // Crea ImageView e la adatta al bottone
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(hourglassButton.getPrefWidth());
+        imageView.setFitHeight(hourglassButton.getPrefHeight());
+        imageView.setPreserveRatio(true);
+
+        // Applica tinta rossa
+        ColorAdjust redTint = new ColorAdjust();
+        redTint.setHue(0.05);
+        redTint.setSaturation(1.0);
+        redTint.setBrightness(0.6);
+        imageView.setEffect(redTint);
+
+        // Rotazione infinita
+        javafx.animation.RotateTransition rotate = new javafx.animation.RotateTransition();
+        rotate.setNode(imageView);
+        rotate.setDuration(Duration.seconds(2));
+        rotate.setByAngle(360);
+        rotate.setCycleCount(javafx.animation.Animation.INDEFINITE);
+        rotate.setInterpolator(javafx.animation.Interpolator.LINEAR);
+        rotate.play();
+
+        // Inserisce l'imageView nel bottone
+        hourglassButton.setGraphic(imageView);
+    }
+
+
+    private void stopHourglass(Button hourglassButton, boolean lastCycle) {
+        // 1. Recupera l’immagine con ID "1000" dalla mappa
+        Image image = cardImageMap.get("1000");
+        if (image == null) {
+            showError("Immagine con ID 1000 non trovata.");
+            return;
+        }
+
+        // 2. Crea una ImageView e la adatta al bottone
+        ImageView hourglass = new ImageView(image);
+        hourglass.setFitWidth(hourglassButton.getPrefWidth());
+        hourglass.setFitHeight(hourglassButton.getPrefHeight());
+        hourglass.setPreserveRatio(true);
+        hourglass.setSmooth(true);
+
+        // 3. Applica una tinta
+        ColorAdjust tint = new ColorAdjust();
+        if (!lastCycle) {
+            tint.setHue(0.33);
+            tint.setSaturation(1.0);
+            tint.setBrightness(0.6);
+        }else{
+            tint.setHue(-0.55);
+            tint.setSaturation(1.0);
+            tint.setBrightness(0.6);
+        }
+
+        hourglass.setEffect(tint);
+
+        // 4. Imposta la grafica del bottone
+        hourglassButton.setGraphic(hourglass);
+        hourglassButton.setStyle("-fx-background-color: transparent;");
+    }
+
+    private void clearHourglassButton(Button hourglassButton) {
+        hourglassButton.setGraphic(null); // Rimuove l’immagine/graphic
+        hourglassButton.setStyle("-fx-background-color: transparent;"); // Sfondo trasparente
+    }
+
     @Override
     public void setServer(VirtualServer server) {
         this.server = server;
@@ -290,10 +417,6 @@ public class FlightBoardControllerL2 implements FlightBoardController {
     public void notifyError(String errorMessage) {
         Platform.runLater(() -> {
             showError(errorMessage);
-
-            if (start.getText().isEmpty()) {
-                start.setText("🚀");
-            }
         });
     }
 
@@ -387,10 +510,29 @@ public class FlightBoardControllerL2 implements FlightBoardController {
     }
 
     @Override
-    public void updateStartNewCycle() {}
+    public void updateStartNewCycle() {
+        Platform.runLater(() -> {
+            if(hourglass2Button.isDisable()){
+                hourglass2Button.setDisable(false);
+                hourglassRotation(hourglass2Button);
+                hourglass1Button.setDisable(true);
+                clearHourglassButton(hourglass1Button);
+            }
+        });
+    }
 
     @Override
-    public void updateFinishedCycle() {}
+    public void updateFinishedCycle() {
+        Platform.runLater(() -> {
+            if(hourglass2Button.isDisable()){
+                clearHourglassButton(hourglass1Button);
+                stopHourglass(hourglass1Button, false);
+            }else{
+                clearHourglassButton(hourglass2Button);
+                stopHourglass(hourglass2Button, true);
+            }
+        });
+    }
 
     //notifies the view about a change in the game phase
     @Override

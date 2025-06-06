@@ -260,11 +260,17 @@ public class GuiInterface implements UserInterface {
     @Override
     public void updateStartNewCycle() throws Exception {
         this.view.updateStartNewCycle();
+        if(flightBoardController != null){
+            flightBoardController.updateStartNewCycle();
+        }
     }
 
     @Override
     public void updateFinishedCycle() throws Exception {
         this.view.updateFinishedCycle();
+        if(flightBoardController != null){
+            flightBoardController.updateFinishedCycle();
+        }
     }
 
     @Override
@@ -273,6 +279,7 @@ public class GuiInterface implements UserInterface {
         if(shipBuildingController != null){
             shipBuildingController.updateShipPlacement();
         }
+        notifyGamePhase(this.view.getGameState());
     }
 
     @Override
