@@ -8,4 +8,7 @@ public interface GuiController {
 
     //invoked to set the players information needed for method invocation on server
     void setPlayerInfo(int gameID, String playerNickname, Color color);
+
+    //notifies the view about an error obtained while performing an action
+    void notifyError(String error) throws Exception;
 }

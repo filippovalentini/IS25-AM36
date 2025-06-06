@@ -8,10 +8,6 @@ public interface ShipBuildingController extends GuiController {
     @Override
     void setServer(VirtualServer server);
 
-    //notifies a view about an error committed while executing a method on the remote server; the parameter
-    //errorMessage describes the type of error
-    void notifyError(String errorMessage) throws Exception;
-
     //notifies the view about the fact that a component has been successfully picked/released (depending on
     //the value of the boolean parameter) by the corresponding player; the parameter imageID is needed for the
     //view in order to show the right component to the user
@@ -34,12 +30,6 @@ public interface ShipBuildingController extends GuiController {
     //correctly positioned on the flight board; still, other players have to finish building their ships
     void updateFinishAssembling(String nickname, int position) throws Exception;
 
-    //notifies the view that the hourglass has been turned around
-    void updateStartNewCycle() throws Exception;
-
-    //notifies the view that the hourglass has finished running
-    void updateFinishedCycle() throws Exception;
-
     //invoked when the game switches to the ship placement phase, which means that the players can only
     //place their ship on the flight board
     void updateShipPlacement() throws Exception;
@@ -47,17 +37,5 @@ public interface ShipBuildingController extends GuiController {
     //notifies the view that all the players have concluded the assembling phase, which means that the players
     //enter the ship control phase
     void updateShipControl() throws Exception;
-
-    //notifies the view that a component of a player's ship board has been destroyed
-    void updateDestroyedComponent(String nickname, int x, int y) throws Exception;
-
-    //notifies the view about a change in the number of crew of a cabin
-    void updateCrewChange(String nickname, int x, int y, int change) throws Exception;
-
-    //notifies the view that a player has initialized a battery container with batteries
-    void updateBatteries(String nickname, int x, int y, int change) throws Exception;
-
-    //notifies the view about a change in the number of aliens of a cabin
-    void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws Exception;
 
 }

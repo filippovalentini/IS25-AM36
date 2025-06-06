@@ -23,10 +23,10 @@
 
             <!-- Sezione informazioni giocatore -->
             <VBox layoutX="47.0" layoutY="259.0" prefHeight="175.0" prefWidth="118.0" spacing="10.0">
-                <Label prefHeight="23.0" prefWidth="109.0" style="-fx-font-size: 18px; -fx-text-fill: white;" text="Player" />
-                <Label fx:id="playerNicknameLabel" prefHeight="35.0" prefWidth="61.0" style="-fx-font-size: 16px; -fx-text-fill: white;" text="--" />
-                <Label prefHeight="32.0" prefWidth="108.0" style="-fx-font-size: 18px; -fx-text-fill: white;" text="Color" />
-                <Label fx:id="playerColorLabel" prefHeight="31.0" prefWidth="88.0" style="-fx-font-size: 16px; -fx-text-fill: white;" text="--" />
+                <Label prefHeight="23.0" prefWidth="109.0" style="-fx-font-size: 18px; -fx-font-family: 'Courier New'; -fx-text-fill: white;" text="Player" />
+                <Label fx:id="playerNicknameLabel" prefHeight="35.0" prefWidth="61.0" style="-fx-font-size: 16px; -fx-font-family: 'Courier New'; -fx-text-fill: white;" text="--" />
+                <Label prefHeight="32.0" prefWidth="108.0" style="-fx-font-size: 18px; -fx-font-family: 'Courier New'; -fx-text-fill: white;" text="Color" />
+                <Label fx:id="playerColorLabel" prefHeight="31.0" prefWidth="88.0" style="-fx-font-size: 16px; -fx-font-family: 'Courier New'; -fx-text-fill: white;" text="--" />
             </VBox>
 
             <!-- Immagine centrale -->
@@ -54,8 +54,18 @@
                 </rowConstraints>
             </GridPane>
 
+            <!-- Rettangolo in alto -->
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1478e363" height="50.0" layoutX="3.0" stroke="BLACK" strokeType="INSIDE" width="1203.0" />
 
+            <!-- Rettangolo rosso sbiadito per messaggi di errore -->
+            <Rectangle fx:id="errorBackground" layoutX="640.0" layoutY="5.0" width="555.0" height="40.0"
+                       arcHeight="10.0" arcWidth="10.0" fill="#ff000070" visible="false" />
+
+            <!-- Label per errori -->
+            <Label fx:id="errorLabel" layoutX="645.0" layoutY="5.0" prefHeight="39.0" prefWidth="545.0"
+                   style="-fx-text-fill: red; -fx-font-size: 16px; -fx-font-weight: bold;" visible="false" />
+
+            <!-- Bottone indietro -->
             <Button fx:id="backButton" layoutX="1091.0" layoutY="122.0" prefHeight="64.0" prefWidth="61.0" style="-fx-background-color: #4682B4; -fx-font-size: 20px; -fx-text-fill: black;" text="🔙" />
 
         </AnchorPane>

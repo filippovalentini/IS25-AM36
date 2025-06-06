@@ -5,6 +5,8 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBoardController;
 import it.polimi.ingsw.galaxytrucker.ui.view.ViewComponent;
+import javafx.animation.FadeTransition;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +17,9 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -23,7 +27,10 @@ import java.util.List;
 import java.util.Map;
 
 public class ShipBoardControllerL1 implements ShipBoardController {
-
+    @FXML
+    private Label errorLabel;
+    @FXML
+    private Rectangle errorBackground;
     @FXML
     private Label playerNicknameLabel;
     @FXML
@@ -119,6 +126,50 @@ public class ShipBoardControllerL1 implements ShipBoardController {
         });
     }
 
+    public void showError(String message) {
+        Platform.runLater(() -> {
+            errorLabel.setText(message);
+            errorLabel.setVisible(true);
+            errorBackground.setVisible(true);
+
+            // Fade in
+            FadeTransition fadeInLabel = new FadeTransition(Duration.millis(300), errorLabel);
+            fadeInLabel.setFromValue(0.0);
+            fadeInLabel.setToValue(1.0);
+
+            FadeTransition fadeInRect = new FadeTransition(Duration.millis(300), errorBackground);
+            fadeInRect.setFromValue(0.0);
+            fadeInRect.setToValue(1.0);
+
+            fadeInLabel.play();
+            fadeInRect.play();
+
+            // Wait 3 seconds, then fade out
+            fadeInLabel.setOnFinished(event -> {
+                PauseTransition wait = new PauseTransition(Duration.seconds(3));
+                wait.setOnFinished(e -> {
+                    FadeTransition fadeOutLabel = new FadeTransition(Duration.millis(600), errorLabel);
+                    fadeOutLabel.setFromValue(1.0);
+                    fadeOutLabel.setToValue(0.0);
+
+                    FadeTransition fadeOutRect = new FadeTransition(Duration.millis(600), errorBackground);
+                    fadeOutRect.setFromValue(1.0);
+                    fadeOutRect.setToValue(0.0);
+
+                    fadeOutLabel.setOnFinished(ev -> {
+                        errorLabel.setVisible(false);
+                        errorBackground.setVisible(false);
+                    });
+
+                    fadeOutLabel.play();
+                    fadeOutRect.play();
+                });
+                wait.play();
+            });
+        });
+    }
+
+
     @Override
     public void setServer(VirtualServer server) {
         this.server = server;
@@ -142,5 +193,10 @@ public class ShipBoardControllerL1 implements ShipBoardController {
         Platform.runLater(() -> {
             setImageOnGrid(String.valueOf(imageID), orientation, y, x);
         });
+    }
+
+    @Override
+    public void notifyError(String error) {
+        Platform.runLater(() -> showError(error));
     }
 }

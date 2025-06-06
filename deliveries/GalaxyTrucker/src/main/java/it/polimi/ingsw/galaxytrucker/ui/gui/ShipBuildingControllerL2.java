@@ -645,7 +645,7 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     //errorMessage describes the type of error
     @Override
     public void notifyError(String errorMessage) throws Exception{
-        Platform.runLater(() -> {showError(errorMessage);});
+        Platform.runLater(() -> showError(errorMessage));
     }
 
     //notifies the view about the fact that a component has been successfully picked/released (depending on
@@ -760,14 +760,6 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     @Override
     public void updateFinishAssembling(String nickname, int position) throws Exception{}
 
-    //notifies the view that the hourglass has been turned around
-    @Override
-    public void updateStartNewCycle() throws Exception{}
-
-    //notifies the view that the hourglass has finished running
-    @Override
-    public void updateFinishedCycle() throws Exception{}
-
     //invoked when the game switches to the ship placement phase, which means that the players can only
     //place their ship on the flight board
     @Override
@@ -777,23 +769,6 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     //enter the ship control phase
     @Override
     public void updateShipControl() throws Exception{}
-
-    //notifies the view that a component of a player's ship board has been destroyed
-    @Override
-    public void updateDestroyedComponent(String nickname, int x, int y) throws Exception{}
-
-    //notifies the view about a change in the number of crew of a cabin
-    @Override
-    public void updateCrewChange(String nickname, int x, int y, int change) throws Exception{}
-
-    //notifies the view that a player has initialized a battery container with batteries
-    @Override
-    public void updateBatteries(String nickname, int x, int y, int change) throws Exception{}
-
-    //notifies the view about a change in the number of aliens of a cabin
-    @Override
-    public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws Exception{}
-
 
 
 }

@@ -11,7 +11,6 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-
 <ScrollPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.FlightBoardControllerL2">
    <content>
       <StackPane prefHeight="740" prefWidth="1210">
@@ -170,18 +169,17 @@
                       <Label fx:id="messageLabel" layoutX="-1.0" prefHeight="33.0" prefWidth="456.0" style="-fx-font-size: 14px; -fx-text-fill: green;" text="" />
                   </children>
               </Pane>
-      
-              <!-- Rettangolo per messaggi di errore (rosso) -->
-              <Pane fx:id="errorPane" layoutX="684.0" layoutY="37.0" opacity="0.0" prefHeight="30.0" prefWidth="500.0">
-                  <children>
-                      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffb2b2" height="30.0" stroke="BLACK" strokeType="INSIDE" width="500.0" />
-                      <Label fx:id="errorLabel" layoutX="7.0" prefHeight="30.0" prefWidth="489.0" style="-fx-font-size: 14px; -fx-text-fill: red;" text="" />
-                  </children>
-              </Pane>
-            <Button fx:id="deck1Button" layoutX="225.0" layoutY="584.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="89.0" text="deck 1" />
-            <Button fx:id="deck2Button" layoutX="505.0" layoutY="640.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="89.0" text="deck 2" />
-            <Button fx:id="deck3Button" layoutX="783.0" layoutY="585.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="89.0" text="deck 3" />
-            <Button fx:id="releaseDeckButton" layoutX="475.0" layoutY="717.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="155.0" text="release deck" />
+
+              <!-- Rettangolo rosso sfumato per errori -->
+              <Rectangle fx:id="errorBackground" arcHeight="10.0" arcWidth="10.0" fill="#ff000070" height="32.0" layoutX="648.0" layoutY="38.0" visible="false" width="528.0" />
+
+              <!-- Label errore -->
+              <Label fx:id="errorLabel" layoutX="688.0" layoutY="41.0" prefHeight="35.0" prefWidth="476.0" style="-fx-text-fill: red; -fx-font-size: 16px; -fx-font-weight: bold; -fx-font-family: 'Courier New';" visible="false" />
+
+              <Button fx:id="deck1Button" layoutX="225.0" layoutY="584.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="89.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="deck 1" />
+            <Button fx:id="deck2Button" layoutX="505.0" layoutY="640.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="89.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="deck 2" />
+            <Button fx:id="deck3Button" layoutX="783.0" layoutY="585.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="89.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="deck 3" />
+            <Button fx:id="releaseDeckButton" layoutX="475.0" layoutY="717.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="155.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="release deck" />
       
               <Pane fx:id="deckPreviewPane" layoutX="103.0" layoutY="156.0" prefHeight="399.0" prefWidth="931.0" visible="false">
                   <children>

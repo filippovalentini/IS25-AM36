@@ -17,6 +17,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -33,10 +34,8 @@ public class FlightBoardControllerL2 implements FlightBoardController {
     @FXML private Label pos18, pos19, pos20, pos21, pos22, pos23;
     @FXML private List<Label> targetLabels;
     @FXML private Button backButton;
-    @FXML private Label messageLabel;
+    @FXML private Rectangle errorBackground;
     @FXML private Label errorLabel;
-    @FXML private Pane errorPane;
-    @FXML private Pane messagePane;
     @FXML private Button deck1Button;
     @FXML private Button deck2Button;
     @FXML private Button deck3Button;
@@ -96,28 +95,47 @@ public class FlightBoardControllerL2 implements FlightBoardController {
         initializeFlightBoardFromMap();
     }
 
-    public void showMessage(String message) {
-        messageLabel.setText(message);
-        fadeInThenOut(messagePane);
-    }
-
     public void showError(String message) {
-        errorLabel.setText(message);
-        fadeInThenOut(errorPane);
-    }
+        Platform.runLater(() -> {
+            errorLabel.setText(message);
+            errorLabel.setVisible(true);
+            errorBackground.setVisible(true);
 
-    private void fadeInThenOut(Pane pane) {
-        pane.setOpacity(1.0);
+            // Fade in
+            FadeTransition fadeInLabel = new FadeTransition(Duration.millis(300), errorLabel);
+            fadeInLabel.setFromValue(0.0);
+            fadeInLabel.setToValue(1.0);
 
-        // Timer: attende 3 secondi, poi parte il fade out
-        PauseTransition wait = new PauseTransition(Duration.seconds(3));
-        wait.setOnFinished(event -> {
-            FadeTransition fade = new FadeTransition(Duration.seconds(1.5), pane);
-            fade.setFromValue(1.0);
-            fade.setToValue(0.0);
-            fade.play();
+            FadeTransition fadeInRect = new FadeTransition(Duration.millis(300), errorBackground);
+            fadeInRect.setFromValue(0.0);
+            fadeInRect.setToValue(1.0);
+
+            fadeInLabel.play();
+            fadeInRect.play();
+
+            // Wait 3 seconds, then fade out
+            fadeInLabel.setOnFinished(event -> {
+                PauseTransition wait = new PauseTransition(Duration.seconds(3));
+                wait.setOnFinished(e -> {
+                    FadeTransition fadeOutLabel = new FadeTransition(Duration.millis(600), errorLabel);
+                    fadeOutLabel.setFromValue(1.0);
+                    fadeOutLabel.setToValue(0.0);
+
+                    FadeTransition fadeOutRect = new FadeTransition(Duration.millis(600), errorBackground);
+                    fadeOutRect.setFromValue(1.0);
+                    fadeOutRect.setToValue(0.0);
+
+                    fadeOutLabel.setOnFinished(ev -> {
+                        errorLabel.setVisible(false);
+                        errorBackground.setVisible(false);
+                    });
+
+                    fadeOutLabel.play();
+                    fadeOutRect.play();
+                });
+                wait.play();
+            });
         });
-        wait.play();
     }
 
     public void initializeFlightBoardFromMap() {

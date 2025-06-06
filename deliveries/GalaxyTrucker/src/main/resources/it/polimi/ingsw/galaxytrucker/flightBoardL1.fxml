@@ -6,7 +6,6 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
@@ -132,19 +131,13 @@
                </font>
               </Label>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#004e97" height="51.0" layoutX="22.0" layoutY="14.0" stroke="BLACK" strokeType="INSIDE" width="1149.0" />
-            <Pane fx:id="messagePane" layoutX="36.0" layoutY="20.0" prefHeight="39.0" prefWidth="486.0">
-              <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b2ffb2" height="32.0" layoutY="5.0" stroke="BLACK" strokeType="INSIDE" width="486.0" />
-                  <Label fx:id="messageLabel" layoutX="8.0" layoutY="7.0" prefHeight="29.0" prefWidth="478.0" style="-fx-font-size: 14px; -fx-text-fill: green;" text="" />
-              </children>
-          </Pane>
-            <Pane fx:id="errorPane" layoutX="673.0" layoutY="20.0" prefHeight="39.0" prefWidth="486.0">
-                <children>
-                    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffb2b2" height="33.0" layoutY="4.0" stroke="BLACK" strokeType="INSIDE" width="480.0" />
-                    <Label fx:id="errorLabel" layoutX="8.0" layoutY="5.0" prefHeight="30.0" prefWidth="468.0" style="-fx-font-size: 14px; -fx-text-fill: red;" text="" />
-                </children>
-            </Pane>
-      
+              <!-- Rettangolo rosso sfumato per errori -->
+              <Rectangle fx:id="errorBackground" arcHeight="10.0" arcWidth="10.0" fill="#ff000070" height="41.0" layoutX="626.0" layoutY="20.0" visible="false" width="538.0" />
+
+              <!-- Label errore -->
+              <Label fx:id="errorLabel" layoutX="666.0" layoutY="17.0" prefHeight="45.0" prefWidth="498.0" style="-fx-text-fill: red; -fx-font-size: 16px; -fx-font-weight: bold; -fx-font-family: 'Courier New';" visible="false" />
+
+
           </AnchorPane>
       </StackPane>
    </content>

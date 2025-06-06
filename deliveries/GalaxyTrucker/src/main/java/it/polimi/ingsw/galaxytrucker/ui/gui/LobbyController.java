@@ -121,4 +121,7 @@ public class LobbyController implements GuiController {
         this.gameID = gameID;
     }
 
+    @Override
+    public void notifyError(String error) {}
+
 }

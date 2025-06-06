@@ -8,10 +8,6 @@ public interface FlightBoardController extends GuiController {
     @Override
     void setServer(VirtualServer server);
 
-    //notifies a view about an error committed while executing a method on the remote server; the parameter
-    //errorMessage describes the type of error
-    void notifyError(String errorMessage) throws Exception;
-
     //notifies the view about the fact that the corresponding player has successfully picked a deck; the parameter
     //contains the list of image IDs of the cards contained in the deck, so that the view can show the
     //correct adventure cards to the user

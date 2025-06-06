@@ -23,10 +23,10 @@
 
             <!-- Sezione informazioni giocatore -->
             <VBox layoutX="47.0" layoutY="259.0" prefHeight="175.0" prefWidth="118.0" spacing="10.0">
-                <Label prefHeight="23.0" prefWidth="109.0" style="-fx-font-size: 18px; -fx-text-fill: white;" text="Player" />
-                <Label fx:id="playerNicknameLabel" prefHeight="35.0" prefWidth="61.0" style="-fx-font-size: 16px; -fx-text-fill: white;" text="--" />
-                <Label prefHeight="32.0" prefWidth="108.0" style="-fx-font-size: 18px; -fx-text-fill: white;" text="Color" />
-                <Label fx:id="playerColorLabel" prefHeight="31.0" prefWidth="88.0" style="-fx-font-size: 16px; -fx-text-fill: white;" text="--" />
+                <Label prefHeight="23.0" prefWidth="109.0" style="-fx-font-size: 18px; -fx-font-family: 'Courier New'; -fx-text-fill: white;" text="Player" />
+                <Label fx:id="playerNicknameLabel" prefHeight="35.0" prefWidth="61.0" style="-fx-font-size: 16px; -fx-font-family: 'Courier New'; -fx-text-fill: white;" text="--" />
+                <Label prefHeight="32.0" prefWidth="108.0" style="-fx-font-size: 18px; -fx-font-family: 'Courier New'; -fx-text-fill: white;" text="Color" />
+                <Label fx:id="playerColorLabel" prefHeight="31.0" prefWidth="88.0" style="-fx-font-size: 16px; -fx-font-family: 'Courier New'; -fx-text-fill: white;" text="--" />
             </VBox>
 
             <!-- Immagine centrale -->
@@ -34,7 +34,7 @@
                 <Image url="@images/cardboard/shipL2.jpg" />
             </ImageView>
 
-            <!-- GridPane -->
+            <!-- Grid centrale -->
             <GridPane fx:id="myGridPane" layoutX="215.0" layoutY="137.0" prefHeight="550.0" prefWidth="779.0" AnchorPane.bottomAnchor="53.0" AnchorPane.leftAnchor="215.0" AnchorPane.rightAnchor="216.0" AnchorPane.topAnchor="137.0">
                 <columnConstraints>
                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="147.0" minWidth="10.0" prefWidth="117.0" />
@@ -54,19 +54,33 @@
                 </rowConstraints>
             </GridPane>
 
+            <!-- Rettangolo blu decorativo -->
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1478e363" height="50.0" layoutX="3.0" stroke="BLACK" strokeType="INSIDE" width="1203.0" />
 
+            <!-- Rettangolo rosso sfumato per errori -->
+            <Rectangle fx:id="errorBackground" arcHeight="10.0" arcWidth="10.0" fill="#ff000070" height="40.0" layoutX="640.0" layoutY="5.0" visible="false" width="555.0" />
+
+            <!-- Label errore -->
+            <Label fx:id="errorLabel" layoutX="645.0" layoutY="5.0" prefHeight="39.0" prefWidth="545.0" style="-fx-text-fill: red; -fx-font-size: 16px; -fx-font-weight: bold; -fx-font-family: 'Courier New';" visible="false" />
+
+            <!-- Bottone indietro -->
             <Button fx:id="backButton" layoutX="1091.0" layoutY="122.0" prefHeight="64.0" prefWidth="61.0" style="-fx-background-color: #4682B4; -fx-font-size: 20px; -fx-text-fill: black;" text="🔙" />
-         <GridPane fx:id="reservedGridPane" layoutX="1038.0" layoutY="473.0" prefHeight="223.0" prefWidth="155.0">
-           <columnConstraints>
-             <ColumnConstraints hgrow="SOMETIMES" maxWidth="121.0" minWidth="10.0" prefWidth="121.0" />
-               <ColumnConstraints hgrow="SOMETIMES" maxWidth="60.0" minWidth="10.0" prefWidth="12.0" />
-           </columnConstraints>
-           <rowConstraints>
-             <RowConstraints maxHeight="134.0" minHeight="10.0" prefHeight="134.0" vgrow="SOMETIMES" />
-             <RowConstraints maxHeight="133.0" minHeight="10.0" prefHeight="133.0" vgrow="SOMETIMES" />
-           </rowConstraints>
-         </GridPane>
+
+            <!-- Label "Reserved Components" -->
+            <Label alignment="CENTER" layoutX="1038.0" layoutY="390.0" prefHeight="29.0" prefWidth="155.0" style="-fx-font-size: 16px; -fx-text-fill: white; -fx-font-family: 'Courier New';" text="Reserved" />
+
+            <!-- Griglia componenti riservati -->
+            <GridPane fx:id="reservedGridPane" layoutX="1038.0" layoutY="473.0" prefHeight="223.0" prefWidth="155.0">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="121.0" minWidth="10.0" prefWidth="121.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="60.0" minWidth="10.0" prefWidth="12.0" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints maxHeight="134.0" minHeight="10.0" prefHeight="134.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="133.0" minHeight="10.0" prefHeight="133.0" vgrow="SOMETIMES" />
+                </rowConstraints>
+            </GridPane>
+         <Label alignment="CENTER" layoutX="1038.0" layoutY="412.0" prefHeight="29.0" prefWidth="155.0" style="-fx-font-size: 16px; -fx-text-fill: white; -fx-font-family: 'Courier New';" text="components" />
 
         </AnchorPane>
     </content>

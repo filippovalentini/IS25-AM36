@@ -76,4 +76,7 @@ public class EndgameController implements GuiController {
     public void setServer(VirtualServer server) {
         this.server = server;
     }
+
+    @Override
+    public void notifyError(String error) {}
 }

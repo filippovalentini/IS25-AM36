@@ -19,6 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -31,9 +32,7 @@ public class ShownComponentsController implements GuiController {
 
     @FXML private GridPane componentGrid;
     @FXML private Button pickButton;
-    @FXML private Pane notificationPane;
-    @FXML private Pane errorPane;
-    @FXML private Label notificationLabel;
+    @FXML private Rectangle errorBackground;
     @FXML private Label errorLabel;
     @FXML private Button backButton;
 
@@ -61,32 +60,51 @@ public class ShownComponentsController implements GuiController {
             updateShownComponents(id, true);
         }
 
-        componentGrid.setMinWidth(COLUMNS * (CELL_WIDTH + 10)); // + hgap
+        componentGrid.setMinWidth(COLUMNS * (CELL_WIDTH + 10));
         componentGrid.setPrefWidth(componentGrid.getMinWidth());
     }
 
-    public void showNotification(String message) {
-        notificationLabel.setText(message);
-        fadeInThenOut(notificationPane);
-    }
-
     public void showError(String message) {
-        errorLabel.setText(message);
-        fadeInThenOut(errorPane);
-    }
+        Platform.runLater(() -> {
+            errorLabel.setText(message);
+            errorLabel.setVisible(true);
+            errorBackground.setVisible(true);
 
-    private void fadeInThenOut(Pane pane) {
-        pane.setOpacity(1.0);
+            // Fade in
+            FadeTransition fadeInLabel = new FadeTransition(Duration.millis(300), errorLabel);
+            fadeInLabel.setFromValue(0.0);
+            fadeInLabel.setToValue(1.0);
 
-        // Timer: attende 3 secondi, poi parte il fade out
-        PauseTransition wait = new PauseTransition(Duration.seconds(3));
-        wait.setOnFinished(event -> {
-            FadeTransition fade = new FadeTransition(Duration.seconds(1.5), pane);
-            fade.setFromValue(1.0);
-            fade.setToValue(0.0);
-            fade.play();
+            FadeTransition fadeInRect = new FadeTransition(Duration.millis(300), errorBackground);
+            fadeInRect.setFromValue(0.0);
+            fadeInRect.setToValue(1.0);
+
+            fadeInLabel.play();
+            fadeInRect.play();
+
+            // Wait 3 seconds, then fade out
+            fadeInLabel.setOnFinished(event -> {
+                PauseTransition wait = new PauseTransition(Duration.seconds(3));
+                wait.setOnFinished(e -> {
+                    FadeTransition fadeOutLabel = new FadeTransition(Duration.millis(600), errorLabel);
+                    fadeOutLabel.setFromValue(1.0);
+                    fadeOutLabel.setToValue(0.0);
+
+                    FadeTransition fadeOutRect = new FadeTransition(Duration.millis(600), errorBackground);
+                    fadeOutRect.setFromValue(1.0);
+                    fadeOutRect.setToValue(0.0);
+
+                    fadeOutLabel.setOnFinished(ev -> {
+                        errorLabel.setVisible(false);
+                        errorBackground.setVisible(false);
+                    });
+
+                    fadeOutLabel.play();
+                    fadeOutRect.play();
+                });
+                wait.play();
+            });
         });
-        wait.play();
     }
 
     private ImageView createImageView(Image image) {
