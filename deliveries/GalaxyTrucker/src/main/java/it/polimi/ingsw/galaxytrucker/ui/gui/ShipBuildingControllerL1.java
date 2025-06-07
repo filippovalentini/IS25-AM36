@@ -4,13 +4,19 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBuildingController;
+import it.polimi.ingsw.galaxytrucker.ui.view.ViewComponent;
+import javafx.animation.FadeTransition;
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -19,89 +25,278 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class ShipBuildingControllerL1 implements ShipBuildingController {
     private VirtualServer server;
-    int gameID;
+
+    private int gameID;
     private String playerNickname;
-    Color color;
-    int col;
-    int row;
-    int currentComponentImageID;
-    //fare una mappa o qualcosa per identificare le shipboard, guarda la CliInterface e View
+    private Color color;
 
-
-    @FXML
-    private Pane handComponentArea;
-
-    @FXML
-    private TextField ipTextField;
-
-    @FXML
-    private Button handComponentButton;
-
-    @FXML
-    private GridPane myGridPane;
-
-    @FXML
-    private Button setButton;
-
-    @FXML
-    private Button flightBoardButton;
-
-    @FXML
-    private Button pickComponent;
-
-    @FXML
-    private Button reserveButton;
-
-    @FXML
-    private Button rotateButton;
-    @FXML
-    private Button viewShownComponentButton;
-    @FXML
-    private Button player1ShipButton;
-    @FXML
-    private Button player2ShipButton;
-    @FXML
-    private Button player3ShipButton;
-    @FXML
-    private Button mineShipButton;
-    @FXML
-    private Button discardButton;
-
+    private int colDroppedComponent;
+    private int rowDroppedComponent;
+    private boolean isComponentPlaced = false;
+    private boolean firstComponent = true;
+    private boolean componentPicked = false;
 
     private Button lastDroppedButton = null;
-    private Boolean isComponentPlaced = false;
-    private Boolean firstComponent = true;
-    Map<String, Button> draggableButtons = new HashMap<>();
+    private final Map<String, Button> draggableButtons = new HashMap<>();
+    private Map<String, Image> componentImageMap = new HashMap<>();
 
+    // FXML Components - existing
+    @FXML private Pane handComponentArea;
+    @FXML private TextField ipTextField;
+    @FXML private Button handComponentButton;
+    @FXML private GridPane myGridPane;
+    @FXML private Button setButton;
+    @FXML private Button flightBoardButton;
+    @FXML private Button pickComponent;
+    @FXML private Button rotateButton;
+    @FXML private Button viewShownComponentButton;
+    @FXML private Button player1ShipButton;
+    @FXML private Button player2ShipButton;
+    @FXML private Button player3ShipButton;
+    @FXML private Button mineShipButton;
+    @FXML private Button discardButton;
+    @FXML private Label playerNameLabel;
+    @FXML private Label playerColorLabel;
+
+    @FXML private Button shownComponentButton;
+
+    // Da aggiungere
+    @FXML private Pane notificationPane;
+    @FXML private Pane errorPane;
+    @FXML private Label notificationLabel;
+    @FXML private Label errorLabel;
 
     @FXML
     public void initialize() {
-
-
-        // Registra questo controller nell'interfaccia GUI
-        // GuiInterface.getInstance().setShipBuildingController(this);
-
         setupGridPaneDragOver();
         setupGridPaneDragDropped();
         setupSetButton();
         setupPickComponentButton();
         setupDiscardButton();
         setupFlightBoardButton();
+        setupRotateButton();
+        setupViewShownComponentButton();
+        setupShownComponentsButton();
 
-        //metodo per mettere le immagini sul bottone
-        setupButtonImages();
 
+        componentImageMap = GuiInterface.getInstance().loadImageMap("components");
+        showPlaceholderImage();
+
+        initializeShipBoard();
+        setupOtherPlayerButtons();
+        setupImages();
     }
 
+    public void initializeShipBoard(){
+        initializeGameInfo();
+        initializeAssembledComponents();
+        initializeOtherComponents();
+        initializeButtons();
+    }
 
+    public void initializeAssembledComponents(){
+        List<List<ViewComponent>> assembledComponents = GuiInterface.getInstance().getView().getAssembledComponents(this.playerNickname);
+        for(int i = 0; i < assembledComponents.size(); i++){
+            for(int j = 0; j < assembledComponents.get(i).size(); j++){
+                ViewComponent component = assembledComponents.get(i).get(j);
+                if(component != null){
+                    setImageOnGrid(component.getImageID(), component.getOrientation(), j, i);
+                }
+            }
+        }
+    }
+
+    public void initializeOtherComponents(){
+        ViewComponent pickedComponent = GuiInterface.getInstance().getView().getPickedViewComponent();
+        if(pickedComponent != null){
+            initializePickedComponent(String.valueOf(pickedComponent.getImageID()), pickedComponent.getOrientation());
+        }
+    }
+
+    public void initializePickedComponent(String imageID, Orientation orientation){
+        if (isComponentPlaced || firstComponent) {
+            Button newButton = new Button();
+            double buttonSize = 150;
+
+            newButton.setPrefSize(buttonSize, buttonSize);
+            newButton.setMinSize(buttonSize, buttonSize);
+            newButton.setMaxSize(buttonSize, buttonSize);
+            newButton.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
+
+            Image image = componentImageMap.get(imageID);
+
+            if (image != null) {
+                ImageView imageView = new ImageView(image);
+                imageView.setFitWidth(buttonSize);
+                imageView.setFitHeight(buttonSize);
+                imageView.setPreserveRatio(true);
+                imageView.setSmooth(true);
+                imageView.setCache(true);
+                if(orientation.equals(Orientation.WEST)){
+                    imageView.setRotate((imageView.getRotate() - 90) % 360);
+                }
+                else if(orientation.equals(Orientation.SOUTH)){
+                    imageView.setRotate((imageView.getRotate() - 180) % 360);
+                }
+                else if(orientation.equals(Orientation.EAST)){
+                    imageView.setRotate((imageView.getRotate() - 270) % 360);
+                }
+                newButton.setGraphic(imageView);
+            }
+
+            String btnId = UUID.randomUUID().toString();
+            newButton.setUserData(btnId);
+            draggableButtons.put(btnId, newButton);
+
+            newButton.setOnDragDetected(event2 -> {
+                Dragboard db = newButton.startDragAndDrop(TransferMode.MOVE);
+                ClipboardContent content = new ClipboardContent();
+                content.putString(btnId);
+                db.setContent(content);
+                firstComponent = false;
+                componentPicked = true;
+                event2.consume();
+            });
+
+            handComponentArea.getChildren().clear();
+            handComponentArea.getChildren().add(newButton);
+
+            lastDroppedButton = newButton;
+        }
+    }
+
+    public void initializeGameInfo(){
+        String gameState = GuiInterface.getInstance().getView().getGameState();
+        String nn = GuiInterface.getInstance().getView().getNickname();
+        Color c = GuiInterface.getInstance().getView().getColor();
+
+        this.playerNickname = nn;
+        this.color = c;
+
+        if (notificationLabel != null) {
+            notificationLabel.setText(gameState);
+        }
+        if (playerNameLabel != null) {
+            playerNameLabel.setText(nn);
+        }
+        if (playerColorLabel != null) {
+            playerColorLabel.setText(Color.convertColorIntoEmoji(c));
+        }
+    }
+
+    public void initializeButtons(){
+        if(GuiInterface.getInstance().getView().getPickedViewComponent() != null){
+            pickComponent.setDisable(true);
+            rotateButton.setDisable(false);
+            discardButton.setDisable(false);
+        }
+        else {
+            pickComponent.setDisable(false);
+            rotateButton.setDisable(true);
+            discardButton.setDisable(true);
+        }
+        if (shownComponentButton != null) shownComponentButton.setDisable(false);
+        setButton.setDisable(true);
+        flightBoardButton.setDisable(false);
+
+        List<String> otherPlayerNicknames = GuiInterface.getInstance().getView().getOtherPlayerNicknames();
+        int numberOtherPlayers = otherPlayerNicknames.size();
+        player1ShipButton.setDisable(false);
+        player1ShipButton.setText(otherPlayerNicknames.get(0));
+        if(numberOtherPlayers == 1){
+            player2ShipButton.setDisable(true);
+            player2ShipButton.setText("no player");
+            player3ShipButton.setDisable(true);
+            player3ShipButton.setText("no player");
+        }
+        if(numberOtherPlayers == 2){
+            player2ShipButton.setDisable(false);
+            player2ShipButton.setText(otherPlayerNicknames.get(1));
+            player3ShipButton.setDisable(true);
+            player3ShipButton.setText("no player");
+        }
+        if(numberOtherPlayers == 3){
+            player2ShipButton.setDisable(false);
+            player2ShipButton.setText(otherPlayerNicknames.get(1));
+            player3ShipButton.setDisable(false);
+            player3ShipButton.setText(otherPlayerNicknames.get(2));
+        }
+    }
+
+    public void setImageOnGrid(String imageID, Orientation orientation, int column, int row){
+        if(imageID.equals("000") || imageID.equals("003")){
+            return;
+        }
+        Image componentImage = componentImageMap.get(imageID);
+        if (componentImage == null) {
+            showError("Component image not found for component ID: " + imageID);
+            return;
+        }
+
+        Button componentButton = new Button();
+        double buttonSize = 110;
+
+        componentButton.setPrefSize(buttonSize, buttonSize);
+        componentButton.setMinSize(buttonSize, buttonSize);
+        componentButton.setMaxSize(buttonSize, buttonSize);
+        componentButton.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
+
+        ImageView componentImageView = new ImageView(componentImage);
+        componentImageView.setFitWidth(buttonSize);
+        componentImageView.setFitHeight(buttonSize);
+        componentImageView.setPreserveRatio(true);
+        if(orientation.equals(Orientation.WEST)){
+            componentImageView.setRotate((componentImageView.getRotate() - 90) % 360);
+        }
+        else if(orientation.equals(Orientation.SOUTH)){
+            componentImageView.setRotate((componentImageView.getRotate() - 180) % 360);
+        }
+        else if(orientation.equals(Orientation.EAST)){
+            componentImageView.setRotate((componentImageView.getRotate() - 270) % 360);
+        }
+        componentButton.setGraphic(componentImageView);
+
+        String btnId = UUID.randomUUID().toString();
+        componentButton.setUserData(btnId);
+
+        myGridPane.add(componentButton, column, row);
+    }
+
+    public void showNotification(String message) {
+        if (notificationLabel != null && notificationPane != null) {
+            notificationLabel.setText(message);
+            fadeInThenOut(notificationPane);
+        }
+    }
+
+    public void showError(String message) {
+        if (errorLabel != null && errorPane != null) {
+            errorLabel.setText(message);
+            fadeInThenOut(errorPane);
+        } else {
+            System.err.println("Error: " + message);
+        }
+    }
+
+    private void fadeInThenOut(Pane pane) {
+        pane.setOpacity(1.0);
+
+        PauseTransition wait = new PauseTransition(Duration.seconds(3));
+        wait.setOnFinished(event -> {
+            FadeTransition fade = new FadeTransition(Duration.seconds(1.5), pane);
+            fade.setFromValue(1.0);
+            fade.setToValue(0.0);
+            fade.play();
+        });
+        wait.play();
+    }
 
     private void setupGridPaneDragOver() {
         myGridPane.setOnDragOver(event -> {
@@ -122,17 +317,48 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
                 Button draggedButton = draggableButtons.get(btnId);
 
                 if (draggedButton != null) {
-                    Pane parent = (Pane) draggedButton.getParent();
-                    parent.getChildren().remove(draggedButton);
+                    // Safe removal from any container
+                    if (draggedButton.getParent() instanceof Pane parentPane) {
+                        parentPane.getChildren().remove(draggedButton);
+                    } else if (myGridPane.getChildren().contains(draggedButton)) {
+                        myGridPane.getChildren().remove(draggedButton);
+                    }
 
-                    double x = event.getX();
-                    double y = event.getY();
-                    col = getColumnIndexFromX(x);
-                    row = getRowIndexFromY(y);
+                    // Calculate grid position
+                    colDroppedComponent = getColumnIndexFromX(event.getX());
+                    rowDroppedComponent = getRowIndexFromY(event.getY());
 
-                    myGridPane.add(draggedButton, col, row);
+                    // Graphics settings
+                    double buttonSize = 110;
+                    draggedButton.setPrefSize(buttonSize, buttonSize);
+                    draggedButton.setMinSize(buttonSize, buttonSize);
+                    draggedButton.setMaxSize(buttonSize, buttonSize);
+                    draggedButton.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
 
+                    if (draggedButton.getGraphic() instanceof ImageView imageView) {
+                        imageView.setFitWidth(buttonSize);
+                        imageView.setFitHeight(buttonSize);
+                        imageView.setPreserveRatio(true);
+                    }
+
+                    // Add to grid
+                    myGridPane.add(draggedButton, colDroppedComponent, rowDroppedComponent);
                     lastDroppedButton = draggedButton;
+
+                    Glow glow = new Glow();
+                    glow.setLevel(1);
+                    draggedButton.setEffect(glow);
+                    draggedButton.setOpacity(1);
+
+                    // Update button states
+                    rotateButton.setDisable(false);
+                    discardButton.setDisable(false);
+                    pickComponent.setDisable(true);
+                    setButton.setDisable(false);
+
+                    handComponentArea.getChildren().clear();
+                    showPlaceholderImage();
+
                     success = true;
                 }
             }
@@ -144,190 +370,135 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
 
     private void setupSetButton() {
         setButton.setOnAction(event -> {
-           /* try {
-                server.assembledComponent(gameID,playerNickname,row,col);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }*/
-
-            //togliere,solo per prova
-            if (lastDroppedButton != null) {
-                lastDroppedButton.setOnDragDetected(null);
-                isComponentPlaced = true;
+            try{
+                server.assembledComponent(this.gameID, this.playerNickname, this.rowDroppedComponent, this.colDroppedComponent);
+            }
+            catch (Exception e) {
+                showError(e.getMessage());
             }
         });
     }
 
     private void setupPickComponentButton() {
         pickComponent.setOnAction(event -> {
-            if (isComponentPlaced || firstComponent) {
-               /* try {
-                    server.pickHidden(gameID,playerNickname);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }*/
-                Button newButton = new Button("handComponent");
-                newButton.setPrefSize(handComponentArea.getPrefWidth(), handComponentArea.getPrefHeight());
-
-                String btnId = UUID.randomUUID().toString();
-                newButton.setUserData(btnId);
-                draggableButtons.put(btnId, newButton);
-
-                newButton.setOnDragDetected(event2 -> {
-                    Dragboard db = newButton.startDragAndDrop(TransferMode.MOVE);
-                    ClipboardContent content = new ClipboardContent();
-                    content.putString(btnId);
-                    firstComponent = false;
-                    db.setContent(content);
-                    event2.consume();
-                });
-
-                handComponentArea.getChildren().clear();
-                handComponentArea.getChildren().add(newButton);
+            try{
+                server.pickHidden(gameID, playerNickname);
+            }
+            catch(Exception e){
+                showError(e.getMessage());
             }
         });
     }
 
     private void setupRotateButton() {
         rotateButton.setOnAction(event -> {
-            if (lastDroppedButton != null) {
-                /*try {
-                    server.rotatePickedComponent(gameID, playerNickname);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }*/
-                //rotateCurrentOrientation();
-                //updateComponentRotation();
+            try{
+                server.rotatePickedComponent(gameID, playerNickname);
+            }
+            catch(Exception e){
+                showError(e.getMessage());
             }
         });
     }
 
     private void setupDiscardButton() {
         discardButton.setOnAction(event -> {
-            if (lastDroppedButton != null) {
-               /* try {
-                    server.putShown(gameID, playerNickname);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }*/
-                myGridPane.getChildren().remove(lastDroppedButton);
+            try{
+                server.putShown(this.gameID, this.playerNickname);
+            }
+            catch(Exception e){
+                showError(e.getMessage());
             }
         });
     }
 
 
 
-    /*private void enableDrag(Button button) {
-        button.setOnDragDetected(event -> {
-            Dragboard db = button.startDragAndDrop(TransferMode.MOVE);
-            ClipboardContent content = new ClipboardContent();
-            content.putString("handComponent");
-            db.setContent(content);
-            event.consume();
-        });
-    }*/
-
-    // Metodo per calcolare la colonna da coordinata x
-    private int getColumnIndexFromX(double x) {
-        double widthSoFar = 0;
-        for (int i = 0; i < myGridPane.getColumnConstraints().size(); i++) {
-            widthSoFar += myGridPane.getColumnConstraints().get(i).getPrefWidth();
-            if (x < widthSoFar) {
-                return i;
+    private void setupShownComponentsButton(){
+        if (shownComponentButton == null) {
+            // Use viewShownComponentButton as fallback
+            if (viewShownComponentButton != null) {
+                shownComponentButton = viewShownComponentButton;
             }
         }
-        // Se oltre la somma delle colonne, metti nell'ultima
-        return myGridPane.getColumnConstraints().size() - 1;
-    }
 
-    // Metodo per calcolare la riga da coordinata y
-    private int getRowIndexFromY(double y) {
-        double heightSoFar = 0;
-        for (int i = 0; i < myGridPane.getRowConstraints().size(); i++) {
-            heightSoFar += myGridPane.getRowConstraints().get(i).getPrefHeight();
-            if (y < heightSoFar) {
-                return i;
-            }
-        }
-        return myGridPane.getRowConstraints().size() - 1;
-    }
+        Button buttonToUse = (shownComponentButton != null) ? shownComponentButton : viewShownComponentButton;
 
-    //putShown() per rilasciare i componente, mettilo su discard
+        if (buttonToUse != null) {
+            buttonToUse.setOnAction(event -> {
+                try {
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shownComponents.fxml"));
+                    Parent root = fxmlLoader.load();
 
+                    ShownComponentsController controller = fxmlLoader.getController();
+                    controller.setServer(this.server);
+                    controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+                    controller.setGameType(true);
+                    GuiInterface.getInstance().setShownComponentsController(controller);
 
-  /*  public void updateAssembledComponentGUI(String nickname, int imageID, Orientation orientation, int x, int y){
-        if (lastDroppedButton != null) {
-            lastDroppedButton.setOnDragDetected(null);
-            isComponentPlaced = true;
-        }
-    }
+                    Stage stage = (Stage) flightBoardButton.getScene().getWindow();
+                    stage.setScene(new Scene(root, 1210, 740));
+                    stage.show();
 
-
-    public void updatePickedComponentGUI(int imageID, boolean released) {
-       //devo prendere l immagine
-    }
-
-    private void rotateCurrentOrientation() {
-        switch (currentOrientation) {
-            case Orientation.NORTH:
-                currentOrientation = Orientation.EAST;
-                break;
-            case Orientation.EAST:
-                currentOrientation = Orientation.SOUTH;
-                break;
-            case Orientation.SOUTH:
-                currentOrientation = Orientation.WEST;
-                break;
-            case Orientation.WEST:
-                currentOrientation = Orientation.NORTH;
-                break;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.err.println("Errore nel caricamento del ShownComponents: " + e.getMessage());
+                }
+            });
         }
     }
 
-    private void updateComponentRotation() {
-        if (currentHandComponent != null && currentHandComponent.getGraphic() instanceof ImageView) {
-            ImageView imageView = (ImageView) currentHandComponent.getGraphic();
-            double rotation = 0;
 
-            switch (currentOrientation) {
-                case NORTH:
-                    rotation = 0;
-                    break;
-                case EAST:
-                    rotation = 90;
-                    break;
-                case SOUTH:
-                    rotation = 180;
-                    break;
-                case WEST:
-                    rotation = 270;
-                    break;
-            }
+    private void initializeReserveComponentButton(Button targetButton, Image image) {
+        ImageView reservedView = new ImageView(image);
+        reservedView.setFitWidth(110);
+        reservedView.setFitHeight(110);
+        reservedView.setPreserveRatio(true);
 
-            imageView.setRotate(rotation);
+        targetButton.setGraphic(reservedView);
+        targetButton.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
+        targetButton.setPrefSize(110, 110);
+    }
+
+
+
+    private boolean isPlaceholder(Button button) {
+        if (button.getGraphic() instanceof ImageView imageView) {
+            Image placeholder = componentImageMap.get("3");
+            return imageView.getImage().equals(placeholder);
         }
-    }*/
+        return false;
+    }
 
+    private boolean imageButtonCorrespondence(Button button, String imageId) {
+        if (!(button.getGraphic() instanceof ImageView imageView)) {
+            return false;
+        }
+        Image buttonImage = imageView.getImage();
+        if (buttonImage == null) {
+            return false;
+        }
+        Image componentImage = componentImageMap.get(imageId);
+        if (componentImage == null) {
+            return false;
+        }
+
+        return buttonImage.equals(componentImage);
+    }
 
     public void setupFlightBoardButton() {
         flightBoardButton.setOnAction(event -> {
             try {
-                // Carica la nuova schermata
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/flightBoardL1.fxml"));
                 Parent root = fxmlLoader.load();
 
-                // Ora FlightBoardControllerL1 ha il metodo setServer()
                 FlightBoardControllerL1 controller = fxmlLoader.getController();
                 controller.setServer(this.server);
                 controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
                 GuiInterface.getInstance().setFlightBoardController(controller);
 
-                // Ottieni lo stage corrente dal bottone
                 Stage stage = (Stage) flightBoardButton.getScene().getWindow();
-
-                // Imposta la nuova scena
-                Scene scene = new Scene(root, 1210, 740);
-                stage.setScene(scene);
+                stage.setScene(new Scene(root, 1210, 740));
                 stage.show();
 
             } catch (IOException e) {
@@ -337,39 +508,48 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
         });
     }
 
-    private void setupButtonImages() {
+    public void setupViewShownComponentButton() {
+        if (viewShownComponentButton != null) {
+            setupShownComponentsButton(); // This will handle the logic
+        }
+    }
+
+    private int getColumnIndexFromX(double x) {
+        double widthSoFar = 0;
+        for (int i = 0; i < myGridPane.getColumnConstraints().size(); i++) {
+            widthSoFar += myGridPane.getColumnConstraints().get(i).getPrefWidth();
+            if (x < widthSoFar) return i;
+        }
+        return myGridPane.getColumnConstraints().size() - 1;
+    }
+
+    private int getRowIndexFromY(double y) {
+        double heightSoFar = 0;
+        for (int i = 0; i < myGridPane.getRowConstraints().size(); i++) {
+            heightSoFar += myGridPane.getRowConstraints().get(i).getPrefHeight();
+            if (y < heightSoFar) return i;
+        }
+        return myGridPane.getRowConstraints().size() - 1;
+    }
+
+    private void showPlaceholderImage() {
+        handComponentArea.getChildren().clear();
+        Image placeholderImage = componentImageMap.get("3");
+        if (placeholderImage != null) {
+            ImageView placeholderView = new ImageView(placeholderImage);
+            placeholderView.setFitWidth(150);
+            placeholderView.setFitHeight(150);
+            placeholderView.setPreserveRatio(true);
+            placeholderView.setSmooth(true);
+            placeholderView.setCache(true);
+            handComponentArea.getChildren().add(placeholderView);
+        }
+    }
+
+    private void setupImages() {
         try {
             //Bottone HandComponent
             setupButtonWithImage(handComponentButton, "/it/polimi/ingsw/galaxytrucker/images/components/back.jpg", "handComponent", 150, 150);
-
-            /*// Bottone Set - icona di conferma
-            setupButtonWithImage(setButton, "/icons/confirm.png", "Conferma", 16, 40);
-
-
-            // Bottone Pick Component - icona di presa
-            setupButtonWithImage(pickComponent, "images/tiles/back.jpg", "Prendi", 16, 16);
-
-            // Bottone Rotate - icona di rotazione
-            setupButtonWithImage(rotateButton, "/icons/rotate.png", "Ruota", 16, 16);
-
-            // Bottone Discard - icona cestino
-            setupButtonWithImage(discardButton, "/icons/trash.png", "Scarta", 16, 16);
-
-            // Bottone Flight Board - icona navicella/volo
-            setupButtonWithImage(flightBoardButton, "/icons/flight.png", "Volo", 16, 16);
-
-            // Bottone Reserve - icona riserva
-            setupButtonWithImage(reserveButton, "/icons/reserve.png", "Riserva", 16, 16);
-
-            // Bottone View Component - icona occhio
-            setupButtonWithImage(viewShownComponentButton, "/icons/view.png", "Visualizza", 16, 16);
-
-            // Bottoni player - icone giocatori con colori diversi
-            setupButtonWithImage(player1ShipButton, "/icons/player1.png", "Player 1", 20, 20);
-            setupButtonWithImage(player2ShipButton, "/icons/player2.png", "Player 2", 20, 20);
-            setupButtonWithImage(player3ShipButton, "/icons/player3.png", "Player 3", 20, 20);
-            setupButtonWithImage(mineShipButton, "/icons/myship.png", "La Mia Nave", 20, 20);
-            */
 
         } catch (Exception e) {
             System.err.println("Errore nel caricamento delle immagini: " + e.getMessage());
@@ -379,29 +559,66 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
 
     private void setupButtonWithImage(Button button, String imagePath, String text, float width, float height) {
         try {
-            // Carica l'immagine
             Image image = new Image(getClass().getResourceAsStream(imagePath));
             ImageView imageView = new ImageView(image);
 
-            // Imposta dimensioni
             imageView.fitWidthProperty().bind(button.widthProperty());
             imageView.fitHeightProperty().bind(button.heightProperty());
-            //imageView.setFitWidth(width);
-            //imageView.setFitHeight(height);
             imageView.setPreserveRatio(false);
             imageView.setSmooth(true);
 
-            // Aggiungi immagine al bottone
             button.setGraphic(imageView);
             button.setText("");
-
-            // Posiziona immagine sopra il testo (puoi cambiare la posizione)
             button.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 
         } catch (Exception e) {
             System.err.println("Impossibile caricare l'immagine: " + imagePath);
-            // Mantieni solo il testo se l'immagine non è disponibile
             button.setText(text);
+        }
+    }
+
+    // Interface implementations with Platform.runLater for thread safety
+
+    private void setupOtherPlayerButtons() {
+
+        Map<String, Color> playerColorMap = GuiInterface.getInstance().getView().getCurrentPlayers(); // Supponendo esista
+        List<String> otherPlayerNicknames = GuiInterface.getInstance().getView().getOtherPlayerNicknames();
+
+        if (!otherPlayerNicknames.isEmpty()) {
+                String nickname1 = otherPlayerNicknames.get(0);
+                Color color1 = playerColorMap.get(nickname1); // Oppure recuperalo con un metodo dedicato
+                player1ShipButton.setOnAction(event -> openShipBoardForPlayer(nickname1, color1));
+
+
+            //aggiungere gli altri due if
+
+        }
+
+        // Ripeti per player2ShipButton, player3ShipButton se necessario
+    }
+
+    private void openShipBoardForPlayer(String nickname, Color color) {
+        try {
+            System.out.println("Opening ship for player: " + nickname + " with color: " + color);
+
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipBoardL1.fxml"));
+            Parent root = fxmlLoader.load();
+
+            ShipBuildingControllerL1 controller = fxmlLoader.getController();
+            controller.setServer(this.server);
+            controller.setPlayerInfo(this.gameID, nickname, color);
+
+            // Verifica se ci sono componenti assemblati per questo giocatore
+            List<List<ViewComponent>> components = GuiInterface.getInstance().getView().getAssembledComponents(nickname);
+            System.out.println("Components for " + nickname + ": " + (components != null ? components.size() : "null"));
+            GuiInterface.getInstance().setShipBuildingController(controller);
+            Stage stage = (Stage) player1ShipButton.getScene().getWindow();
+            stage.setScene(new Scene(root, 1210, 740));
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Errore nel caricamento della nave del giocatore: " + e.getMessage());
         }
     }
 
@@ -412,7 +629,6 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
         this.server = server;
     }
 
-    //invoked to set the players information needed for method invocation on server
     @Override
     public void setPlayerInfo(int gameID, String playerNickname, Color color){
         this.playerNickname = playerNickname;
@@ -420,37 +636,92 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
         this.gameID = gameID;
     }
 
-    //notifies a view about an error committed while executing a method on the remote server; the parameter
-    //errorMessage describes the type of error
     @Override
-    public void notifyError(String errorMessage) throws Exception{}
+    public void notifyError(String errorMessage) throws Exception{
+        Platform.runLater(() -> {showError(errorMessage);});
+    }
 
     @Override
     public void notifyGamePhase(String gamePhase) throws Exception {
 
     }
 
-    //notifies the view about the fact that a component has been successfully picked/released (depending on
-    //the value of the boolean parameter) by the corresponding player; the parameter imageID is needed for the
-    //view in order to show the right component to the user
     @Override
-    public void updatePickedComponent(int imageID, boolean released) throws Exception{}
+    public void updatePickedComponent(int imageID, boolean released) throws Exception {
+        Platform.runLater(() -> {
+            if (released) {
+                if (lastDroppedButton != null) {
+                    myGridPane.getChildren().remove(lastDroppedButton);
+                    handComponentArea.getChildren().remove(lastDroppedButton);
 
-    //notifies the view about the fact that a player (identified by the nickname parameter) has picked a reserved
-    //component/ reserved a component (depending on the value of the boolean parameter); the parameter imageID
-    //is needed for the view in order to show the right component to the user
+                    String btnId = (String) lastDroppedButton.getUserData();
+                    if (btnId != null) {
+                        draggableButtons.remove(btnId);
+                    }
+
+                    lastDroppedButton = null;
+
+                    firstComponent = true;
+                    isComponentPlaced = false;
+                    componentPicked = false;
+
+                    rotateButton.setDisable(true);
+                    discardButton.setDisable(true);
+                    pickComponent.setDisable(false);
+                    setButton.setDisable(true);
+
+                    showPlaceholderImage();
+                }
+            } else {
+                initializePickedComponent(String.valueOf(imageID), Orientation.NORTH);
+
+                rotateButton.setDisable(false);
+                discardButton.setDisable(false);
+                pickComponent.setDisable(true);
+                setButton.setDisable(true);
+            }
+        });
+
+    }
+
+
     @Override
-    public void updateReservedComponent(String nickname, int imageID, boolean released) throws Exception{}
+    public void updateReservedComponent(String nickname, int imageID, boolean released) throws Exception {
+    }
+
 
     //notifies the view about the fact that the picked component of the corresponding player has been rotated
     @Override
-    public void updateRotatePickedComponent() throws Exception{}
+    public void updateRotatePickedComponent() throws Exception{
+        Platform.runLater(() -> {
+            if (lastDroppedButton != null && lastDroppedButton.getGraphic() instanceof ImageView) {
+                ImageView imageView = (ImageView) lastDroppedButton.getGraphic();
+                imageView.setRotate((imageView.getRotate() - 90) % 360);
+            }
+        });
+    }
 
     //notifies the view about the fact that a player (identified by the nickname parameter) has assembled a
     //component in position (x,y) of its ship board; the parameter imageID is needed for the view in order
     //to show the right component to the user
     @Override
-    public void updateAssembledComponent(String nickname, int imageID, Orientation orientation, int x, int y) throws Exception{}
+    public void updateAssembledComponent(String nickname, int imageID, Orientation orientation, int x, int y) throws Exception{
+        Platform.runLater(() -> {
+            if (lastDroppedButton != null) {
+                lastDroppedButton.setOnDragDetected(null);
+                lastDroppedButton.setEffect(null);
+                lastDroppedButton.setOpacity(1.0);
+                isComponentPlaced = true;
+                componentPicked = false;
+
+                rotateButton.setDisable(true);
+                discardButton.setDisable(true);
+                pickComponent.setDisable(false);
+                setButton.setDisable(true);
+                lastDroppedButton = null;
+            }
+        });
+    }
 
     //notifies the view about the fact that a player has finished the assembling phase and is
     //correctly positioned on the flight board; still, other players have to finish building their ships
@@ -467,6 +738,7 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
     //enter the ship control phase
     @Override
     public void updateShipControl() throws Exception{}
+
 
 
 }
