@@ -44,8 +44,9 @@ public class ShipBoardControllerL1 implements ShipBoardController {
     @FXML
     private Button backButton;
 
-    private final String shipBoardPlayerNickname;
-    private final Color shipBoardcolor;
+    // Modificato: non più final e inizializzato diversamente
+    private String shipBoardPlayerNickname;
+    private Color shipBoardcolor;
 
     private int gameID;
     private String playerNickname;
@@ -53,63 +54,133 @@ public class ShipBoardControllerL1 implements ShipBoardController {
     private VirtualServer server;
     private Map<String, Image> componentImageMap = new HashMap<>();
 
-    public ShipBoardControllerL1(String otherPlayerNickname) {
+    // Costruttore di default per FXML
+    public ShipBoardControllerL1() {
+        // Costruttore vuoto per FXML
+    }
+
+    // Metodo per impostare il giocatore da visualizzare
+    public void setShipBoardPlayer(String otherPlayerNickname) {
         this.shipBoardPlayerNickname = otherPlayerNickname;
-        this.shipBoardcolor = GuiInterface.getInstance().getView().getCurrentPlayers().get(otherPlayerNickname);
+
+        // Ottieni il colore dal GuiInterface
+        Map<String, Color> playerColorMap = GuiInterface.getInstance().getView().getCurrentPlayers();
+        if (playerColorMap != null && playerColorMap.containsKey(otherPlayerNickname)) {
+            this.shipBoardcolor = playerColorMap.get(otherPlayerNickname);
+        } else {
+            System.err.println("Colore non trovato per il giocatore: " + otherPlayerNickname);
+        }
+
+        // Aggiorna l'interfaccia
+        updatePlayerInfo();
     }
 
     @FXML
     private void initialize() {
-        playerNicknameLabel.setText(shipBoardPlayerNickname);
-        playerColorLabel.setText(Color.convertColorIntoEmoji(shipBoardcolor));
+        System.out.println("Inizializzando ShipBoardController...");
+
         componentImageMap = GuiInterface.getInstance().loadImageMap("components");
         showGameState(GuiInterface.getInstance().getView().getGameState());
         setupBackButton();
-        initializeAssembledComponents();
-    }
 
-    public void showGameState(String message){
-        gameStateLabel.setText(message);
-    }
-
-    public void initializeAssembledComponents() {
-        List<List<ViewComponent>> assembledComponents = GuiInterface.getInstance().getView().getAssembledComponents(this.shipBoardPlayerNickname);
-        for(int i = 0; i < assembledComponents.size(); i++){
-            for(int j = 0; j < assembledComponents.get(i).size(); j++){
-                ViewComponent component = assembledComponents.get(i).get(j);
-                if(component != null){
-                    setImageOnGrid(component.getImageID(), component.getOrientation(), j, i);
-                }
-            }
+        // Se il giocatore è già impostato, inizializza i componenti
+        if (shipBoardPlayerNickname != null) {
+            updatePlayerInfo();
+            initializeAssembledComponents();
         }
     }
 
+    private void updatePlayerInfo() {
+        if (playerNicknameLabel != null && shipBoardPlayerNickname != null) {
+            playerNicknameLabel.setText(shipBoardPlayerNickname);
+        }
+        if (playerColorLabel != null && shipBoardcolor != null) {
+            playerColorLabel.setText(Color.convertColorIntoEmoji(shipBoardcolor));
+        }
+    }
+
+    public void showGameState(String message){
+        if (gameStateLabel != null) {
+            gameStateLabel.setText(message);
+        }
+    }
+
+    public void initializeAssembledComponents() {
+        if (shipBoardPlayerNickname == null) {
+            System.err.println("shipBoardPlayerNickname è null, impossibile inizializzare i componenti");
+            return;
+        }
+
+        try {
+            List<List<ViewComponent>> assembledComponents = GuiInterface.getInstance().getView().getAssembledComponents(this.shipBoardPlayerNickname);
+
+            if (assembledComponents == null) {
+                System.err.println("Nessun componente assemblato trovato per: " + shipBoardPlayerNickname);
+                return;
+            }
+
+            System.out.println("Caricando componenti per " + shipBoardPlayerNickname + ": " + assembledComponents.size() + " righe");
+
+            for(int i = 0; i < assembledComponents.size(); i++){
+                for(int j = 0; j < assembledComponents.get(i).size(); j++){
+                    ViewComponent component = assembledComponents.get(i).get(j);
+                    if(component != null){
+                        System.out.println("Posizionando componente " + component.getImageID() + " in posizione (" + j + ", " + i + ")");
+                        setImageOnGrid(component.getImageID(), component.getOrientation(), j, i);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Errore nell'inizializzazione dei componenti: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
     public void setImageOnGrid(String imageID, Orientation orientation, int col, int row) {
         if(imageID.equals("000") || imageID.equals("003")){
             return;
         }
 
-        Image image = componentImageMap.get(imageID);
-        ImageView imageView = new ImageView(image);
+        try {
+            Image image = componentImageMap.get(imageID);
+            if (image == null) {
+                System.err.println("Immagine non trovata per ID: " + imageID);
+                return;
+            }
 
-        double cellWidth = myGridPane.getColumnConstraints().get(col).getPrefWidth();
-        double cellHeight = myGridPane.getRowConstraints().get(row).getPrefHeight();
+            ImageView imageView = new ImageView(image);
 
-        imageView.setFitWidth(cellWidth);
-        imageView.setFitHeight(cellHeight);
-        imageView.setPreserveRatio(false);
-        if(orientation.equals(Orientation.WEST)){
-            imageView.setRotate((imageView.getRotate() - 90) % 360);
-        }
-        else if(orientation.equals(Orientation.SOUTH)){
-            imageView.setRotate((imageView.getRotate() - 180) % 360);
-        }
-        else if(orientation.equals(Orientation.EAST)){
-            imageView.setRotate((imageView.getRotate() - 270) % 360);
-        }
+            // Verifica che le constraints esistano
+            if (myGridPane.getColumnConstraints().size() <= col || myGridPane.getRowConstraints().size() <= row) {
+                System.err.println("Posizione non valida: (" + col + ", " + row + ")");
+                return;
+            }
 
-        myGridPane.add(imageView, col, row);
+            double cellWidth = myGridPane.getColumnConstraints().get(col).getPrefWidth();
+            double cellHeight = myGridPane.getRowConstraints().get(row).getPrefHeight();
+
+            imageView.setFitWidth(cellWidth);
+            imageView.setFitHeight(cellHeight);
+            imageView.setPreserveRatio(false);
+
+            // Applica rotazione
+            if(orientation.equals(Orientation.WEST)){
+                imageView.setRotate((imageView.getRotate() - 90) % 360);
+            }
+            else if(orientation.equals(Orientation.SOUTH)){
+                imageView.setRotate((imageView.getRotate() - 180) % 360);
+            }
+            else if(orientation.equals(Orientation.EAST)){
+                imageView.setRotate((imageView.getRotate() - 270) % 360);
+            }
+
+            myGridPane.add(imageView, col, row);
+            System.out.println("Componente " + imageID + " aggiunto alla griglia in posizione (" + col + ", " + row + ")");
+
+        } catch (Exception e) {
+            System.err.println("Errore nel posizionamento del componente: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public void setupBackButton() {
@@ -178,7 +249,6 @@ public class ShipBoardControllerL1 implements ShipBoardController {
         });
     }
 
-
     @Override
     public void setServer(VirtualServer server) {
         this.server = server;
@@ -209,7 +279,6 @@ public class ShipBoardControllerL1 implements ShipBoardController {
         Platform.runLater(() -> showError(error));
     }
 
-    //notifies the view about a change in the game phase
     @Override
     public void notifyGamePhase(String gamePhase) {
         Platform.runLater(() -> {

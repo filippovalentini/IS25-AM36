@@ -599,26 +599,61 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
 
     private void openShipBoardForPlayer(String nickname, Color color) {
         try {
-            System.out.println("Opening ship for player: " + nickname + " with color: " + color);
+            System.out.println("Aprendo shipboard per: " + nickname + " con colore: " + color);
 
+            // Verifica che i dati del giocatore siano validi
+            if (nickname == null || nickname.trim().isEmpty()) {
+                showError("Nome giocatore non valido");
+                return;
+            }
+
+            if (color == null) {
+                showError("Colore giocatore non valido");
+                return;
+            }
+
+            // Verifica se ci sono componenti per questo giocatore
+            List<List<ViewComponent>> components = GuiInterface.getInstance().getView().getAssembledComponents(nickname);
+            System.out.println("Componenti per " + nickname + ": " +
+                    (components != null ? components.size() + " righe" : "null"));
+
+            // Carica l'FXML
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipBoardL1.fxml"));
             Parent root = fxmlLoader.load();
 
-            ShipBuildingControllerL1 controller = fxmlLoader.getController();
-            controller.setServer(this.server);
-            controller.setPlayerInfo(this.gameID, nickname, color);
+            // Ottieni il controller e configuralo
+            ShipBoardControllerL1 controller = fxmlLoader.getController();
 
-            // Verifica se ci sono componenti assemblati per questo giocatore
-            List<List<ViewComponent>> components = GuiInterface.getInstance().getView().getAssembledComponents(nickname);
-            System.out.println("Components for " + nickname + ": " + (components != null ? components.size() : "null"));
-            GuiInterface.getInstance().setShipBuildingController(controller);
+            // IMPORTANTE: Imposta prima il giocatore da visualizzare
+            controller.setShipBoardPlayer(nickname);
+
+            // Poi imposta le informazioni del server e del giocatore corrente
+            controller.setServer(this.server);
+            controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+
+            // Inizializza i componenti assemblati
+            controller.initializeAssembledComponents();
+
+            System.out.println("Controller inizializzato per: " + nickname);
+
+            // Aggiorna l'interfaccia grafica
+            GuiInterface.getInstance().setShipBoardController(controller);
+
+            // Cambia scena
             Stage stage = (Stage) player1ShipButton.getScene().getWindow();
             stage.setScene(new Scene(root, 1210, 740));
             stage.show();
 
-        } catch (Exception e) {
+            System.out.println("Shipboard aperta con successo per " + nickname);
+
+        } catch (IOException e) {
+            System.err.println("Errore nel caricamento FXML: " + e.getMessage());
             e.printStackTrace();
-            showError("Errore nel caricamento della nave del giocatore: " + e.getMessage());
+            showError("Errore nel caricamento della vista: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Errore generico nell'apertura shipboard: " + e.getMessage());
+            e.printStackTrace();
+            showError("Errore nell'apertura della shipboard: " + e.getMessage());
         }
     }
 
