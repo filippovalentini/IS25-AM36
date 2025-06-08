@@ -5,12 +5,37 @@ import it.polimi.ingsw.galaxytrucker.ui.gui.GuiInterface;
 import it.polimi.ingsw.galaxytrucker.ui.gui.JavaFxLauncher;
 import javafx.application.Application;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class MainClient {
     public static void main(String[] args) {
+        boolean noParams = true;
+        for (String arg : args) { // with command line params
+            if (arg.equals("--gui")) {
+                noParams = false;
+                new GuiInterface().launch();
+                break;
+            }else if (arg.equals("--tui")) {
+                noParams = false;
+                new CliInterface().launch(args[0]);
+                break;
+            }
+        }
+        if (noParams) { // without command line params
+            int interfaceNumber = askInterface();
+            if(interfaceNumber == 2){
+                new GuiInterface().launch();
+            }
+            else{
+                new CliInterface().launch(args[0]);
+            }
+        }
+    }
+
+    public static int askInterface(){
         System.out.println("||| WELCOME TO GALAXY TRUCKER | ||");
-        System.out.print("Do you want to use CLI (1) or GUI (2)? ");
+        System.out.print("Do you want to use TUI (1) or GUI (2)? ");
         Scanner scanner = new Scanner(System.in);
         int interfaceNumber;
         do{
@@ -22,12 +47,6 @@ public class MainClient {
                 System.out.println("Required integer argument");
             }
         }while(interfaceNumber != 1 && interfaceNumber != 2);
-
-        if(interfaceNumber == 2){
-            new GuiInterface().launch();
-        }
-        else{
-            new CliInterface().launch(args[0]);
-        }
+        return interfaceNumber;
     }
 }

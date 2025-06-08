@@ -343,7 +343,7 @@ public class GuiInterface implements UserInterface {
 
     @Override
     public void updatePlayerCredits(String nickname, int change) throws Exception {
-
+        this.view.updatePlayerCredits(nickname, change);
     }
 
     @Override

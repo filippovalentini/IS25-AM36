@@ -21,6 +21,13 @@ public class TestEndgameGUI extends Application {
         GuiInterface.getInstance().updateNewPlayer("fil", Color.YELLOW);
         GuiInterface.getInstance().updateNewPlayer("tom", Color.RED);
         GuiInterface.getInstance().updateNewPlayer("nico", Color.GREEN);
+        //adds arbitrary credit to the players
+        GuiInterface.getInstance().updatePlayerCredits("lory", 5);
+        GuiInterface.getInstance().updatePlayerCredits("fil", 10);
+        GuiInterface.getInstance().updatePlayerCredits("tom", 15);
+        GuiInterface.getInstance().updatePlayerCredits("nico", 20);
+        //endgame state
+        GuiInterface.getInstance().updateEndGame();
         FXMLLoader fxmlLoader = new FXMLLoader(TestEndgameGUI.class.getResource("/it/polimi/ingsw/galaxytrucker/endgame.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1210, 740);
         stage.setTitle("Galaxy Trucker");
