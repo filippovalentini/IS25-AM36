@@ -30,9 +30,9 @@ The jar exectuables are available at [jar artifacts](https://github.com/filippov
 ## How to run Galaxy Trucker
 ### Server
 1. Get the artifact from [server jar](https://github.com/filippovalentini/IS24-AM36/tree/main/deliveries/GalaxyTrucker/out/artifacts/ServerGalaxyTrucker)
-2. Run `java -jar GalaxyTrucker.jar`
+2. Run `java -jar ServerGalaxyTrucker.jar`
 ### Client
 1. Get the artifact from [client jar](https://github.com/filippovalentini/IS24-AM36/tree/main/deliveries/GalaxyTrucker/out/artifacts/ClientGalaxyTrucker)
-2. Run `java -jar GalaxyTrucker.jar` it will present an option to select between the Text User Interface (TUI) and the Graphical User Interface (GUI) via console input
-3. (Optional) Run directly with TUI `java -jar GalaxyTrucker.jar --tui`
-4. (Optional) Run directly with GUI `java -jar GalaxyTrucker.jar --gui`
+2. Run `java -jar ClientGalaxyTrucker.jar` it will present an option to select between the Text User Interface (TUI) and the Graphical User Interface (GUI) via console input
+3. (Optional) Run directly with TUI `java -jar ClientGalaxyTrucker.jar --tui`
+4. (Optional) Run directly with GUI `java -jar ClientGalaxyTrucker.jar --gui`
