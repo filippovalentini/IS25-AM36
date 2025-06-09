@@ -1,4 +1,4 @@
-package it.polimi.ingsw.galaxytrucker.ui.cli;
+package it.polimi.ingsw.galaxytrucker.ui.tui;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class CliInterface implements UserInterface {
+public class TuiInterface implements UserInterface {
     private VirtualServer server;
     private GameSessionManager client;
     private View view;
@@ -29,8 +29,10 @@ public class CliInterface implements UserInterface {
     Color color;
 
     //asks the user the technology to use (Socket or RMI) and launches the corresponding client typology
-    public void launch(String IP){
+    public void launch(){
         Scanner sc = new Scanner(System.in);
+        System.out.println("Insert server IP address: ");
+        String IP = sc.nextLine();
         while(true) {
             try{
                 System.out.println("Decide connection to use (1 -> Socket, 2 -> RMI): ");
@@ -58,7 +60,7 @@ public class CliInterface implements UserInterface {
                 break;
             }
         }
-        run();
+        runGame();
     }
 
     //launches the socket client
@@ -85,13 +87,13 @@ public class CliInterface implements UserInterface {
     //this method asks the user whether it wants to start a game or join one; in case of game creation,
     //it takes in input number of players and type of game. Once the game has been created (or an existing one
     //has been found) the method takes in input nickname and color of the player and adds it to the game.
-    public void run() {
+    public void runGame() {
         boolean userStartsGame = requestStartOrJoinGame();
         if(userStartsGame){
             requestStartNewGame();
         }
         requestAddPlayerToGame(userStartsGame);
-        new Thread(this::runCli).start();
+        new Thread(this::runTui).start();
     }
 
     //this method asks the user to start a new game or join an existing one
@@ -227,17 +229,14 @@ public class CliInterface implements UserInterface {
     }
 
     //runs a command line interface to send requests to the server
-    public void runCli() {
+    public void runTui() {
         Scanner scan = new Scanner(System.in);
-
         printCommands();
-
         while (true) {
             System.out.print("> ");
             String input = scan.nextLine().trim();
             String[] tokens = input.split("\\s+");
             if (tokens.length == 0) continue;
-
             try {
                 String command = tokens[0];
                 switch (command) {

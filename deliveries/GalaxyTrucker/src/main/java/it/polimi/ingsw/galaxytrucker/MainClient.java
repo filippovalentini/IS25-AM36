@@ -1,11 +1,8 @@
 package it.polimi.ingsw.galaxytrucker;
 
-import it.polimi.ingsw.galaxytrucker.ui.cli.CliInterface;
+import it.polimi.ingsw.galaxytrucker.ui.tui.TuiInterface;
 import it.polimi.ingsw.galaxytrucker.ui.gui.GuiInterface;
-import it.polimi.ingsw.galaxytrucker.ui.gui.JavaFxLauncher;
-import javafx.application.Application;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class MainClient {
@@ -18,7 +15,7 @@ public class MainClient {
                 break;
             }else if (arg.equals("--tui")) {
                 noParams = false;
-                new CliInterface().launch(args[0]);
+                new TuiInterface().launch();
                 break;
             }
         }
@@ -28,7 +25,7 @@ public class MainClient {
                 new GuiInterface().launch();
             }
             else{
-                new CliInterface().launch(args[0]);
+                new TuiInterface().launch();
             }
         }
     }
