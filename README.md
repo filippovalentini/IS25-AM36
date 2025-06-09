@@ -20,3 +20,19 @@ The implementation features both a command-line interface (CLI) and a JavaFX gra
 | Multiple games | ✅ |
 | Persistence | :x: |
 | Resilience to clients disconnections | :x: |
+
+## Prerquisites
+It is required Java 23 (or higher) to run the applications.
+
+## Executables
+The jar exectuables are available at [jar artifacts](https://github.com/filippovalentini/IS24-AM36/tree/main/deliveries/GalaxyTrucker/out/artifacts).
+
+## How to run Galaxy Trucker
+### Server
+1. Get the artifact from [server jar](https://github.com/filippovalentini/IS24-AM36/tree/main/deliveries/GalaxyTrucker/out/artifacts/ServerGalaxyTrucker)
+2. Run `java -jar GalaxyTrucker.jar`
+### Client
+1. Get the artifact from [client jar](https://github.com/filippovalentini/IS24-AM36/tree/main/deliveries/GalaxyTrucker/out/artifacts/ClientGalaxyTrucker)
+2. Run `java -jar GalaxyTrucker.jar` it will present an option to select between the Text User Interface (TUI) and the Graphical User Interface (GUI) via console input
+3. (Optional) Run directly with TUI `java -jar GalaxyTrucker.jar --tui`
+4. (Optional) Run directly with GUI `java -jar GalaxyTrucker.jar --gui`
