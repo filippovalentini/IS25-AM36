@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ShipBoardControllerL2 implements ShipBoardController {
+    private Stage controlledStage;
+
     @FXML
     private Label errorLabel;
     @FXML
@@ -172,10 +174,10 @@ public class ShipBoardControllerL2 implements ShipBoardController {
                 controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
                 GuiInterface.getInstance().setShipBuildingController(controller);
 
-                Stage stage = (Stage) backButton.getScene().getWindow();
+                controller.setControlledStage(controlledStage);
                 Scene scene = new Scene(root, 1210, 740);
-                stage.setScene(scene);
-                stage.show();
+                controlledStage.setScene(scene);
+                controlledStage.show();
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -228,6 +230,10 @@ public class ShipBoardControllerL2 implements ShipBoardController {
     }
 
 
+    @Override
+    public void setControlledStage(Stage stage) {
+        controlledStage = stage;
+    }
 
     @Override
     public void setServer(VirtualServer server) {
@@ -274,6 +280,29 @@ public class ShipBoardControllerL2 implements ShipBoardController {
         }
         Platform.runLater(() -> {
             setImageOnGrid(String.valueOf(imageID), orientation, y, x);
+        });
+    }
+
+    @Override
+    public void updateShipControl() throws Exception {
+        Platform.runLater(() -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipControlL2.fxml"));
+                Parent root = loader.load();
+
+                ShipControlControllerL2 controller = loader.getController();
+                controller.setServer(this.server);
+                controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+                GuiInterface.getInstance().setShipControlController(controller);
+
+                controller.setControlledStage(controlledStage);
+                controlledStage.setScene(new Scene(root, 1210, 740));
+                controlledStage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
+            }
         });
     }
 

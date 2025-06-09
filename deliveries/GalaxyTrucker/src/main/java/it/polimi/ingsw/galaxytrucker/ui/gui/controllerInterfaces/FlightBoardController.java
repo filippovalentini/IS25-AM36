@@ -25,4 +25,8 @@ public interface FlightBoardController extends GuiController {
 
     //notifies the view that the hourglass has finished running
     void updateFinishedCycle() throws Exception;
+
+    //notifies the view that all the players have concluded the assembling phase, which means that the players
+    //enter the ship control phase
+    void updateShipControl() throws Exception;
 }

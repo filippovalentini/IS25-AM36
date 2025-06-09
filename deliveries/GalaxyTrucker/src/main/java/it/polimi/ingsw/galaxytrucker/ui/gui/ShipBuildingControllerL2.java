@@ -6,6 +6,7 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBoardController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBuildingController;
+import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipControlController;
 import it.polimi.ingsw.galaxytrucker.ui.view.ViewComponent;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
@@ -35,6 +36,7 @@ import java.io.InputStream;
 import java.util.*;
 
 public class ShipBuildingControllerL2 implements ShipBuildingController {
+    private Stage controlledStage;
 
     private VirtualServer server;
 
@@ -447,9 +449,9 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
                 controller.setGameType(false);
                 GuiInterface.getInstance().setShownComponentsController(controller);
 
-                Stage stage = (Stage) flightBoardButton.getScene().getWindow();
-                stage.setScene(new Scene(root, 1210, 740));
-                stage.show();
+                controller.setControlledStage(controlledStage);
+                controlledStage.setScene(new Scene(root, 1210, 740));
+                controlledStage.show();
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -542,9 +544,9 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
                 controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
                 GuiInterface.getInstance().setShipBoardController(controller);
 
-                Stage stage = (Stage) button.getScene().getWindow();
-                stage.setScene(new Scene(root, 1210, 740));
-                stage.show();
+                controller.setControlledStage(controlledStage);
+                controlledStage.setScene(new Scene(root, 1210, 740));
+                controlledStage.show();
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -588,9 +590,9 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
                 controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
                 GuiInterface.getInstance().setFlightBoardController(controller);
 
-                Stage stage = (Stage) flightBoardButton.getScene().getWindow();
-                stage.setScene(new Scene(root, 1210, 740));
-                stage.show();
+                controller.setControlledStage(controlledStage);
+                controlledStage.setScene(new Scene(root, 1210, 740));
+                controlledStage.show();
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -635,6 +637,11 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     //
      //UPDATES launched by the server
     //
+
+    @Override
+    public void setControlledStage(Stage stage) {
+        controlledStage = stage;
+    }
 
     @Override
     public void setServer(VirtualServer server) {
@@ -776,7 +783,27 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     //notifies the view that all the players have concluded the assembling phase, which means that the players
     //enter the ship control phase
     @Override
-    public void updateShipControl() throws Exception{}
+    public void updateShipControl() throws Exception{
+        Platform.runLater(() -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipControlL2.fxml"));
+                Parent root = loader.load();
+
+                ShipControlControllerL2 controller = loader.getController();
+                controller.setServer(this.server);
+                controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+                GuiInterface.getInstance().setShipControlController(controller);
+
+                controller.setControlledStage(controlledStage);
+                controlledStage.setScene(new Scene(root, 1210, 740));
+                controlledStage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
+            }
+        });
+    }
 
     //notifies the view about a change in the game phase
     @Override

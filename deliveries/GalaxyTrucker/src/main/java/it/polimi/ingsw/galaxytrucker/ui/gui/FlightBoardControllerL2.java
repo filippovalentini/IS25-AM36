@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 public class FlightBoardControllerL2 implements FlightBoardController {
+    private Stage controlledStage;
+
     @FXML private Label start;
     @FXML private Label pos0, pos1, pos2, pos3, pos4, pos5, pos6, pos7, pos8, pos9;
     @FXML private Label pos10, pos11, pos12, pos13, pos14, pos15, pos16, pos17;
@@ -249,10 +251,10 @@ public class FlightBoardControllerL2 implements FlightBoardController {
                 controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
                 GuiInterface.getInstance().setShipBuildingController(controller);
 
-                Stage stage = (Stage) backButton.getScene().getWindow();
+                controller.setControlledStage(controlledStage);
                 Scene scene = new Scene(root, 1210, 740);
-                stage.setScene(scene);
-                stage.show();
+                controlledStage.setScene(scene);
+                controlledStage.show();
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -402,6 +404,11 @@ public class FlightBoardControllerL2 implements FlightBoardController {
     }
 
     @Override
+    public void setControlledStage(Stage stage) {
+        controlledStage = stage;
+    }
+
+    @Override
     public void setServer(VirtualServer server) {
         this.server = server;
     }
@@ -530,6 +537,29 @@ public class FlightBoardControllerL2 implements FlightBoardController {
             }else{
                 clearHourglassButton(hourglass2Button);
                 stopHourglass(hourglass2Button, true);
+            }
+        });
+    }
+
+    @Override
+    public void updateShipControl() throws Exception {
+        Platform.runLater(() -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipControlL2.fxml"));
+                Parent root = loader.load();
+
+                ShipControlControllerL2 controller = loader.getController();
+                controller.setServer(this.server);
+                controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+                GuiInterface.getInstance().setShipControlController(controller);
+
+                controller.setControlledStage(controlledStage);
+                controlledStage.setScene(new Scene(root, 1210, 740));
+                controlledStage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
             }
         });
     }

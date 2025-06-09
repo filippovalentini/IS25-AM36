@@ -7,6 +7,7 @@ import it.polimi.ingsw.galaxytrucker.ui.UserInterface;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.FlightBoardController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBoardController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBuildingController;
+import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipControlController;
 import it.polimi.ingsw.galaxytrucker.ui.view.View;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -26,6 +27,7 @@ public class GuiInterface implements UserInterface {
     private FlightBoardController flightBoardController;
     private ShownComponentsController shownComponentsController;
     private ShipBoardController shipBoardController;
+    private ShipControlController shipControlController;
     private View view;
     private String nickname;
     private Color color;
@@ -81,6 +83,10 @@ public class GuiInterface implements UserInterface {
 
     public void setShipBoardController(ShipBoardController shipBoardController) {
         this.shipBoardController = shipBoardController;
+    }
+
+    public void setShipControlController(ShipControlController shipControlController) {
+        this.shipControlController = shipControlController;
     }
 
     public void launch() {
@@ -288,7 +294,12 @@ public class GuiInterface implements UserInterface {
         if(shipBuildingController != null){
             shipBuildingController.updateShipControl();
         }
-        notifyGamePhase(this.view.getGameState());
+        if(shipBoardController != null){
+            shipBoardController.updateShipControl();
+        }
+        if(flightBoardController != null){
+            flightBoardController.updateShipControl();
+        }
     }
 
     @Override
