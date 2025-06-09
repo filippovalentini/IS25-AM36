@@ -163,6 +163,9 @@ public class GuiInterface implements UserInterface {
         if(shipBoardController != null){
             shipBoardController.notifyError(errorMessage);
         }
+        if(shipControlController != null){
+            shipControlController.notifyError(errorMessage);
+        }
     }
 
     @Override
@@ -305,21 +308,33 @@ public class GuiInterface implements UserInterface {
     @Override
     public void updateDestroyedComponent(String nickname, int x, int y) throws Exception {
         this.view.updateDestroyedComponent(nickname, x, y);
+        if(shipControlController != null){
+            shipControlController.updateDestroyedComponent(nickname, x, y);
+        }
     }
 
     @Override
     public void updateCrewChange(String nickname, int x, int y, int change) throws Exception {
         this.view.updateCrewChange(nickname, x, y, change);
+        if(shipControlController != null){
+            shipControlController.updateCrewChange(nickname, x, y, change);
+        }
     }
 
     @Override
     public void updateBatteries(String nickname, int x, int y, int change) throws Exception {
         this.view.updateBatteries(nickname, x, y, change);
+        if(shipControlController != null){
+            shipControlController.updateBatteries(nickname, x, y, change);
+        }
     }
 
     @Override
     public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws Exception {
         this.view.updateAlienChange(nickname, x, y, isPurple, added);
+        if(shipControlController != null){
+            shipControlController.updateAlienChange(nickname, x, y, isPurple, added);
+        }
     }
 
     @Override
@@ -334,7 +349,10 @@ public class GuiInterface implements UserInterface {
 
     @Override
     public void updateCardPicking() throws Exception {
-
+        this.view.updateCardPicking();
+        if(shipControlController != null){
+            shipControlController.updateCardPicking();
+        }
     }
 
     @Override

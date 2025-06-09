@@ -18,7 +18,7 @@
 
             <!-- Sfondo -->
             <ImageView fitHeight="740.0" fitWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                <Image url="@images/backgroundSpace1.jpg" />
+                <Image url="@images/cardboard/backgroundSpace.jpg" />
             </ImageView>
 
             <!-- Immagine centrale -->
@@ -33,13 +33,6 @@
 
                     <Label layoutX="10.0" layoutY="50.0" style="-fx-font-size: 14px; -fx-text-fill: white;" text="Color" />
                     <Label fx:id="playerColorLabel" layoutX="10.0" layoutY="70.0" prefWidth="130.0" style="-fx-text-fill: white;" />
-                </children>
-            </Pane>
-
-            <Pane fx:id="notificationPane" layoutX="20.0" layoutY="10.0" opacity="0.0" prefHeight="30.0" prefWidth="500.0">
-                <children>
-                    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b2ffb2" height="30.0" stroke="BLACK" strokeType="INSIDE" width="500.0" />
-                    <Label fx:id="notificationLabel" layoutX="10.0" layoutY="5.0" prefHeight="20.0" prefWidth="480.0" style="-fx-font-size: 14px; -fx-text-fill: green;" text="" />
                 </children>
             </Pane>
 

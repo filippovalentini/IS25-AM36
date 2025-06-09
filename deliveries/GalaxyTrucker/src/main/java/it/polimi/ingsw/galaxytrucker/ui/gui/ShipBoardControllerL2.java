@@ -165,25 +165,55 @@ public class ShipBoardControllerL2 implements ShipBoardController {
 
     public void setupBackButton() {
         backButton.setOnAction(event -> {
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipBuildingL2.fxml"));
-                Parent root = fxmlLoader.load();
-
-                ShipBuildingControllerL2 controller = fxmlLoader.getController();
-                controller.setServer(this.server);
-                controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
-                GuiInterface.getInstance().setShipBuildingController(controller);
-
-                controller.setControlledStage(controlledStage);
-                Scene scene = new Scene(root, 1210, 740);
-                controlledStage.setScene(scene);
-                controlledStage.show();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("Errore nel caricamento della Shipboard: " + e.getMessage());
+            if(gameStateLabel.getText().equals("ASSEMBLING PHASE")){
+                goBackToShipBuilding();
+            }
+            else if(gameStateLabel.getText().equals("SHIP CONTROL")){
+                goBackToShipControl();
             }
         });
+    }
+
+    public void goBackToShipBuilding(){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipBuildingL2.fxml"));
+            Parent root = fxmlLoader.load();
+
+            ShipBuildingControllerL2 controller = fxmlLoader.getController();
+            controller.setServer(this.server);
+            controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+            GuiInterface.getInstance().setShipBuildingController(controller);
+
+            controller.setControlledStage(controlledStage);
+            Scene scene = new Scene(root, 1210, 740);
+            controlledStage.setScene(scene);
+            controlledStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Errore nel caricamento della Shipboard: " + e.getMessage());
+        }
+    }
+
+    public void goBackToShipControl(){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipControlL2.fxml"));
+            Parent root = fxmlLoader.load();
+
+            ShipControlControllerL2 controller = fxmlLoader.getController();
+            controller.setServer(this.server);
+            controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+            GuiInterface.getInstance().setShipControlController(controller);
+
+            controller.setControlledStage(controlledStage);
+            Scene scene = new Scene(root, 1210, 740);
+            controlledStage.setScene(scene);
+            controlledStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Errore nel caricamento della Shipboard: " + e.getMessage());
+        }
     }
 
     public void showError(String message) {

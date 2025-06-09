@@ -3,7 +3,6 @@ package it.polimi.ingsw.galaxytrucker.ui.gui;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.FlightBoardController;
-import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.GuiController;
 import it.polimi.ingsw.galaxytrucker.ui.view.View;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
@@ -86,7 +85,7 @@ public class FlightBoardControllerL2 implements FlightBoardController {
             content.putString("🚀");
             db.setContent(content);
 
-            InputStream imgStream = getClass().getResourceAsStream("/it/polimi/ingsw/galaxytrucker/images/spaceShip.png");
+            InputStream imgStream = getClass().getResourceAsStream("/it/polimi/ingsw/galaxytrucker/images/cardboard/spaceShip.png");
             Image rocketImage = new Image(imgStream);
             db.setDragView(rocketImage, rocketImage.getWidth() / 2, rocketImage.getHeight() / 2);
 
@@ -242,25 +241,55 @@ public class FlightBoardControllerL2 implements FlightBoardController {
 
     public void setupBackButton() {
         backButton.setOnAction(event -> {
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipBuildingL2.fxml"));
-                Parent root = fxmlLoader.load();
-
-                ShipBuildingControllerL2 controller = fxmlLoader.getController();
-                controller.setServer(this.server);
-                controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
-                GuiInterface.getInstance().setShipBuildingController(controller);
-
-                controller.setControlledStage(controlledStage);
-                Scene scene = new Scene(root, 1210, 740);
-                controlledStage.setScene(scene);
-                controlledStage.show();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("Errore nel caricamento della Shipboard: " + e.getMessage());
+            if(gameStateLabel.getText().equals("ASSEMBLING PHASE")){
+                goBackToShipBuilding();
+            }
+            else if(gameStateLabel.getText().equals("SHIP CONTROL")){
+                goBackToShipControl();
             }
         });
+    }
+
+    public void goBackToShipBuilding(){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipBuildingL2.fxml"));
+            Parent root = fxmlLoader.load();
+
+            ShipBuildingControllerL2 controller = fxmlLoader.getController();
+            controller.setServer(this.server);
+            controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+            GuiInterface.getInstance().setShipBuildingController(controller);
+
+            controller.setControlledStage(controlledStage);
+            Scene scene = new Scene(root, 1210, 740);
+            controlledStage.setScene(scene);
+            controlledStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Errore nel caricamento della Shipboard: " + e.getMessage());
+        }
+    }
+
+    public void goBackToShipControl(){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipControlL2.fxml"));
+            Parent root = fxmlLoader.load();
+
+            ShipControlControllerL2 controller = fxmlLoader.getController();
+            controller.setServer(this.server);
+            controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+            GuiInterface.getInstance().setShipControlController(controller);
+
+            controller.setControlledStage(controlledStage);
+            Scene scene = new Scene(root, 1210, 740);
+            controlledStage.setScene(scene);
+            controlledStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Errore nel caricamento della Shipboard: " + e.getMessage());
+        }
     }
 
     public void setupDeck1Button() {

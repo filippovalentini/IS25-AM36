@@ -5,9 +5,6 @@ import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import java.util.List;
 
 public interface FlightBoardController extends GuiController {
-    @Override
-    void setServer(VirtualServer server);
-
     //notifies the view about the fact that the corresponding player has successfully picked a deck; the parameter
     //contains the list of image IDs of the cards contained in the deck, so that the view can show the
     //correct adventure cards to the user
