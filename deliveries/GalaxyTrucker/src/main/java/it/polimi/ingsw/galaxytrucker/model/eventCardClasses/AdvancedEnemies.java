@@ -18,7 +18,4 @@ public abstract class AdvancedEnemies extends DayLossCard{
         return defeated;
     }
 
-    public void setDefeated() {     //invoked when a player defeats the enemy
-        defeated = true;
-    }
 }

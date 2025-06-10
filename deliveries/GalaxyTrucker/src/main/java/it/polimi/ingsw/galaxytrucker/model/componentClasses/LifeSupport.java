@@ -12,6 +12,9 @@ public class LifeSupport extends Component {
         super(imageID, sides);
         this.isPurple = isPurple;
     }
+    public boolean isPurple() {
+        return isPurple;    //returns true if the life support is purple, false otherwise
+    }
 
     @Override
     public Component clone() {//return a copy of the component
