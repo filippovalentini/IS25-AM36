@@ -12,4 +12,8 @@ public interface ShipBoardController extends GuiController {
     //component in position (x,y) of its ship board; the parameter imageID is needed for the view in order
     //to show the right component to the user
     void updateAssembledComponent(String nickname, int imageID, Orientation orientation, int x, int y) throws Exception;
+
+    //notifies the view that all the players have concluded the assembling phase, which means that the players
+    //enter the ship control phase
+    void updateShipControl() throws Exception;
 }

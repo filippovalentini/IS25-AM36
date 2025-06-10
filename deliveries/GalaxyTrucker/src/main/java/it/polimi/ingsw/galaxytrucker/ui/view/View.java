@@ -141,6 +141,16 @@ public class View {
         }
     }
 
+    //returns the number of lost components of a player
+    public int getLostComponents(String nickname) {
+        if(nickname.equals(this.player.getNickname())){
+            return this.player.getLostComponents();
+        }
+        else{
+            return otherPlayers.get(nickname).getLostComponents();
+        }
+    }
+
     //visualizes the state of the game and of the ship board of the player associated to the view
     public void visualizeShip(){
         if(gameState.equals("END GAME")){
@@ -371,6 +381,8 @@ public class View {
         gameState = "SHIP CONTROL";
         pickedViewComponent = null;
         hourglassState = null;
+        hourglassRunning = false;
+        hourglassPosition = 2;
         shownComponents.clear();
         pickedDeck.clear();
         player.updateShipControl();

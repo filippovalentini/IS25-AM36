@@ -20,7 +20,7 @@
               <!-- Background -->
               <ImageView fitHeight="795.0" fitWidth="1221.0" layoutX="-4.0" layoutY="-4.0">
                   <image>
-                      <Image url="@images/backgroundSpace1.jpg" />
+                      <Image url="@images/cardboard/backgroundSpace.jpg" />
                   </image>
               </ImageView>
       

@@ -9,13 +9,9 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.network.rmi.client.ClientRMI;
-import it.polimi.ingsw.galaxytrucker.network.rmi.server.ServerRMI;
-import it.polimi.ingsw.galaxytrucker.ui.cli.CliInterface;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.net.ServerSocket;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

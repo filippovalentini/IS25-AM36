@@ -17,7 +17,7 @@
     <!-- Background Image -->
     <ImageView fitHeight="740" fitWidth="1210" pickOnBounds="true" preserveRatio="false">
         <image>
-            <Image url="@images/backgroundSpace1.jpg" />
+            <Image url="@images/cardboard/backgroundSpace.jpg" />
         </image>
     </ImageView>
 

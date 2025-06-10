@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ShownComponentsController implements GuiController {
+    private Stage controlledStage;
 
     @FXML private GridPane componentGrid;
     @FXML private Button pickButton;
@@ -214,9 +215,9 @@ public class ShownComponentsController implements GuiController {
                 controller.setPlayerInfo(this.gameId, this.playerNickname, this.color);
                 GuiInterface.getInstance().setShipBuildingController(controller);
 
-                Stage stage = (Stage) backButton.getScene().getWindow();
-                stage.setScene(new Scene(root, 1210, 740));
-                stage.show();
+                controller.setControlledStage(controlledStage);
+                controlledStage.setScene(new Scene(root, 1210, 740));
+                controlledStage.show();
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -248,6 +249,11 @@ public class ShownComponentsController implements GuiController {
 
     public void setGameType(boolean firstFlight){
         this.firstFlight = firstFlight;
+    }
+
+    @Override
+    public void setControlledStage(Stage stage) {
+        controlledStage = stage;
     }
 
     @Override

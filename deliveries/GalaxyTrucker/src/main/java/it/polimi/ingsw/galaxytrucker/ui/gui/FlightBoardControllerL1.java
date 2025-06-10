@@ -3,7 +3,6 @@ package it.polimi.ingsw.galaxytrucker.ui.gui;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.FlightBoardController;
-import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.GuiController;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -15,18 +14,18 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
-import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class FlightBoardControllerL1 implements FlightBoardController {
+    private Stage controlledStage;
+
     @FXML private Label start;
     @FXML private Label pos0, pos1, pos2, pos3, pos4, pos5, pos6, pos7, pos8, pos9;
     @FXML private Label pos10, pos11, pos12, pos13, pos14, pos15, pos16, pos17;
@@ -60,7 +59,7 @@ public class FlightBoardControllerL1 implements FlightBoardController {
             content.putString("🚀");
             db.setContent(content);
 
-            InputStream imgStream = getClass().getResourceAsStream("/it/polimi/ingsw/galaxytrucker/images/spaceShip.png");
+            InputStream imgStream = getClass().getResourceAsStream("/it/polimi/ingsw/galaxytrucker/images/cardboard/spaceShip.png");
             Image rocketImage = new Image(imgStream);
             db.setDragView(rocketImage, rocketImage.getWidth() / 2, rocketImage.getHeight() / 2);
 
@@ -187,25 +186,60 @@ public class FlightBoardControllerL1 implements FlightBoardController {
 
     public void setupBackButton() {
         backButton.setOnAction(event -> {
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipBuildingL1.fxml"));
-                Parent root = fxmlLoader.load();
-
-                ShipBuildingControllerL1 controller = fxmlLoader.getController();
-                controller.setServer(this.server);
-                controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
-                GuiInterface.getInstance().setShipBuildingController(controller);
-
-                Stage stage = (Stage) backButton.getScene().getWindow();
-                Scene scene = new Scene(root, 1210, 740);
-                stage.setScene(scene);
-                stage.show();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("Errore nel caricamento della Shipboard: " + e.getMessage());
+            if(gameStateLabel.getText().equals("ASSEMBLING PHASE")){
+                goBackToShipBuilding();
+            }
+            else if(gameStateLabel.getText().equals("SHIP CONTROL")){
+                goBackToShipControl();
             }
         });
+    }
+
+    public void goBackToShipBuilding(){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipBuildingL1.fxml"));
+            Parent root = fxmlLoader.load();
+
+            ShipBuildingControllerL1 controller = fxmlLoader.getController();
+            controller.setServer(this.server);
+            controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+            GuiInterface.getInstance().setShipBuildingController(controller);
+
+            controller.setControlledStage(controlledStage);
+            Scene scene = new Scene(root, 1210, 740);
+            controlledStage.setScene(scene);
+            controlledStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Errore nel caricamento della Shipboard: " + e.getMessage());
+        }
+    }
+
+    public void goBackToShipControl(){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipControlL1.fxml"));
+            Parent root = fxmlLoader.load();
+
+            ShipControlControllerL1 controller = fxmlLoader.getController();
+            controller.setServer(this.server);
+            controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+            GuiInterface.getInstance().setShipControlController(controller);
+
+            controller.setControlledStage(controlledStage);
+            Scene scene = new Scene(root, 1210, 740);
+            controlledStage.setScene(scene);
+            controlledStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Errore nel caricamento della Shipboard: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void setControlledStage(Stage stage) {
+        this.controlledStage = stage;
     }
 
     @Override
@@ -259,6 +293,29 @@ public class FlightBoardControllerL1 implements FlightBoardController {
 
     @Override
     public void updateFinishedCycle() {}
+
+    @Override
+    public void updateShipControl() throws Exception {
+        Platform.runLater(() -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipControlL1.fxml"));
+                Parent root = loader.load();
+
+                ShipControlControllerL1 controller = loader.getController();
+                controller.setServer(this.server);
+                controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+                GuiInterface.getInstance().setShipControlController(controller);
+
+                controller.setControlledStage(controlledStage);
+                controlledStage.setScene(new Scene(root, 1210, 740));
+                controlledStage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
+            }
+        });
+    }
 
     //notifies the view about a change in the game phase
     @Override

@@ -5,9 +5,6 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 
 public interface ShipBuildingController extends GuiController {
-    @Override
-    void setServer(VirtualServer server);
-
     //notifies the view about the fact that a component has been successfully picked/released (depending on
     //the value of the boolean parameter) by the corresponding player; the parameter imageID is needed for the
     //view in order to show the right component to the user

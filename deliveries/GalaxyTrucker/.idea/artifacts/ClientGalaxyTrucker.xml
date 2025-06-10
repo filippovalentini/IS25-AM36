@@ -1,7 +1,7 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="ClientGalaxyTrucker">
     <output-path>$PROJECT_DIR$/out/artifacts/ClientGalaxyTrucker</output-path>
-    <root id="archive" name="GalaxyTrucker.jar">
+    <root id="archive" name="ClientGalaxyTrucker.jar">
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/manifests/client-jar/META-INF/MANIFEST.MF" />
       </element>

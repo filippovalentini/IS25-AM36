@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 public class EndgameController implements GuiController {
+    private Stage controlledStage;
+
     private VirtualServer server;
     private int gameID;
     private String playerNickname;
@@ -52,10 +54,10 @@ public class EndgameController implements GuiController {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/selectNetwork.fxml"));
             Parent root = fxmlLoader.load();
             GameSetupController controller = fxmlLoader.getController();
-            Stage stage = (Stage) findAnotherGameButton.getScene().getWindow();
+            controller.setControlledStage(controlledStage);
             Scene scene = new Scene(root, 1210, 740);
-            stage.setScene(scene);
-            stage.show();
+            controlledStage.setScene(scene);
+            controlledStage.show();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -71,6 +73,11 @@ public class EndgameController implements GuiController {
         this.playerNickname = playerNickname;
         this.color = color;
         this.gameID = gameID;
+    }
+
+    @Override
+    public void setControlledStage(Stage stage) {
+        this.controlledStage = stage;
     }
 
     public void setServer(VirtualServer server) {

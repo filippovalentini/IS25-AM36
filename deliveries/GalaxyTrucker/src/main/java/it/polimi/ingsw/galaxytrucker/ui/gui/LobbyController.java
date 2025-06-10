@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.Map;
 
 public class LobbyController implements GuiController {
+    private Stage controlledStage;
+
     private VirtualServer server;
     private int gameID;
     private String playerNickname;
@@ -101,12 +103,17 @@ public class LobbyController implements GuiController {
         GuiInterface.getInstance().setShipBuildingController(controller);
         controller.setServer(this.server);
         controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
-        Stage stage = (Stage) timerTitle.getScene().getWindow();
+        controller.setControlledStage(controlledStage);
         Scene scene = new Scene(root, 1210, 740);
-        stage.setScene(scene);
-        stage.show();
+        controlledStage.setScene(scene);
+        controlledStage.show();
     }
 
+
+    @Override
+    public void setControlledStage(Stage stage) {
+        this.controlledStage = stage;
+    }
 
     public void setServer(VirtualServer server) {
         this.server = server;

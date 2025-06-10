@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.util.*;
 
 public class ShipBuildingControllerL1 implements ShipBuildingController {
+    private Stage controlledStage;
+
     private VirtualServer server;
 
     private int gameID;
@@ -436,9 +438,9 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
                     controller.setGameType(true);
                     GuiInterface.getInstance().setShownComponentsController(controller);
 
-                    Stage stage = (Stage) flightBoardButton.getScene().getWindow();
-                    stage.setScene(new Scene(root, 1210, 740));
-                    stage.show();
+                    controller.setControlledStage(controlledStage);
+                    controlledStage.setScene(new Scene(root, 1210, 740));
+                    controlledStage.show();
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -497,9 +499,9 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
                 controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
                 GuiInterface.getInstance().setFlightBoardController(controller);
 
-                Stage stage = (Stage) flightBoardButton.getScene().getWindow();
-                stage.setScene(new Scene(root, 1210, 740));
-                stage.show();
+                controller.setControlledStage(controlledStage);
+                controlledStage.setScene(new Scene(root, 1210, 740));
+                controlledStage.show();
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -640,9 +642,9 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
             GuiInterface.getInstance().setShipBoardController(controller);
 
             // Cambia scena
-            Stage stage = (Stage) player1ShipButton.getScene().getWindow();
-            stage.setScene(new Scene(root, 1210, 740));
-            stage.show();
+            controller.setControlledStage(controlledStage);
+            controlledStage.setScene(new Scene(root, 1210, 740));
+            controlledStage.show();
 
             System.out.println("Shipboard aperta con successo per " + nickname);
 
@@ -658,6 +660,10 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
     }
 
 
+    @Override
+    public void setControlledStage(Stage stage) {
+        controlledStage = stage;
+    }
 
     @Override
     public void setServer(VirtualServer server) {

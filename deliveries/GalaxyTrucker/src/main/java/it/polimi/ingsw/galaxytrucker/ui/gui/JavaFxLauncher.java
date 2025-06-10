@@ -11,10 +11,10 @@ public class JavaFxLauncher extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(JavaFxLauncher.class.getResource("/it/polimi/ingsw/galaxytrucker/selectNetwork.fxml"));
-        GameSetupController.setControlledStage(stage); //share the stage with the controller
         Scene scene = new Scene(fxmlLoader.load());
 
         GameSetupController controller = fxmlLoader.getController();
+        controller.setControlledStage(stage);
         GuiInterface.getInstance().setSetupController(controller);
         stage.setTitle("Galaxy Trucker");
         Image icon = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/galaxytrucker/images/galaxyTruckerAppIcon.png"));

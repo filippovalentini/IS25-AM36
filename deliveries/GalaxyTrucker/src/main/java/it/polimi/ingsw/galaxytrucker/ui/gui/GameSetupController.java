@@ -31,7 +31,7 @@ public class GameSetupController implements GuiController {
     private int gameID;
     private Color color;
 
-    private static Stage controlledStage; //stage of the JavaFX application
+    private Stage controlledStage; //stage of the JavaFX application
 
     public GameSetupController(){
         playerNickname = null;
@@ -39,7 +39,8 @@ public class GameSetupController implements GuiController {
         color = null;
     }
 
-    public static void setControlledStage(Stage stage) {
+
+    public void setControlledStage(Stage stage) {
         controlledStage = stage;
     }
 
@@ -99,11 +100,11 @@ public class GameSetupController implements GuiController {
             Parent root = fxmlLoader.load();
             GameSetupController controller = fxmlLoader.getController();
             GuiInterface.getInstance().setSetupController(controller);
+            controller.setControlledStage(controlledStage);
             controller.setClientAndServer(this.client, this.server);
-            Stage stage = (Stage) socketButton.getScene().getWindow();
             Scene scene = new Scene(root, 1210, 740);
-            stage.setScene(scene);
-            stage.show();
+            controlledStage.setScene(scene);
+            controlledStage.show();
         }
         catch (Exception e){
             showError("Connection failed");
@@ -119,11 +120,11 @@ public class GameSetupController implements GuiController {
             Parent root = fxmlLoader.load();
             GameSetupController controller = fxmlLoader.getController();
             GuiInterface.getInstance().setSetupController(controller);
+            controller.setControlledStage(controlledStage);
             controller.setClientAndServer(this.client, this.server);
-            Stage stage = (Stage) rmiButton.getScene().getWindow();
             Scene scene = new Scene(root, 1210, 740);
-            stage.setScene(scene);
-            stage.show();
+            controlledStage.setScene(scene);
+            controlledStage.show();
         }
         catch (Exception e){
             showError("Connection failed");
@@ -138,10 +139,10 @@ public class GameSetupController implements GuiController {
             GameSetupController controller = fxmlLoader.getController();
             GuiInterface.getInstance().setSetupController(controller);
             controller.setClientAndServer(this.client, this.server);
-            Stage stage = (Stage) startButton.getScene().getWindow();
+            controller.setControlledStage(controlledStage);
             Scene scene = new Scene(root, 1210, 740);
-            stage.setScene(scene);
-            stage.show();
+            controlledStage.setScene(scene);
+            controlledStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -155,10 +156,10 @@ public class GameSetupController implements GuiController {
             GameSetupController controller = fxmlLoader.getController();
             GuiInterface.getInstance().setSetupController(controller);
             controller.setClientAndServer(this.client, this.server);
-            Stage stage = (Stage) joinButton.getScene().getWindow();
+            controller.setControlledStage(controlledStage);
             Scene scene = new Scene(root, 1210, 740);
-            stage.setScene(scene);
-            stage.show();
+            controlledStage.setScene(scene);
+            controlledStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -191,10 +192,10 @@ public class GameSetupController implements GuiController {
             GuiInterface.getInstance().setSetupController(controller);
             controller.setClientAndServer(this.client, this.server);
             controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
-            Stage stage = (Stage) confirmStartButton.getScene().getWindow();
+            controller.setControlledStage(controlledStage);
             Scene scene = new Scene(root, 1210, 740);
-            stage.setScene(scene);
-            stage.show();
+            controlledStage.setScene(scene);
+            controlledStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -227,10 +228,10 @@ public class GameSetupController implements GuiController {
             GuiInterface.getInstance().setLobbyController(controller);
             controller.setServer(this.server);
             controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
-            Stage stage = (Stage) confirmJoinButton.getScene().getWindow();
+            controller.setControlledStage(controlledStage);
             Scene scene = new Scene(root, 1210, 740);
-            stage.setScene(scene);
-            stage.show();
+            controlledStage.setScene(scene);
+            controlledStage.show();
         }
     }
 
