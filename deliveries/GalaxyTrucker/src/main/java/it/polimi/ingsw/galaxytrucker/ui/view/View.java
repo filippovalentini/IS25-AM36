@@ -386,6 +386,9 @@ public class View {
         shownComponents.clear();
         pickedDeck.clear();
         player.updateShipControl();
+        for(ViewPlayer player : otherPlayers.values()){
+            player.updateShipControl();
+        }
     }
 
     //notifies the view that a component of a player's ship board has been destroyed

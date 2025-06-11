@@ -13,13 +13,13 @@
 
 <StackPane xmlns="http://javafx.com/javafx/23.0.1"
            xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.GameSetupController">
+           fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.otherControllers.GameSetupController">
 
     <!-- SFONDO -->
     <children>
         <ImageView fitWidth="1210.0" fitHeight="740.0" >
             <image>
-                <Image url="@images/cardboard/backgroundSpace.jpg" />
+                <Image url="@../images/cardboard/backgroundSpace.jpg" />
             </image>
         </ImageView>
 

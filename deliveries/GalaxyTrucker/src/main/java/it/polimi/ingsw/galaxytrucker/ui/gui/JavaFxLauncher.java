@@ -1,5 +1,6 @@
 package it.polimi.ingsw.galaxytrucker.ui.gui;
 
+import it.polimi.ingsw.galaxytrucker.ui.gui.otherControllers.GameSetupController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -10,7 +11,7 @@ import java.io.IOException;
 public class JavaFxLauncher extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(JavaFxLauncher.class.getResource("/it/polimi/ingsw/galaxytrucker/selectNetwork.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(JavaFxLauncher.class.getResource("/it/polimi/ingsw/galaxytrucker/fxml/selectNetwork.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
 
         GameSetupController controller = fxmlLoader.getController();

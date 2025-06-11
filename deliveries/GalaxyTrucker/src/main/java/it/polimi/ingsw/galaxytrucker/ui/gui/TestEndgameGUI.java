@@ -7,8 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
 public class TestEndgameGUI extends Application {
     @Override
     public void start(Stage stage) throws Exception {
@@ -28,7 +26,7 @@ public class TestEndgameGUI extends Application {
         GuiInterface.getInstance().updatePlayerCredits("nico", 20);
         //endgame state
         GuiInterface.getInstance().updateEndGame();
-        FXMLLoader fxmlLoader = new FXMLLoader(TestEndgameGUI.class.getResource("/it/polimi/ingsw/galaxytrucker/endgame.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(TestEndgameGUI.class.getResource("/it/polimi/ingsw/galaxytrucker/fxml/endgame.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1210, 740);
         stage.setTitle("Galaxy Trucker");
         Image icon = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/galaxytrucker/images/galaxyTruckerAppIcon.png"));

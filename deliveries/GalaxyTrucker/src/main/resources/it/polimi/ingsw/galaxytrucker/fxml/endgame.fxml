@@ -10,12 +10,12 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import javafx.scene.control.ListView?>
-<StackPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.EndgameController">
+<StackPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.otherControllers.EndgameController">
 
 <children>
     <ImageView fitHeight="740.0" fitWidth="1210.0">
         <image>
-            <Image url="@images/cardboard/backgroundSpace.jpg" />
+            <Image url="@../images/cardboard/backgroundSpace.jpg" />
         </image>
     </ImageView>
 

@@ -12,27 +12,27 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.shape.Rectangle?>
 
-<ScrollPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.ShipBuildingControllerL2">
+<ScrollPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.shipBoardControllers.ShipBuildingControllerL2">
    <content>
       <AnchorPane prefHeight="740.0" prefWidth="1210.0">
 
           <!-- Sfondo -->
           <ImageView fitHeight="740.0" fitWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-              <Image url="@images/cardboard/backgroundSpace.jpg" />
+              <Image url="@../images/cardboard/backgroundSpace.jpg" />
           </ImageView>
 
           <!-- Immagine centrale -->
           <ImageView fitHeight="600.0" fitWidth="854.0" preserveRatio="true" AnchorPane.leftAnchor="191.0" AnchorPane.rightAnchor="191.0" AnchorPane.topAnchor="70.0">
-              <Image url="@images/cardboard/shipL2.jpg" />
+              <Image url="@../images/cardboard/shipL2.jpg" />
           </ImageView>
 
           <Pane layoutX="25.0" layoutY="103.0" prefHeight="100.0" prefWidth="157.0">
               <children>
-                  <Label layoutX="10.0" layoutY="0.0" style="-fx-font-size: 14px; -fx-text-fill: white;" text="Player" />
-                  <Label fx:id="playerNameLabel" layoutX="10.0" layoutY="20.0" prefWidth="130.0" style="-fx-text-fill: white;" />
+                  <Label layoutX="10.0" layoutY="0.0" prefHeight="26.0" prefWidth="53.0" style="-fx-font-size: 14px; -fx-text-fill: white;" text="Player" />
+                  <Label fx:id="playerNameLabel" layoutX="10.0" layoutY="20.0" prefHeight="28.0" prefWidth="130.0" style="-fx-text-fill: white;" />
 
-                  <Label layoutX="10.0" layoutY="50.0" style="-fx-font-size: 14px; -fx-text-fill: white;" text="Color" />
-                  <Label fx:id="playerColorLabel" layoutX="10.0" layoutY="70.0" prefWidth="130.0" style="-fx-text-fill: white;" />
+                  <Label layoutX="10.0" layoutY="50.0" prefHeight="18.0" prefWidth="89.0" style="-fx-font-size: 14px; -fx-text-fill: white;" text="Color" />
+                  <Label fx:id="playerColorLabel" layoutX="10.0" layoutY="70.0" prefHeight="27.0" prefWidth="130.0" style="-fx-text-fill: white;" />
               </children>
           </Pane>
 

@@ -12,12 +12,12 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="740" prefWidth="1210" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.ShownComponentsController">
+<AnchorPane prefHeight="740" prefWidth="1210" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.otherControllers.ShownComponentsController">
 
     <!-- Background Image -->
     <ImageView fitHeight="740" fitWidth="1210" pickOnBounds="true" preserveRatio="false">
         <image>
-            <Image url="@images/cardboard/backgroundSpace.jpg" />
+            <Image url="@../images/cardboard/backgroundSpace.jpg" />
         </image>
     </ImageView>
 

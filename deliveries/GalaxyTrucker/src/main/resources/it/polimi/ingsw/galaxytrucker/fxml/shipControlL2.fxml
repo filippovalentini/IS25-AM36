@@ -12,18 +12,18 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.shape.Rectangle?>
 
-<ScrollPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.ShipControlControllerL2">
+<ScrollPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.shipBoardControllers.ShipControlControllerL2">
     <content>
         <AnchorPane prefHeight="740.0" prefWidth="1210.0">
 
             <!-- Sfondo -->
             <ImageView fitHeight="740.0" fitWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                <Image url="@images/cardboard/backgroundSpace.jpg" />
+                <Image url="@../images/cardboard/backgroundSpace.jpg" />
             </ImageView>
 
             <!-- Immagine centrale -->
             <ImageView fitHeight="600.0" fitWidth="854.0" preserveRatio="true" AnchorPane.leftAnchor="191.0" AnchorPane.rightAnchor="191.0" AnchorPane.topAnchor="70.0">
-                <Image url="@images/cardboard/shipL2.jpg" />
+                <Image url="@../images/cardboard/shipL2.jpg" />
             </ImageView>
 
             <Pane layoutX="20.0" layoutY="276.0" prefHeight="100.0" prefWidth="157.0">

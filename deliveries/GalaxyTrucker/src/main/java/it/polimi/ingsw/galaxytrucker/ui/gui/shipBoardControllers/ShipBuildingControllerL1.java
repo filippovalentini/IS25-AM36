@@ -1,9 +1,13 @@
-package it.polimi.ingsw.galaxytrucker.ui.gui;
+package it.polimi.ingsw.galaxytrucker.ui.gui.shipBoardControllers;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
+import it.polimi.ingsw.galaxytrucker.ui.gui.GuiInterface;
+import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBoardController;
+import it.polimi.ingsw.galaxytrucker.ui.gui.otherControllers.ShownComponentsController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBuildingController;
+import it.polimi.ingsw.galaxytrucker.ui.gui.flightBoardControllers.FlightBoardControllerL1;
 import it.polimi.ingsw.galaxytrucker.ui.view.ViewComponent;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
@@ -15,7 +19,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -24,6 +27,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -50,8 +54,8 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
     private Map<String, Image> componentImageMap = new HashMap<>();
 
     // FXML Components - existing
+    @FXML private Rectangle gameStateBackground;
     @FXML private Pane handComponentArea;
-    @FXML private TextField ipTextField;
     @FXML private Button handComponentButton;
     @FXML private GridPane myGridPane;
     @FXML private Button setButton;
@@ -62,7 +66,6 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
     @FXML private Button player1ShipButton;
     @FXML private Button player2ShipButton;
     @FXML private Button player3ShipButton;
-    @FXML private Button mineShipButton;
     @FXML private Button discardButton;
     @FXML private Label playerNameLabel;
     @FXML private Label playerColorLabel;
@@ -70,9 +73,8 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
     @FXML private Button shownComponentButton;
 
     // Da aggiungere
-    @FXML private Pane notificationPane;
     @FXML private Pane errorPane;
-    @FXML private Label notificationLabel;
+    @FXML private Label gameStateLabel;
     @FXML private Label errorLabel;
 
     @FXML
@@ -92,7 +94,9 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
         showPlaceholderImage();
 
         initializeShipBoard();
-        setupOtherPlayerButtons();
+        setupOtherPlayerButton(player1ShipButton);
+        setupOtherPlayerButton(player2ShipButton);
+        setupOtherPlayerButton(player3ShipButton);
         setupImages();
     }
 
@@ -182,8 +186,8 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
         this.playerNickname = nn;
         this.color = c;
 
-        if (notificationLabel != null) {
-            notificationLabel.setText(gameState);
+        if (gameStateLabel != null) {
+            gameStateLabel.setText(gameState);
         }
         if (playerNameLabel != null) {
             playerNameLabel.setText(nn);
@@ -269,13 +273,6 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
         componentButton.setUserData(btnId);
 
         myGridPane.add(componentButton, column, row);
-    }
-
-    public void showNotification(String message) {
-        if (notificationLabel != null && notificationPane != null) {
-            notificationLabel.setText(message);
-            fadeInThenOut(notificationPane);
-        }
     }
 
     public void showError(String message) {
@@ -429,7 +426,7 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
         if (buttonToUse != null) {
             buttonToUse.setOnAction(event -> {
                 try {
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shownComponents.fxml"));
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shownComponents.fxml"));
                     Parent root = fxmlLoader.load();
 
                     ShownComponentsController controller = fxmlLoader.getController();
@@ -450,48 +447,10 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
         }
     }
 
-
-    private void initializeReserveComponentButton(Button targetButton, Image image) {
-        ImageView reservedView = new ImageView(image);
-        reservedView.setFitWidth(110);
-        reservedView.setFitHeight(110);
-        reservedView.setPreserveRatio(true);
-
-        targetButton.setGraphic(reservedView);
-        targetButton.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
-        targetButton.setPrefSize(110, 110);
-    }
-
-
-
-    private boolean isPlaceholder(Button button) {
-        if (button.getGraphic() instanceof ImageView imageView) {
-            Image placeholder = componentImageMap.get("3");
-            return imageView.getImage().equals(placeholder);
-        }
-        return false;
-    }
-
-    private boolean imageButtonCorrespondence(Button button, String imageId) {
-        if (!(button.getGraphic() instanceof ImageView imageView)) {
-            return false;
-        }
-        Image buttonImage = imageView.getImage();
-        if (buttonImage == null) {
-            return false;
-        }
-        Image componentImage = componentImageMap.get(imageId);
-        if (componentImage == null) {
-            return false;
-        }
-
-        return buttonImage.equals(componentImage);
-    }
-
     public void setupFlightBoardButton() {
         flightBoardButton.setOnAction(event -> {
             try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/flightBoardL1.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/flightBoardL1.fxml"));
                 Parent root = fxmlLoader.load();
 
                 FlightBoardControllerL1 controller = fxmlLoader.getController();
@@ -581,82 +540,28 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
 
     // Interface implementations with Platform.runLater for thread safety
 
-    private void setupOtherPlayerButtons() {
+    private void setupOtherPlayerButton(Button button) {
+        button.setOnAction(event -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipBoardL1.fxml"));
+                ShipBoardController controller = new ShipBoardControllerL1(button.getText());
+                loader.setController(controller);
 
-        Map<String, Color> playerColorMap = GuiInterface.getInstance().getView().getCurrentPlayers(); // Supponendo esista
-        List<String> otherPlayerNicknames = GuiInterface.getInstance().getView().getOtherPlayerNicknames();
+                Parent root = loader.load();
 
-        if (!otherPlayerNicknames.isEmpty()) {
-                String nickname1 = otherPlayerNicknames.get(0);
-                Color color1 = playerColorMap.get(nickname1); // Oppure recuperalo con un metodo dedicato
-                player1ShipButton.setOnAction(event -> openShipBoardForPlayer(nickname1, color1));
+                controller.setServer(this.server);
+                controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+                GuiInterface.getInstance().setShipBoardController(controller);
 
+                controller.setControlledStage(controlledStage);
+                controlledStage.setScene(new Scene(root, 1210, 740));
+                controlledStage.show();
 
-            //aggiungere gli altri due if
-
-        }
-
-        // Ripeti per player2ShipButton, player3ShipButton se necessario
-    }
-
-    private void openShipBoardForPlayer(String nickname, Color color) {
-        try {
-            System.out.println("Aprendo shipboard per: " + nickname + " con colore: " + color);
-
-            // Verifica che i dati del giocatore siano validi
-            if (nickname == null || nickname.trim().isEmpty()) {
-                showError("Nome giocatore non valido");
-                return;
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
             }
-
-            if (color == null) {
-                showError("Colore giocatore non valido");
-                return;
-            }
-
-            // Verifica se ci sono componenti per questo giocatore
-            List<List<ViewComponent>> components = GuiInterface.getInstance().getView().getAssembledComponents(nickname);
-            System.out.println("Componenti per " + nickname + ": " +
-                    (components != null ? components.size() + " righe" : "null"));
-
-            // Carica l'FXML
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipBoardL1.fxml"));
-            Parent root = fxmlLoader.load();
-
-            // Ottieni il controller e configuralo
-            ShipBoardControllerL1 controller = fxmlLoader.getController();
-
-            // IMPORTANTE: Imposta prima il giocatore da visualizzare
-            controller.setShipBoardPlayer(nickname);
-
-            // Poi imposta le informazioni del server e del giocatore corrente
-            controller.setServer(this.server);
-            controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
-
-            // Inizializza i componenti assemblati
-            controller.initializeAssembledComponents();
-
-            System.out.println("Controller inizializzato per: " + nickname);
-
-            // Aggiorna l'interfaccia grafica
-            GuiInterface.getInstance().setShipBoardController(controller);
-
-            // Cambia scena
-            controller.setControlledStage(controlledStage);
-            controlledStage.setScene(new Scene(root, 1210, 740));
-            controlledStage.show();
-
-            System.out.println("Shipboard aperta con successo per " + nickname);
-
-        } catch (IOException e) {
-            System.err.println("Errore nel caricamento FXML: " + e.getMessage());
-            e.printStackTrace();
-            showError("Errore nel caricamento della vista: " + e.getMessage());
-        } catch (Exception e) {
-            System.err.println("Errore generico nell'apertura shipboard: " + e.getMessage());
-            e.printStackTrace();
-            showError("Errore nell'apertura della shipboard: " + e.getMessage());
-        }
+        });
     }
 
 

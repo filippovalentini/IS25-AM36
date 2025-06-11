@@ -1,7 +1,8 @@
-package it.polimi.ingsw.galaxytrucker.ui.gui;
+package it.polimi.ingsw.galaxytrucker.ui.gui.otherControllers;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
+import it.polimi.ingsw.galaxytrucker.ui.gui.GuiInterface;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.GuiController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBuildingController;
 import javafx.animation.KeyFrame;
@@ -94,9 +95,9 @@ public class LobbyController implements GuiController {
         Parent root;
         FXMLLoader fxmlLoader;
         if (firstFlight) {
-            fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipBuildingL1.fxml"));
+            fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipBuildingL1.fxml"));
         }else{
-            fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipBuildingL2.fxml"));
+            fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipBuildingL2.fxml"));
         }
         root = fxmlLoader.load();
         controller = fxmlLoader.getController();

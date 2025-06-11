@@ -1,12 +1,13 @@
-package it.polimi.ingsw.galaxytrucker.ui.gui;
+package it.polimi.ingsw.galaxytrucker.ui.gui.shipBoardControllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
+import it.polimi.ingsw.galaxytrucker.ui.gui.GuiInterface;
+import it.polimi.ingsw.galaxytrucker.ui.gui.otherControllers.ShownComponentsController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBoardController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBuildingController;
-import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipControlController;
+import it.polimi.ingsw.galaxytrucker.ui.gui.flightBoardControllers.FlightBoardControllerL2;
 import it.polimi.ingsw.galaxytrucker.ui.view.ViewComponent;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
@@ -30,9 +31,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import javax.swing.text.View;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 public class ShipBuildingControllerL2 implements ShipBuildingController {
@@ -52,7 +51,6 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
 
     private Button lastDroppedButton = null;
     private final Map<String, Button> draggableButtons = new HashMap<>();
-    private final Map<Button, String> reservedComponentIds = new HashMap<>();
     private Map<String, Image> componentImageMap = new HashMap<>();
 
     @FXML private Pane notificationPane;
@@ -62,7 +60,6 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     @FXML private Rectangle gameStateBackground;
     @FXML private Label gameStateLabel;
     @FXML private Pane handComponentArea;
-    @FXML private TextField ipTextField;
     @FXML private Label playerNameLabel;
     @FXML private Label playerColorLabel;
     @FXML private Button handComponentButton;
@@ -297,10 +294,6 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
         myGridPane.add(button, column, row);
     }
 
-    public void showNotification(String message) {
-        notificationLabel.setText(message);
-        fadeInThenOut(notificationPane);
-    }
 
     public void showError(String message) {
         errorLabel.setText(message);
@@ -440,7 +433,7 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     private void setupShownComponentsButton(){
         shownComponentButton.setOnAction(event -> {
             try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shownComponents.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shownComponents.fxml"));
                 Parent root = fxmlLoader.load();
 
                 ShownComponentsController controller = fxmlLoader.getController();
@@ -534,7 +527,7 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     private void setupOtherPlayerButton(Button button) {
         button.setOnAction(event -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipBoardL2.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipBoardL2.fxml"));
                 ShipBoardController controller = new ShipBoardControllerL2(button.getText());
                 loader.setController(controller);
 
@@ -582,7 +575,7 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     public void setupFlightBoardButton() {
         flightBoardButton.setOnAction(event -> {
             try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/flightBoardL2.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/flightBoardL2.fxml"));
                 Parent root = fxmlLoader.load();
 
                 FlightBoardControllerL2 controller = fxmlLoader.getController();
@@ -786,7 +779,7 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     public void updateShipControl() throws Exception{
         Platform.runLater(() -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipControlL2.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipControlL2.fxml"));
                 Parent root = loader.load();
 
                 ShipControlControllerL2 controller = loader.getController();

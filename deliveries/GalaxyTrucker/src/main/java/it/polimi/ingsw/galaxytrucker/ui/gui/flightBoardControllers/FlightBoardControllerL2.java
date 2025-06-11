@@ -1,7 +1,10 @@
-package it.polimi.ingsw.galaxytrucker.ui.gui;
+package it.polimi.ingsw.galaxytrucker.ui.gui.flightBoardControllers;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
+import it.polimi.ingsw.galaxytrucker.ui.gui.GuiInterface;
+import it.polimi.ingsw.galaxytrucker.ui.gui.shipBoardControllers.ShipBuildingControllerL2;
+import it.polimi.ingsw.galaxytrucker.ui.gui.shipBoardControllers.ShipControlControllerL2;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.FlightBoardController;
 import it.polimi.ingsw.galaxytrucker.ui.view.View;
 import javafx.animation.FadeTransition;
@@ -252,7 +255,7 @@ public class FlightBoardControllerL2 implements FlightBoardController {
 
     public void goBackToShipBuilding(){
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipBuildingL2.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipBuildingL2.fxml"));
             Parent root = fxmlLoader.load();
 
             ShipBuildingControllerL2 controller = fxmlLoader.getController();
@@ -273,7 +276,7 @@ public class FlightBoardControllerL2 implements FlightBoardController {
 
     public void goBackToShipControl(){
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipControlL2.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipControlL2.fxml"));
             Parent root = fxmlLoader.load();
 
             ShipControlControllerL2 controller = fxmlLoader.getController();
@@ -574,7 +577,7 @@ public class FlightBoardControllerL2 implements FlightBoardController {
     public void updateShipControl() throws Exception {
         Platform.runLater(() -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipControlL2.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipControlL2.fxml"));
                 Parent root = loader.load();
 
                 ShipControlControllerL2 controller = loader.getController();

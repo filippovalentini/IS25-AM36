@@ -1,9 +1,9 @@
-package it.polimi.ingsw.galaxytrucker.ui.gui;
+package it.polimi.ingsw.galaxytrucker.ui.gui.otherControllers;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
+import it.polimi.ingsw.galaxytrucker.ui.gui.GuiInterface;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.GuiController;
-import it.polimi.ingsw.galaxytrucker.ui.view.ViewPlayer;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,9 +14,7 @@ import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class EndgameController implements GuiController {
     private Stage controlledStage;
@@ -51,7 +49,7 @@ public class EndgameController implements GuiController {
     @FXML
     private void onFindAnotherGameClick(){
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/selectNetwork.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/selectNetwork.fxml"));
             Parent root = fxmlLoader.load();
             GameSetupController controller = fxmlLoader.getController();
             controller.setControlledStage(controlledStage);

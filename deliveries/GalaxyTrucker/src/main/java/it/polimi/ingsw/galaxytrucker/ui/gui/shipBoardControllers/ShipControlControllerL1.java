@@ -1,10 +1,12 @@
-package it.polimi.ingsw.galaxytrucker.ui.gui;
+package it.polimi.ingsw.galaxytrucker.ui.gui.shipBoardControllers;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
+import it.polimi.ingsw.galaxytrucker.ui.gui.GuiInterface;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBoardController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipControlController;
+import it.polimi.ingsw.galaxytrucker.ui.gui.flightBoardControllers.FlightBoardControllerL1;
 import it.polimi.ingsw.galaxytrucker.ui.view.ViewComponent;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
@@ -28,10 +30,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ShipControlControllerL2 implements ShipControlController {
+public class ShipControlControllerL1 implements ShipControlController {
     private Stage controlledStage;
 
-    @FXML private Label playerNameLabel;
+    @FXML
+    private Label playerNameLabel;
     @FXML private Label playerColorLabel;
     @FXML private Label errorLabel;
     @FXML private Pane errorPane;
@@ -44,8 +47,6 @@ public class ShipControlControllerL2 implements ShipControlController {
     @FXML private Button batteriesButton;
     @FXML private Button destroyButton;
     @FXML private Button flightBoardButton;
-    @FXML private Button brownAlienButton;
-    @FXML private Button purpleAlienButton;
     @FXML private Label lostComponentsLabel;
 
     private int selectedRow = -1;
@@ -72,8 +73,6 @@ public class ShipControlControllerL2 implements ShipControlController {
         setupOtherPlayerButton(player3ShipButton);
         setupDestroyButton();
         setupFlightBoardButton();
-        setupBrownAlienButton();
-        setupPurpleAlienButton();
         setupCrewButton();
         setupBatteriesButton();
     }
@@ -119,8 +118,6 @@ public class ShipControlControllerL2 implements ShipControlController {
         destroyButton.setDisable(disabled);
         crewButton.setDisable(disabled);
         batteriesButton.setDisable(disabled);
-        purpleAlienButton.setDisable(disabled);
-        brownAlienButton.setDisable(disabled);
     }
 
     public void initializeAssembledComponents(){
@@ -134,10 +131,6 @@ public class ShipControlControllerL2 implements ShipControlController {
                         addBatteries(i,j, component.getBatteries());
                     }else if(component.getCrew()>0){
                         addCrewMembers(i,j);
-                    }else if(component.isPurpleAlien()){
-                        addAlien(i,j,true);
-                    }else if(component.isBrownAlien()){
-                        addAlien(i,j,false);
                     }
                 }
             }
@@ -234,8 +227,8 @@ public class ShipControlControllerL2 implements ShipControlController {
     private void setupOtherPlayerButton(Button button) {
         button.setOnAction(event -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipBoardL2.fxml"));
-                ShipBoardController controller = new ShipBoardControllerL2(button.getText());
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipBoardL1.fxml"));
+                ShipBoardController controller = new ShipBoardControllerL1(button.getText());
                 loader.setController(controller);
 
                 Parent root = loader.load();
@@ -308,29 +301,6 @@ public class ShipControlControllerL2 implements ShipControlController {
         });
     }
 
-    public void addAlien(int row, int column, boolean isPurple) {
-        Platform.runLater(() -> {
-            // Trova la cella corretta
-            for (Node node : myGridPane.getChildren()) {
-                Integer col = GridPane.getColumnIndex(node);
-                Integer rw = GridPane.getRowIndex(node);
-                if (col == null) col = 0;
-                if (rw == null) rw = 0;
-
-                if (col == column && rw == row && node instanceof StackPane cell) {
-                    for (Node child : cell.getChildren()) {
-                        if (child instanceof GridPane overlay && overlay.getId() != null &&
-                                overlay.getId().equals("overlay-" + column + "-" + row)) {
-
-                            overlay.add(getAlienImageView(overlay, isPurple), 0, 0);
-                            return;
-                        }
-                    }
-                }
-            }
-        });
-    }
-
     public ImageView getCrewMemberImageView(GridPane overlay){
         Image crewMember = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/crewMember.png").toExternalForm());
 
@@ -353,24 +323,6 @@ public class ShipControlControllerL2 implements ShipControlController {
         batteryImageView.setId("crew");
 
         return batteryImageView;
-    }
-
-    public ImageView getAlienImageView(GridPane overlay, boolean isPurple){
-        Image alien;
-        if (isPurple) {
-            alien = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/purpleAlien.png").toExternalForm());
-        }
-        else {
-            alien = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/brownAlien.png").toExternalForm());
-        }
-
-        ImageView alienImageView = new ImageView(alien);
-        alienImageView.setFitWidth(overlay.getPrefWidth() / 2);
-        alienImageView.setFitHeight(overlay.getPrefHeight() / 2);
-        alienImageView.setPreserveRatio(true);
-        alienImageView.setId("crew");
-
-        return alienImageView;
     }
 
 
@@ -414,10 +366,10 @@ public class ShipControlControllerL2 implements ShipControlController {
     private void setupFlightBoardButton() {
         flightBoardButton.setOnAction(event -> {
             try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/flightBoardL2.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/flightBoardL1.fxml"));
                 Parent root = fxmlLoader.load();
 
-                FlightBoardControllerL2 controller = fxmlLoader.getController();
+                FlightBoardControllerL1 controller = fxmlLoader.getController();
                 controller.setServer(this.server);
                 controller.setPlayerInfo(this.gameID, this.playerNickname, this.playerColor);
                 GuiInterface.getInstance().setFlightBoardController(controller);
@@ -429,30 +381,6 @@ public class ShipControlControllerL2 implements ShipControlController {
             } catch (IOException e) {
                 e.printStackTrace();
                 System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
-            }
-        });
-    }
-
-    @FXML
-    private void setupBrownAlienButton() {
-        brownAlienButton.setOnAction(event -> {
-            try{
-                server.addAlien(this.gameID, this.playerNickname, false, selectedRow, selectedColumn);
-            }
-            catch (Exception e) {
-                showError(e.getMessage());
-            }
-        });
-    }
-
-    @FXML
-    private void setupPurpleAlienButton() {
-        purpleAlienButton.setOnAction(event -> {
-            try{
-                server.addAlien(this.gameID, this.playerNickname, true, selectedRow, selectedColumn);
-            }
-            catch (Exception e) {
-                showError(e.getMessage());
             }
         });
     }
@@ -515,28 +443,12 @@ public class ShipControlControllerL2 implements ShipControlController {
     }
 
     @Override
-    public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws Exception {
-        Platform.runLater(() -> {
-            if(nickname.equals(this.playerNickname)) {
-                addAlien(x, y, isPurple);
-
-                selectedRow = -1;
-                selectedColumn = -1;
-
-                setActionButtons(true);
-            }
-        });
-    }
+    public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws Exception {}
 
     @Override
     public void updateCardPicking() throws Exception {
         Platform.runLater(() -> {
             gameStateLabel.setText("CARD PICKING");
-
-            selectedRow = -1;
-            selectedColumn = -1;
-
-            setActionButtons(true);
         });
     }
 
@@ -571,4 +483,3 @@ public class ShipControlControllerL2 implements ShipControlController {
         });
     }
 }
-

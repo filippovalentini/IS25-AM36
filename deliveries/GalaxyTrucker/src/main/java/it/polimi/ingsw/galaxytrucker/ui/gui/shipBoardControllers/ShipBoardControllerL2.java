@@ -1,9 +1,9 @@
-package it.polimi.ingsw.galaxytrucker.ui.gui;
+package it.polimi.ingsw.galaxytrucker.ui.gui.shipBoardControllers;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
-import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.GuiController;
+import it.polimi.ingsw.galaxytrucker.ui.gui.GuiInterface;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBoardController;
 import it.polimi.ingsw.galaxytrucker.ui.view.ViewComponent;
 import javafx.animation.FadeTransition;
@@ -11,7 +11,6 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -19,7 +18,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -87,9 +89,136 @@ public class ShipBoardControllerL2 implements ShipBoardController {
                 ViewComponent component = assembledComponents.get(i).get(j);
                 if(component != null){
                     setImageOnGrid(component.getImageID(), component.getOrientation(), j, i);
+                    if(component.getBatteries() > 0){
+                        addBatteries(i,j, component.getBatteries());
+                    }else if(component.getCrew()>0){
+                        addCrewMembers(i,j);
+                    }else if(component.isPurpleAlien()){
+                        addAlien(i,j,true);
+                    }else if(component.isBrownAlien()){
+                        addAlien(i,j,false);
+                    }
                 }
             }
         }
+    }
+
+    public void addCrewMembers(int row, int column) {
+        Platform.runLater(() -> {
+            // Trova la cella corretta
+            for (Node node : myGridPane.getChildren()) {
+                Integer col = GridPane.getColumnIndex(node);
+                Integer rw = GridPane.getRowIndex(node);
+                if (col == null) col = 0;
+                if (rw == null) rw = 0;
+
+                if (col == column && rw == row && node instanceof StackPane cell) {
+                    for (Node child : cell.getChildren()) {
+                        if (child instanceof GridPane overlay && overlay.getId() != null &&
+                                overlay.getId().equals("overlay-" + column + "-" + row)) {
+
+                            overlay.add(getCrewMemberImageView(overlay), 0, 0); // top-left
+                            overlay.add(getCrewMemberImageView(overlay), 1, 0); // top-right
+
+                            return;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public void addBatteries(int row, int column, int batteries) {
+        Platform.runLater(() -> {
+            // Trova la cella corretta
+            for (Node node : myGridPane.getChildren()) {
+                Integer col = GridPane.getColumnIndex(node);
+                Integer rw = GridPane.getRowIndex(node);
+                if (col == null) col = 0;
+                if (rw == null) rw = 0;
+
+                if (col == column && rw == row && node instanceof StackPane cell) {
+                    for (Node child : cell.getChildren()) {
+                        if (child instanceof GridPane overlay && overlay.getId() != null &&
+                                overlay.getId().equals("overlay-" + column + "-" + row)) {
+
+                            overlay.add(getBatteryImageView(overlay), 0, 0);
+                            overlay.add(getBatteryImageView(overlay), 1, 0);
+                            if(batteries == 3){
+                                overlay.add(getBatteryImageView(overlay), 0, 1);
+                            }
+
+                            return;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public void addAlien(int row, int column, boolean isPurple) {
+        Platform.runLater(() -> {
+            // Trova la cella corretta
+            for (Node node : myGridPane.getChildren()) {
+                Integer col = GridPane.getColumnIndex(node);
+                Integer rw = GridPane.getRowIndex(node);
+                if (col == null) col = 0;
+                if (rw == null) rw = 0;
+
+                if (col == column && rw == row && node instanceof StackPane cell) {
+                    for (Node child : cell.getChildren()) {
+                        if (child instanceof GridPane overlay && overlay.getId() != null &&
+                                overlay.getId().equals("overlay-" + column + "-" + row)) {
+
+                            overlay.add(getAlienImageView(overlay, isPurple), 0, 0);
+                            return;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public ImageView getCrewMemberImageView(GridPane overlay){
+        Image crewMember = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/crewMember.png").toExternalForm());
+
+        ImageView crewMemberImageView = new ImageView(crewMember);
+        crewMemberImageView.setFitWidth(overlay.getPrefWidth() / 2);
+        crewMemberImageView.setFitHeight(overlay.getPrefHeight() / 2);
+        crewMemberImageView.setPreserveRatio(true);
+        crewMemberImageView.setId("crew");
+
+        return crewMemberImageView;
+    }
+
+    public ImageView getBatteryImageView(GridPane overlay){
+        Image battery = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/battery.png").toExternalForm());
+
+        ImageView batteryImageView = new ImageView(battery);
+        batteryImageView.setFitWidth(overlay.getPrefWidth() / 2);
+        batteryImageView.setFitHeight(overlay.getPrefHeight() / 2);
+        batteryImageView.setPreserveRatio(true);
+        batteryImageView.setId("crew");
+
+        return batteryImageView;
+    }
+
+    public ImageView getAlienImageView(GridPane overlay, boolean isPurple){
+        Image alien;
+        if (isPurple) {
+            alien = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/purpleAlien.png").toExternalForm());
+        }
+        else {
+            alien = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/brownAlien.png").toExternalForm());
+        }
+
+        ImageView alienImageView = new ImageView(alien);
+        alienImageView.setFitWidth(overlay.getPrefWidth() / 2);
+        alienImageView.setFitHeight(overlay.getPrefHeight() / 2);
+        alienImageView.setPreserveRatio(true);
+        alienImageView.setId("crew");
+
+        return alienImageView;
     }
 
     public void initializeReservedComponents() {
@@ -110,7 +239,6 @@ public class ShipBoardControllerL2 implements ShipBoardController {
     public void setReservedComponent(Image image, int position) {
         ImageView imageView = new ImageView(image);
 
-        double cellWidth = reservedGridPane.getColumnConstraints().get(0).getPrefWidth();
         double cellHeight = reservedGridPane.getRowConstraints().get(position).getPrefHeight();
 
         imageView.setFitWidth(cellHeight);
@@ -122,30 +250,53 @@ public class ShipBoardControllerL2 implements ShipBoardController {
     }
 
     public void setImageOnGrid(String imageID, Orientation orientation, int col, int row) {
-        if(imageID.equals("000") || imageID.equals("003")){
+        if (imageID.equals("000") || imageID.equals("003")) {
             return;
         }
 
         Image image = componentImageMap.get(imageID);
+
+        double cellSize = 110;
+
+        // Crea ImageView del componente
         ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(cellSize);
+        imageView.setFitHeight(cellSize);
+        imageView.setPreserveRatio(true);
 
-        double cellWidth = myGridPane.getColumnConstraints().get(col).getPrefWidth();
-        double cellHeight = myGridPane.getRowConstraints().get(row).getPrefHeight();
-
-        imageView.setFitWidth(cellWidth);
-        imageView.setFitHeight(cellHeight);
-        imageView.setPreserveRatio(false);
-        if(orientation.equals(Orientation.WEST)){
-            imageView.setRotate((imageView.getRotate() - 90) % 360);
-        }
-        else if(orientation.equals(Orientation.SOUTH)){
-            imageView.setRotate((imageView.getRotate() - 180) % 360);
-        }
-        else if(orientation.equals(Orientation.EAST)){
-            imageView.setRotate((imageView.getRotate() - 270) % 360);
+        // Applica rotazione
+        switch (orientation) {
+            case WEST -> imageView.setRotate(270);
+            case SOUTH -> imageView.setRotate(180);
+            case EAST -> imageView.setRotate(90);
         }
 
-        myGridPane.add(imageView, col, row);
+        // Crea Button trasparente con ImageView
+        Button button = new Button();
+        button.setPrefSize(cellSize, cellSize);
+        button.setMinSize(cellSize, cellSize);
+        button.setMaxSize(cellSize, cellSize);
+        button.setStyle("-fx-padding: 0; -fx-background-color: transparent; -fx-border-color: transparent;");
+        button.setGraphic(imageView);
+
+        // Crea un GridPane 2x2 per overlay di sticker (faccine, alieni, ecc)
+        GridPane overlay = new GridPane();
+        overlay.setPrefSize(cellSize, cellSize);
+        overlay.setMouseTransparent(true); // Lascia passare i click
+        overlay.setPickOnBounds(false);
+        overlay.setId("overlay-" + col + "-" + row); // utile per ritrovarlo
+        overlay.setHgap(2);
+        overlay.setVgap(2);
+
+        for (int i = 0; i < 2; i++) {
+            overlay.getColumnConstraints().add(new ColumnConstraints(cellSize / 2));
+            overlay.getRowConstraints().add(new RowConstraints(cellSize / 2));
+        }
+
+        // StackPane con Button + Overlay
+        StackPane cell = new StackPane(button, overlay);
+        cell.setStyle("-fx-border-color: transparent;");
+        myGridPane.add(cell, col, row);
     }
 
     public Image getReservedComponentImage(int position) {
@@ -176,7 +327,7 @@ public class ShipBoardControllerL2 implements ShipBoardController {
 
     public void goBackToShipBuilding(){
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipBuildingL2.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipBuildingL2.fxml"));
             Parent root = fxmlLoader.load();
 
             ShipBuildingControllerL2 controller = fxmlLoader.getController();
@@ -197,7 +348,7 @@ public class ShipBoardControllerL2 implements ShipBoardController {
 
     public void goBackToShipControl(){
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipControlL2.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipControlL2.fxml"));
             Parent root = fxmlLoader.load();
 
             ShipControlControllerL2 controller = fxmlLoader.getController();
@@ -317,7 +468,7 @@ public class ShipBoardControllerL2 implements ShipBoardController {
     public void updateShipControl() throws Exception {
         Platform.runLater(() -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipControlL2.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipControlL2.fxml"));
                 Parent root = loader.load();
 
                 ShipControlControllerL2 controller = loader.getController();

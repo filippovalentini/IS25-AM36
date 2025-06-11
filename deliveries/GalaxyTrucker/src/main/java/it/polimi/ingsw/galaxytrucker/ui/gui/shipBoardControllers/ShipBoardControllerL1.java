@@ -1,8 +1,9 @@
-package it.polimi.ingsw.galaxytrucker.ui.gui;
+package it.polimi.ingsw.galaxytrucker.ui.gui.shipBoardControllers;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
+import it.polimi.ingsw.galaxytrucker.ui.gui.GuiInterface;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBoardController;
 import it.polimi.ingsw.galaxytrucker.ui.view.ViewComponent;
 import javafx.animation.FadeTransition;
@@ -10,13 +11,17 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -46,7 +51,6 @@ public class ShipBoardControllerL1 implements ShipBoardController {
     @FXML
     private Button backButton;
 
-    // Modificato: non più final e inizializzato diversamente
     private String shipBoardPlayerNickname;
     private Color shipBoardcolor;
 
@@ -56,49 +60,113 @@ public class ShipBoardControllerL1 implements ShipBoardController {
     private VirtualServer server;
     private Map<String, Image> componentImageMap = new HashMap<>();
 
-    // Costruttore di default per FXML
-    public ShipBoardControllerL1() {
-        // Costruttore vuoto per FXML
-    }
-
-    // Metodo per impostare il giocatore da visualizzare
-    public void setShipBoardPlayer(String otherPlayerNickname) {
+    public ShipBoardControllerL1(String otherPlayerNickname) {
         this.shipBoardPlayerNickname = otherPlayerNickname;
-
-        // Ottieni il colore dal GuiInterface
-        Map<String, Color> playerColorMap = GuiInterface.getInstance().getView().getCurrentPlayers();
-        if (playerColorMap != null && playerColorMap.containsKey(otherPlayerNickname)) {
-            this.shipBoardcolor = playerColorMap.get(otherPlayerNickname);
-        } else {
-            System.err.println("Colore non trovato per il giocatore: " + otherPlayerNickname);
-        }
-
-        // Aggiorna l'interfaccia
-        updatePlayerInfo();
+        this.shipBoardcolor = GuiInterface.getInstance().getView().getCurrentPlayers().get(otherPlayerNickname);
     }
 
     @FXML
     private void initialize() {
-        System.out.println("Inizializzando ShipBoardController...");
-
+        playerNicknameLabel.setText(shipBoardPlayerNickname);
+        playerColorLabel.setText(Color.convertColorIntoEmoji(shipBoardcolor));
         componentImageMap = GuiInterface.getInstance().loadImageMap("components");
         showGameState(GuiInterface.getInstance().getView().getGameState());
         setupBackButton();
+        initializeAssembledComponents();
+    }
 
-        // Se il giocatore è già impostato, inizializza i componenti
-        if (shipBoardPlayerNickname != null) {
-            updatePlayerInfo();
-            initializeAssembledComponents();
+    public void initializeAssembledComponents() {
+        List<List<ViewComponent>> assembledComponents = GuiInterface.getInstance().getView().getAssembledComponents(this.shipBoardPlayerNickname);
+        for(int i = 0; i < assembledComponents.size(); i++){
+            for(int j = 0; j < assembledComponents.get(i).size(); j++){
+                ViewComponent component = assembledComponents.get(i).get(j);
+                if(component != null){
+                    setImageOnGrid(component.getImageID(), component.getOrientation(), j, i);
+                    if(component.getBatteries() > 0){
+                        addBatteries(i,j, component.getBatteries());
+                    }else if(component.getCrew()>0){
+                        addCrewMembers(i,j);
+                    }
+                }
+            }
         }
     }
 
-    private void updatePlayerInfo() {
-        if (playerNicknameLabel != null && shipBoardPlayerNickname != null) {
-            playerNicknameLabel.setText(shipBoardPlayerNickname);
-        }
-        if (playerColorLabel != null && shipBoardcolor != null) {
-            playerColorLabel.setText(Color.convertColorIntoEmoji(shipBoardcolor));
-        }
+    public void addCrewMembers(int row, int column) {
+        Platform.runLater(() -> {
+            // Trova la cella corretta
+            for (Node node : myGridPane.getChildren()) {
+                Integer col = GridPane.getColumnIndex(node);
+                Integer rw = GridPane.getRowIndex(node);
+                if (col == null) col = 0;
+                if (rw == null) rw = 0;
+
+                if (col == column && rw == row && node instanceof StackPane cell) {
+                    for (Node child : cell.getChildren()) {
+                        if (child instanceof GridPane overlay && overlay.getId() != null &&
+                                overlay.getId().equals("overlay-" + column + "-" + row)) {
+
+                            overlay.add(getCrewMemberImageView(overlay), 0, 0); // top-left
+                            overlay.add(getCrewMemberImageView(overlay), 1, 0); // top-right
+
+                            return;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public void addBatteries(int row, int column, int batteries) {
+        Platform.runLater(() -> {
+            // Trova la cella corretta
+            for (Node node : myGridPane.getChildren()) {
+                Integer col = GridPane.getColumnIndex(node);
+                Integer rw = GridPane.getRowIndex(node);
+                if (col == null) col = 0;
+                if (rw == null) rw = 0;
+
+                if (col == column && rw == row && node instanceof StackPane cell) {
+                    for (Node child : cell.getChildren()) {
+                        if (child instanceof GridPane overlay && overlay.getId() != null &&
+                                overlay.getId().equals("overlay-" + column + "-" + row)) {
+
+                            overlay.add(getBatteryImageView(overlay), 0, 0);
+                            overlay.add(getBatteryImageView(overlay), 1, 0);
+                            if(batteries == 3){
+                                overlay.add(getBatteryImageView(overlay), 0, 1);
+                            }
+
+                            return;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public ImageView getCrewMemberImageView(GridPane overlay){
+        Image crewMember = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/crewMember.png").toExternalForm());
+
+        ImageView crewMemberImageView = new ImageView(crewMember);
+        crewMemberImageView.setFitWidth(overlay.getPrefWidth() / 2);
+        crewMemberImageView.setFitHeight(overlay.getPrefHeight() / 2);
+        crewMemberImageView.setPreserveRatio(true);
+        crewMemberImageView.setId("crew");
+
+        return crewMemberImageView;
+    }
+
+    public ImageView getBatteryImageView(GridPane overlay){
+        Image battery = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/battery.png").toExternalForm());
+
+        ImageView batteryImageView = new ImageView(battery);
+        batteryImageView.setFitWidth(overlay.getPrefWidth() / 2);
+        batteryImageView.setFitHeight(overlay.getPrefHeight() / 2);
+        batteryImageView.setPreserveRatio(true);
+        batteryImageView.setId("crew");
+
+        return batteryImageView;
     }
 
     public void showGameState(String message){
@@ -107,82 +175,52 @@ public class ShipBoardControllerL1 implements ShipBoardController {
         }
     }
 
-    public void initializeAssembledComponents() {
-        if (shipBoardPlayerNickname == null) {
-            System.err.println("shipBoardPlayerNickname è null, impossibile inizializzare i componenti");
-            return;
-        }
-
-        try {
-            List<List<ViewComponent>> assembledComponents = GuiInterface.getInstance().getView().getAssembledComponents(this.shipBoardPlayerNickname);
-
-            if (assembledComponents == null) {
-                System.err.println("Nessun componente assemblato trovato per: " + shipBoardPlayerNickname);
-                return;
-            }
-
-            System.out.println("Caricando componenti per " + shipBoardPlayerNickname + ": " + assembledComponents.size() + " righe");
-
-            for(int i = 0; i < assembledComponents.size(); i++){
-                for(int j = 0; j < assembledComponents.get(i).size(); j++){
-                    ViewComponent component = assembledComponents.get(i).get(j);
-                    if(component != null){
-                        System.out.println("Posizionando componente " + component.getImageID() + " in posizione (" + j + ", " + i + ")");
-                        setImageOnGrid(component.getImageID(), component.getOrientation(), j, i);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("Errore nell'inizializzazione dei componenti: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
     public void setImageOnGrid(String imageID, Orientation orientation, int col, int row) {
-        if(imageID.equals("000") || imageID.equals("003")){
+        if (imageID.equals("000") || imageID.equals("003")) {
             return;
         }
 
-        try {
-            Image image = componentImageMap.get(imageID);
-            if (image == null) {
-                System.err.println("Immagine non trovata per ID: " + imageID);
-                return;
-            }
+        Image image = componentImageMap.get(imageID);
 
-            ImageView imageView = new ImageView(image);
+        double cellSize = 110;
 
-            // Verifica che le constraints esistano
-            if (myGridPane.getColumnConstraints().size() <= col || myGridPane.getRowConstraints().size() <= row) {
-                System.err.println("Posizione non valida: (" + col + ", " + row + ")");
-                return;
-            }
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(cellSize);
+        imageView.setFitHeight(cellSize);
+        imageView.setPreserveRatio(true);
 
-            double cellWidth = myGridPane.getColumnConstraints().get(col).getPrefWidth();
-            double cellHeight = myGridPane.getRowConstraints().get(row).getPrefHeight();
-
-            imageView.setFitWidth(cellWidth);
-            imageView.setFitHeight(cellHeight);
-            imageView.setPreserveRatio(false);
-
-            // Applica rotazione
-            if(orientation.equals(Orientation.WEST)){
-                imageView.setRotate((imageView.getRotate() - 90) % 360);
-            }
-            else if(orientation.equals(Orientation.SOUTH)){
-                imageView.setRotate((imageView.getRotate() - 180) % 360);
-            }
-            else if(orientation.equals(Orientation.EAST)){
-                imageView.setRotate((imageView.getRotate() - 270) % 360);
-            }
-
-            myGridPane.add(imageView, col, row);
-            System.out.println("Componente " + imageID + " aggiunto alla griglia in posizione (" + col + ", " + row + ")");
-
-        } catch (Exception e) {
-            System.err.println("Errore nel posizionamento del componente: " + e.getMessage());
-            e.printStackTrace();
+        switch (orientation) {
+            case WEST -> imageView.setRotate(270);
+            case SOUTH -> imageView.setRotate(180);
+            case EAST -> imageView.setRotate(90);
         }
+
+        // Crea Button trasparente con ImageView
+        Button button = new Button();
+        button.setPrefSize(cellSize, cellSize);
+        button.setMinSize(cellSize, cellSize);
+        button.setMaxSize(cellSize, cellSize);
+        button.setStyle("-fx-padding: 0; -fx-background-color: transparent; -fx-border-color: transparent;");
+        button.setGraphic(imageView);
+
+        // Crea un GridPane 2x2 per overlay di sticker (faccine, alieni, ecc)
+        GridPane overlay = new GridPane();
+        overlay.setPrefSize(cellSize, cellSize);
+        overlay.setMouseTransparent(true); // Lascia passare i click
+        overlay.setPickOnBounds(false);
+        overlay.setId("overlay-" + col + "-" + row); // utile per ritrovarlo
+        overlay.setHgap(2);
+        overlay.setVgap(2);
+
+        for (int i = 0; i < 2; i++) {
+            overlay.getColumnConstraints().add(new ColumnConstraints(cellSize / 2));
+            overlay.getRowConstraints().add(new RowConstraints(cellSize / 2));
+        }
+
+        // StackPane con Button + Overlay
+        StackPane cell = new StackPane(button, overlay);
+        cell.setStyle("-fx-border-color: transparent;");
+        myGridPane.add(cell, col, row);
     }
 
     public void setupBackButton() {
@@ -198,7 +236,7 @@ public class ShipBoardControllerL1 implements ShipBoardController {
 
     public void goBackToShipBuilding(){
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipBuildingL1.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipBuildingL1.fxml"));
             Parent root = fxmlLoader.load();
 
             ShipBuildingControllerL1 controller = fxmlLoader.getController();
@@ -219,7 +257,7 @@ public class ShipBoardControllerL1 implements ShipBoardController {
 
     public void goBackToShipControl(){
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipControlL1.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipControlL1.fxml"));
             Parent root = fxmlLoader.load();
 
             ShipControlControllerL1 controller = fxmlLoader.getController();
@@ -315,7 +353,7 @@ public class ShipBoardControllerL1 implements ShipBoardController {
     public void updateShipControl() throws Exception {
         Platform.runLater(() -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/shipControlL1.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipControlL1.fxml"));
                 Parent root = loader.load();
 
                 ShipControlControllerL1 controller = loader.getController();
