@@ -756,17 +756,20 @@ public class GameState {
     }
 
 
-     //SHIP CONTROL PHASE
+     //SHIP CONTROL/REPAIR PHASE
 
 
     //invoked when a component of a player's ship board must be destroyed
     public void destroyComponent(String nickname, int x, int y) throws AssembledComponentException, InvalidActionException {
-        if(state != State.SHIP_CONTROL){
-            throw new InvalidActionException("Wait for ship control phase");
+        if(state == State.SHIP_CONTROL){
+            playersPlay.get(nickname).destroyComponent(x,y);
+            checkShipBoards();
+        }else if(state == State.SHIP_REPAIR){
+            playersPlay.get(nickname).destroyComponent(x,y);
+            checkDamages();
+        }else {
+            throw new InvalidActionException("Wait for control or repair phase");
         }
-        playersPlay.get(nickname).destroyComponent(x,y);
-
-        checkShipBoards();
     }
     //invoked when a player wants to initialize a cabin of its shipboard with 2 human crew members
     public void addCrew(String nickname, int x, int y) throws AssembledComponentException, FullCabinException, InvalidActionException {
@@ -814,7 +817,7 @@ public class GameState {
         checkShipBoards();
     }
     //checks the correctness of all the ships in the game in order to start the flight phase (ships must me
-    //well assembled and each cabin must be full of crew)
+    //well assembled, each cabin must be full of crew and each container full of batteries)
     public void checkShipBoards(){
         boolean correctShips = true;
         for(String nickname : playersPos.keySet()) {
@@ -876,6 +879,26 @@ public class GameState {
                 }
             }
             catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        }
+    }
+    //this method is invoked when a player has to repair its ship after it has been damaged
+    public void setShipRepair(String nickname){
+        this.state = State.SHIP_REPAIR;
+    }
+    //this method is invoked after a card has been solved, in order to determine whether some ship boards
+    //have been damaged due to the effect of the card and have to be repaired
+    public void checkDamages(){
+        boolean correctShips = true;
+        for(String nickname : playersPos.keySet()) {
+            if(!playersPlay.get(nickname).hasCorrectShipBoard()){
+                correctShips = false;
+                setShipRepair(nickname);
+                break;
+            }
+        }
+        if(correctShips){
+            setGameState(State.CARD_PICKING);
+            updateTurns();
         }
     }
     //this method orders playersPos in (decreasing) position order and assigns the leader's nickname to turnPlayer

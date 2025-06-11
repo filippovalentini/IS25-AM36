@@ -44,13 +44,4 @@ public class AbandonedShip extends SkipCard {
         gameState.setGameState(State.CARD_PICKING);
         gameState.updateTurns();
     }
-
-    /*@Override
-    //invoked when a player doesn't want to land on the station
-    public void skip(GameState gameState, String nickname) {
-        if(gameState.isLastInTurn(nickname)) {
-            gameState.setGameState(State.CARD_PICKING);
-        }
-        gameState.nextTurn();
-    }*/
 }

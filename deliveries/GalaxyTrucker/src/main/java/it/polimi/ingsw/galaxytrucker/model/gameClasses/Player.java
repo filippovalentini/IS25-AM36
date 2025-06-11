@@ -123,7 +123,9 @@ public class Player {
         return shipBoard.isCorrect();
     }
     //determines whether the player's shipBoard has all the cabins and battery containers full
-    public boolean hasAllCabinsBatteriesFull(){return shipBoard.hasAllCabinsBatteriesFull();}
+    public boolean hasAllCabinsBatteriesFull(){
+        return shipBoard.hasAllCabinsBatteriesFull();
+    }
     //counts the number of exposed connectors in the player's ship board
     public int countExposedConnectors(){
         return shipBoard.countExposedConnectors();

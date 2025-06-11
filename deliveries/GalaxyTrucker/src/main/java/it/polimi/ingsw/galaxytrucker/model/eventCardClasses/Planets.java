@@ -73,18 +73,4 @@ public class Planets extends SkipCard{
 
 
 
-    /*@Override
-    public void switchGoods(GameState gamestate,String nickname,int cargo_row, int cargo_col, Color good, int pos) throws InvalidActionException {
-        if(gamestate.getPlayersPlay().get(nickname).getShipBoard().getAssembledComponent(cargo_row,cargo_col).getImageID()>=501 && gamestate.getPlayersPlay().get(nickname).getShipBoard().getAssembledComponent(cargo_row,cargo_col).getImageID()<=609){
-            for (Color g : planetGoods.get(landedPlanet)){
-                if(g.equals(good)) {
-                    gamestate.substituteGoods(nickname, cargo_row, cargo_col, good, pos);
-                    break;
-                }
-            }
-        }
-    }
-    */
-
-
 }

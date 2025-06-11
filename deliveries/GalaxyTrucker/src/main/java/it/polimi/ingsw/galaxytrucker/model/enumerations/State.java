@@ -7,5 +7,6 @@ public enum State {
     SHIP_CONTROL, // Players are controlling ships
     CARD_PICKING,   //A new card must be picked
     CARD_SOLVING, // Players are solving cards
+    SHIP_REPAIR,  // Player is repairing its damaged ship
     END // Game is over
 }

@@ -29,30 +29,6 @@ public class AbandonedStation extends SkipCard{
         used = true;
     }
 
-    /*@Override
-    //substitute the cargo goods (specified by coordinates of component) of the player with the station goods
-    public void landing(GameState gameState, String nickname, List<Integer> x, List<Integer> y, List<Integer> positionInEachCargo) throws InvalidActionException {
-        if(x.size() != stationGoods.size()){
-            throw new NoGoodsException("Specify where to put EACH station good");
-        }
-        if (this.used) {
-            throw new InvalidActionException("Already used card");
-        }
-        if (gameState.getCrewCount(nickname)< this.requiredCrew) {
-            throw new InvalidActionException("You don't have enough crew members");
-        }
-        for(int i=0; i<x.size(); i++){
-            if(x.get(i) == 0 && y.get(i) == 0){
-                continue;
-            }
-            gameState.substituteGoods(nickname, x.get(i), y.get(i), stationGoods.get(i), positionInEachCargo.get(i));
-        }
-        gameState.changePlayerPosition(nickname, -this.lostDays);
-        this.used = true;
-        gameState.setGameState(State.CARD_PICKING);
-        gameState.updateTurns();
-    }*/
-
     @Override
     public void loadGoods(GameState gameState, String nickname, List<Integer> x, List<Integer> y) throws InvalidActionException, UnsupportedCargoColorException, FullCargoHoldException, NoGoodsException {
         if(x.size() != stationGoods.size() || y.size() != stationGoods.size()){
@@ -70,14 +46,5 @@ public class AbandonedStation extends SkipCard{
         gameState.setGameState(State.CARD_PICKING);
         gameState.updateTurns();
     }
-
-    /*@Override
-    //invoked when a player doesn't want to land on the station
-    public void skip(GameState gameState, String nickname) throws InvalidActionException {
-        if(gameState.isLastInTurn(nickname)) {
-            gameState.setGameState(State.CARD_PICKING);
-        }
-        gameState.nextTurn();
-    }*/
 
 }
