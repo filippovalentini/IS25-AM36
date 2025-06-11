@@ -26,4 +26,18 @@ public class Cannon extends ConfigurableComponent { //constructor
         retComponent.orientation = this.orientation;
         return retComponent;
     }
+    @Override //return if violates the rule constraint of empty component over the cannon
+    public boolean hasAdjacentPlacementConflict(Component cNorth, Component cEast, Component cSouth, Component cWest){
+        if(orientation == Orientation.NORTH && (cNorth == null || !cNorth.isNotEmpty() || cNorth.isSpace())){
+            return false;
+        }else if(orientation == Orientation.EAST && (cEast == null || !cEast.isNotEmpty() || cEast.isSpace())){
+            return false;
+        }else if(orientation == Orientation.SOUTH && (cSouth == null || !cSouth.isNotEmpty() || cSouth.isSpace())){
+            return false;
+        }else if(orientation == Orientation.WEST && (cWest == null || !cWest.isNotEmpty() || cWest.isSpace())){
+            return false;
+        }else{
+            return true;
+        }
+    }
 }

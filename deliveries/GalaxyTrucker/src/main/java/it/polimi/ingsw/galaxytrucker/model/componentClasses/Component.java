@@ -116,11 +116,17 @@ public class Component {
         Component empty = new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
         return !this.equals(empty);
     }
+    public boolean isSpace(){
+        Component space = new Space(3, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
+        return this.equals(space);
+    }
     public boolean belongsToShip(){
         Component space = new Space(3, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
         return !this.equals(space);
     }
-
+    public boolean hasAdjacentPlacementConflict(Component cNorth, Component cEast, Component cSouth, Component cWest){ //determines if the component has placement conflict given from adjacent components provided as method params
+        return false;
+    }
     public boolean isWellOriented(){        //determines if the component is oriented correctly (true by default, it will be overrided by subclasses for which the orientation is important)
         return true;
     }

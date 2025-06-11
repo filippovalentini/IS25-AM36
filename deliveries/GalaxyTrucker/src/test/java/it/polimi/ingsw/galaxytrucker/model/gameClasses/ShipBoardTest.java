@@ -23,6 +23,7 @@ class ShipBoardTest {
     private Component component1;
     private Component component2;
     private List<Connector> universalConnectorList;
+    private List<Connector> universalCannonConnectorList;
 
     @BeforeEach
     void init(){
@@ -44,6 +45,11 @@ class ShipBoardTest {
         universalConnectorList.add(Connector.UNIVERSAL);
         universalConnectorList.add(Connector.UNIVERSAL);
         universalConnectorList.add(Connector.UNIVERSAL);
+        universalCannonConnectorList = new ArrayList<>();
+        universalCannonConnectorList.add(Connector.SMOOTH);
+        universalCannonConnectorList.add(Connector.UNIVERSAL);
+        universalCannonConnectorList.add(Connector.UNIVERSAL);
+        universalCannonConnectorList.add(Connector.UNIVERSAL);
     }
 
     @Test
@@ -159,6 +165,24 @@ class ShipBoardTest {
         shipBoard.pickComponent(component1);
         shipBoard.assembleComponent(1, 3); //above the initial cabin
         assertEquals(component1, shipBoard.getAssembledComponent(1, 3));
+    }
+
+    @Test
+    void testAssembleComponentCannonViolatesRuleConstraint(){
+        Cannon c = new Cannon(false, -1, universalCannonConnectorList);
+        shipBoard.pickComponent(c);
+        shipBoard.assembleComponent(3, 3);
+        assertEquals(c, shipBoard.getAssembledComponent(3, 3)); // cannon must be assembled under init cabin
+        assertFalse(shipBoard.isCorrect()); // then ship board should be incorrect
+    }
+
+    @Test
+    void testAssembleComponentCannonFollowRuleConstraint(){
+        Cannon c = new Cannon(false, -1, universalCannonConnectorList);
+        shipBoard.pickComponent(c);
+        shipBoard.assembleComponent(1, 3);
+        assertEquals(c, shipBoard.getAssembledComponent(1, 3)); // cannon must be assembled above init cabin
+        assertTrue(shipBoard.isCorrect()); // then ship board should be correct
     }
 
     @Test

@@ -277,16 +277,18 @@ public class ShipBoard {
             for(int j = 0; j < assembledComponents.get(i).size(); j++){
                 Component c = assembledComponents.get(i).get(j);
                 if(c.isNotEmpty() && c.belongsToShip()){
-                    if(!c.isWellOriented()){
+                    if(!c.isWellOriented()){ //engines need to be well oriented
                         correctness = false;
                         break;
                     }
+                    Component cNorth = null, cEast = null, cSouth = null, cWest = null; //adjacent components
                     if(i>0){
                         Component c1 = assembledComponents.get(i-1).get(j);
                         if(!c.getNorthSide().compatibleWith(c1.getSouthSide()) && c1.isNotEmpty() && c1.belongsToShip()){
                             correctness = false;
                             break;
                         }
+                        cNorth = assembledComponents.get(i-1).get(j);
                     }
                     if(i<assembledComponents.size()-1){
                         Component c1 = assembledComponents.get(i+1).get(j);
@@ -294,6 +296,7 @@ public class ShipBoard {
                             correctness = false;
                             break;
                         }
+                        cSouth = assembledComponents.get(i+1).get(j);
                     }
                     if(j>0){
                         Component c1 = assembledComponents.get(i).get(j-1);
@@ -301,6 +304,7 @@ public class ShipBoard {
                             correctness = false;
                             break;
                         }
+                        cWest = assembledComponents.get(i).get(j-1);
                     }
                     if(j<assembledComponents.get(i).size()-1){
                         Component c1 = assembledComponents.get(i).get(j+1);
@@ -308,6 +312,11 @@ public class ShipBoard {
                             correctness = false;
                             break;
                         }
+                        cEast = assembledComponents.get(i).get(j+1);
+                    }
+                    if(c.hasAdjacentPlacementConflict(cNorth, cEast, cSouth, cWest)){
+                        correctness = false;
+                        break;
                     }
                 }
             }
