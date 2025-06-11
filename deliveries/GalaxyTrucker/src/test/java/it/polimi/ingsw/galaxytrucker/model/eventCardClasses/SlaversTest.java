@@ -56,13 +56,13 @@ class SlaversTest {
         gameState.assembleComponent(player1, c2, 2, 4);
         gameState.assembleComponent(player1, c3, 2, 1);
         gameState.assembleComponent(player1, c4, 2, 0);
-        gameState.assembleComponent(player1, cab1, 1, 4);
-        gameState.assembleComponent(player1, cab2, 1, 2);
+        gameState.assembleComponent(player1, cab1, 3, 4);
+        gameState.assembleComponent(player1, cab2, 3, 2);
         gameState.setPosition(player1, 6);
         gameState.setPosition(player2, 3);
         gameState.addCrew(player1, 2, 3);
-        gameState.addCrew(player1, 1, 4);
-        gameState.addCrew(player1, 1, 2);
+        gameState.addCrew(player1, 3, 4);
+        gameState.addCrew(player1, 3, 2);
         gameState.addCrew(player2, 2, 3);
     }
 
@@ -86,7 +86,7 @@ class SlaversTest {
         slavers2.defeat(gameState, player1, 0, true);
         assertEquals(State.CARD_SOLVING, gameState.getGameState());
         assertEquals(player1, gameState.getTurnPlayer());
-        slavers2.landing(gameState, player1, new ArrayList<>(Arrays.asList(1,1)), new ArrayList<>(Arrays.asList(4,2)), new ArrayList<>(Arrays.asList(1,2)));
+        slavers2.landing(gameState, player1, new ArrayList<>(Arrays.asList(3,3)), new ArrayList<>(Arrays.asList(4,2)), new ArrayList<>(Arrays.asList(1,2)));
         assertEquals(player2, gameState.getTurnPlayer());
         assertEquals(3, gameState.getCrewCount(player1));
         assertThrows(NoCrewException.class, () -> slavers2.defeat(gameState, player2, 0, true));
