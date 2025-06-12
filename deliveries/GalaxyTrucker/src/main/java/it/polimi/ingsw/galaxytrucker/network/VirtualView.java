@@ -75,6 +75,9 @@ public interface VirtualView {
     //enter the ship control phase
     void updateShipControl() throws Exception;
 
+    //notifies the view that a player has to repair its ship board before the player in turn can pick a new card
+    void updateShipRepair(String nickname) throws Exception;
+
     //notifies the view that a component of a player's ship board has been destroyed
     void updateDestroyedComponent(String nickname, int x, int y) throws Exception;
 

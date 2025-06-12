@@ -4,6 +4,7 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.ui.gui.GuiInterface;
 
+import java.rmi.RemoteException;
 import java.util.*;
 
 import static it.polimi.ingsw.galaxytrucker.model.enumerations.Color.convertColorIntoEmoji;
@@ -11,7 +12,6 @@ import static it.polimi.ingsw.galaxytrucker.model.enumerations.Color.convertColo
 public class View {
     public boolean firstFlight;     //true if the view refers to a first flight game, false otherwise
     private String gameState;   //string describing the phase of the game
-    private String turnPlayer;      //nickname of the player next in turn
     private ViewFlightBoard flightBoard;    //current flight board state
     private final ViewPlayer player;      //state of the player associated to the view
     private Map<String, ViewPlayer> otherPlayers = new HashMap<>();     //other player's state
@@ -21,8 +21,10 @@ public class View {
     private Integer currentCard;        //current card to solve
     private ViewDice dice;          //dice of the game
     private String hourglassState;      //state of the hourglass
-    private int hourglassPosition;
-    private boolean hourglassRunning;
+    private int hourglassPosition;      //position of the hourglass on the flight board
+    private boolean hourglassRunning;    //true if the hourglass is running
+    private String turnPlayer;      //nickname of the player next in turn
+    private String damagedPlayer;   //nickname of the player that has to repair its ship
 
     public View(String nickname, Color color, boolean firstFlight) {
         this.player = new ViewPlayer(nickname, color, firstFlight);
@@ -31,6 +33,7 @@ public class View {
         this.pickedViewComponent = null;
         this.flightBoard = null;
         this.turnPlayer = null;
+        this.damagedPlayer = null;
         this.currentCard = null;
         this.dice = new ViewDice();
         this.hourglassState = null;
@@ -168,8 +171,11 @@ public class View {
         System.out.println("╚════════════════════════════╝");
 
         System.out.print("🚀 Game State: " + gameState);
-        if(turnPlayer != null){
+        if(turnPlayer != null && !gameState.equals("SHIP REPAIR")){
             System.out.println(" --------- IT'S " + turnPlayer + "'S TURN");
+        }
+        if(gameState.equals("SHIP REPAIR")){
+            System.out.println("Damaged player: " + damagedPlayer);
         }
         System.out.println();
         if(hourglassState != null){
@@ -391,6 +397,12 @@ public class View {
         }
     }
 
+    //notifies the view that a player has to repair its ship board before the player in turn can pick a new card
+    public void updateShipRepair(String nickname) {
+        gameState = "SHIP REPAIR";
+        damagedPlayer = nickname;
+    }
+
     //notifies the view that a component of a player's ship board has been destroyed
     public void updateDestroyedComponent(String nickname, int x, int y){
         if(nickname.equals(this.player.getNickname())){
@@ -406,7 +418,7 @@ public class View {
     //notifies the view about the fact that a player has to pick a card in order to continue the game
     public void updateCardPicking() {
         gameState = "CARD PICKING";
-        currentCard = null;
+        damagedPlayer = null;
     }
 
     //notifies the view about the next player whose turn it is to perform an action

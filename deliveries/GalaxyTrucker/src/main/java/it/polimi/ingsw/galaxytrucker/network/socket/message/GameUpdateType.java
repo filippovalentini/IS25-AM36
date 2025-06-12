@@ -20,6 +20,7 @@ public enum GameUpdateType {
     FINISHED_CYCLE,
     SHIP_PLACEMENT,
     SHIP_CONTROL,
+    SHIP_REPAIR,
     DESTROYED_COMPONENT,
     CARD_PICKING,
     NEXT_TURN,

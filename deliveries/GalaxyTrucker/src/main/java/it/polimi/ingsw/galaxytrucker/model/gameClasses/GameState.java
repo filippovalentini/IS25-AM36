@@ -884,6 +884,11 @@ public class GameState {
     //this method is invoked when a player has to repair its ship after it has been damaged
     public void setShipRepair(String nickname){
         this.state = State.SHIP_REPAIR;
+
+        for(VirtualView view: clients.values()){
+            try{view.updateShipRepair(nickname);}
+            catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        }
     }
     //this method is invoked after a card has been solved, in order to determine whether some ship boards
     //have been damaged due to the effect of the card and have to be repaired

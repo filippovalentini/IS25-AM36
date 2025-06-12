@@ -605,6 +605,12 @@ public class TuiInterface implements UserInterface {
         this.view.updateShipControl();
     }
 
+    //notifies the view that a player has to repair its ship board before the player in turn can pick a new card
+    @Override
+    public void updateShipRepair(String nickname) {
+        this.view.updateShipRepair(nickname);
+    }
+
     //notifies the view that a component of a player's ship board has been destroyed
     @Override
     public void updateDestroyedComponent(String nickname, int x, int y) {

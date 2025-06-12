@@ -16,6 +16,7 @@ import javafx.application.Application;
 import javafx.scene.image.Image;
 
 import java.io.InputStream;
+import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -304,6 +305,11 @@ public class GuiInterface implements UserInterface {
         if(flightBoardController != null){
             flightBoardController.updateShipControl();
         }
+    }
+
+    @Override
+    public void updateShipRepair(String nickname) throws Exception {
+
     }
 
     @Override

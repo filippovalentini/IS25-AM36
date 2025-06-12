@@ -96,6 +96,10 @@ public interface VirtualViewRMI extends Remote, VirtualView {
     @Override
     void updateShipControl() throws RemoteException;
 
+    //notifies the view that a player has to repair its ship board before the player in turn can pick a new card
+    @Override
+    void updateShipRepair(String nickname) throws RemoteException;
+
     //notifies the view that a component of a player's ship board has been destroyed
     @Override
     void updateDestroyedComponent(String nickname, int x, int y) throws RemoteException;

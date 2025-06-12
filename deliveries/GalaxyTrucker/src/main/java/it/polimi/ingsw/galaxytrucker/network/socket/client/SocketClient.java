@@ -14,6 +14,7 @@ import java.io.*;
 import java.net.Socket;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 //this class contains all the logic needed to connect to the server through socket, manage the user interaction
@@ -95,6 +96,9 @@ public class SocketClient implements VirtualViewSocket, GameSessionManager {
                         break;
                     case SHIP_CONTROL:
                         updateShipControl();
+                        break;
+                    case SHIP_REPAIR:
+                        updateShipRepair(message.getGameParams(0));
                         break;
                     case DESTROYED_COMPONENT:
                         updateDestroyedComponent(message.getGameParams(0), Integer.parseInt(message.getGameParams(1)), Integer.parseInt(message.getGameParams(2)));
@@ -428,6 +432,17 @@ public class SocketClient implements VirtualViewSocket, GameSessionManager {
     public void updateShipControl() {
         try{
             this.ui.updateShipControl();
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    //notifies the view that a player has to repair its ship board before the player in turn can pick a new card
+    @Override
+    public void updateShipRepair(String nickname) {
+        try{
+            this.ui.updateShipRepair(nickname);
         }
         catch(Exception e){
             System.out.println(e.getMessage());
