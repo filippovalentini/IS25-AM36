@@ -37,6 +37,10 @@ public class ShipBoardControllerL1 implements ShipBoardController {
     @FXML
     private Label errorLabel;
     @FXML
+    private Label playerCreditsLabel;
+    @FXML
+    private Label lostComponentsLabel;
+    @FXML
     private Rectangle errorBackground;
     @FXML
     private Rectangle gameStateBackground;
@@ -51,12 +55,14 @@ public class ShipBoardControllerL1 implements ShipBoardController {
     @FXML
     private Button backButton;
 
-    private String shipBoardPlayerNickname;
-    private Color shipBoardcolor;
+    private final String shipBoardPlayerNickname;
+    private final Color shipBoardcolor;
 
     private int gameID;
     private String playerNickname;
     private Color color;
+    private int credits;
+    private int lostComponents;
     private VirtualServer server;
     private Map<String, Image> componentImageMap = new HashMap<>();
 
@@ -69,6 +75,10 @@ public class ShipBoardControllerL1 implements ShipBoardController {
     private void initialize() {
         playerNicknameLabel.setText(shipBoardPlayerNickname);
         playerColorLabel.setText(Color.convertColorIntoEmoji(shipBoardcolor));
+        credits = GuiInterface.getInstance().getView().getCredits(shipBoardPlayerNickname);
+        playerCreditsLabel.setText(String.valueOf(credits));
+        lostComponents = GuiInterface.getInstance().getView().getLostComponents(shipBoardPlayerNickname);
+        lostComponentsLabel.setText(String.valueOf(lostComponents));
         componentImageMap = GuiInterface.getInstance().loadImageMap("components");
         showGameState(GuiInterface.getInstance().getView().getGameState());
         setupBackButton();

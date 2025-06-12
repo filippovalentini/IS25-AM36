@@ -154,6 +154,21 @@ public class View {
         }
     }
 
+    //returns the number of credits of a player
+    public int getCredits(String nickname) {
+        if(nickname.equals(this.player.getNickname())){
+            return this.player.getCredits();
+        }
+        else{
+            return otherPlayers.get(nickname).getCredits();
+        }
+    }
+
+    //returns the nickname of the player in turn to perform an action
+    public String getTurnPlayer() {
+        return turnPlayer;
+    }
+
     //visualizes the state of the game and of the ship board of the player associated to the view
     public void visualizeShip(){
         if(gameState.equals("END GAME")){

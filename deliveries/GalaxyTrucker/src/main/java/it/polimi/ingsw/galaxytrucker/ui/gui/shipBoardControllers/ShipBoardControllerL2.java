@@ -4,6 +4,7 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.ui.gui.GuiInterface;
+import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.FlightPhaseController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBoardController;
 import it.polimi.ingsw.galaxytrucker.ui.view.ViewComponent;
 import javafx.animation.FadeTransition;
@@ -37,6 +38,10 @@ public class ShipBoardControllerL2 implements ShipBoardController {
     @FXML
     private Label errorLabel;
     @FXML
+    private Label lostComponentsLabel;
+    @FXML
+    private Label playerCreditsLabel;
+    @FXML
     private Rectangle errorBackground;
     @FXML
     private Rectangle gameStateBackground;
@@ -59,6 +64,8 @@ public class ShipBoardControllerL2 implements ShipBoardController {
     private int gameID;
     private String playerNickname;
     private Color color;
+    private int credits;
+    private int lostComponents;
     private VirtualServer server;
     private Map<String, Image> componentImageMap = new HashMap<>();
 
@@ -71,6 +78,10 @@ public class ShipBoardControllerL2 implements ShipBoardController {
     private void initialize() {
         playerNicknameLabel.setText(shipBoardPlayerNickname);
         playerColorLabel.setText(Color.convertColorIntoEmoji(shipBoardcolor));
+        credits = GuiInterface.getInstance().getView().getCredits(shipBoardPlayerNickname);
+        lostComponents = GuiInterface.getInstance().getView().getLostComponents(shipBoardPlayerNickname);
+        playerCreditsLabel.setText(String.valueOf(credits));
+        lostComponentsLabel.setText(String.valueOf(lostComponents));
         componentImageMap = GuiInterface.getInstance().loadImageMap("components");
         showGameState(GuiInterface.getInstance().getView().getGameState());
         setupBackButton();
@@ -322,6 +333,9 @@ public class ShipBoardControllerL2 implements ShipBoardController {
             else if(gameStateLabel.getText().equals("SHIP CONTROL")){
                 goBackToShipControl();
             }
+            else if(gameStateLabel.getText().equals("CARD PICKING") || gameStateLabel.getText().equals("CARD SOLVING")){
+                goBackToFlightPhase();
+            }
         });
     }
 
@@ -364,6 +378,25 @@ public class ShipBoardControllerL2 implements ShipBoardController {
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Errore nel caricamento della Shipboard: " + e.getMessage());
+        }
+    }
+
+    public void goBackToFlightPhase(){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/flightPhaseL2.fxml"));
+            Parent root = fxmlLoader.load();
+
+            FlightPhaseControllerL2 controller = fxmlLoader.getController();
+            controller.setServer(this.server);
+            controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+            GuiInterface.getInstance().setFlightPhaseController(controller);
+
+            controller.setControlledStage(controlledStage);
+            controlledStage.setScene(new Scene(root, 1210, 740));
+            controlledStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

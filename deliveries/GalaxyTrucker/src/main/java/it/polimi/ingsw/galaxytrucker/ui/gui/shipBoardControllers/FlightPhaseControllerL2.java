@@ -6,7 +6,6 @@ import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.ui.gui.GuiInterface;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.FlightPhaseController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBoardController;
-import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipControlController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.flightBoardControllers.FlightBoardControllerL2;
 import it.polimi.ingsw.galaxytrucker.ui.view.ViewComponent;
 import javafx.animation.FadeTransition;
@@ -23,6 +22,7 @@ import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -31,40 +31,69 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ShipControlControllerL2 implements ShipControlController {
+public class FlightPhaseControllerL2 implements FlightPhaseController {
     private Stage controlledStage;
 
     @FXML private Label playerNameLabel;
     @FXML private Label playerColorLabel;
-    @FXML private Label errorLabel;
+    @FXML private Label playerCreditsLabel;
+    @FXML private Label lostComponentsLabel;
+
     @FXML private Pane errorPane;
+    @FXML private Label errorLabel;
+
+    @FXML private Rectangle gameStateBackground;
     @FXML private Label gameStateLabel;
+
     @FXML private GridPane myGridPane;
+
     @FXML private Button player1ShipButton;
     @FXML private Button player2ShipButton;
     @FXML private Button player3ShipButton;
-    @FXML private Button crewButton;
-    @FXML private Button batteriesButton;
+    @FXML private Button pickCardButton;
     @FXML private Button destroyButton;
     @FXML private Button flightBoardButton;
-    @FXML private Button brownAlienButton;
-    @FXML private Button purpleAlienButton;
-    @FXML private Label lostComponentsLabel;
+
+    @FXML private Pane pickedCardArea;
+    @FXML private Button pickedCardButton;
+
+    @FXML private Button diceButton;
+    @FXML private Pane dice1Pane;
+    @FXML private Pane dice2Pane;
+    @FXML private Button dice1Button;
+    @FXML private Button dice2Button;
+
+    @FXML private Label turnPlayerLabel;
+
+    @FXML private Button hitShipButton;
+    @FXML private Button planetLandingButton;
+    @FXML private Button crewLandingButton;
+    @FXML private Button defeatEnemyButton;
+    @FXML private Button loadGoodsButton;
+    @FXML private Button switchGoodsButton;
+    @FXML private Button useBatteriesButton;
+    @FXML private Button flyButton;
+    @FXML private Button skipButton;
+    @FXML private Button quitButton;
+
 
     private int selectedRow = -1;
     private int selectedColumn = -1;
     private ImageView lastSelectedImageView = null;
 
     private Map<String, Image> componentImageMap = new HashMap<>();
+    private Map<String, Image> cardImageMap = new HashMap<>();
     int gameID;
     String playerNickname;
     Color playerColor;
     int lostComponents;
+    int credits;
     VirtualServer server;
 
     @FXML
     public void initialize() {
         componentImageMap = GuiInterface.getInstance().loadImageMap("components");
+        cardImageMap = GuiInterface.getInstance().loadImageMap("cards");
 
         initializeGameInfo();
         initializeButtons();
@@ -75,24 +104,59 @@ public class ShipControlControllerL2 implements ShipControlController {
         setupOtherPlayerButton(player3ShipButton);
         setupDestroyButton();
         setupFlightBoardButton();
-        setupBrownAlienButton();
-        setupPurpleAlienButton();
-        setupCrewButton();
-        setupBatteriesButton();
+        setupPickCardButton();
+        setPickedCardImage("9002");
+    }
+
+    public void setPickedCardImage(String imageID) {
+        Image image = cardImageMap.get(imageID);
+        ImageView imageView = new ImageView(image);
+        imageView.setPreserveRatio(true);
+        imageView.setFitWidth(pickedCardButton.getPrefWidth());
+        imageView.setFitHeight(pickedCardButton.getPrefHeight());
+
+        pickedCardButton.setGraphic(imageView);
+        pickedCardButton.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
+    }
+
+    public void showError(String message) {
+        errorLabel.setText(message);
+        fadeInThenOut(errorPane);
+    }
+
+    public void showGamePhase(String message){
+        gameStateLabel.setText(message);
+    }
+
+    private void fadeInThenOut(Pane pane) {
+        pane.setOpacity(1.0);
+
+        // Timer: attende 3 secondi, poi parte il fade out
+        PauseTransition wait = new PauseTransition(Duration.seconds(3));
+        wait.setOnFinished(event -> {
+            FadeTransition fade = new FadeTransition(Duration.seconds(1.5), pane);
+            fade.setFromValue(1.0);
+            fade.setToValue(0.0);
+            fade.play();
+        });
+        wait.play();
     }
 
     public void initializeGameInfo() {
         this.playerNickname = GuiInterface.getInstance().getView().getNickname();
         this.playerColor = GuiInterface.getInstance().getView().getColor();
         this.lostComponents = GuiInterface.getInstance().getView().getLostComponents(playerNickname);
+        this.credits = GuiInterface.getInstance().getView().getCredits(playerNickname);
         gameStateLabel.setText(GuiInterface.getInstance().getView().getGameState());
         playerNameLabel.setText(playerNickname);
         playerColorLabel.setText(Color.convertColorIntoEmoji(playerColor));
         lostComponentsLabel.setText(String.valueOf(lostComponents));
+        playerCreditsLabel.setText(String.valueOf(credits));
+        turnPlayerLabel.setText(GuiInterface.getInstance().getView().getTurnPlayer());
     }
 
     public void initializeButtons(){
-        setActionButtons(true);
+        destroyButton.setDisable(true);
 
         List<String> otherPlayerNicknames = GuiInterface.getInstance().getView().getOtherPlayerNicknames();
         int numberOtherPlayers = otherPlayerNicknames.size();
@@ -116,14 +180,6 @@ public class ShipControlControllerL2 implements ShipControlController {
             player3ShipButton.setDisable(false);
             player3ShipButton.setText(otherPlayerNicknames.get(2));
         }
-    }
-
-    public void setActionButtons(boolean disabled){
-        destroyButton.setDisable(disabled);
-        crewButton.setDisable(disabled);
-        batteriesButton.setDisable(disabled);
-        purpleAlienButton.setDisable(disabled);
-        brownAlienButton.setDisable(disabled);
     }
 
     public void initializeAssembledComponents(){
@@ -154,7 +210,7 @@ public class ShipControlControllerL2 implements ShipControlController {
 
         Image image = componentImageMap.get(imageID);
 
-        double cellSize = 110;
+        double cellSize = 90;
 
         // Crea ImageView del componente
         ImageView imageView = new ImageView(image);
@@ -210,28 +266,10 @@ public class ShipControlControllerL2 implements ShipControlController {
             selectedRow = row;
             lastSelectedImageView = imageView;
 
-            setActionButtons(false);
+            destroyButton.setDisable(false);
         });
     }
 
-    public void showError(String message) {
-        errorLabel.setText(message);
-        fadeInThenOut(errorPane);
-    }
-
-    private void fadeInThenOut(Pane pane) {
-        pane.setOpacity(1.0);
-
-        // Timer: attende 3 secondi, poi parte il fade out
-        PauseTransition wait = new PauseTransition(Duration.seconds(3));
-        wait.setOnFinished(event -> {
-            FadeTransition fade = new FadeTransition(Duration.seconds(1.5), pane);
-            fade.setFromValue(1.0);
-            fade.setToValue(0.0);
-            fade.play();
-        });
-        wait.play();
-    }
 
     @FXML
     private void setupOtherPlayerButton(Button button) {
@@ -253,7 +291,6 @@ public class ShipControlControllerL2 implements ShipControlController {
 
             } catch (IOException e) {
                 e.printStackTrace();
-                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
             }
         });
     }
@@ -376,31 +413,6 @@ public class ShipControlControllerL2 implements ShipControlController {
         return alienImageView;
     }
 
-
-    @FXML
-    private void setupCrewButton() {
-        crewButton.setOnAction(event -> {
-            try{
-                server.addCrew(this.gameID, this.playerNickname, selectedRow, selectedColumn);
-            }
-            catch (Exception e) {
-                showError(e.getMessage());
-            }
-        });
-    }
-
-    @FXML
-    private void setupBatteriesButton() {
-        batteriesButton.setOnAction(event -> {
-            try{
-                server.addBatteries(this.gameID, this.playerNickname, selectedRow, selectedColumn);
-            }
-            catch (Exception e) {
-                showError(e.getMessage());
-            }
-        });
-    }
-
     @FXML
     private void setupDestroyButton() {
         destroyButton.setOnAction(event -> {
@@ -436,11 +448,13 @@ public class ShipControlControllerL2 implements ShipControlController {
         });
     }
 
-    @FXML
-    private void setupBrownAlienButton() {
-        brownAlienButton.setOnAction(event -> {
+
+    // Setters for buttons (excluding dice and pickedCard buttons)
+
+    public void setupPickCardButton() {
+        pickCardButton.setOnAction(event -> {
             try{
-                server.addAlien(this.gameID, this.playerNickname, false, selectedRow, selectedColumn);
+                server.pickNextCard(this.gameID, this.playerNickname);
             }
             catch (Exception e) {
                 showError(e.getMessage());
@@ -448,114 +462,53 @@ public class ShipControlControllerL2 implements ShipControlController {
         });
     }
 
-    @FXML
-    private void setupPurpleAlienButton() {
-        purpleAlienButton.setOnAction(event -> {
-            try{
-                server.addAlien(this.gameID, this.playerNickname, true, selectedRow, selectedColumn);
-            }
-            catch (Exception e) {
-                showError(e.getMessage());
-            }
-        });
+    public void setFlightBoardButton(Button button) {
+        this.flightBoardButton = button;
     }
 
-    @Override
-    public void updateDestroyedComponent(String nickname, int x, int y) throws Exception {
-        Platform.runLater(() -> {
-            if(nickname.equals(this.playerNickname)) {
-                Platform.runLater(() -> {
-                    for (Node node : myGridPane.getChildren()) {
-                        Integer colIndex = GridPane.getColumnIndex(node);
-                        Integer rowIndex = GridPane.getRowIndex(node);
-                        if (colIndex == null) colIndex = 0;
-                        if (rowIndex == null) rowIndex = 0;
-
-                        if (colIndex == selectedColumn && rowIndex == selectedRow) {
-                            myGridPane.getChildren().remove(node);
-                            break;
-                        }
-                    }
-
-                    selectedRow = -1;
-                    selectedColumn = -1;
-
-                    setActionButtons(true);
-
-                    lostComponents++;
-                    lostComponentsLabel.setText(String.valueOf(lostComponents));
-                });
-            }
-        });
+    public void setHitShipButton(Button button) {
+        this.hitShipButton = button;
     }
 
-    @Override
-    public void updateCrewChange(String nickname, int x, int y, int change) throws Exception {
-        Platform.runLater(() -> {
-            if(nickname.equals(this.playerNickname)) {
-                addCrewMembers(x, y);
-
-                selectedRow = -1;
-                selectedColumn = -1;
-
-                setActionButtons(true);
-            }
-        });
+    public void setPlanetLandingButton(Button button) {
+        this.planetLandingButton = button;
     }
 
-    @Override
-    public void updateBatteries(String nickname, int x, int y, int change) throws Exception {
-        Platform.runLater(() -> {
-            if(nickname.equals(this.playerNickname)) {
-                addBatteries(x, y, change);
-
-                selectedRow = -1;
-                selectedColumn = -1;
-
-                setActionButtons(true);
-            }
-        });
+    public void setCrewLandingButton(Button button) {
+        this.crewLandingButton = button;
     }
 
-    @Override
-    public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws Exception {
-        Platform.runLater(() -> {
-            if(nickname.equals(this.playerNickname)) {
-                addAlien(x, y, isPurple);
-
-                selectedRow = -1;
-                selectedColumn = -1;
-
-                setActionButtons(true);
-            }
-        });
+    public void setDefeatEnemyButton(Button button) {
+        this.defeatEnemyButton = button;
     }
 
-    @Override
-    public void updateCardPicking() throws Exception {
-        Platform.runLater(() -> {
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/flightPhaseL2.fxml"));
-                Parent root = fxmlLoader.load();
+    public void setLoadGoodsButton(Button button) {
+        this.loadGoodsButton = button;
+    }
 
-                FlightPhaseControllerL2 controller = fxmlLoader.getController();
-                controller.setServer(this.server);
-                controller.setPlayerInfo(this.gameID, this.playerNickname, this.playerColor);
-                GuiInterface.getInstance().setFlightPhaseController(controller);
+    public void setSwitchGoodsButton(Button button) {
+        this.switchGoodsButton = button;
+    }
 
-                controller.setControlledStage(controlledStage);
-                controlledStage.setScene(new Scene(root, 1210, 740));
-                controlledStage.show();
+    public void setUseBatteriesButton(Button button) {
+        this.useBatteriesButton = button;
+    }
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+    public void setFlyButton(Button button) {
+        this.flyButton = button;
+    }
+
+    public void setSkipButton(Button button) {
+        this.skipButton = button;
+    }
+
+    public void setQuitButton(Button button) {
+        this.quitButton = button;
     }
 
     @Override
     public void setControlledStage(Stage stage) {
-        controlledStage = stage;
+        this.controlledStage = stage;
     }
 
     @Override
@@ -580,8 +533,106 @@ public class ShipControlControllerL2 implements ShipControlController {
     @Override
     public void notifyGamePhase(String gamePhase) throws Exception {
         Platform.runLater(() -> {
-            gameStateLabel.setText(gamePhase);
+            showGamePhase(gamePhase);
         });
     }
-}
 
+    @Override
+    public void updateShipRepair(String nickname) throws Exception {
+        Platform.runLater(() -> {
+            showGamePhase("SHIP REPAIR (player " + nickname + ")");
+        });
+    }
+
+    @Override
+    public void updateDestroyedComponent(String nickname, int x, int y) throws Exception {
+        Platform.runLater(() -> {
+            if(nickname.equals(this.playerNickname)) {
+                Platform.runLater(() -> {
+                    for (Node node : myGridPane.getChildren()) {
+                        Integer colIndex = GridPane.getColumnIndex(node);
+                        Integer rowIndex = GridPane.getRowIndex(node);
+                        if (colIndex == null) colIndex = 0;
+                        if (rowIndex == null) rowIndex = 0;
+
+                        if (colIndex == selectedColumn && rowIndex == selectedRow) {
+                            myGridPane.getChildren().remove(node);
+                            break;
+                        }
+                    }
+                    selectedRow = -1;
+                    selectedColumn = -1;
+                    lostComponents++;
+                    lostComponentsLabel.setText(String.valueOf(lostComponents));
+                });
+            }
+        });
+    }
+
+    @Override
+    public void updateCrewChange(String nickname, int x, int y, int change) throws Exception {
+
+    }
+
+    @Override
+    public void updateBatteries(String nickname, int x, int y, int change) throws Exception {
+
+    }
+
+    @Override
+    public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws Exception {
+
+    }
+
+    @Override
+    public void updateLoadedGood(String nickname, int x, int y, Color good) throws Exception {
+
+    }
+
+    @Override
+    public void updateRemovedGoods(String nickname, int x, int y, Color good, int numberGoods) throws Exception {
+
+    }
+
+    @Override
+    public void updateCardPicking() throws Exception {
+        Platform.runLater(() -> {
+            showGamePhase("CARD PICKING");
+        });
+    }
+
+    @Override
+    public void updateNextTurn(String nickname) throws Exception {
+        Platform.runLater(() -> {
+            turnPlayerLabel.setText(nickname);
+        });
+    }
+
+    @Override
+    public void updateCardSolving(int imageID) throws Exception {
+        Platform.runLater(() -> {
+            showGamePhase("CARD SOLVING");
+            setPickedCardImage(String.valueOf(imageID));
+        });
+    }
+
+    @Override
+    public void updatePlayerQuit(String nickname) throws Exception {
+
+    }
+
+    @Override
+    public void updatePlayerCredits(String nickname, int change) throws Exception {
+        Platform.runLater(() -> {
+            if(nickname.equals(this.playerNickname)) {
+                this.credits+=change;
+                playerCreditsLabel.setText(String.valueOf(credits));
+            }
+        });
+    }
+
+    @Override
+    public void updateEndGame() throws Exception {
+
+    }
+}
