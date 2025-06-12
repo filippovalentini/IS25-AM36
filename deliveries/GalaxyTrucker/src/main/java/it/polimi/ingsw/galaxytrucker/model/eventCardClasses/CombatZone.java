@@ -60,9 +60,7 @@ public class CombatZone extends EventCard{
                 gameState.updateTurns();
                 phase = 2;
             }
-        } /*else { //default effect of level two combat zone
-                throw new InvalidActionException("This action is only available for level one card");
-        }*/ //pickNextCard() does the .specialEffect() on everyCard so LV1 need to use the method without exception
+        }
     }
 
     @Override
@@ -180,7 +178,7 @@ public class CombatZone extends EventCard{
                 int direction = (orientation.isVertical() ? diceResult - 4 : diceResult - 5);
                 gameState.cannonFireAttack(nickname, cannonShots.get(currentShot), direction, activateShield);
                 if(currentShot == cannonShots.size() - 1){
-                    gameState.setGameState(State.CARD_PICKING);
+                    gameState.checkDamages();
                     if (gameState.getCrewCount(nickname)==0) {
                         gameState.quitGame(nickname);
                         throw new NoCrewException("You have lost all your crew: quitting game...");
@@ -204,7 +202,7 @@ public class CombatZone extends EventCard{
                 int direction = (orientation.isVertical() ? diceResult - 4 : diceResult - 5);
                 gameState.cannonFireAttack(nickname, cannonShots.get(currentShot), direction, activateShield);
                 if(currentShot == cannonShots.size() - 1){
-                    gameState.setGameState(State.CARD_PICKING);
+                    gameState.checkDamages();
                     if (gameState.getCrewCount(nickname)==0) {
                         gameState.quitGame(nickname);
                         throw new NoCrewException("You have lost all your crew: quitting game...");

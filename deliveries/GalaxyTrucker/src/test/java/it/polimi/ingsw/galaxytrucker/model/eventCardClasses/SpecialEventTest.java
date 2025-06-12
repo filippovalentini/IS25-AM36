@@ -41,26 +41,16 @@ class SpecialEventTest {
         gameState.addPlayer(cl1, player1, Color.RED);
         gameState.addPlayer(cl2, player2, Color.YELLOW);
         Component struct = new Structural(101, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
-        Component engine = new Engine(false, 101, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
         gameState.assembleComponent(player1, struct, 1,3);
         gameState.assembleComponent(player1, struct, 1,2);
         gameState.assembleComponent(player1, struct, 1,4);
         gameState.assembleComponent(player1, struct, 1,1);
         gameState.assembleComponent(player1, struct, 1,5);
-        //gameState.assembleComponent(player1, engine, 2,1);
-        //gameState.assembleComponent(player1, engine, 2,5);
         gameState.setPosition(player1, 0);
         gameState.setPosition(player2, 6);
         gameState.addCrew(player1, 2, 3);
         gameState.addCrew(player2, 2, 3);
-        /*List<Component> shownComponents = gameState.getShownComponent();
-        for(int i=0; i<shownComponents.size(); i++) { //assemble the cabin at the left to the initial cabin
-            if (shownComponents.get(i).getClass() == Cabin.class && shownComponents.get(i).getEastSide()!= Connector.UNIVERSAL) {
-                gameState.pickShown(player1, i);
-                gameState.assembleComponent(player1, 2, 2);
-                i=100000;
-            }
-        }*/
+
         gameState.setGameState(State.CARD_SOLVING);
         stardustEvent = new SpecialEvent(SpecialEventType.STARDUST, 0);
         epidemicEvent = new SpecialEvent(SpecialEventType.EPIDEMIC, 0);
@@ -76,7 +66,6 @@ class SpecialEventTest {
     @Test
     void testSpecialEventEpidemic(){
         epidemicEvent.specialEffect(gameState);
-        //each player should lose one crew member
         assertEquals(2,gameState.getPlayersPlay().get(player1).getNumberCrew());
     }
 }

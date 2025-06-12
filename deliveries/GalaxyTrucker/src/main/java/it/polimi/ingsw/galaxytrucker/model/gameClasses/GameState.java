@@ -898,7 +898,6 @@ public class GameState {
         }
         if(correctShips){
             setGameState(State.CARD_PICKING);
-            updateTurns();
         }
     }
     //this method orders playersPos in (decreasing) position order and assigns the leader's nickname to turnPlayer

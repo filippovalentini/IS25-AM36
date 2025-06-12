@@ -38,7 +38,7 @@ public class Pirates extends AdvancedEnemies {
             currentCannonFire = 0;
             cannonFirePhase = false;
             if (gameState.isLastInTurn(nickname)) {
-                gameState.setGameState(State.CARD_PICKING);
+                gameState.checkDamages();
             }
             if (gameState.getCrewCount(nickname) == 0) {
                 gameState.quitGame(nickname);
@@ -67,12 +67,12 @@ public class Pirates extends AdvancedEnemies {
                 gameState.changePlayerPosition(nickname, - this.getLostDays());
             }
             this.defeated = true;
-            gameState.setGameState(State.CARD_PICKING);
+            gameState.checkDamages();
             gameState.updateTurns();
         }
         else if(cannonStrength== this.enemyStrength){       //draw; nothing happens to the player in turn but the pirates are not defeated
             if(gameState.isLastInTurn(nickname)) {
-                gameState.setGameState(State.CARD_PICKING);
+                gameState.checkDamages();
             }
             gameState.nextTurn();
         }
