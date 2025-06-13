@@ -110,6 +110,16 @@ public class View {
         return dice.getResult1() + dice.getResult2();
     }
 
+    //returns the result of the first dice
+    public int dice1result(){
+        return dice.getResult1();
+    }
+
+    //returns the result of the second dice
+    public int dice2result(){
+        return dice.getResult2();
+    }
+
     //returns a string describing the state of the game
     public String getGameState() {
         return gameState;
@@ -164,6 +174,11 @@ public class View {
         }
     }
 
+    //returns the id of the current event card
+    public int getCurrentCard() {
+        return currentCard;
+    }
+
     //returns the nickname of the player in turn to perform an action
     public String getTurnPlayer() {
         return turnPlayer;
@@ -200,7 +215,7 @@ public class View {
             System.out.println("🃏 Card to solve: " + currentCard + "\n");
         }
         if(dice.validDice()){
-            System.out.println("\uD83C\uDFB2" + " Dice result: " + dice.getResult1() + "   " + dice.getResult2() + "\n");
+            System.out.println("\uD83C\uDFB2" + " Dice result: " + dice1result() + "   " + dice2result() + "\n");
         }
         System.out.println();
         System.out.println("👨‍🚀 Player: " + player.getNickname() + " " + convertColorIntoEmoji(player.getColor()));

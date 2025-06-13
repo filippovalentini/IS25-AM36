@@ -83,6 +83,7 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
 
     private Map<String, Image> componentImageMap = new HashMap<>();
     private Map<String, Image> cardImageMap = new HashMap<>();
+    private Map<String, Image> diceImageMap = new HashMap<>();
     int gameID;
     String playerNickname;
     Color playerColor;
@@ -94,11 +95,14 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
     public void initialize() {
         componentImageMap = GuiInterface.getInstance().loadImageMap("components");
         cardImageMap = GuiInterface.getInstance().loadImageMap("cards");
+        diceImageMap = GuiInterface.getInstance().loadImageMap("diceFaces");
 
         initializeGameInfo();
         initializeButtons();
         initializeAssembledComponents();
+        initializeCurrentCard();
 
+        setupDiceButton();
         setupOtherPlayerButton(player1ShipButton);
         setupOtherPlayerButton(player2ShipButton);
         setupOtherPlayerButton(player3ShipButton);
@@ -106,6 +110,27 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
         setupFlightBoardButton();
         setupPickCardButton();
         setPickedCardImage("9002");
+    }
+
+    public void setDice(int dice1result, int dice2result) {
+        setDiceImage(dice1Button, dice1result);
+        setDiceImage(dice2Button, dice2result);
+    }
+
+    public void initializeCurrentCard(){
+        int imageID = GuiInterface.getInstance().getView().getCurrentCard();
+        setPickedCardImage(String.valueOf(imageID));
+    }
+
+    public void setDiceImage(Button diceButton, int result){
+        Image image = diceImageMap.get(String.valueOf(result));
+        ImageView imageView = new ImageView(image);
+        imageView.setPreserveRatio(true);
+        imageView.setFitWidth(diceButton.getPrefWidth());
+        imageView.setFitHeight(diceButton.getPrefHeight());
+
+        diceButton.setGraphic(imageView);
+        diceButton.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
     }
 
     public void setPickedCardImage(String imageID) {
@@ -451,6 +476,7 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
 
     // Setters for buttons (excluding dice and pickedCard buttons)
 
+    @FXML
     public void setupPickCardButton() {
         pickCardButton.setOnAction(event -> {
             try{
@@ -462,8 +488,14 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
         });
     }
 
-    public void setFlightBoardButton(Button button) {
-        this.flightBoardButton = button;
+    @FXML
+    public void setupDiceButton() {
+        diceButton.setOnAction(event -> {
+            GuiInterface.getInstance().getView().updateRollDice();
+            int result1 = GuiInterface.getInstance().getView().dice1result();
+            int result2 = GuiInterface.getInstance().getView().dice2result();
+            setDice(result1, result2);
+        });
     }
 
     public void setHitShipButton(Button button) {
