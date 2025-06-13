@@ -9,7 +9,7 @@
 <AnchorPane prefHeight="200.0" prefWidth="400.0"
             xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.actionSettingsControllers.HitShipController">
+            fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.actionSettingsControllers.DefeatEnemyController">
 
     <VBox alignment="CENTER" spacing="15.0"
           style="-fx-background-color: #87CEFA;"
@@ -18,11 +18,11 @@
           AnchorPane.leftAnchor="0.0"
           AnchorPane.rightAnchor="0.0">
 
-        <Label text="Activate shield" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #003366;" />
-        <ComboBox fx:id="shieldComboBox" prefWidth="150.0" />
+        <Label text="Select number of batteries to use to improve your cannon strength" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #003366;" />
+        <ComboBox fx:id="batteryComboBox" prefWidth="150.0" />
 
-        <Label text="Activate double cannon" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #003366;" />
-        <ComboBox fx:id="cannonComboBox" prefWidth="150.0" />
+        <Label text="Lose flight days" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #003366;" />
+        <ComboBox fx:id="flightDaysComboBox" prefWidth="150.0" />
 
         <Button fx:id="confirmButton" prefWidth="100.0" text="Confirm" style="-fx-text-fill: #003366;" />
 

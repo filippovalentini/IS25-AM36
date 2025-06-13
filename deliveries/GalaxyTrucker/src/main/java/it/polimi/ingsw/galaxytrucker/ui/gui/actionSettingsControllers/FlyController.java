@@ -13,10 +13,10 @@ public class FlyController implements ActionSettingsController {
 
     @FXML
     public void initialize() {
-        for (int i = 0; i <= 20; i++) {
+        for (int i = 0; i <= 10; i++) {
             batteryComboBox.getItems().add(i);
         }
-        batteryComboBox.getSelectionModel().selectFirst();
+        batteryComboBox.setVisibleRowCount(3);
 
         setupConfirmButton();
     }
