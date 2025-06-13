@@ -36,9 +36,21 @@
         </Label>
 
         <!-- Scrollable grid -->
-        <ScrollPane fitToWidth="true" prefHeight="317.0" prefViewportHeight="300" prefViewportWidth="600" prefWidth="956.0" style="-fx-border-color: #87CEFA;" vbarPolicy="ALWAYS">
+        <ScrollPane fitToWidth="true"
+                    prefHeight="317.0"
+                    prefViewportHeight="300"
+                    prefViewportWidth="600"
+                    prefWidth="956.0"
+                    style="-fx-background: #87CEFA; -fx-background-color: #87CEFA; -fx-border-color: #87CEFA;"
+                    vbarPolicy="ALWAYS">
             <content>
-                <GridPane fx:id="componentGrid" alignment="CENTER" hgap="10" minWidth="600" prefWidth="600" vgap="10" />
+                <GridPane fx:id="componentGrid"
+                          alignment="CENTER"
+                          hgap="10"
+                          minWidth="600"
+                          prefWidth="600"
+                          vgap="10"
+                          style="-fx-background-color: #87CEFA;" />
             </content>
         </ScrollPane>
 

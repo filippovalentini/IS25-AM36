@@ -76,6 +76,8 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
     @FXML private Button skipButton;
     @FXML private Button quitButton;
 
+    @FXML private Pane popupContainer;
+    private boolean popupOpened = false;
 
     private int selectedRow = -1;
     private int selectedColumn = -1;
@@ -109,7 +111,14 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
         setupDestroyButton();
         setupFlightBoardButton();
         setupPickCardButton();
-        setPickedCardImage("9002");
+
+        setupHitShipButton();
+        setupPlanetLandingButton();
+        setupCrewLandingButton();
+        setupUseBatteriesButton();
+        setupLoadGoodsButton();
+        setupFlyButton();
+        setupDefeatEnemyButton();
     }
 
     public void setDice(int dice1result, int dice2result) {
@@ -118,8 +127,12 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
     }
 
     public void initializeCurrentCard(){
-        int imageID = GuiInterface.getInstance().getView().getCurrentCard();
-        setPickedCardImage(String.valueOf(imageID));
+        Integer imageID = GuiInterface.getInstance().getView().getCurrentCard();
+        if (imageID != null) {
+            setPickedCardImage(String.valueOf(imageID));
+        }else{
+            setPickedCardImage("9002");
+        }
     }
 
     public void setDiceImage(Button diceButton, int result){
@@ -293,6 +306,17 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
 
             destroyButton.setDisable(false);
         });
+    }
+
+    public void disableActionButtons(boolean disable){
+        flyButton.setDisable(disable);
+        useBatteriesButton.setDisable(disable);
+        defeatEnemyButton.setDisable(disable);
+        hitShipButton.setDisable(disable);
+        loadGoodsButton.setDisable(disable);
+        switchGoodsButton.setDisable(disable);
+        crewLandingButton.setDisable(disable);
+        planetLandingButton.setDisable(disable);
     }
 
 
@@ -498,43 +522,123 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
         });
     }
 
-    public void setHitShipButton(Button button) {
-        this.hitShipButton = button;
+    public void showPopup(String fxml) {
+        try {
+            String resourcePath = "/it/polimi/ingsw/galaxytrucker/fxml/actionSettings/" + fxml;
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(resourcePath));
+            Parent popupContent = loader.load();
+
+            popupContainer.getChildren().clear();
+
+            // Centra il contenuto se vuoi (opzionale)
+            //popupContent.setLayoutX((popupContainer.getPrefWidth() - popupContent.prefWidth(-1)) / 2);
+            //popupContent.setLayoutY((popupContainer.getPrefHeight() - popupContent.prefHeight(-1)) / 2);
+
+            popupContainer.getChildren().add(popupContent);
+            popupContainer.setVisible(true);
+
+            popupOpened = true;
+            disableActionButtons(true);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void setPlanetLandingButton(Button button) {
-        this.planetLandingButton = button;
+    public void hidePopup() {
+        popupContainer.setVisible(false);
+        popupContainer.getChildren().clear();
+
+        popupOpened = false;
+        disableActionButtons(false);
     }
 
-    public void setCrewLandingButton(Button button) {
-        this.crewLandingButton = button;
+    public void setupHitShipButton() {
+        hitShipButton.setOnAction(event -> {
+            if(!popupOpened) {
+                showPopup("hitShipSettings.fxml");
+                hitShipButton.setDisable(false);
+            }else{
+                hidePopup();
+            }
+        });
     }
 
-    public void setDefeatEnemyButton(Button button) {
-        this.defeatEnemyButton = button;
+    public void setupPlanetLandingButton() {
+        planetLandingButton.setOnAction(event -> {
+            if(!popupOpened) {
+                showPopup("planetLandingSettings.fxml");
+                planetLandingButton.setDisable(false);
+            }else{
+                hidePopup();
+            }
+        });
     }
 
-    public void setLoadGoodsButton(Button button) {
-        this.loadGoodsButton = button;
+    public void setupCrewLandingButton() {
+        crewLandingButton.setOnAction(event -> {
+            if(!popupOpened) {
+                showPopup("crewLandingSettings.fxml");
+                crewLandingButton.setDisable(false);
+            }else{
+                hidePopup();
+            }
+        });
     }
 
-    public void setSwitchGoodsButton(Button button) {
-        this.switchGoodsButton = button;
+    public void setupDefeatEnemyButton() {
+        defeatEnemyButton.setOnAction(event -> {
+            if(!popupOpened) {
+                showPopup("defeatEnemySettings.fxml");
+                defeatEnemyButton.setDisable(false);
+            }else{
+                hidePopup();
+            }
+        });
     }
 
-    public void setUseBatteriesButton(Button button) {
-        this.useBatteriesButton = button;
+    public void setupLoadGoodsButton() {
+        loadGoodsButton.setOnAction(event -> {
+            if(!popupOpened) {
+                showPopup("loadGoodsSettings.fxml");
+                loadGoodsButton.setDisable(false);
+            }else{
+                hidePopup();
+            }
+        });
     }
 
-    public void setFlyButton(Button button) {
-        this.flyButton = button;
+    public void setupSwitchGoodsButton() {
+
     }
 
-    public void setSkipButton(Button button) {
+    public void setupUseBatteriesButton() {
+        useBatteriesButton.setOnAction(event -> {
+            if(!popupOpened) {
+                showPopup("useBatteriesSettings.fxml");
+                useBatteriesButton.setDisable(false);
+            }else{
+                hidePopup();
+            }
+        });
+    }
+
+    public void setupFlyButton() {
+        flyButton.setOnAction(event -> {
+            if(!popupOpened) {
+                showPopup("flySettings.fxml");
+                flyButton.setDisable(false);
+            }else{
+                hidePopup();
+            }
+        });
+    }
+
+    public void setupSkipButton(Button button) {
         this.skipButton = button;
     }
 
-    public void setQuitButton(Button button) {
+    public void setupQuitButton(Button button) {
         this.quitButton = button;
     }
 

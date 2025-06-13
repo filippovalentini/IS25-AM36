@@ -13,8 +13,8 @@ public class ViewDice {
     }
 
     public void rollDice() {
-        dice1 = ThreadLocalRandom.current().nextInt(2, 7);
-        dice2 = ThreadLocalRandom.current().nextInt(2, 7);
+        dice1 = ThreadLocalRandom.current().nextInt(1, 7);
+        dice2 = ThreadLocalRandom.current().nextInt(1, 7);
         valid = true;
     }
 

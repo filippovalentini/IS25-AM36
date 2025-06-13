@@ -175,7 +175,7 @@ public class View {
     }
 
     //returns the id of the current event card
-    public int getCurrentCard() {
+    public Integer getCurrentCard() {
         return currentCard;
     }
 
