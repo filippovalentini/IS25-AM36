@@ -102,11 +102,13 @@ public class View {
         return hourglassRunning;
     }
 
-    //returns the dice result or 0 if the dice are no longer valid
+    //determines if the dice have to be thrown or not
+    public boolean throwableDice(){
+        return dice.areThrowable();
+    }
+
+    //returns the dice result (sum of values)
     public int diceResult(){
-        if(!dice.validDice()){
-            return 0;
-        }
         return dice.getResult1() + dice.getResult2();
     }
 
@@ -224,7 +226,7 @@ public class View {
         if(currentCard != null){
             System.out.println("🃏 Card to solve: " + currentCard + "\n");
         }
-        if(dice.validDice()){
+        if(dice.areThrowable()){
             System.out.println("\uD83C\uDFB2" + " Dice result: " + dice1result() + "   " + dice2result() + "\n");
         }
         System.out.println();
@@ -458,6 +460,11 @@ public class View {
     //notifies the view about the fact that a player has to pick a card in order to continue the game
     public void updateCardPicking() {
         gameState = "CARD PICKING";
+        if(firstFlight){
+            currentCard = 9001;
+        }else{
+            currentCard = 9002;
+        }
         damagedPlayer = null;
     }
 
@@ -555,13 +562,13 @@ public class View {
     }
 
     //simulates a throw of the dice
-    public void updateRollDice(){
+    public void updateRollDice() throws Exception{
         this.dice.rollDice();
     }
 
     //notifies a view that the current dice configuration must be invalidated because it has already been used
-    public void updateInvalidDice(){
-        this.dice.invalid();
+    public void updateThrowableDice(){
+        this.dice.enableThrow(true);
     }
 
     //notifies the view about the fact that the game is finished

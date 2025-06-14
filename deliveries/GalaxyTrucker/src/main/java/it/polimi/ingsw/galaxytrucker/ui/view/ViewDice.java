@@ -4,22 +4,27 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ViewDice {
     private int dice1, dice2;
-    private boolean valid;
+    private boolean throwable;
 
     public ViewDice() {
         this.dice1 = 2;
         this.dice2 = 2;
-        this.valid = false;
+        this.throwable = true;
     }
 
-    public void rollDice() {
-        dice1 = ThreadLocalRandom.current().nextInt(1, 7);
-        dice2 = ThreadLocalRandom.current().nextInt(1, 7);
-        valid = true;
+    public void rollDice() throws Exception {
+        if(throwable) {
+            dice1 = ThreadLocalRandom.current().nextInt(1, 7);
+            dice2 = ThreadLocalRandom.current().nextInt(1, 7);
+            enableThrow(false);
+        }
+        else {
+            throw new Exception("You have already thrown the dice");
+        }
     }
 
-    public void invalid(){
-        valid = false;
+    public void enableThrow(boolean enable) {
+        this.throwable = enable;
     }
 
     public int getResult1() {
@@ -30,7 +35,7 @@ public class ViewDice {
         return dice2;
     }
 
-    public boolean validDice(){
-        return valid;
+    public boolean areThrowable(){
+        return throwable;
     }
 }

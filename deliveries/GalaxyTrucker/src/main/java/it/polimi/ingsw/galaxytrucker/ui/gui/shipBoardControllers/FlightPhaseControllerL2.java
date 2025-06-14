@@ -4,6 +4,7 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.ui.gui.GuiInterface;
+import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ActionSettingsController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.FlightPhaseController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBoardController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.flightBoardControllers.FlightBoardControllerL2;
@@ -127,6 +128,14 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
     public void setDice(int dice1result, int dice2result) {
         setDiceImage(dice1Button, dice1result);
         setDiceImage(dice2Button, dice2result);
+    }
+
+    public void invalidDice(){
+        diceButton.setDisable(false);
+        dice1Button.setGraphic(null);
+        dice2Button.setGraphic(null);
+        dice1Button.setStyle("-fx-background-color: #87CEFA;");
+        dice2Button.setStyle("-fx-background-color: #87CEFA;");
     }
 
     public void initializeCurrentCard(){
@@ -544,10 +553,14 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
     @FXML
     public void setupDiceButton() {
         diceButton.setOnAction(event -> {
-            GuiInterface.getInstance().getView().updateRollDice();
-            int result1 = GuiInterface.getInstance().getView().dice1result();
-            int result2 = GuiInterface.getInstance().getView().dice2result();
-            setDice(result1, result2);
+            try{
+                GuiInterface.getInstance().getView().updateRollDice();
+                int result1 = GuiInterface.getInstance().getView().dice1result();
+                int result2 = GuiInterface.getInstance().getView().dice2result();
+                setDice(result1, result2);
+                diceButton.setDisable(true);
+            }
+            catch (Exception e) { showError(e.getMessage()); }
         });
     }
 
@@ -556,6 +569,15 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
             String resourcePath = "/it/polimi/ingsw/galaxytrucker/fxml/actionSettings/" + fxml;
             FXMLLoader loader = new FXMLLoader(getClass().getResource(resourcePath));
             Parent popupContent = loader.load();
+
+            ActionSettingsController controller = loader.getController();
+            controller.setServer(this.server);
+            controller.setPlayerInfo(this.gameID, this.playerNickname);
+            controller.setOnConfirm(() -> {
+                GuiInterface.getInstance().getView().updateThrowableDice();
+                invalidDice();
+                hidePopup();
+            });
 
             popupContainer.getChildren().clear();
             popupContainer.getChildren().add(popupContent);
@@ -579,6 +601,10 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
 
     public void setupHitShipButton() {
         hitShipButton.setOnAction(event -> {
+            if(!diceButton.isDisable()){
+                showError("Throw the dice first");
+                return;
+            }
             if(!popupOpened) {
                 showPopup("hitShipSettings.fxml");
                 hitShipButton.setDisable(false);
@@ -672,7 +698,7 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
     public void setupQuitButton() {
         quitButton.setOnAction(event -> {
             try{
-                server.skip(this.gameID, this.playerNickname);
+                server.quitGame(this.gameID, this.playerNickname);
             }
             catch (Exception e) {
                 showError(e.getMessage());
@@ -748,6 +774,7 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
     public void updateCardPicking() throws Exception {
         Platform.runLater(() -> {
             showGamePhase("CARD PICKING");
+            setPickedCardImage("9002");
         });
     }
 
@@ -755,6 +782,7 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
     public void updateNextTurn(String nickname) throws Exception {
         Platform.runLater(() -> {
             turnPlayerLabel.setText(nickname);
+            invalidDice();
         });
     }
 

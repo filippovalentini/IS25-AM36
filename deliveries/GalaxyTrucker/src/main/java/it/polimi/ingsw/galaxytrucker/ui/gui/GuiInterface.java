@@ -424,6 +424,7 @@ public class GuiInterface implements UserInterface {
     @Override
     public void updateNextTurn(String nickname) throws Exception {
         this.view.updateNextTurn(nickname);
+        this.view.updateThrowableDice();
         if(flightPhaseController != null){
             flightPhaseController.updateNextTurn(nickname);
         }

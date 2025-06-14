@@ -1,5 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.ui.gui.actionSettingsControllers;
 
+import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
+import it.polimi.ingsw.galaxytrucker.ui.gui.GuiInterface;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ActionSettingsController;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -13,6 +15,11 @@ public class HitShipController implements ActionSettingsController {
     @FXML
     private Button confirmButton;
 
+    private VirtualServer server;
+    private int gameID;
+    private String playerNickname;
+    private Runnable onConfirm;
+
     @FXML
     public void initialize() {
         shieldComboBox.getItems().addAll("yes", "no");
@@ -25,9 +32,31 @@ public class HitShipController implements ActionSettingsController {
     private void setupConfirmButton() {
         confirmButton.setOnAction(e -> {
             String shield = shieldComboBox.getValue();
+            boolean useShield = shield.equals("yes");
             String cannon = cannonComboBox.getValue();
-            System.out.println("Activate shield: " + shield);
-            System.out.println("Activate double cannon: " + cannon);
+            boolean useCannon = cannon.equals("yes");
+            int diceResult = GuiInterface.getInstance().getView().diceResult();
+            try{
+                server.hitShip(this.gameID, this.playerNickname, diceResult, useShield, useCannon);
+                onConfirm.run();
+            }
+            catch(Exception ignored){}
         });
+    }
+
+    @Override
+    public void setServer(VirtualServer server) {
+        this.server = server;
+    }
+
+    @Override
+    public void setPlayerInfo(int gameID, String playerNickname) {
+        this.gameID = gameID;
+        this.playerNickname = playerNickname;
+    }
+
+    @Override
+    public void setOnConfirm(Runnable onConfirm) {
+        this.onConfirm = onConfirm;
     }
 }

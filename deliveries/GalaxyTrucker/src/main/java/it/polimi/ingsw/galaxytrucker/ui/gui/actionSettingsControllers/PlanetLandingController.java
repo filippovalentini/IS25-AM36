@@ -1,5 +1,6 @@
 package it.polimi.ingsw.galaxytrucker.ui.gui.actionSettingsControllers;
 
+import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ActionSettingsController;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -10,6 +11,11 @@ public class PlanetLandingController implements ActionSettingsController {
     private ComboBox<Integer> planetComboBox;
     @FXML
     private Button confirmButton;
+
+    private VirtualServer server;
+    private int gameID;
+    private String playerNickname;
+    private Runnable onConfirm;
 
     @FXML
     public void initialize() {
@@ -24,8 +30,28 @@ public class PlanetLandingController implements ActionSettingsController {
     @FXML
     private void setupConfirmButton() {
         confirmButton.setOnAction(e -> {
-            int selectedBatteries = planetComboBox.getValue();
-            System.out.println("Planet number: " + selectedBatteries);
+            int planetNumber = planetComboBox.getValue();
+            try{
+                server.planetLanding(this.gameID, this.playerNickname, planetNumber);
+                onConfirm.run();
+            }
+            catch(Exception ignored){}
         });
+    }
+
+    @Override
+    public void setServer(VirtualServer server) {
+        this.server = server;
+    }
+
+    @Override
+    public void setPlayerInfo(int gameID, String playerNickname) {
+        this.gameID = gameID;
+        this.playerNickname = playerNickname;
+    }
+
+    @Override
+    public void setOnConfirm(Runnable onConfirm) {
+        this.onConfirm = onConfirm;
     }
 }

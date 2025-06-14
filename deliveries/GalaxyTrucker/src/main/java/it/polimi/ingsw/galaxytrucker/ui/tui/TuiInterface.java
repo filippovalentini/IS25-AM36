@@ -109,7 +109,7 @@ public class TuiInterface implements UserInterface {
         return input.equals("S");
     }
 
-    //this method asks to the user the parameters to set up a new game and asks the server to create the game
+    //this method asks the user the parameters to set up a new game and asks the server to create the game
     public void requestStartNewGame() {
         System.out.println("START A NEW GAME");
         int numPlayers;
@@ -383,14 +383,14 @@ public class TuiInterface implements UserInterface {
                             break;
                         }
                         int diceResult = view.diceResult();
-                        if(diceResult == 0){
+                        if(view.throwableDice()){
                             System.out.println("Error: first throw the dice");
                             break;
                         }
                         boolean activateShield = (tokens[1].equals("yes"));
                         boolean activateCannon = (tokens[2].equals("yes"));
                         server.hitShip(gameID, nickname, diceResult, activateShield, activateCannon);
-                        view.updateInvalidDice();
+                        view.updateThrowableDice();
                         break;
                     case "fly":
                         if (tokens.length < 2) {
@@ -657,6 +657,7 @@ public class TuiInterface implements UserInterface {
     @Override
     public void updateNextTurn(String nickname) {
         this.view.updateNextTurn(nickname);
+        this.view.updateThrowableDice();
     }
 
     //notifies the view that a new card has been picked and must be solved
