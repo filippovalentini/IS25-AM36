@@ -174,6 +174,16 @@ public class View {
         }
     }
 
+    //returns true if the player has abandoned the game
+    public boolean hasAbandoned(String nickname) {
+        if(nickname.equals(this.player.getNickname())){
+            return this.player.hasAbandoned();
+        }
+        else{
+            return otherPlayers.get(nickname).hasAbandoned();
+        }
+    }
+
     //returns the id of the current event card
     public Integer getCurrentCard() {
         return currentCard;
@@ -466,9 +476,11 @@ public class View {
     public void updatePlayerQuit(String nickname){
         if(nickname.equals(this.player.getNickname())){
             flightBoard.updatePlayerQuit(player);
+            player.updateQuit();
         }
         else{
             flightBoard.updatePlayerQuit(otherPlayers.get(nickname));
+            otherPlayers.get(nickname).updateQuit();
         }
     }
 

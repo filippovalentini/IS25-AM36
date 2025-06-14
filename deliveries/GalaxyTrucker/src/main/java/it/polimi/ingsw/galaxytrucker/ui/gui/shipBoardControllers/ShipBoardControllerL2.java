@@ -42,6 +42,8 @@ public class ShipBoardControllerL2 implements ShipBoardController {
     @FXML
     private Label playerCreditsLabel;
     @FXML
+    private Label statusLabel;
+    @FXML
     private Rectangle errorBackground;
     @FXML
     private Rectangle gameStateBackground;
@@ -82,6 +84,13 @@ public class ShipBoardControllerL2 implements ShipBoardController {
         lostComponents = GuiInterface.getInstance().getView().getLostComponents(shipBoardPlayerNickname);
         playerCreditsLabel.setText(String.valueOf(credits));
         lostComponentsLabel.setText(String.valueOf(lostComponents));
+        if(GuiInterface.getInstance().getView().hasAbandoned(shipBoardPlayerNickname)){
+            statusLabel.setText("ABANDONED");
+            statusLabel.setStyle("-fx-text-fill: red;");
+        }else{
+            statusLabel.setText("IN THE GAME");
+            statusLabel.setStyle("-fx-text-fill: green;");
+        }
         componentImageMap = GuiInterface.getInstance().loadImageMap("components");
         showGameState(GuiInterface.getInstance().getView().getGameState());
         setupBackButton();
@@ -98,18 +107,36 @@ public class ShipBoardControllerL2 implements ShipBoardController {
         for(int i = 0; i < assembledComponents.size(); i++){
             for(int j = 0; j < assembledComponents.get(i).size(); j++){
                 ViewComponent component = assembledComponents.get(i).get(j);
-                if(component != null){
-                    setImageOnGrid(component.getImageID(), component.getOrientation(), j, i);
-                    if(component.getBatteries() > 0){
-                        addBatteries(i,j, component.getBatteries());
-                    }else if(component.getCrew()>0){
-                        addCrewMembers(i,j);
-                    }else if(component.isPurpleAlien()){
-                        addAlien(i,j,true);
-                    }else if(component.isBrownAlien()){
-                        addAlien(i,j,false);
-                    }
-                }
+                setComponentOnGrid(component, i, j);
+            }
+        }
+    }
+
+    public void setComponentOnGrid(ViewComponent component, int row, int column){
+        if(component != null){
+            setImageOnGrid(component.getImageID(), component.getOrientation(), column, row);
+            if(component.getBatteries() > 0){
+                addBatteries(row,column, component.getBatteries());
+            }else if(component.getCrew()>0){
+                addCrewMembers(row,column);
+            }else if(component.isPurpleAlien()){
+                addAlien(row,column,true);
+            }else if(component.isBrownAlien()){
+                addAlien(row,column,false);
+            }
+        }
+    }
+
+    public void removeComponentFromGrid(int row, int column){
+        for (Node node : myGridPane.getChildren()) {
+            Integer colIndex = GridPane.getColumnIndex(node);
+            Integer rowIndex = GridPane.getRowIndex(node);
+            if (colIndex == null) colIndex = 0;
+            if (rowIndex == null) rowIndex = 0;
+
+            if (colIndex == column && rowIndex == row) {
+                myGridPane.getChildren().remove(node);
+                break;
             }
         }
     }
@@ -518,6 +545,76 @@ public class ShipBoardControllerL2 implements ShipBoardController {
                 System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
             }
         });
+    }
+
+    @Override
+    public void updateShipRepair(String nickname) throws Exception {
+        Platform.runLater(() -> {
+            showGameState("SHIP REPAIR (player " + nickname + ")");
+        });
+    }
+
+    @Override
+    public void updateDestroyedComponent(String nickname, int x, int y) throws Exception {
+        Platform.runLater(() -> {
+            if(nickname.equals(this.shipBoardPlayerNickname)) {
+                Platform.runLater(() -> {
+                    removeComponentFromGrid(x, y);
+                    lostComponents++;
+                    lostComponentsLabel.setText(String.valueOf(lostComponents));
+                });
+            }
+        });
+    }
+
+    @Override
+    public void updateComponentChange(String nickname, int x, int y) throws Exception {
+        Platform.runLater(() -> {
+            if(nickname.equals(this.shipBoardPlayerNickname)) {
+                removeComponentFromGrid(x, y);
+                ViewComponent component = GuiInterface.getInstance().getView().getAssembledComponents(nickname).get(x).get(y);
+                setComponentOnGrid(component, x , y);
+            }
+        });
+    }
+
+    @Override
+    public void updateCardPicking() throws Exception {
+        Platform.runLater(() -> {
+            showGameState("CARD PICKING");
+        });
+    }
+
+    @Override
+    public void updateCardSolving(int imageID) throws Exception {
+        Platform.runLater(() -> {
+            showGameState("CARD SOLVING");
+        });
+    }
+
+    @Override
+    public void updatePlayerQuit(String nickname) throws Exception {
+        Platform.runLater(() -> {
+            if(nickname.equals(this.shipBoardPlayerNickname)) {
+                statusLabel.setText("ABANDONED");
+                statusLabel.setStyle("-fx-text-fill: red;");
+            }
+        });
+    }
+
+    @Override
+    public void updatePlayerCredits(String nickname, int change) throws Exception {
+        Platform.runLater(() -> {
+            if(nickname.equals(shipBoardPlayerNickname)){
+                this.credits += change;
+                playerCreditsLabel.setText(String.valueOf(credits));
+            }
+        });
+    }
+
+    @Override
+    public void updateEndGame() throws Exception {
+
     }
 
     @Override

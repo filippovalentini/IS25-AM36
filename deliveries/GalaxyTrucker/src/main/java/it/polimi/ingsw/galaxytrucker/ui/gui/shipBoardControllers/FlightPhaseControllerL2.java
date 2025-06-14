@@ -38,6 +38,7 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
     @FXML private Label playerColorLabel;
     @FXML private Label playerCreditsLabel;
     @FXML private Label lostComponentsLabel;
+    @FXML private Label statusLabel;
 
     @FXML private Pane errorPane;
     @FXML private Label errorLabel;
@@ -111,7 +112,9 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
         setupDestroyButton();
         setupFlightBoardButton();
         setupPickCardButton();
+        setupQuitButton();
 
+        setupSkipButton();
         setupHitShipButton();
         setupPlanetLandingButton();
         setupCrewLandingButton();
@@ -191,6 +194,13 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
         lostComponentsLabel.setText(String.valueOf(lostComponents));
         playerCreditsLabel.setText(String.valueOf(credits));
         turnPlayerLabel.setText(GuiInterface.getInstance().getView().getTurnPlayer());
+        if(GuiInterface.getInstance().getView().hasAbandoned(playerNickname)){
+            statusLabel.setText("ABANDONED");
+            statusLabel.setStyle("-fx-text-fill: red;");
+        }else{
+            statusLabel.setText("IN THE GAME");
+            statusLabel.setStyle("-fx-text-fill: green;");
+        }
     }
 
     public void initializeButtons(){
@@ -225,18 +235,36 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
         for(int i = 0; i < assembledComponents.size(); i++){
             for(int j = 0; j < assembledComponents.get(i).size(); j++){
                 ViewComponent component = assembledComponents.get(i).get(j);
-                if(component != null){
-                    setImageOnGrid(component.getImageID(), component.getOrientation(), j, i);
-                    if(component.getBatteries() > 0){
-                        addBatteries(i,j, component.getBatteries());
-                    }else if(component.getCrew()>0){
-                        addCrewMembers(i,j);
-                    }else if(component.isPurpleAlien()){
-                        addAlien(i,j,true);
-                    }else if(component.isBrownAlien()){
-                        addAlien(i,j,false);
-                    }
-                }
+                setComponentOnGrid(component, i, j);
+            }
+        }
+    }
+
+    public void setComponentOnGrid(ViewComponent component, int row, int column){
+        if(component != null){
+            setImageOnGrid(component.getImageID(), component.getOrientation(), column, row);
+            if(component.getBatteries() > 0){
+                addBatteries(row,column, component.getBatteries());
+            }else if(component.getCrew()>0){
+                addCrewMembers(row,column);
+            }else if(component.isPurpleAlien()){
+                addAlien(row,column,true);
+            }else if(component.isBrownAlien()){
+                addAlien(row,column,false);
+            }
+        }
+    }
+
+    public void removeComponentFromGrid(int row, int column){
+        for (Node node : myGridPane.getChildren()) {
+            Integer colIndex = GridPane.getColumnIndex(node);
+            Integer rowIndex = GridPane.getRowIndex(node);
+            if (colIndex == null) colIndex = 0;
+            if (rowIndex == null) rowIndex = 0;
+
+            if (colIndex == column && rowIndex == row) {
+                myGridPane.getChildren().remove(node);
+                break;
             }
         }
     }
@@ -317,6 +345,7 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
         switchGoodsButton.setDisable(disable);
         crewLandingButton.setDisable(disable);
         planetLandingButton.setDisable(disable);
+        skipButton.setDisable(disable);
     }
 
 
@@ -529,11 +558,6 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
             Parent popupContent = loader.load();
 
             popupContainer.getChildren().clear();
-
-            // Centra il contenuto se vuoi (opzionale)
-            //popupContent.setLayoutX((popupContainer.getPrefWidth() - popupContent.prefWidth(-1)) / 2);
-            //popupContent.setLayoutY((popupContainer.getPrefHeight() - popupContent.prefHeight(-1)) / 2);
-
             popupContainer.getChildren().add(popupContent);
             popupContainer.setVisible(true);
 
@@ -634,12 +658,26 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
         });
     }
 
-    public void setupSkipButton(Button button) {
-        this.skipButton = button;
+    public void setupSkipButton() {
+        skipButton.setOnAction(event -> {
+            try{
+                server.skip(this.gameID, this.playerNickname);
+            }
+            catch (Exception e) {
+                showError(e.getMessage());
+            }
+        });
     }
 
-    public void setupQuitButton(Button button) {
-        this.quitButton = button;
+    public void setupQuitButton() {
+        quitButton.setOnAction(event -> {
+            try{
+                server.skip(this.gameID, this.playerNickname);
+            }
+            catch (Exception e) {
+                showError(e.getMessage());
+            }
+        });
     }
 
     @Override
@@ -685,17 +723,7 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
         Platform.runLater(() -> {
             if(nickname.equals(this.playerNickname)) {
                 Platform.runLater(() -> {
-                    for (Node node : myGridPane.getChildren()) {
-                        Integer colIndex = GridPane.getColumnIndex(node);
-                        Integer rowIndex = GridPane.getRowIndex(node);
-                        if (colIndex == null) colIndex = 0;
-                        if (rowIndex == null) rowIndex = 0;
-
-                        if (colIndex == selectedColumn && rowIndex == selectedRow) {
-                            myGridPane.getChildren().remove(node);
-                            break;
-                        }
-                    }
+                    removeComponentFromGrid(x, y);
                     selectedRow = -1;
                     selectedColumn = -1;
                     lostComponents++;
@@ -706,28 +734,14 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
     }
 
     @Override
-    public void updateCrewChange(String nickname, int x, int y, int change) throws Exception {
-
-    }
-
-    @Override
-    public void updateBatteries(String nickname, int x, int y, int change) throws Exception {
-
-    }
-
-    @Override
-    public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws Exception {
-
-    }
-
-    @Override
-    public void updateLoadedGood(String nickname, int x, int y, Color good) throws Exception {
-
-    }
-
-    @Override
-    public void updateRemovedGoods(String nickname, int x, int y, Color good, int numberGoods) throws Exception {
-
+    public void updateComponentChange(String nickname, int x, int y) throws Exception {
+        Platform.runLater(() -> {
+            if(nickname.equals(this.playerNickname)) {
+                removeComponentFromGrid(x, y);
+                ViewComponent component = GuiInterface.getInstance().getView().getAssembledComponents(nickname).get(x).get(y);
+                setComponentOnGrid(component, x , y);
+            }
+        });
     }
 
     @Override
@@ -754,7 +768,12 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
 
     @Override
     public void updatePlayerQuit(String nickname) throws Exception {
-
+        Platform.runLater(() -> {
+            if(nickname.equals(this.playerNickname)) {
+                statusLabel.setText("ABANDONED");
+                statusLabel.setStyle("-fx-text-fill: red;");
+            }
+        });
     }
 
     @Override

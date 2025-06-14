@@ -318,6 +318,12 @@ public class GuiInterface implements UserInterface {
         if(flightPhaseController != null){
             flightPhaseController.updateShipRepair(nickname);
         }
+        if(shipBoardController != null){
+            shipBoardController.updateShipRepair(nickname);
+        }
+        if(flightBoardController != null){
+            flightBoardController.updateShipRepair(nickname);
+        }
     }
 
     @Override
@@ -329,6 +335,9 @@ public class GuiInterface implements UserInterface {
         if(flightPhaseController != null){
             flightPhaseController.updateDestroyedComponent(nickname, x, y);
         }
+        if(shipBoardController != null){
+            shipBoardController.updateDestroyedComponent(nickname, x, y);
+        }
     }
 
     @Override
@@ -338,7 +347,10 @@ public class GuiInterface implements UserInterface {
             shipControlController.updateCrewChange(nickname, x, y, change);
         }
         if(flightPhaseController != null){
-            flightPhaseController.updateCrewChange(nickname, x, y, change);
+            flightPhaseController.updateComponentChange(nickname, x, y);
+        }
+        if(shipBoardController != null){
+            shipBoardController.updateComponentChange(nickname, x, y);
         }
     }
 
@@ -349,7 +361,10 @@ public class GuiInterface implements UserInterface {
             shipControlController.updateBatteries(nickname, x, y, change);
         }
         if(flightPhaseController != null){
-            flightPhaseController.updateBatteries(nickname, x, y, change);
+            flightPhaseController.updateComponentChange(nickname, x, y);
+        }
+        if(shipBoardController != null){
+            shipBoardController.updateComponentChange(nickname, x, y);
         }
     }
 
@@ -360,7 +375,10 @@ public class GuiInterface implements UserInterface {
             shipControlController.updateAlienChange(nickname, x, y, isPurple, added);
         }
         if(flightPhaseController != null){
-            flightPhaseController.updateAlienChange(nickname, x, y, isPurple, added);
+            flightPhaseController.updateComponentChange(nickname, x, y);
+        }
+        if(shipBoardController != null){
+            shipBoardController.updateComponentChange(nickname, x, y);
         }
     }
 
@@ -368,7 +386,10 @@ public class GuiInterface implements UserInterface {
     public void updateLoadedGood(String nickname, int x, int y, Color good) throws Exception {
         this.view.updateLoadedGood(nickname, x, y, good);
         if(flightPhaseController != null){
-            flightPhaseController.updateLoadedGood(nickname, x, y, good);
+            flightPhaseController.updateComponentChange(nickname, x, y);
+        }
+        if(shipBoardController != null){
+            shipBoardController.updateComponentChange(nickname, x, y);
         }
     }
 
@@ -376,7 +397,10 @@ public class GuiInterface implements UserInterface {
     public void updateRemovedGoods(String nickname, int x, int y, Color good, int numberGoods) throws Exception {
         this.view.updateRemovedGoods(nickname, x, y, good, numberGoods);
         if(flightPhaseController != null){
-            flightPhaseController.updateRemovedGoods(nickname, x, y, good, numberGoods);
+            flightPhaseController.updateComponentChange(nickname, x, y);
+        }
+        if(shipBoardController != null){
+            shipBoardController.updateComponentChange(nickname, x, y);
         }
     }
 
@@ -388,6 +412,12 @@ public class GuiInterface implements UserInterface {
         }
         if(flightPhaseController != null){
             flightPhaseController.updateCardPicking();
+        }
+        if(shipBoardController != null){
+            shipBoardController.updateCardPicking();
+        }
+        if(flightBoardController != null){
+            flightBoardController.updateCardPicking();
         }
     }
 
@@ -405,6 +435,12 @@ public class GuiInterface implements UserInterface {
         if(flightPhaseController != null){
             flightPhaseController.updateCardSolving(imageID);
         }
+        if(shipBoardController != null){
+            shipBoardController.updateCardSolving(imageID);
+        }
+        if(flightBoardController != null){
+            flightBoardController.updateCardSolving(imageID);
+        }
     }
 
     @Override
@@ -412,6 +448,9 @@ public class GuiInterface implements UserInterface {
         this.view.updatePlayerQuit(nickname);
         if(flightPhaseController != null){
             flightPhaseController.updatePlayerQuit(nickname);
+        }
+        if(shipBoardController != null){
+            shipBoardController.updatePlayerQuit(nickname);
         }
     }
 
@@ -421,11 +460,17 @@ public class GuiInterface implements UserInterface {
         if(flightPhaseController != null){
             flightPhaseController.updatePlayerCredits(nickname, change);
         }
+        if(shipBoardController != null){
+            shipBoardController.updatePlayerCredits(nickname, change);
+        }
     }
 
     @Override
     public void updatePlayerPosition(String nickname, int lap, int cell) throws Exception {
-
+        this.view.updatePlayerPosition(nickname, lap, cell);
+        if(flightBoardController != null){
+            flightBoardController.updatePlayerPosition(nickname, cell);
+        }
     }
 
     @Override

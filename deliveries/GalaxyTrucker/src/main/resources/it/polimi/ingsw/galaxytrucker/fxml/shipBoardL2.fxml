@@ -23,16 +23,18 @@
             </ImageView>
 
             <!-- Sezione informazioni giocatore -->
-            <VBox layoutX="16.0" layoutY="227.0" prefHeight="302.0" prefWidth="162.0" spacing="10.0" style="-fx-background-color: #87CEFA;">
-                <Label prefHeight="23.0" prefWidth="130.0" style="-fx-font-size: 18px; -fx-font-family: 'Courier New'; -fx-text-fill: #003366;" text="Player" />
-                <Label fx:id="playerNicknameLabel" prefHeight="21.0" prefWidth="61.0" style="-fx-font-size: 16px; -fx-font-family: 'Courier New'; -fx-text-fill: #003366;" text="--" />
-                <Label prefHeight="20.0" prefWidth="108.0" style="-fx-font-size: 18px; -fx-font-family: 'Courier New'; -fx-text-fill: #003366;" text="Color" />
-                <Label fx:id="playerColorLabel" prefHeight="18.0" prefWidth="88.0" style="-fx-font-size: 16px; -fx-font-family: 'Courier New'; -fx-text-fill: #003366;" text="--" />
-            <Label prefHeight="23.0" prefWidth="154.0" style="-fx-font-size: 18px; -fx-font-family: 'Courier New'; -fx-text-fill: #003366;" text="Lost" />
-            <Label prefHeight="23.0" prefWidth="130.0" style="-fx-font-size: 18px; -fx-font-family: 'Courier New'; -fx-text-fill: #003366;" text="components" />
-            <Label fx:id="lostComponentsLabel" prefHeight="23.0" prefWidth="130.0" style="-fx-font-size: 18px; -fx-font-family: 'Courier New'; -fx-text-fill: #003366;" text="--" />
-            <Label prefHeight="23.0" prefWidth="130.0" style="-fx-font-size: 18px; -fx-font-family: 'Courier New'; -fx-text-fill: #003366;" text="Credits" />
-            <Label fx:id="playerCreditsLabel" prefHeight="23.0" prefWidth="130.0" style="-fx-font-size: 18px; -fx-font-family: 'Courier New'; -fx-text-fill: #003366;" text="--" />
+            <VBox layoutX="14.0" layoutY="154.0" prefHeight="370.0" prefWidth="162.0" spacing="10.0" style="-fx-background-color: #87CEFA;">
+                <Label prefHeight="23.0" prefWidth="130.0" style="-fx-font-size: 18px; -fx-font-family: 'Courier New'; -fx-text-fill: #003366;" text=" Player" />
+                <Label fx:id="playerNicknameLabel" prefHeight="21.0" prefWidth="61.0" style="-fx-font-size: 16px; -fx-font-family: 'Courier New'; -fx-text-fill: #003366;" text=" --" />
+                <Label prefHeight="20.0" prefWidth="108.0" style="-fx-font-size: 18px; -fx-font-family: 'Courier New'; -fx-text-fill: #003366;" text=" Color" />
+                <Label fx:id="playerColorLabel" prefHeight="18.0" prefWidth="88.0" style="-fx-font-size: 16px; -fx-font-family: 'Courier New'; -fx-text-fill: #003366;" text=" --" />
+            <Label prefHeight="23.0" prefWidth="154.0" style="-fx-font-size: 18px; -fx-font-family: 'Courier New'; -fx-text-fill: #003366;" text=" Lost" />
+            <Label prefHeight="23.0" prefWidth="130.0" style="-fx-font-size: 18px; -fx-font-family: 'Courier New'; -fx-text-fill: #003366;" text=" components" />
+            <Label fx:id="lostComponentsLabel" prefHeight="23.0" prefWidth="130.0" style="-fx-font-size: 18px; -fx-font-family: 'Courier New'; -fx-text-fill: #003366;" text=" --" />
+            <Label prefHeight="23.0" prefWidth="130.0" style="-fx-font-size: 18px; -fx-font-family: 'Courier New'; -fx-text-fill: #003366;" text=" Credits" />
+            <Label fx:id="playerCreditsLabel" prefHeight="23.0" prefWidth="130.0" style="-fx-font-size: 18px; -fx-font-family: 'Courier New'; -fx-text-fill: #003366;" text=" --" />
+            <Label prefHeight="23.0" prefWidth="130.0" style="-fx-font-size: 18px; -fx-font-family: 'Courier New'; -fx-text-fill: #003366;" text=" Status" />
+            <Label fx:id="statusLabel" prefHeight="23.0" prefWidth="130.0" style="-fx-font-size: 18px; -fx-font-family: 'Courier New'; -fx-text-fill: #003366;" />
             </VBox>
 
             <!-- Immagine centrale -->
@@ -90,12 +92,12 @@
                     <RowConstraints maxHeight="133.0" minHeight="10.0" prefHeight="133.0" vgrow="SOMETIMES" />
                 </rowConstraints>
             </GridPane>
-         <Pane layoutX="1037.0" layoutY="401.0" prefHeight="54.0" prefWidth="157.0" style="-fx-background-color: #87CEFA;">
+         <Pane layoutX="1037.0" layoutY="401.0" prefHeight="54.0" prefWidth="136.0" style="-fx-background-color: #87CEFA;">
             <children>
       
                   <!-- Label "Reserved Components" -->
-                  <Label alignment="CENTER" layoutX="1.0" layoutY="-2.0" prefHeight="33.0" prefWidth="155.0" style="-fx-font-size: 16px; -fx-text-fill: #003366; -fx-font-family: 'Courier New';" text="Reserved" />
-               <Label alignment="CENTER" layoutX="1.0" layoutY="19.0" prefHeight="33.0" prefWidth="155.0" style="-fx-font-size: 16px; -fx-text-fill: #003366; -fx-font-family: 'Courier New';" text="components" />
+                  <Label alignment="CENTER" layoutX="1.0" layoutY="-2.0" prefHeight="33.0" prefWidth="137.0" style="-fx-font-size: 16px; -fx-text-fill: #003366; -fx-font-family: 'Courier New';" text="Reserved" />
+               <Label alignment="CENTER" layoutX="1.0" layoutY="19.0" prefHeight="33.0" prefWidth="138.0" style="-fx-font-size: 16px; -fx-text-fill: #003366; -fx-font-family: 'Courier New';" text="components" />
             </children>
          </Pane>
 

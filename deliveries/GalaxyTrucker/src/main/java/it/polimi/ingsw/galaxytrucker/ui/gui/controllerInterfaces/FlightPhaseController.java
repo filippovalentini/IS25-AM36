@@ -9,20 +9,8 @@ public interface FlightPhaseController extends GuiController{
     //notifies the view that a component of a player's ship board has been destroyed
     void updateDestroyedComponent(String nickname, int x, int y) throws Exception;
 
-    //notifies the view about a change in the number of crew of a cabin
-    void updateCrewChange(String nickname, int x, int y, int change) throws Exception;
-
-    //notifies the view that a player has initialized a battery container with batteries
-    void updateBatteries(String nickname, int x, int y, int change) throws Exception;
-
-    //notifies the view about a change in the number of aliens of a cabin
-    void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws Exception;
-
-    //notifies the view that a good has been loaded in a cargo hold
-    void updateLoadedGood(String nickname, int x, int y, Color good) throws Exception;
-
-    //notifies the view that some goods have been removed form a cargo hold
-    void updateRemovedGoods(String nickname, int x, int y, Color good, int numberGoods) throws Exception;
+    //notifies the view that a component of the ship board has changed and must be reloaded
+    void updateComponentChange(String nickname, int x, int y) throws Exception;
 
     //notifies the view about the fact that a player has to pick a card in order to continue the game
     void updateCardPicking() throws Exception;

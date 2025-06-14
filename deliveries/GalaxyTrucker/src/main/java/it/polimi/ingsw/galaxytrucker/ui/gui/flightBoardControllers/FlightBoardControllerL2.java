@@ -193,8 +193,7 @@ public class FlightBoardControllerL2 implements FlightBoardController {
             Integer position = entry.getValue();
 
             if (position != null && position >= 0 && position < targetLabels.size()) {
-                Label targetLabel = targetLabels.get(position);
-                targetLabel.setText(Color.convertColorIntoEmoji(playerColor));
+                setPosition(playerColor, position);
 
                 if (playerColor.equals(this.color)) {
                     playerAlreadyPlaced = true;
@@ -213,6 +212,19 @@ public class FlightBoardControllerL2 implements FlightBoardController {
             deck3Button.setDisable(true);
             releaseDeckButton.setDisable(true);
         }
+    }
+
+    public void setPosition(Color color, int cell) {
+        Label targetLabel = targetLabels.get(cell);
+        targetLabel.setText(Color.convertColorIntoEmoji(color));
+        colorCellMap.put(color, cell);
+    }
+
+    public void freePosition(Color color) {
+        int cell = colorCellMap.get(color);
+        Label targetLabel = targetLabels.get(cell);
+        targetLabel.setText("");
+        colorCellMap.remove(color);
     }
 
     private void enableDropOn(Label label) {
@@ -617,6 +629,41 @@ public class FlightBoardControllerL2 implements FlightBoardController {
                 System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
             }
         });
+    }
+
+    @Override
+    public void updateShipRepair(String nickname) throws Exception {
+        Platform.runLater(() -> {
+            showGameState("SHIP REPAIR (player " + nickname + ")");
+        });
+    }
+
+    @Override
+    public void updateCardPicking() throws Exception {
+        Platform.runLater(() -> {
+            showGameState("CARD PICKING");
+        });
+    }
+
+    @Override
+    public void updateCardSolving(int imageID) throws Exception {
+        Platform.runLater(() -> {
+            showGameState("CARD SOLVING");
+        });
+    }
+
+    @Override
+    public void updatePlayerPosition(String nickname, int cell) throws Exception {
+        Platform.runLater(() -> {
+            Color playerColor = playerColorMap.get(nickname);
+            freePosition(playerColor);
+            setPosition(playerColor, cell);
+        });
+    }
+
+    @Override
+    public void updateEndGame() throws Exception {
+
     }
 
     //notifies the view about a change in the game phase

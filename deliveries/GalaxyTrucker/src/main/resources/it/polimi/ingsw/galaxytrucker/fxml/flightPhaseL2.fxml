@@ -27,7 +27,7 @@
                 <Image url="@../images/cardboard/shipL2.jpg" />
             </ImageView>
 
-            <Pane layoutX="25.0" layoutY="103.0" prefHeight="213.0" prefWidth="146.0" style="-fx-background-color: #87CEFA;">
+            <Pane layoutX="23.0" layoutY="65.0" prefHeight="263.0" prefWidth="146.0" style="-fx-background-color: #87CEFA;">
                 <children>
                     <Label layoutX="10.0" layoutY="0.0" prefHeight="26.0" prefWidth="53.0" style="-fx-font-size: 14px; -fx-text-fill: #003366;" text="Player" />
                     <Label fx:id="playerNameLabel" layoutX="10.0" layoutY="20.0" prefHeight="28.0" prefWidth="130.0" style="-fx-text-fill: #003366;" />
@@ -38,6 +38,8 @@
                <Label fx:id="playerCreditsLabel" layoutX="10.0" layoutY="125.0" prefHeight="27.0" prefWidth="130.0" style="-fx-text-fill: #003366;" />
                <Label layoutX="10.0" layoutY="152.0" prefHeight="18.0" prefWidth="129.0" style="-fx-font-size: 14px; -fx-text-fill: #003366;" text="Lost components" />
                <Label fx:id="lostComponentsLabel" layoutX="14.0" layoutY="172.0" prefHeight="27.0" prefWidth="130.0" style="-fx-text-fill: #003366;" />
+               <Label layoutX="10.0" layoutY="199.0" prefHeight="27.0" prefWidth="129.0" style="-fx-font-size: 14px; -fx-text-fill: black;" text="Status" />
+               <Label fx:id="statusLabel" layoutX="9.0" layoutY="226.0" prefHeight="27.0" prefWidth="129.0" style="-fx-font-size: 18px; -fx-text-fill: black;" text="Status" />
                 </children>
             </Pane>
 

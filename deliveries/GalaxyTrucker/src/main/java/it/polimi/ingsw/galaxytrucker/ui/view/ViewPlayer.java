@@ -11,6 +11,7 @@ public class ViewPlayer {
     private Color color;
     int credits;
     int lostComponents;
+    boolean abandoned;
     private List<List<ViewComponent>> assembledComponents = new ArrayList<>();
     private List<ViewComponent> reservedComponents = new ArrayList<>();
 
@@ -19,6 +20,7 @@ public class ViewPlayer {
         this.color = color;
         this.credits = 0;
         this.lostComponents = 0;
+        this.abandoned = false;
         initializeShipboard(firstFlight);
     }
 
@@ -32,6 +34,10 @@ public class ViewPlayer {
 
     public int getCredits() {
         return credits;
+    }
+
+    public boolean hasAbandoned() {
+        return abandoned;
     }
 
     public int getLostComponents() {
@@ -53,6 +59,10 @@ public class ViewPlayer {
                 System.out.print("[" + comp.getImageID() + "] ");
             }
             System.out.println();
+        }
+
+        if(abandoned){
+            System.out.println("\n*** ABANDONED THE FLIGHT ***\n");
         }
 
         System.out.println("\n🛰️  Ship Layout:\n");
@@ -255,6 +265,10 @@ public class ViewPlayer {
         for(int i = 0; i<numberGoods; i++){
             assembledComponents.get(x).get(y).removeGood(good);
         }
+    }
+
+    public void updateQuit(){
+        abandoned = true;
     }
 
 }
