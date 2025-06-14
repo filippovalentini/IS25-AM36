@@ -223,10 +223,10 @@ public class View {
         if(hourglassState != null){
             System.out.println("⏳ Hourglass state: " + hourglassState + "\n");
         }
-        if(currentCard != null){
+        if(currentCard != null && currentCard != 9001 && currentCard != 9002){
             System.out.println("🃏 Card to solve: " + currentCard + "\n");
         }
-        if(dice.areThrowable()){
+        if(!dice.areThrowable()){
             System.out.println("\uD83C\uDFB2" + " Dice result: " + dice1result() + "   " + dice2result() + "\n");
         }
         System.out.println();

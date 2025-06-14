@@ -7,8 +7,8 @@ public class ViewDice {
     private boolean throwable;
 
     public ViewDice() {
-        this.dice1 = 2;
-        this.dice2 = 2;
+        this.dice1 = 0;
+        this.dice2 = 0;
         this.throwable = true;
     }
 

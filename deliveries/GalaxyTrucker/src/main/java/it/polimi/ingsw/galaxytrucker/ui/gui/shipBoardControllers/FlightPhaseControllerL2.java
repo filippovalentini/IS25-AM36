@@ -101,6 +101,7 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
         cardImageMap = GuiInterface.getInstance().loadImageMap("cards");
         diceImageMap = GuiInterface.getInstance().loadImageMap("diceFaces");
 
+        initializeDice();
         initializeGameInfo();
         initializeButtons();
         initializeAssembledComponents();
@@ -125,9 +126,18 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
         setupDefeatEnemyButton();
     }
 
-    public void setDice(int dice1result, int dice2result) {
-        setDiceImage(dice1Button, dice1result);
-        setDiceImage(dice2Button, dice2result);
+    public void initializeDice(){
+        if(!GuiInterface.getInstance().getView().throwableDice()){
+            setDice();
+        }
+    }
+
+    public void setDice() {
+        int result1 = GuiInterface.getInstance().getView().dice1result();
+        int result2 = GuiInterface.getInstance().getView().dice2result();
+        setDiceImage(dice1Button, result1);
+        setDiceImage(dice2Button, result2);
+        diceButton.setDisable(true);
     }
 
     public void invalidDice(){
@@ -255,11 +265,13 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
             if(component.getBatteries() > 0){
                 addBatteries(row,column, component.getBatteries());
             }else if(component.getCrew()>0){
-                addCrewMembers(row,column);
+                addCrewMembers(row,column, component.getCrew());
             }else if(component.isPurpleAlien()){
                 addAlien(row,column,true);
             }else if(component.isBrownAlien()){
                 addAlien(row,column,false);
+            }else if(component.getNumberGoods() > 0){
+                addGoods(row,column,component.getGoods());
             }
         }
     }
@@ -382,7 +394,7 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
         });
     }
 
-    public void addCrewMembers(int row, int column) {
+    public void addCrewMembers(int row, int column, int crew) {
         Platform.runLater(() -> {
             // Trova la cella corretta
             for (Node node : myGridPane.getChildren()) {
@@ -396,8 +408,10 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
                         if (child instanceof GridPane overlay && overlay.getId() != null &&
                                 overlay.getId().equals("overlay-" + column + "-" + row)) {
 
-                            overlay.add(getCrewMemberImageView(overlay), 0, 0); // top-left
-                            overlay.add(getCrewMemberImageView(overlay), 1, 0); // top-right
+                            overlay.add(getCrewMemberImageView(overlay), 0, 0);
+                            if(crew > 1){
+                                overlay.add(getCrewMemberImageView(overlay), 1, 0);
+                            }
 
                             return;
                         }
@@ -422,7 +436,9 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
                                 overlay.getId().equals("overlay-" + column + "-" + row)) {
 
                             overlay.add(getBatteryImageView(overlay), 0, 0);
-                            overlay.add(getBatteryImageView(overlay), 1, 0);
+                            if(batteries > 1){
+                                overlay.add(getBatteryImageView(overlay), 1, 0);
+                            }
                             if(batteries == 3){
                                 overlay.add(getBatteryImageView(overlay), 0, 1);
                             }
@@ -450,6 +466,38 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
                                 overlay.getId().equals("overlay-" + column + "-" + row)) {
 
                             overlay.add(getAlienImageView(overlay, isPurple), 0, 0);
+                            return;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public void addGoods(int row, int column, List<Color> goods) {
+        Platform.runLater(() -> {
+            // Trova la cella corretta
+            for (Node node : myGridPane.getChildren()) {
+                Integer col = GridPane.getColumnIndex(node);
+                Integer rw = GridPane.getRowIndex(node);
+                if (col == null) col = 0;
+                if (rw == null) rw = 0;
+
+                if (col == column && rw == row && node instanceof StackPane cell) {
+                    for (Node child : cell.getChildren()) {
+                        if (child instanceof GridPane overlay && overlay.getId() != null &&
+                                overlay.getId().equals("overlay-" + column + "-" + row)) {
+
+                            int numberGoods = goods.size();
+
+                            overlay.add(getCargoGoodImageView(overlay, goods.getFirst()), 0, 0);
+                            if(numberGoods > 1){
+                                overlay.add(getCargoGoodImageView(overlay, goods.get(1)), 1, 0);
+                            }
+                            if(numberGoods == 3){
+                                overlay.add(getCargoGoodImageView(overlay, goods.get(2)), 0, 1);
+                            }
+
                             return;
                         }
                     }
@@ -498,6 +546,28 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
         alienImageView.setId("crew");
 
         return alienImageView;
+    }
+
+    public ImageView getCargoGoodImageView(GridPane overlay, Color goodColor){
+        Image goodImage;
+        if (goodColor == Color.GREEN) {
+            goodImage = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/green_good.png").toExternalForm());
+        }
+        else if (goodColor == Color.YELLOW) {
+            goodImage = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/yellow_good.png").toExternalForm());
+        }else if (goodColor == Color.RED) {
+            goodImage = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/red_good.png").toExternalForm());
+        }else {
+            goodImage = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/blue_good.png").toExternalForm());
+        }
+
+        ImageView goodImageView = new ImageView(goodImage);
+        goodImageView.setFitWidth(overlay.getPrefWidth() / 2);
+        goodImageView.setFitHeight(overlay.getPrefHeight() / 2);
+        goodImageView.setPreserveRatio(true);
+        goodImageView.setId("crew");
+
+        return goodImageView;
     }
 
     @FXML
@@ -555,10 +625,7 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
         diceButton.setOnAction(event -> {
             try{
                 GuiInterface.getInstance().getView().updateRollDice();
-                int result1 = GuiInterface.getInstance().getView().dice1result();
-                int result2 = GuiInterface.getInstance().getView().dice2result();
-                setDice(result1, result2);
-                diceButton.setDisable(true);
+                setDice();
             }
             catch (Exception e) { showError(e.getMessage()); }
         });

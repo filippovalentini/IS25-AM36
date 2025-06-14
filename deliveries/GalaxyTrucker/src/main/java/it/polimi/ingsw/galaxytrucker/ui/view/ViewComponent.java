@@ -88,4 +88,7 @@ public class ViewComponent {
     public List<Color> getGoods() {
         return new ArrayList<>(goods);
     }
+    public int getNumberGoods() {
+        return goods.size();
+    }
 }

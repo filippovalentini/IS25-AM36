@@ -118,7 +118,7 @@ public class ShipBoardControllerL2 implements ShipBoardController {
             if(component.getBatteries() > 0){
                 addBatteries(row,column, component.getBatteries());
             }else if(component.getCrew()>0){
-                addCrewMembers(row,column);
+                addCrewMembers(row,column, component.getCrew());
             }else if(component.isPurpleAlien()){
                 addAlien(row,column,true);
             }else if(component.isBrownAlien()){
@@ -141,7 +141,7 @@ public class ShipBoardControllerL2 implements ShipBoardController {
         }
     }
 
-    public void addCrewMembers(int row, int column) {
+    public void addCrewMembers(int row, int column, int crew) {
         Platform.runLater(() -> {
             // Trova la cella corretta
             for (Node node : myGridPane.getChildren()) {
@@ -156,7 +156,9 @@ public class ShipBoardControllerL2 implements ShipBoardController {
                                 overlay.getId().equals("overlay-" + column + "-" + row)) {
 
                             overlay.add(getCrewMemberImageView(overlay), 0, 0); // top-left
-                            overlay.add(getCrewMemberImageView(overlay), 1, 0); // top-right
+                            if(crew > 1){
+                                overlay.add(getCrewMemberImageView(overlay), 1, 0); // top-right
+                            }
 
                             return;
                         }
@@ -181,7 +183,9 @@ public class ShipBoardControllerL2 implements ShipBoardController {
                                 overlay.getId().equals("overlay-" + column + "-" + row)) {
 
                             overlay.add(getBatteryImageView(overlay), 0, 0);
-                            overlay.add(getBatteryImageView(overlay), 1, 0);
+                            if(batteries > 1){
+                                overlay.add(getBatteryImageView(overlay), 1, 0);
+                            }
                             if(batteries == 3){
                                 overlay.add(getBatteryImageView(overlay), 0, 1);
                             }
