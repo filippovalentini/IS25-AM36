@@ -20,7 +20,6 @@ public class PingThreadRMI extends Thread {
     public void run() {
         while (true) {
             try {
-                System.out.println("PING");
                 remoteClient.ping();
                 Thread.sleep(5000);
             } catch (Exception e) {

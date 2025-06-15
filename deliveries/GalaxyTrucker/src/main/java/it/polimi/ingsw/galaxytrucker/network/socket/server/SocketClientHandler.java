@@ -30,7 +30,7 @@ public class SocketClientHandler implements VirtualViewSocket {
         this.connectedClient = true;
     }
 
-    //determines if the maneged client is siìtill correctly connected or not
+    //determines if the maneged client is still correctly connected or not
     public boolean isClientConnected() {
         return connectedClient;
     }

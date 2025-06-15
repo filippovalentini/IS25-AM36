@@ -232,9 +232,7 @@ public class SocketClient implements VirtualViewSocket, GameSessionManager {
             catch(Exception e){System.out.println("Error: failed I/O operation through socket");}
             return false;
         }
-        else if (message.getGameUpdateType() == GameUpdateType.STARTED_GAME){
 
-        }
         return true;
     }
 
