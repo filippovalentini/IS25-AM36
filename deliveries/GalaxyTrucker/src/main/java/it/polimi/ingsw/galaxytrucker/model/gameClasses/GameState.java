@@ -24,7 +24,8 @@ public class GameState {
     private List<Component> shownComponents;        //components turned face up during the assembling phase
     private State state;            //current state of the game
     private final Map<String, VirtualView> clients = new HashMap<>(); //list of observers (clients of the game)
-    private Hourglass hourglass;
+    private Hourglass hourglass;        //hourglass used during the assembling phase
+    private Runnable endGameManagement;   //implements a callback procedure to remove the controller after the end of the game
 
     public GameState(boolean firstFlight, int numPlayers) {     //constructor, creates the deck(s) of cards and instantiates the components
         this.firstFlight = firstFlight;
@@ -882,6 +883,7 @@ public class GameState {
         }
         if(state==State.END){
             clients.clear();
+            cancelGame();
         }
     }
     //this method is invoked when a player has to repair its ship after it has been damaged
@@ -978,6 +980,10 @@ public class GameState {
         for(VirtualView view: clients.values()){
             try{view.notifyError("Player " + nickname + " disconnected");}
             catch(Exception e){System.out.println("Error during remote method invocation on client");}
+        }
+
+        if(playersPos.isEmpty()){
+            setGameState(State.END);
         }
     }
     //this method is invoked when a player wants to leave the game
@@ -1244,6 +1250,14 @@ public class GameState {
                 updatePlayerCredits(nickname, playersPlay.get(nickname).getGoodsPrice());
             }
         }
+    }
+    //sets the end-game procedure
+    public void setEndGameManagement(Runnable endGameManagement) {
+        this.endGameManagement = endGameManagement;
+    }
+    //runs the callback procedure to remove the controller from the server's list
+    public void cancelGame(){
+        this.endGameManagement.run();
     }
 
 

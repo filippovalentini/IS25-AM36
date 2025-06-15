@@ -32,7 +32,7 @@ public class PlanetLandingController implements ActionSettingsController {
         confirmButton.setOnAction(e -> {
             int planetNumber = planetComboBox.getValue();
             try{
-                server.planetLanding(this.gameID, this.playerNickname, planetNumber);
+                server.planetLanding(this.gameID, this.playerNickname, planetNumber-1);
                 onConfirm.run();
             }
             catch(Exception ignored){}

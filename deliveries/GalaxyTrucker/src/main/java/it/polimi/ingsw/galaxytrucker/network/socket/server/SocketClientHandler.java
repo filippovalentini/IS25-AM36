@@ -64,6 +64,9 @@ public class SocketClientHandler implements VirtualViewSocket {
                         GameController gameController = new GameController(firstFlight, numPlayers);
                         setController(gameController);
                         controllers.put(gameID, gameController);
+                        gameController.setEndGameManagement(()->{
+                            controllers.remove(gameID);
+                        });
                         notifyStartedGame(true);
                         break;
                     case ADD_PLAYER:

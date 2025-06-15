@@ -12,12 +12,20 @@ import java.util.List;
 
 
 public class GameController {
-    private final GameState model;
-    private final Object lock;
+    private final GameState model;      //instance of the game model
+    private final Object lock;          //lock to manage synchronization
+
+
 
     public GameController(boolean firstFlight, int numberPlayers) {
         this.lock = new Object();
         this.model = new GameState(firstFlight, numberPlayers);
+    }
+
+    //transfers the end-game-management to the model, in such way that when the game is over the controller
+    //is removed form the list of active controllers server-side
+    public void setEndGameManagement(Runnable endGameManagement) {
+        this.model.setEndGameManagement(endGameManagement);
     }
 
     //STARTING PHASE

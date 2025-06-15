@@ -40,6 +40,9 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
         try{
             GameController controller = new GameController(firstFlight, numberPlayers);
             controllers.put(gameID, controller);
+            controller.setEndGameManagement(()->{
+                controllers.remove(gameID);
+            });
         }
         catch(Exception e){
             try{
