@@ -8,6 +8,7 @@ import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ActionSettingsC
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.FlightPhaseController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBoardController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.flightBoardControllers.FlightBoardControllerL2;
+import it.polimi.ingsw.galaxytrucker.ui.gui.otherControllers.EndgameController;
 import it.polimi.ingsw.galaxytrucker.ui.view.ViewComponent;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
@@ -883,6 +884,23 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
 
     @Override
     public void updateEndGame() throws Exception {
+        Platform.runLater(() -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/endgame.fxml"));
+                Parent root = loader.load();
 
+                EndgameController controller = loader.getController();
+                controller.setServer(this.server);
+                controller.setPlayerInfo(this.gameID, this.playerNickname, this.playerColor);
+
+                controller.setControlledStage(controlledStage);
+                controlledStage.setScene(new Scene(root, 1210, 740));
+                controlledStage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
+            }
+        });
     }
 }

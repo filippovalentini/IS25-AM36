@@ -3,6 +3,7 @@ package it.polimi.ingsw.galaxytrucker.ui.gui.flightBoardControllers;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.ui.gui.GuiInterface;
+import it.polimi.ingsw.galaxytrucker.ui.gui.otherControllers.EndgameController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.shipBoardControllers.ShipBuildingControllerL1;
 import it.polimi.ingsw.galaxytrucker.ui.gui.shipBoardControllers.ShipControlControllerL1;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.FlightBoardController;
@@ -364,7 +365,24 @@ public class FlightBoardControllerL1 implements FlightBoardController {
 
     @Override
     public void updateEndGame() throws Exception {
+        Platform.runLater(() -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/endgame.fxml"));
+                Parent root = loader.load();
 
+                EndgameController controller = loader.getController();
+                controller.setServer(this.server);
+                controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+
+                controller.setControlledStage(controlledStage);
+                controlledStage.setScene(new Scene(root, 1210, 740));
+                controlledStage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
+            }
+        });
     }
 
     //notifies the view about a change in the game phase

@@ -14,7 +14,7 @@ import java.util.List;
 
 public class LoadGoodsController implements ActionSettingsController {
     @FXML
-    private ComboBox<String> cellComboBox;
+    private ComboBox<CargoCell> cellComboBox;
     @FXML
     private ListView<HBox> cellListView;
     @FXML
@@ -22,18 +22,41 @@ public class LoadGoodsController implements ActionSettingsController {
     @FXML
     private Button confirmButton;
 
-    private final List<String> selectedCells = new ArrayList<>();
+    private final List<CargoCell> selectedCells = new ArrayList<>();
 
     private VirtualServer server;
     private int gameID;
     private String playerNickname;
     private Runnable onConfirm;
 
+    private static class CargoCell {
+        int row;
+        int col;
+
+        public CargoCell(int row, int col){
+            this.row = row;
+            this.col = col;
+        }
+
+        public int getRow() {
+            return row;
+        }
+
+        public int getCol() {
+            return col;
+        }
+
+        @Override
+        public String toString(){
+            return "Cell: (" + this.row + ", " + this.col + ")";
+        }
+    }
+
     @FXML
     public void initialize() {
-        for (int x = 0; x <= 4; x++) {
-            for (int y = 0; y <= 6; y++) {
-                cellComboBox.getItems().add("(" + x + ", " + y + ")");
+        for (int x = 5; x <= 9; x++) {
+            for (int y = 4; y <= 10; y++) {
+                cellComboBox.getItems().add(new CargoCell(x, y));
             }
         }
         cellComboBox.setVisibleRowCount(3);
@@ -45,18 +68,18 @@ public class LoadGoodsController implements ActionSettingsController {
     @FXML
     private void setupAddButton() {
         addButton.setOnAction(event -> {
-            String selected = cellComboBox.getValue();
-            if (selected == null || selectedCells.contains(selected)) return;
+            CargoCell cargoCell = cellComboBox.getValue();
+            if (cargoCell == null || selectedCells.contains(cargoCell)) return;
 
-            selectedCells.add(selected);
+            selectedCells.add(cargoCell);
 
             HBox cellBox = new HBox(10);
             cellBox.setStyle("-fx-alignment: CENTER_LEFT;");
-            Label cellLabel = new Label(selected);
+            Label cellLabel = new Label(cargoCell.toString());
             Button removeBtn = new Button("x");
             removeBtn.setStyle("-fx-text-fill: red;");
             removeBtn.setOnAction(e -> {
-                selectedCells.remove(selected);
+                selectedCells.remove(cargoCell);
                 cellListView.getItems().remove(cellBox);
             });
 
@@ -68,10 +91,17 @@ public class LoadGoodsController implements ActionSettingsController {
     @FXML
     private void setupConfirmButton() {
         confirmButton.setOnAction(event -> {
-            System.out.println("Selected cells:");
-            for (String cell : selectedCells) {
-                System.out.println(cell);
+            List<Integer> x = new ArrayList<>();
+            List<Integer> y = new ArrayList<>();
+            for(CargoCell cargoCell : selectedCells){
+                x.add(cargoCell.getRow() - 5);
+                y.add(cargoCell.getCol() - 4);
             }
+            try{
+                server.loadGoods(this.gameID, this.playerNickname, x, y);
+                onConfirm.run();
+            }
+            catch(Exception ignored){}
         });
     }
 

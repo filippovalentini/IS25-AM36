@@ -477,5 +477,14 @@ public class GuiInterface implements UserInterface {
     @Override
     public void updateEndGame() throws Exception {
         this.view.updateEndGame();
+        if(flightPhaseController != null){
+            flightPhaseController.updateEndGame();
+        }
+        if(shipBoardController != null){
+            shipBoardController.updateEndGame();
+        }
+        if(flightBoardController != null){
+            flightBoardController.updateEndGame();
+        }
     }
 }

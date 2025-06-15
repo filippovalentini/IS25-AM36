@@ -14,7 +14,7 @@ import java.util.List;
 
 public class CrewLandingController implements ActionSettingsController {
     @FXML
-    private ComboBox<String> cellComboBox;
+    private ComboBox<CabinCell> cellComboBox;
     @FXML
     private ComboBox<Integer> crewCountComboBox;
     @FXML
@@ -24,18 +24,63 @@ public class CrewLandingController implements ActionSettingsController {
     @FXML
     private Button confirmButton;
 
-    private final List<String> assignments = new ArrayList<>();
+    private final List<CrewAssignment> assignments = new ArrayList<>();
 
     private VirtualServer server;
     private int gameID;
     private String playerNickname;
     private Runnable onConfirm;
 
+    private static class CabinCell {
+        int row;
+        int col;
+
+        public CabinCell(int row, int col){
+            this.row = row;
+            this.col = col;
+        }
+
+        public int getRow() {
+            return row;
+        }
+
+        public int getCol() {
+            return col;
+        }
+
+        @Override
+        public String toString(){
+            return "Cell: (" + this.row + ", " + this.col + ")";
+        }
+    }
+
+    private static class CrewAssignment{
+        CabinCell cabinCell;
+        int crew;
+        public CrewAssignment(CabinCell cabinCell, int crew){
+            this.cabinCell = cabinCell;
+            this.crew = crew;
+        }
+
+        public CabinCell getCell(){
+            return cabinCell;
+        }
+
+        public int getCrew(){
+            return crew;
+        }
+
+        @Override
+        public String toString(){
+            return this.cabinCell.toString() + "            crew to remove: " + this.crew;
+        }
+    }
+
     @FXML
     public void initialize() {
-        for (int x = 0; x <= 4; x++) {
-            for (int y = 0; y <= 6; y++) {
-                cellComboBox.getItems().add("(" + x + ", " + y + ")");
+        for (int x = 5; x <= 9; x++) {
+            for (int y = 4; y <= 10; y++) {
+                cellComboBox.getItems().add(new CabinCell(x, y));
             }
         }
         crewCountComboBox.getItems().addAll(1, 2);
@@ -50,21 +95,21 @@ public class CrewLandingController implements ActionSettingsController {
     @FXML
     private void setupAddButton() {
         addButton.setOnAction(event -> {
-            String cell = cellComboBox.getValue();
+            CabinCell cabinCell = cellComboBox.getValue();
             Integer crew = crewCountComboBox.getValue();
 
-            if (cell == null || crew == null) return;
+            if (cabinCell == null || crew == null) return;
 
-            String entry = "cell:   " + cell + "        crew to remove:   " + crew;
-            assignments.add(entry);
+            CrewAssignment assignment = new CrewAssignment(cabinCell, crew);
+            assignments.add(assignment);
 
             HBox entryBox = new HBox(10);
             entryBox.setStyle("-fx-alignment: CENTER_LEFT;");
-            Label entryLabel = new Label(entry);
+            Label entryLabel = new Label(assignment.toString());
             Button removeButton = new Button("x");
             removeButton.setStyle("-fx-text-fill: red;");
             removeButton.setOnAction(e -> {
-                assignments.remove(entry);
+                assignments.remove(assignment);
                 assignmentListView.getItems().remove(entryBox);
             });
 
@@ -76,10 +121,19 @@ public class CrewLandingController implements ActionSettingsController {
     @FXML
     private void setupConfirmButton() {
         confirmButton.setOnAction(event -> {
-            System.out.println("Crew assignments:");
-            for (String cell : assignments) {
-                System.out.println(cell);
+            List<Integer> x = new ArrayList<>();
+            List<Integer> y = new ArrayList<>();
+            List<Integer> crewInEachCabin = new ArrayList<>();
+            for(CrewAssignment assignment : assignments){
+                x.add(assignment.getCell().getRow() - 5);
+                y.add(assignment.getCell().getCol() - 4);
+                crewInEachCabin.add(assignment.getCrew());
             }
+            try{
+                server.landing(this.gameID, this.playerNickname, x, y, crewInEachCabin);
+                onConfirm.run();
+            }
+            catch(Exception ignored){}
         });
     }
 
