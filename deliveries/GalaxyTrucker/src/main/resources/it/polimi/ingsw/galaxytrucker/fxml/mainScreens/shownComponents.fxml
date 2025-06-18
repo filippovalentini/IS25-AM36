@@ -22,40 +22,28 @@
     </ImageView>
 
     <!-- Back Button -->
-    <Button fx:id="backButton" layoutX="1095.0" layoutY="139.0" prefHeight="64.0" prefWidth="61.0" style="-fx-background-color: #4682B4; -fx-font-size: 20px; -fx-text-fill: black;" text="🔙" />
+    <Button fx:id="backButton" layoutX="1095.0" layoutY="139.0" prefHeight="64.0" prefWidth="61.0" style="-fx-background-color: #4682B4; -fx-font-size: 20px; -fx-text-fill: black;-fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="🔙" />
 
     <!-- Layout container -->
     <VBox alignment="CENTER" layoutX="240.0" prefHeight="740.0" prefWidth="683.0" spacing="20" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="240.0" AnchorPane.rightAnchor="287.0" AnchorPane.topAnchor="0.0">
         <padding><Insets bottom="20" top="20" /></padding>
 
         <!-- Title -->
-        <Label prefHeight="71.0" prefWidth="365.0" text="   Pick a component" textFill="#2d8fff">
+        <Label prefHeight="71.0" prefWidth="444.0" style="-fx-font-family: 'Courier New';" text="   Pick a component" textFill="#007bff">
             <font>
                 <Font name="Arial Bold" size="36.0" />
             </font>
         </Label>
 
         <!-- Scrollable grid -->
-        <ScrollPane fitToWidth="true"
-                    prefHeight="317.0"
-                    prefViewportHeight="300"
-                    prefViewportWidth="600"
-                    prefWidth="956.0"
-                    style="-fx-background: #87CEFA; -fx-background-color: #87CEFA; -fx-border-color: #87CEFA;"
-                    vbarPolicy="ALWAYS">
+        <ScrollPane fitToWidth="true" prefHeight="317.0" prefViewportHeight="300" prefViewportWidth="600" prefWidth="956.0" style="-fx-background: #87CEFA; -fx-background-color: #87CEFA; -fx-border-color: #87CEFA;" vbarPolicy="ALWAYS">
             <content>
-                <GridPane fx:id="componentGrid"
-                          alignment="CENTER"
-                          hgap="10"
-                          minWidth="600"
-                          prefWidth="600"
-                          vgap="10"
-                          style="-fx-background-color: #87CEFA;" />
+                <GridPane fx:id="componentGrid" alignment="CENTER" hgap="10" minWidth="600" prefWidth="600" style="-fx-background-color: #87CEFA;" vgap="10" />
             </content>
         </ScrollPane>
 
         <!-- Pick Button -->
-        <Button fx:id="pickButton" disable="true" maxWidth="150" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-size: 16px;" text="Pick" />
+        <Button fx:id="pickButton" disable="true" maxWidth="150" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-size: 16px;-fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Pick" />
     </VBox>
 
     <!-- Top blue rectangle -->
