@@ -272,7 +272,7 @@ public class FlightBoardControllerL2 implements FlightBoardController {
 
     public void goBackToShipBuilding(){
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipBuildingL2.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/shipBuildingL2.fxml"));
             Parent root = fxmlLoader.load();
 
             ShipBuildingControllerL2 controller = fxmlLoader.getController();
@@ -292,7 +292,7 @@ public class FlightBoardControllerL2 implements FlightBoardController {
 
     public void goBackToShipControl(){
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipControlL2.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/shipControlL2.fxml"));
             Parent root = fxmlLoader.load();
 
             ShipControlControllerL2 controller = fxmlLoader.getController();
@@ -313,7 +313,7 @@ public class FlightBoardControllerL2 implements FlightBoardController {
 
     public void goBackToFlightPhase(){
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/flightPhaseL2.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/flightPhaseL2.fxml"));
             Parent root = fxmlLoader.load();
 
             FlightPhaseControllerL2 controller = fxmlLoader.getController();
@@ -613,7 +613,7 @@ public class FlightBoardControllerL2 implements FlightBoardController {
     public void updateShipControl() throws Exception {
         Platform.runLater(() -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipControlL2.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/shipControlL2.fxml"));
                 Parent root = loader.load();
 
                 ShipControlControllerL2 controller = loader.getController();
@@ -666,7 +666,7 @@ public class FlightBoardControllerL2 implements FlightBoardController {
     public void updateEndGame() throws Exception {
         Platform.runLater(() -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/endgame.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/endgame.fxml"));
                 Parent root = loader.load();
 
                 EndgameController controller = loader.getController();

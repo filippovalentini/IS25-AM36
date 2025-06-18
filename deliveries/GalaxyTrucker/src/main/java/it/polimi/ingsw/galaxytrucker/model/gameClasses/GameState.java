@@ -962,7 +962,10 @@ public class GameState {
         clients.remove(nickname);
 
         if(state == State.CARD_PICKING || state == State.CARD_SOLVING){
-            quitGame(nickname);
+            if(state==State.CARD_SOLVING){
+                this.currentCard.manageGameQuit(this, nickname);
+            }
+            quitGame(nickname, false);
         }else{
             playersPos.remove(nickname);
             playersPlay.get(nickname).quitGame();
@@ -986,10 +989,14 @@ public class GameState {
             setGameState(State.END);
         }
     }
-    //this method is invoked when a player wants to leave the game
-    public void quitGame(String nickname) throws InvalidActionException {
+    //this method is invoked when a player wants to leave the game; the parameter playerDecision specifies
+    //whether the player decided to leave the game or it was forced to do so
+    public void quitGame(String nickname, boolean playerDecision) throws InvalidActionException {
         if(state != State.CARD_PICKING && state != State.CARD_SOLVING){
-            throw new InvalidActionException("Invalid action");
+            throw new InvalidActionException("Can't leave the game in this phase");
+        }
+        if(state == State.CARD_SOLVING && playerDecision){
+            throw new InvalidActionException("Can't leave the game in this phase");
         }
         //if the player quitting is the player in turn, we update the turns
         if(nickname.equals(turnPlayer)){

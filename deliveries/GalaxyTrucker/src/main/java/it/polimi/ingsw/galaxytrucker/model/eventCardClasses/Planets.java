@@ -28,6 +28,20 @@ public class Planets extends SkipCard{
     }
 
     @Override
+    //if a player leaves the game during the goods exchange phase, the card resolution switches to
+    //the planet landing phase for the next player in turn
+    public void manageGameQuit(GameState gameState, String nickname){
+        if(nickname.equals(gameState.getTurnPlayer())){
+            if(goodsExchangePhase){
+                goodsExchangePhase = false;
+            }
+            if(gameState.isLastInTurn(nickname)){
+                gameState.setGameState(State.CARD_PICKING);
+            }
+        }
+    }
+
+    @Override
     //invoked by a player that wants to land on a specific planet
     public void planetLanding(GameState gameState, String nickname, int numberPlanet) throws InvalidActionException {      //when a player lands on a planet, the corresponding element
         //is set to null, as the other players cannot land on it

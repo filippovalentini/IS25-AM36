@@ -49,6 +49,19 @@ public class CombatZone extends EventCard{
     }
 
     @Override
+    //if a player leaves the game during a phase of the combat zone, the resolution of the card switches to
+    //the next phase as the competition between the players is compromised
+    public void manageGameQuit(GameState gameState, String nickname){
+        if(phase == 3){
+            gameState.setGameState(State.CARD_PICKING);
+        }
+        else {
+            phase++;
+        }
+        gameState.updateTurns();
+    }
+
+    @Override
     //the player with fewer crew members loses 3 flight days
     public void specialEffect(GameState gameState) throws InvalidActionException {
         if (this.levelOne) { //default effect of level one combat zone
@@ -143,7 +156,7 @@ public class CombatZone extends EventCard{
     }
 
     @Override
-    //invoked when the player with smaller engine strength must lose goods (level two) or crew members (level one)
+    //invoked when the player with smaller engine strength must lose crew members (level one)
     public void landing(GameState gameState, String nickname, List<Integer> x, List<Integer> y, List<Integer> z) throws InvalidActionException, NoCrewException {
         if(levelOne){
             if(phase!=2){
@@ -151,7 +164,7 @@ public class CombatZone extends EventCard{
             }
             else if (gameState.getCrewCount(nickname)<= 2) {
                 gameState.removeCrewMembers(nickname, x, y, z, gameState.getCrewCount(nickname));
-                gameState.quitGame(nickname);
+                gameState.quitGame(nickname, false);
                 phase = 3;
                 gameState.updateTurns();
                 throw new NoCrewException("You have lost all your crew: quitting game...");
@@ -180,7 +193,7 @@ public class CombatZone extends EventCard{
                 if(currentShot == cannonShots.size() - 1){
                     gameState.checkDamages();
                     if (gameState.getCrewCount(nickname)==0) {
-                        gameState.quitGame(nickname);
+                        gameState.quitGame(nickname, false);
                         throw new NoCrewException("You have lost all your crew: quitting game...");
                     }else{
                         gameState.nextTurn();
@@ -204,7 +217,7 @@ public class CombatZone extends EventCard{
                 if(currentShot == cannonShots.size() - 1){
                     gameState.checkDamages();
                     if (gameState.getCrewCount(nickname)==0) {
-                        gameState.quitGame(nickname);
+                        gameState.quitGame(nickname, false);
                         throw new NoCrewException("You have lost all your crew: quitting game...");
                     }else{
                         gameState.nextTurn();

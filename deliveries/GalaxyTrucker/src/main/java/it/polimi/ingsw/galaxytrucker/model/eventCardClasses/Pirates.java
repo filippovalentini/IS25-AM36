@@ -24,6 +24,20 @@ public class Pirates extends AdvancedEnemies {
     public boolean isDefeated() {return this.defeated;}
 
     @Override
+    //if a player leaves the game during the cannon fire, the card resolution switches to
+    //the fight phase for the next player in turn
+    public void manageGameQuit(GameState gameState, String nickname){
+        if(nickname.equals(gameState.getTurnPlayer())){
+            if(cannonFirePhase){
+                cannonFirePhase = false;
+            }
+            if(gameState.isLastInTurn(nickname)){
+                gameState.setGameState(State.CARD_PICKING);
+            }
+        }
+    }
+
+    @Override
     public void hitShip(GameState gameState, String nickname, int diceResult, boolean activateShield, boolean activateCannon /*ignored*/) throws InvalidActionException, NoBatteriesException {
         if(isDefeated() || !cannonFirePhase){  //if the enemy has been defeated or hasn't defeated the current player, a player can't invoke this method
             throw new InvalidActionException("Invalid action");
@@ -41,7 +55,7 @@ public class Pirates extends AdvancedEnemies {
                 gameState.checkDamages();
             }
             if (gameState.getCrewCount(nickname) == 0) {
-                gameState.quitGame(nickname);
+                gameState.quitGame(nickname, false);
                 throw new NoCrewException("You have lost all your crew: quitting game...");
             }
             else {

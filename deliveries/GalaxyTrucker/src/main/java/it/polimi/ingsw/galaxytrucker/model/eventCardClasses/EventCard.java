@@ -1,6 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.model.eventCardClasses;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 
@@ -17,6 +18,13 @@ public class EventCard  {
     }
     public int getImageID() {
         return imageID;
+    }
+
+    //invoked to manage the disconnection/quit of a player during the resolution of the card
+    public void manageGameQuit(GameState gameState, String nickname){
+        if(gameState.isLastInTurn(nickname) && nickname.equals(gameState.getTurnPlayer())){
+            gameState.setGameState(State.CARD_PICKING);
+        }
     }
 
     //invoked when a player decides to land on a planet in order to gain goods

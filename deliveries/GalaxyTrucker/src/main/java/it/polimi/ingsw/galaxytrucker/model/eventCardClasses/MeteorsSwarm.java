@@ -36,7 +36,7 @@ public class MeteorsSwarm extends EventCard{
                 gameState.checkDamages();
             }
             if (gameState.getCrewCount(nickname)==0) {
-                gameState.quitGame(nickname);
+                gameState.quitGame(nickname, false);
                 throw new NoCrewException("You have lost all your crew: quitting game...");
             }else{
                 gameState.nextTurn();

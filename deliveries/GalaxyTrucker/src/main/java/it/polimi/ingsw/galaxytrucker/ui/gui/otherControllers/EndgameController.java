@@ -49,7 +49,7 @@ public class EndgameController implements GuiController {
     @FXML
     private void onFindAnotherGameClick(){
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/selectNetwork.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/selectNetwork.fxml"));
             Parent root = fxmlLoader.load();
             GameSetupController controller = fxmlLoader.getController();
             controller.setControlledStage(controlledStage);

@@ -227,7 +227,7 @@ public class ShipControlControllerL1 implements ShipControlController {
     private void setupOtherPlayerButton(Button button) {
         button.setOnAction(event -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipBoardL1.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/shipBoardL1.fxml"));
                 ShipBoardController controller = new ShipBoardControllerL1(button.getText());
                 loader.setController(controller);
 
@@ -366,7 +366,7 @@ public class ShipControlControllerL1 implements ShipControlController {
     private void setupFlightBoardButton() {
         flightBoardButton.setOnAction(event -> {
             try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/flightBoardL1.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/flightBoardL1.fxml"));
                 Parent root = fxmlLoader.load();
 
                 FlightBoardControllerL1 controller = fxmlLoader.getController();

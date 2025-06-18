@@ -20,6 +20,20 @@ public class Slavers extends AdvancedEnemies{
     }
 
     @Override
+    //if a player leaves the game during the crew loss phase, the card resolution switches to the
+    //fight phase for the next player in turn
+    public void manageGameQuit(GameState gameState, String nickname){
+        if(nickname.equals(gameState.getTurnPlayer())){
+            if(crewLossPhase){
+                crewLossPhase = false;
+            }
+            if(gameState.isLastInTurn(nickname)){
+                gameState.setGameState(State.CARD_PICKING);
+            }
+        }
+    }
+
+    @Override
     //the player decides which crew members to remove from the ship because the slavers have defeated him
     public void landing(GameState gameState, String nickname, List<Integer> x, List<Integer> y, List<Integer> crewInEachCabin) throws InvalidActionException, NoCrewException {
         if (isDefeated() || !crewLossPhase) {
@@ -64,7 +78,7 @@ public class Slavers extends AdvancedEnemies{
                 if(gameState.isLastInTurn(nickname)) {
                     gameState.setGameState(State.CARD_PICKING);
                 }
-                gameState.quitGame(nickname);
+                gameState.quitGame(nickname, false);
                 throw new NoCrewException("You do not have enough crew members: quitting game...");
             }
             else{

@@ -18,7 +18,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -433,7 +432,7 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     private void setupShownComponentsButton(){
         shownComponentButton.setOnAction(event -> {
             try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shownComponents.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/shownComponents.fxml"));
                 Parent root = fxmlLoader.load();
 
                 ShownComponentsController controller = fxmlLoader.getController();
@@ -527,7 +526,7 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     private void setupOtherPlayerButton(Button button) {
         button.setOnAction(event -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipBoardL2.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/shipBoardL2.fxml"));
                 ShipBoardController controller = new ShipBoardControllerL2(button.getText());
                 loader.setController(controller);
 
@@ -575,7 +574,7 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     public void setupFlightBoardButton() {
         flightBoardButton.setOnAction(event -> {
             try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/flightBoardL2.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/flightBoardL2.fxml"));
                 Parent root = fxmlLoader.load();
 
                 FlightBoardControllerL2 controller = fxmlLoader.getController();
@@ -779,7 +778,7 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     public void updateShipControl() throws Exception{
         Platform.runLater(() -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipControlL2.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/shipControlL2.fxml"));
                 Parent root = loader.load();
 
                 ShipControlControllerL2 controller = loader.getController();

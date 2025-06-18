@@ -152,7 +152,7 @@ public class GameController {
     //this method is invoked when a player has to leave the game
     public void quitGame(String nickname) throws InvalidActionException{
         synchronized (lock) {
-            model.quitGame(nickname);
+            model.quitGame(nickname,true);
         }
     }
 

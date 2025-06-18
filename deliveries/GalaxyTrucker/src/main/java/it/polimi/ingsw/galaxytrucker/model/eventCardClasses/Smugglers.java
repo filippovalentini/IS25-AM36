@@ -32,6 +32,20 @@ public class Smugglers extends DayLossCard{
     }
 
     @Override
+    //if a player leaves the game during the goods exchange phase, the card resolution switches to
+    //the fight phase for the next player in turn
+    public void manageGameQuit(GameState gameState, String nickname){
+        if(nickname.equals(gameState.getTurnPlayer())){
+            if(goodsExchangePhase){
+                goodsExchangePhase = false;
+            }
+            if(gameState.isLastInTurn(nickname)){
+                gameState.setGameState(State.CARD_PICKING);
+            }
+        }
+    }
+
+    @Override
     public void defeat(GameState gameState, String nickname, int usedBatteries, boolean loseDays) throws InvalidActionException{
         if(isDefeated() || goodsExchangePhase){
             throw new InvalidActionException("Invalid action");

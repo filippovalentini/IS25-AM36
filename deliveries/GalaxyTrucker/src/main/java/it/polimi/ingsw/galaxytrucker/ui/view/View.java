@@ -460,11 +460,6 @@ public class View {
     //notifies the view about the fact that a player has to pick a card in order to continue the game
     public void updateCardPicking() {
         gameState = "CARD PICKING";
-        if(firstFlight){
-            currentCard = 9001;
-        }else{
-            currentCard = 9002;
-        }
         damagedPlayer = null;
     }
 

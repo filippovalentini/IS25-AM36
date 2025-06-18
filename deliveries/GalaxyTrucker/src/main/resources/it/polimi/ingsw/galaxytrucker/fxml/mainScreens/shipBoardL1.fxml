@@ -18,7 +18,7 @@
 
             <!-- Sfondo -->
             <ImageView fitHeight="740.0" fitWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                <Image url="@../images/cardboard/backgroundSpace.jpg" />
+                <Image url="@../../images/cardboard/backgroundSpace.jpg" />
             </ImageView>
 
             <!-- Sezione informazioni giocatore -->
@@ -38,7 +38,7 @@
 
             <!-- Immagine centrale -->
             <ImageView fitHeight="600.0" fitWidth="854.0" layoutX="191.0" layoutY="112.0" preserveRatio="true" AnchorPane.leftAnchor="191.0" AnchorPane.rightAnchor="191.0177001953125" AnchorPane.topAnchor="112.0">
-                <Image url="@../images/cardboard/shipL1.jpg" />
+                <Image url="@../../images/cardboard/shipL1.jpg" />
             </ImageView>
 
             <!-- GridPane -->

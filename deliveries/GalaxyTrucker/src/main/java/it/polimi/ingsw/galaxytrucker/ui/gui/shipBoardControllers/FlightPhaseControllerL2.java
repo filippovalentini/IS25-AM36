@@ -375,7 +375,7 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
     private void setupOtherPlayerButton(Button button) {
         button.setOnAction(event -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipBoardL2.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/shipBoardL2.fxml"));
                 ShipBoardController controller = new ShipBoardControllerL2(button.getText());
                 loader.setController(controller);
 
@@ -587,7 +587,7 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
     private void setupFlightBoardButton() {
         flightBoardButton.setOnAction(event -> {
             try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/flightBoardL2.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/flightBoardL2.fxml"));
                 Parent root = fxmlLoader.load();
 
                 FlightBoardControllerL2 controller = fxmlLoader.getController();
@@ -886,7 +886,7 @@ public class FlightPhaseControllerL2 implements FlightPhaseController {
     public void updateEndGame() throws Exception {
         Platform.runLater(() -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/endgame.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/endgame.fxml"));
                 Parent root = loader.load();
 
                 EndgameController controller = loader.getController();

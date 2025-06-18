@@ -320,7 +320,7 @@ class GameStateNormalTest {
         gameState.checkShipBoards();
         gameState.substituteGoods(player1, 2,2,Color.YELLOW,0);
         gameState.substituteGoods(player1, 2,2,Color.BLUE,1);
-        gameState.quitGame(player1);
+        gameState.quitGame(player1, false);
         gameState.saleOfGoodsReward();
         assertEquals(2, gameState.getPlayersPlay().get(player1).getCredits());
     }

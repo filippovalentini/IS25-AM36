@@ -13,6 +13,7 @@
 <?import javafx.geometry.Insets?>
 
 <?import javafx.collections.FXCollections?>
+<?import java.lang.Integer?>
 <?import java.lang.String?>
 <StackPane xmlns="http://javafx.com/javafx/23.0.1"
            xmlns:fx="http://javafx.com/fxml/1"
@@ -22,7 +23,7 @@
    <children>
       <ImageView fitWidth="1210.0" fitHeight="740.0" >
          <image>
-            <Image url="@../images/cardboard/backgroundSpace.jpg" />
+            <Image url="@../../images/cardboard/backgroundSpace.jpg" />
          </image>
       </ImageView>
 
@@ -36,46 +37,52 @@
                   alignment="CENTER">
                <children>
 
-                  <Label text="Join game"
+                  <Label text="Start a new game"
                          style="-fx-font-size: 24px; -fx-text-fill: #003366;" />
 
                   <HBox spacing="10.0" alignment="CENTER">
                      <children>
                         <Label text="Insert game ID (3-digit integer):"
                                style="-fx-text-fill: #003366;" />
-                        <TextField fx:id="joinGameIdTextField" promptText="e.g. 123" prefWidth="150.0"/>
+                        <TextField fx:id="gameIdTextField" promptText="e.g. 123" prefWidth="150.0"/>
                      </children>
                   </HBox>
 
                   <HBox spacing="10.0" alignment="CENTER">
                      <children>
-                        <Label text="Nickname:"
+                        <Label text="Number of players:"
                                style="-fx-text-fill: #003366;" />
-                        <TextField fx:id="nicknameTextField" promptText="Enter nickname" prefWidth="150.0"/>
-                     </children>
-                  </HBox>
-
-                  <HBox spacing="10.0" alignment="CENTER">
-                     <children>
-                        <Label text="Ship color:"
-                               style="-fx-text-fill: #003366;" />
-                        <ComboBox fx:id="shipColorComboBox" prefWidth="150.0">
+                        <ComboBox fx:id="playersComboBox" prefWidth="150.0">
                            <items>
                               <FXCollections fx:factory="observableArrayList">
-                                 <String fx:value="🟦"/>
-                                 <String fx:value="🟩"/>
-                                 <String fx:value="🟥"/>
-                                 <String fx:value="🟨"/>
+                                 <Integer fx:value="2"/>
+                                 <Integer fx:value="3"/>
+                                 <Integer fx:value="4"/>
                               </FXCollections>
                            </items>
                         </ComboBox>
-                        <!-- Le iconcine verranno caricate dal controller -->
                      </children>
                   </HBox>
 
-                  <Button fx:id="confirmJoinButton" text="Join" onAction="#onConfirmJoinClick"
+                  <HBox spacing="10.0" alignment="CENTER">
+                     <children>
+                        <Label text="Type of game:"
+                               style="-fx-text-fill: #003366;" />
+                        <ComboBox fx:id="gameTypeComboBox" prefWidth="150.0">
+                           <items>
+                              <FXCollections fx:factory="observableArrayList">
+                                 <String fx:value="Standard Game"/>
+                                 <String fx:value="First Flight"/>
+                              </FXCollections>
+                           </items>
+                        </ComboBox>
+                     </children>
+                  </HBox>
+
+                  <Button fx:id="confirmStartButton" text="Start" onAction="#onConfirmStartClick"
                           style="-fx-background-color: #003366; -fx-text-fill: #87CEFA;" />
 
+                  <!-- ERROR LABEL -->
                   <Label fx:id="errorLabel" text="Insert a valid game ID"
                          style="-fx-text-fill: red; -fx-font-size: 14px;"
                          visible="false" />

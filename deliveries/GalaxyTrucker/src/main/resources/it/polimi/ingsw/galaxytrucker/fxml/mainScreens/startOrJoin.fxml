@@ -4,12 +4,11 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
 
 <StackPane xmlns="http://javafx.com/javafx/23.0.1"
            xmlns:fx="http://javafx.com/fxml/1"
@@ -19,7 +18,7 @@
     <children>
         <ImageView fitWidth="1210.0" fitHeight="740.0" >
             <image>
-                <Image url="@../images/cardboard/backgroundSpace.jpg" />
+                <Image url="@../../images/cardboard/backgroundSpace.jpg" />
             </image>
         </ImageView>
 
@@ -33,28 +32,21 @@
                       alignment="CENTER">
                     <children>
 
-                        <Label text="Select network technology"
+                        <Label text="Start a new game or Join one"
                                style="-fx-font-size: 24px; -fx-text-fill: #003366;" />
 
-                        <HBox spacing="20.0" alignment="CENTER">
+                        <HBox spacing="30.0" alignment="CENTER">
                             <children>
-                                <Button fx:id="rmiButton" text="RMI" onAction="#onRMIButtonClick"
+                                <Button fx:id="startButton" text="Start" onAction="#onStartClick"
                                         style="-fx-background-color: #003366; -fx-text-fill: #87CEFA;" />
-                                <Button fx:id="socketButton" text="Socket" onAction="#onSocketButtonClick"
+                                <Button fx:id="joinButton" text="Join" onAction="#onJoinClick"
                                         style="-fx-background-color: #003366; -fx-text-fill: #87CEFA;" />
                             </children>
                         </HBox>
 
-                        <HBox spacing="10.0" alignment="CENTER">
-                            <children>
-                                <Label text="IP:" style="-fx-text-fill: #003366;" />
-                                <TextField fx:id="ipTextField" promptText="Enter IP..." prefWidth="200.0"/>
-                            </children>
-                        </HBox>
-
-                        <!-- LABEL DI ERRORE -->
-                        <Label fx:id="errorLabel" text="Insert a valid IP"
-                               style="-fx-text-fill: red; -fx-font-size: 14px;" visible="false"/>
+                        <Label fx:id="errorLabel"
+                               style="-fx-text-fill: red; -fx-font-size: 14px;"
+                               visible="false" />
 
                     </children>
                     <padding>

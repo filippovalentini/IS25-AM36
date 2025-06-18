@@ -26,7 +26,7 @@ public class TestEndgameGUI extends Application {
         GuiInterface.getInstance().updatePlayerCredits("nico", 20);
         //endgame state
         GuiInterface.getInstance().updateEndGame();
-        FXMLLoader fxmlLoader = new FXMLLoader(TestEndgameGUI.class.getResource("/it/polimi/ingsw/galaxytrucker/fxml/endgame.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(TestEndgameGUI.class.getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/endgame.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1210, 740);
         stage.setTitle("Galaxy Trucker");
         Image icon = new Image(getClass().getResourceAsStream("/it/polimi/ingsw/galaxytrucker/images/galaxyTruckerAppIcon.png"));

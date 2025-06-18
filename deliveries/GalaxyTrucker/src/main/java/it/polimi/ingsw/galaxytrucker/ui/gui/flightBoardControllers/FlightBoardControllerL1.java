@@ -213,7 +213,7 @@ public class FlightBoardControllerL1 implements FlightBoardController {
 
     public void goBackToShipBuilding(){
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipBuildingL1.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/shipBuildingL1.fxml"));
             Parent root = fxmlLoader.load();
 
             ShipBuildingControllerL1 controller = fxmlLoader.getController();
@@ -234,7 +234,7 @@ public class FlightBoardControllerL1 implements FlightBoardController {
 
     public void goBackToShipControl(){
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipControlL1.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/shipControlL1.fxml"));
             Parent root = fxmlLoader.load();
 
             ShipControlControllerL1 controller = fxmlLoader.getController();
@@ -314,7 +314,7 @@ public class FlightBoardControllerL1 implements FlightBoardController {
     public void updateShipControl() throws Exception {
         Platform.runLater(() -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/shipControlL1.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/shipControlL1.fxml"));
                 Parent root = loader.load();
 
                 ShipControlControllerL1 controller = loader.getController();
@@ -367,7 +367,7 @@ public class FlightBoardControllerL1 implements FlightBoardController {
     public void updateEndGame() throws Exception {
         Platform.runLater(() -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/endgame.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/endgame.fxml"));
                 Parent root = loader.load();
 
                 EndgameController controller = loader.getController();

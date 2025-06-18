@@ -19,14 +19,14 @@
               <!-- Background -->
               <ImageView fitHeight="795.0" fitWidth="1221.0" layoutX="-4.0" layoutY="-4.0">
                   <image>
-                      <Image url="@../images/cardboard/backgroundSpace.jpg" />
+                      <Image url="@../../images/cardboard/backgroundSpace.jpg" />
                   </image>
               </ImageView>
       
               <!-- Board -->
               <ImageView fitHeight="621.0" fitWidth="1166.0" layoutX="36.0" layoutY="79.0" pickOnBounds="true" preserveRatio="true">
                   <image>
-                      <Image url="@../images/cardboard/boardL1.png" />
+                      <Image url="@../../images/cardboard/boardL1.png" />
                   </image>
               </ImageView>
       

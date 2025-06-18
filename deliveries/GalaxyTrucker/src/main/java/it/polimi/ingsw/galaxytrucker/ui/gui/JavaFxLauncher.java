@@ -11,7 +11,7 @@ import java.io.IOException;
 public class JavaFxLauncher extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(JavaFxLauncher.class.getResource("/it/polimi/ingsw/galaxytrucker/fxml/selectNetwork.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(JavaFxLauncher.class.getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/selectNetwork.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
 
         GameSetupController controller = fxmlLoader.getController();
