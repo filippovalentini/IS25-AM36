@@ -76,7 +76,7 @@ class CombatZoneTest {
     void combatZoneLV1completeTest(){
         //  PHASE 1
         gameState.pickGivenCard(combatZoneLV1);
-        assertEquals(22, gameState.getPlayersPos().get(player2).getCell());
+        assertEquals(21, gameState.getPlayersPos().get(player2).getCell());
         assertEquals(0, gameState.getPlayersPos().get(player1).getCell());
         assertEquals(player1, gameState.getTurnPlayer());
         assertEquals(2, combatZoneLV1.getPhase());
@@ -109,7 +109,7 @@ class CombatZoneTest {
         // PHASE 1
         gameState.useBatteries(player2, 0);
         gameState.useBatteries(player1, 1);
-        assertEquals(21, gameState.getPlayersPos().get(player2).getCell());
+        assertEquals(20, gameState.getPlayersPos().get(player2).getCell());
         assertEquals(0, gameState.getPlayersPos().get(player1).getCell());
         assertEquals(2, gameState.getNumberBatteries(player1));
         assertEquals(player1, gameState.getTurnPlayer());

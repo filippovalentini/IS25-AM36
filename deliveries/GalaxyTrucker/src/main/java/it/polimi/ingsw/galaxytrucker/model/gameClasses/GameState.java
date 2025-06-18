@@ -169,6 +169,14 @@ public class GameState {
     public int getEngineStrength(String nickname, int usedBatteries){
         return playersPlay.get(nickname).getEngineStrength(usedBatteries);
     }
+    //returns the cell numbers of the busy (taken by the players) cells on the flight board
+    public List<Integer> getBusyCells(){
+        List<Integer> busyCells = new ArrayList<>();
+        for(Position p : playersPos.values()){
+            busyCells.add(p.getCell());
+        }
+        return busyCells;
+    }
 
 
     //
@@ -1063,7 +1071,7 @@ public class GameState {
     }
     //updates the position of a player on the ship board
     public void changePlayerPosition(String nickname, int cells) {
-        playersPos.get(nickname).changePosition(cells);
+        playersPos.get(nickname).changePosition(getBusyCells(), cells);
 
         Position position = playersPos.get(nickname);
         for(VirtualView view: clients.values()){

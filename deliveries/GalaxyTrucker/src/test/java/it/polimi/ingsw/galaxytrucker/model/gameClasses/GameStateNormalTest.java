@@ -95,7 +95,7 @@ class GameStateNormalTest {
         gameState.setPosition(player2, 1);
         gameState.changePlayerPosition(player1, 3);
         gameState.changePlayerPosition(player2, -1);
-        assertEquals(3, gameState.getPlayersPos().get(player1).getCell());
+        assertEquals(4, gameState.getPlayersPos().get(player1).getCell());
         assertEquals(0, gameState.getPlayersPos().get(player2).getCell());
     }
 

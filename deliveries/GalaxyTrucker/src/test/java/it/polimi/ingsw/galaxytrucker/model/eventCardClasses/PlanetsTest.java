@@ -76,7 +76,7 @@ class PlanetsTest {
     void testPlanetLanding() {
        int numberPlanet = 0;
        assertDoesNotThrow(() -> gameState.planetLanding(nickname, numberPlanet));
-       assertEquals(3, gameState.getPlayersPos().get(nickname).getCell());
+       assertEquals(2, gameState.getPlayersPos().get(nickname).getCell());
     }
 
     @Test
