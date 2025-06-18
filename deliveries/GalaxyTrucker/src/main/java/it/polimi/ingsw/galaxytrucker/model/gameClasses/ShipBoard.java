@@ -813,6 +813,19 @@ public class ShipBoard {
         }
         return numberGoods;
     }
+
+    //returns the number of aliens (purple or brown depending on the parameter) in the ship board
+    public int getNumberAliens(boolean purpleAliens){
+        int numberAliens = 0;
+        for (List<Component> componentRow : assembledComponents) {
+            for (Component component : componentRow) {
+                if(component.hasAlien(purpleAliens)){
+                    numberAliens++;
+                }
+            }
+        }
+        return numberAliens;
+    }
     //this method removes numberGoods goods of a specific color from the ship board; if there aren't enough
     //goods of that color, it returns the number of missing goods, otherwise it returns 0
     public int removeSpecificGoods(Color color, int numberGoods){
@@ -943,13 +956,25 @@ public class ShipBoard {
         int lateralDoubleCannons = ((activatedDoubleCannons > forwardDoubleCannons) ? activatedDoubleCannons-forwardDoubleCannons : 0);
         int forwardSingleCannons = getNumberForwardSingleCannons();
         int lateralSingleCannons = getNumberSingleCannons() - forwardSingleCannons;
-        return lateralDoubleCannons + forwardDoubleCannons*2 + lateralSingleCannons*0.5 + forwardSingleCannons;
+        int purpleAliens = getNumberAliens(true);
+        double cannonStrength = lateralDoubleCannons + forwardDoubleCannons*2 + lateralSingleCannons*0.5 + forwardSingleCannons;
+        if(cannonStrength > 0){
+            return cannonStrength + 2*purpleAliens;
+        }else{
+            return cannonStrength;
+        }
     }
     //returns the engine strength of the ship board, removing the given batteries in order to activate double engines
     public int getEngineStrength(int usedBatteries) throws NoBatteriesException {
         int activatedDoubleEngines = Math.min(getNumberDoubleEngines(), usedBatteries);
         removeBatteries(activatedDoubleEngines);
-        return activatedDoubleEngines*2 + getNumberSingleEngines();
+        int brownAliens = getNumberAliens(false);
+        int engineStrength = activatedDoubleEngines*2 + getNumberSingleEngines();
+        if(engineStrength > 0){
+            return engineStrength + 2*brownAliens;
+        }else{
+            return engineStrength;
+        }
     }
     //returns the overall price for all the goods carried by the player's ship
     public int getGoodsPrice(){

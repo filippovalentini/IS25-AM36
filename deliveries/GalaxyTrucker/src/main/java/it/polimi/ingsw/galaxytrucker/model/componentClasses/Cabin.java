@@ -18,11 +18,13 @@ public class Cabin extends Component {
         brownAlien = false;
     }
 
-    public boolean hasPurpleAlien() {
-        return purpleAlien;
-    }
-    public boolean hasBrownAlien() {
-        return brownAlien;
+    @Override
+    public boolean hasAlien(boolean isPurple) {
+        if(isPurple){
+            return this.purpleAlien;
+        }else{
+            return this.brownAlien;
+        }
     }
 
     @Override
