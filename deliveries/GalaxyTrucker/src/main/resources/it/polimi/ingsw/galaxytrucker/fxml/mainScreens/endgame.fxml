@@ -3,13 +3,13 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.control.ListView?>
 <StackPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.otherControllers.EndgameController">
 
 <children>
@@ -22,9 +22,9 @@
     <AnchorPane>
         <children>
             <VBox alignment="CENTER" spacing="15.0" style="-fx-background-color: #4682B4;" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="150.0">
-                <Label style="-fx-font-size: 24px; -fx-text-fill: #003366;" text="Game Ended" />
-                <Button fx:id="findAnotherGameButton" onAction="#onFindAnotherGameClick" style="-fx-background-color: #003366; -fx-text-fill: #87CEFA;" text="Find another game" />
-                <Button fx:id="quitButton" onAction="#onQuitButtonClick" style="-fx-background-color: #003366; -fx-text-fill: #87CEFA;" text="Quit" />
+                <Label style="-fx-font-size: 28px; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Game Over" />
+                <Button fx:id="findAnotherGameButton" onAction="#onFindAnotherGameClick" style="-fx-background-color: #003366; -fx-text-fill: #87CEFA; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Find another game" />
+                <Button fx:id="quitButton" onAction="#onQuitButtonClick" style="-fx-background-color: #003366; -fx-text-fill: #87CEFA; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Quit" />
                 <ListView fx:id="playerList" prefHeight="200" prefWidth="360" />
                 <padding>
                     <Insets bottom="20" left="20" right="20" top="20" />

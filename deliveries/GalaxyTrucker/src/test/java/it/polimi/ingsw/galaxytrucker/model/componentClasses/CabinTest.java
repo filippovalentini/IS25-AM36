@@ -33,8 +33,8 @@ class CabinTest {
     @Test
     void testAddAlienWithSpace() {
         cabin.addAlien(true);
-        assertTrue(cabin.hasPurpleAlien());
-        assertFalse(cabin.hasBrownAlien());
+        assertTrue(cabin.hasAlien(true));
+        assertFalse(cabin.hasAlien(false));
     }
 
     @Test
@@ -65,9 +65,9 @@ class CabinTest {
     void testRemoveAlien(){
         cabin.addAlien(true);
         cabin.removeAlien(true);
-        assertFalse(cabin.hasPurpleAlien());
+        assertFalse(cabin.hasAlien(true));
         cabin.addAlien(false);
         cabin.removeAlien(false);
-        assertFalse(cabin.hasBrownAlien());
+        assertFalse(cabin.hasAlien(false));
     }
 }

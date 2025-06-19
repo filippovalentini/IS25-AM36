@@ -169,5 +169,6 @@ public class Component {
     public int goodsPrice(){ return 0;}
     public boolean isFull(){ return true;}
     public boolean supportsAlien(boolean purpleAlien){ return false;}
+    public boolean hasAlien(boolean isPurple){ return false;}
 
 }

@@ -24,12 +24,13 @@
             <GridPane fx:id="myGridPane" layoutX="215.0" prefHeight="550.0" prefWidth="779.0" AnchorPane.bottomAnchor="96.0" AnchorPane.leftAnchor="215.0" AnchorPane.rightAnchor="216.0" AnchorPane.topAnchor="94.0">
                 <columnConstraints>
                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="147.0" minWidth="10.0" prefWidth="120.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="147.0" minWidth="10.0" prefWidth="120.0" />
                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="148.0" minWidth="10.0" prefWidth="108.0" />
                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="128.0" minWidth="10.0" prefWidth="111.0" />
                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.0" minWidth="10.0" prefWidth="110.0" />
                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="153.0" minWidth="10.0" prefWidth="107.0" />
                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="147.0" minWidth="10.0" prefWidth="110.0" />
-                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="143.0" minWidth="10.0" prefWidth="119.0" />
+               <ColumnConstraints hgrow="SOMETIMES" maxWidth="143.0" minWidth="10.0" prefWidth="119.0" />
                 </columnConstraints>
                 <rowConstraints>
                     <RowConstraints maxHeight="146.0" minHeight="10.0" prefHeight="112.0" vgrow="SOMETIMES" />
@@ -39,25 +40,21 @@
                     <RowConstraints maxHeight="142.0" minHeight="10.0" prefHeight="112.0" vgrow="SOMETIMES" />
                 </rowConstraints>
             </GridPane>
-            <Button fx:id="player1ShipButton" layoutX="1067.0" layoutY="78.0" mnemonicParsing="false" prefHeight="96.0" prefWidth="95.0" text="no player" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" />
+            <Button fx:id="player1ShipButton" layoutX="1067.0" layoutY="78.0" mnemonicParsing="false" prefHeight="96.0" prefWidth="95.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="no player" />
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1478e363" height="50.0" layoutX="3.0" stroke="BLACK" strokeType="INSIDE" width="1203.0" />
-            <Button fx:id="pickComponent" layoutX="31.0" layoutY="527.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="140.0" text="pick" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" />
-            <Button fx:id="setButton" layoutX="440.0" layoutY="679.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="103.0" text="assemble" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" />
-            <Button fx:id="discardButton" layoutX="667.0" layoutY="679.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="103.0" text="release" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" />
+            <Button fx:id="pickComponent" layoutX="27.0" layoutY="527.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="144.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="pick" />
+            <Button fx:id="setButton" layoutX="440.0" layoutY="679.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="103.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="assemble" />
+            <Button fx:id="discardButton" layoutX="667.0" layoutY="679.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="103.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="release" />
             <Pane fx:id="handComponentArea" layoutX="23.0" layoutY="288.0" prefHeight="150.0" prefWidth="157.0">
                 <children>
-                    <Button fx:id="handComponentButton" layoutX="4.0" maxHeight="150.0" maxWidth="150.0" minHeight="150.0" minWidth="150.0" prefHeight="150.0" prefWidth="150.0" text="" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" />
+                    <Button fx:id="handComponentButton" layoutX="4.0" maxHeight="150.0" maxWidth="150.0" minHeight="150.0" minWidth="150.0" prefHeight="150.0" prefWidth="150.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="" />
                 </children>
             </Pane>
-            <Button fx:id="viewShownComponentButton" layoutX="31.0" layoutY="579.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="141.0" text="shown components" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" />
-            <Button fx:id="player2ShipButton" layoutX="1067.0" layoutY="198.0" mnemonicParsing="false" prefHeight="96.0" prefWidth="95.0" text="no player" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" />
-            <Button fx:id="player3ShipButton" layoutX="1067.0" layoutY="315.0" mnemonicParsing="false" prefHeight="96.0" prefWidth="95.0" text="no player" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" />
-            <Button fx:id="rotateButton" layoutX="30.0" layoutY="473.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="143.0" text="rotate" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" />
-            <Label fx:id="playerNameLabel" layoutX="25.0" layoutY="126.0" prefHeight="44.0" prefWidth="97.0" text="Label" textFill="WHITE" />
-            <Label fx:id="playerColorLabel" layoutX="25.0" layoutY="196.0" prefHeight="44.0" prefWidth="97.0" text="Label" textFill="WHITE" />
-            <Button fx:id="flightBoardButton" layoutX="1040.0" layoutY="473.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="148.0" text="flight board" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" />
-            <Label layoutX="25.0" layoutY="161.0" prefHeight="44.0" prefWidth="97.0" text="Color" textFill="WHITE" />
-            <Label layoutX="25.0" layoutY="94.0" prefHeight="44.0" prefWidth="97.0" text="Player" textFill="WHITE" />
+            <Button fx:id="viewShownComponentButton" layoutX="28.0" layoutY="579.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="144.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="shown components" />
+            <Button fx:id="player2ShipButton" layoutX="1067.0" layoutY="198.0" mnemonicParsing="false" prefHeight="96.0" prefWidth="95.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="no player" />
+            <Button fx:id="player3ShipButton" layoutX="1067.0" layoutY="315.0" mnemonicParsing="false" prefHeight="96.0" prefWidth="95.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="no player" />
+            <Button fx:id="rotateButton" layoutX="26.0" layoutY="473.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="147.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="rotate" />
+            <Button fx:id="flightBoardButton" layoutX="1040.0" layoutY="473.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="148.0" style="-fx-background-color: #87CEFA;-fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="flight board" />
             <Pane fx:id="errorPane" layoutX="696.0" layoutY="14.0" opacity="0.0" prefHeight="30.0" prefWidth="500.0">
                 <children>
                     <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffb2b2" height="30.0" stroke="BLACK" strokeType="INSIDE" width="500.0" />
@@ -69,6 +66,14 @@
 
             <!-- Green message label -->
             <Label fx:id="gameStateLabel" layoutX="18.0" layoutY="8.0" prefHeight="44.0" prefWidth="544.0" style="-fx-text-fill: #00ff00; -fx-font-size: 16px; -fx-font-weight: bold; -fx-font-family: 'Courier New';" text="Info: ready to pick a component." visible="true" />
+         <Pane layoutX="27.0" layoutY="90.0" prefHeight="151.0" prefWidth="144.0" style="-fx-background-color: #87CEFA;">
+            <children>
+                  <Label layoutX="5.0" layoutY="-4.0" prefHeight="44.0" prefWidth="97.0" style="-fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Player:" textFill="WHITE" />
+                  <Label fx:id="playerNameLabel" layoutX="5.0" layoutY="25.0" prefHeight="44.0" prefWidth="97.0" style="-fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Label" textFill="WHITE" />
+                  <Label layoutX="5.0" layoutY="60.0" prefHeight="44.0" prefWidth="97.0" style="-fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Color:" textFill="WHITE" />
+                  <Label fx:id="playerColorLabel" layoutX="5.0" layoutY="93.0" prefHeight="44.0" prefWidth="97.0" style="-fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Label" textFill="WHITE" />
+            </children>
+         </Pane>
 
         </AnchorPane>
     </content>

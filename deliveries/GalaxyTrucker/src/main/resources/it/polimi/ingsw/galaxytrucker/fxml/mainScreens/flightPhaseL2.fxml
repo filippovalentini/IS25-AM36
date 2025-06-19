@@ -27,18 +27,18 @@
                 <Image url="@../../images/cardboard/shipL2.jpg" />
             </ImageView>
 
-            <Pane layoutX="23.0" layoutY="65.0" prefHeight="263.0" prefWidth="146.0" style="-fx-background-color: #87CEFA;">
+            <Pane layoutX="23.0" layoutY="65.0" prefHeight="263.0" prefWidth="152.0" style="-fx-background-color: #87CEFA;">
                 <children>
-                    <Label layoutX="10.0" layoutY="0.0" prefHeight="26.0" prefWidth="53.0" style="-fx-font-size: 14px; -fx-text-fill: #003366;" text="Player" />
-                    <Label fx:id="playerNameLabel" layoutX="10.0" layoutY="20.0" prefHeight="28.0" prefWidth="130.0" style="-fx-text-fill: #003366;" />
+                    <Label layoutX="10.0" layoutY="0.0" prefHeight="26.0" prefWidth="53.0" style="-fx-font-size: 14px; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Player" />
+                    <Label fx:id="playerNameLabel" layoutX="10.0" layoutY="20.0" prefHeight="28.0" prefWidth="130.0" style=" -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" />
 
-                    <Label layoutX="10.0" layoutY="50.0" prefHeight="18.0" prefWidth="89.0" style="-fx-font-size: 14px; -fx-text-fill: #003366;" text="Color" />
-                    <Label fx:id="playerColorLabel" layoutX="10.0" layoutY="70.0" prefHeight="27.0" prefWidth="130.0" style="-fx-text-fill: #003366;" />
-               <Label layoutX="10.0" layoutY="107.0" prefHeight="18.0" prefWidth="103.0" style="-fx-font-size: 14px; -fx-text-fill: #003366;" text="Credits" />
-               <Label fx:id="playerCreditsLabel" layoutX="10.0" layoutY="125.0" prefHeight="27.0" prefWidth="130.0" style="-fx-text-fill: #003366;" />
-               <Label layoutX="10.0" layoutY="152.0" prefHeight="18.0" prefWidth="129.0" style="-fx-font-size: 14px; -fx-text-fill: #003366;" text="Lost components" />
-               <Label fx:id="lostComponentsLabel" layoutX="14.0" layoutY="172.0" prefHeight="27.0" prefWidth="130.0" style="-fx-text-fill: #003366;" />
-               <Label layoutX="10.0" layoutY="199.0" prefHeight="27.0" prefWidth="129.0" style="-fx-font-size: 14px; -fx-text-fill: black;" text="Status" />
+                    <Label layoutX="10.0" layoutY="50.0" prefHeight="18.0" prefWidth="89.0" style="-fx-font-size: 14px; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Color" />
+                    <Label fx:id="playerColorLabel" layoutX="10.0" layoutY="70.0" prefHeight="27.0" prefWidth="130.0" style=" -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" />
+               <Label layoutX="10.0" layoutY="107.0" prefHeight="18.0" prefWidth="103.0" style="-fx-font-size: 14px; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Credits" />
+               <Label fx:id="playerCreditsLabel" layoutX="10.0" layoutY="125.0" prefHeight="27.0" prefWidth="130.0" style=" -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" />
+               <Label layoutX="10.0" layoutY="152.0" prefHeight="18.0" prefWidth="137.0" style="-fx-font-size: 14px; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Lost components:" />
+               <Label fx:id="lostComponentsLabel" layoutX="14.0" layoutY="172.0" prefHeight="27.0" prefWidth="130.0" style=" -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" />
+               <Label layoutX="10.0" layoutY="199.0" prefHeight="27.0" prefWidth="129.0" style="-fx-font-size: 14px; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Status" />
                <Label fx:id="statusLabel" layoutX="9.0" layoutY="226.0" prefHeight="27.0" prefWidth="129.0" style="-fx-font-size: 18px; -fx-text-fill: black;" text="Status" />
                 </children>
             </Pane>
@@ -77,19 +77,19 @@
                     <RowConstraints maxHeight="142.0" minHeight="10.0" prefHeight="93.0" vgrow="SOMETIMES" />
                 </rowConstraints>
             </GridPane>
-            <Button fx:id="player1ShipButton" layoutX="707.0" layoutY="77.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="95.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="Player 1" />
+            <Button fx:id="player1ShipButton" layoutX="707.0" layoutY="77.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="95.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Player 1" />
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1478e363" height="50.0" layoutX="3.0" stroke="BLACK" strokeType="INSIDE" width="1203.0" />
-            <Button fx:id="pickCardButton" layoutX="34.0" layoutY="615.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="124.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text=" pick card" />
+            <Button fx:id="pickCardButton" layoutX="34.0" layoutY="615.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="124.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text=" pick card" />
             <Pane fx:id="pickedCardArea" layoutX="16.0" layoutY="369.0" prefHeight="219.0" prefWidth="160.0">
                 <children>
 
                     <Button fx:id="pickedCardButton" layoutX="1.0" maxHeight="219.0" maxWidth="158.0" minHeight="150.0" minWidth="150.0" prefHeight="219.0" prefWidth="157.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="" />      </children>
             </Pane>
-            <Button fx:id="player2ShipButton" layoutX="818.0" layoutY="78.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="95.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="Player 2" />
-            <Button fx:id="player3ShipButton" layoutX="926.0" layoutY="78.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="95.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="Player 3" />
-            <Button fx:id="destroyButton" layoutX="489.0" layoutY="673.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="103.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="destroy" />
-            <Button fx:id="flightBoardButton" layoutX="1065.0" layoutY="67.0" mnemonicParsing="false" prefHeight="62.0" prefWidth="95.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="flight board" />
-         <Button fx:id="diceButton" layoutX="270.0" layoutY="77.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="103.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="throw dice" />
+            <Button fx:id="player2ShipButton" layoutX="818.0" layoutY="78.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="95.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Player 2" />
+            <Button fx:id="player3ShipButton" layoutX="926.0" layoutY="78.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="95.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Player 3" />
+            <Button fx:id="destroyButton" layoutX="489.0" layoutY="673.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="103.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="destroy" />
+            <Button fx:id="flightBoardButton" layoutX="1065.0" layoutY="67.0" mnemonicParsing="false" prefHeight="62.0" prefWidth="116.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="flight board" />
+         <Button fx:id="diceButton" layoutX="270.0" layoutY="77.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="103.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="throw dice" />
          <Pane fx:id="dice1Pane" layoutX="398.0" layoutY="64.0" prefHeight="67.0" prefWidth="73.0">
             <children>
                <Button fx:id="dice1Button" mnemonicParsing="false" prefHeight="66.0" prefWidth="72.0" style="-fx-background-color: #87CEFA;" />
@@ -100,34 +100,31 @@
                <Button fx:id="dice2Button" mnemonicParsing="false" prefHeight="67.0" prefWidth="73.0" style="-fx-background-color: #87CEFA;" />
             </children>
          </Pane>
-         <Label layoutX="929.0" layoutY="145.0" prefHeight="52.0" prefWidth="227.0" text="IT'S THE TURN OF" textFill="WHITE">
-            <font>
-               <Font size="24.0" />
-            </font>
-         </Label>
-         <Label fx:id="turnPlayerLabel" layoutX="930.0" layoutY="184.0" prefHeight="52.0" prefWidth="204.0" textFill="WHITE">
-            <font>
-               <Font size="24.0" />
-            </font>
-         </Label>
-         <Button fx:id="hitShipButton" layoutX="926.0" layoutY="298.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="212.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="HIT SHIP" />
-         <Label layoutX="929.0" layoutY="246.0" prefHeight="52.0" prefWidth="227.0" text="ACTIONS" textFill="WHITE">
-            <font>
-               <Font size="24.0" />
-            </font>
-         </Label>
-         <Button fx:id="planetLandingButton" layoutX="926.0" layoutY="336.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="212.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="PLANET LANDING" />
-         <Button fx:id="crewLandingButton" layoutX="926.0" layoutY="373.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="212.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="CREW LANDING" />
-         <Button fx:id="defeatEnemyButton" layoutX="926.0" layoutY="409.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="212.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="DEFEAT ENEMY" />
-         <Button fx:id="loadGoodsButton" layoutX="926.0" layoutY="444.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="212.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="LOAD GOODS" />
-         <Button fx:id="switchGoodsButton" layoutX="926.0" layoutY="479.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="212.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="SWITCH GOODS" />
-         <Button fx:id="useBatteriesButton" layoutX="926.0" layoutY="518.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="212.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="USE BATTERIES" />
-         <Button fx:id="flyButton" layoutX="926.0" layoutY="552.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="212.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="FLY" />
-         <Button fx:id="skipButton" layoutX="926.0" layoutY="588.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="212.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="SKIP TURN" />
-         <Button fx:id="quitButton" layoutX="969.0" layoutY="673.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="103.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="quit game" />
-
-            <Pane fx:id="popupContainer" layoutX="697.0" layoutY="58.0" prefHeight="234.0" prefWidth="484.0" style="-fx-background-color: rgba(255,255,255,0.95); -fx-border-color: #003366; -fx-border-width: 2;" visible="false">
-            </Pane>
+         <Button fx:id="hitShipButton" layoutX="939.0" layoutY="304.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="212.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="HIT SHIP" />
+         <Button fx:id="planetLandingButton" layoutX="939.0" layoutY="340.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="212.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="PLANET LANDING" />
+         <Button fx:id="crewLandingButton" layoutX="939.0" layoutY="376.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="212.0" style="-fx-background-color: #87CEFA;  -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="CREW LANDING" />
+         <Button fx:id="defeatEnemyButton" layoutX="939.0" layoutY="410.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="212.0" style="-fx-background-color: #87CEFA;  -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="DEFEAT ENEMY" />
+         <Button fx:id="loadGoodsButton" layoutX="939.0" layoutY="443.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="212.0" style="-fx-background-color: #87CEFA;  -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="LOAD GOODS" />
+         <Button fx:id="switchGoodsButton" layoutX="939.0" layoutY="479.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="212.0" style="-fx-background-color: #87CEFA;  -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="SWITCH GOODS" />
+         <Button fx:id="useBatteriesButton" layoutX="939.0" layoutY="518.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="212.0" style="-fx-background-color: #87CEFA;  -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="USE BATTERIES" />
+         <Button fx:id="flyButton" layoutX="939.0" layoutY="553.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="212.0" style="-fx-background-color: #87CEFA;  -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="FLY" />
+         <Button fx:id="skipButton" layoutX="939.0" layoutY="588.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="212.0" style="-fx-background-color: #87CEFA;  -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="SKIP TURN" />
+         <Button fx:id="quitButton" layoutX="994.0" layoutY="673.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="103.0" style="-fx-background-color: #87CEFA;  -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="quit game" />
+         <Pane layoutX="917.0" layoutY="178.0" prefHeight="95.0" prefWidth="256.0" style="-fx-background-color: #87CEFA;">
+            <children>
+               <Label layoutX="2.0" layoutY="2.0" prefHeight="39.0" prefWidth="246.0" style="-fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="IT'S THE TURN OF:" textFill="WHITE">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+               </Label>
+               <Label fx:id="turnPlayerLabel" layoutX="2.0" layoutY="41.0" prefHeight="28.0" prefWidth="204.0" style="-fx-text-fill: green;" textFill="WHITE">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+               </Label>
+            </children>
+         </Pane>
+         <Pane fx:id="popupContainer" layoutX="702.0" layoutY="58.0" prefHeight="234.0" prefWidth="484.0" />
 
         </AnchorPane>
     </content>

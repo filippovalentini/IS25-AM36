@@ -18,11 +18,12 @@
 
         <!-- Central box -->
         <VBox alignment="TOP_CENTER" layoutX="395.0" layoutY="208.0" prefHeight="350" prefWidth="400" spacing="20" style="-fx-background-color: #4682B4; -fx-padding: 20;">
-            <Label fx:id="timerTitle" visible="false" style="-fx-font-size: 20px; -fx-text-fill: #003366; -fx-font-weight: bold;" text="ASSEMBLING PHASE STARTS IN..." wrapText="true" />
-            <Label fx:id="timerLabel" visible="false" style="-fx-font-size: 48px; -fx-text-fill: #003366; -fx-font-weight: bold;" text="3" />
-            <Label style="-fx-font-size: 20px; -fx-text-fill: #003366; -fx-font-weight: bold;" text="WAITING FOR PLAYERS..." />
+            <Label fx:id="timerTitle" style="-fx-font-size: 20px; -fx-text-fill: #003366; -fx-font-weight: bold;" text="ASSEMBLING PHASE STARTS IN..." visible="false" wrapText="true" />
+            <Label fx:id="timerLabel" style="-fx-font-size: 48px; -fx-text-fill: #003366; -fx-font-weight: bold;" text="3" visible="false" />
+            <Label style="-fx-font-size: 20px; -fx-text-fill: #003366; -fx-font-weight: bold; -fx-font-family: 'Courier New';" text="WAITING FOR PLAYERS..." />
             <!-- Player list -->
             <ListView fx:id="playerList" prefHeight="200" prefWidth="360" />
         </VBox>
+      <Label layoutX="540.0" layoutY="84.0" prefHeight="96.0" prefWidth="126.0" style="-fx-text-fill: #87CEFA; -fx-font-family: 'Courier New'; -fx-font-size: 38px; -fx-font-weight: bold;" text="LOBBY" />
     </children>
 </AnchorPane>

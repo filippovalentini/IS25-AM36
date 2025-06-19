@@ -235,7 +235,7 @@ class ShipBoardTest {
         shipBoard.assembleComponent(1,4); // right to the cabinForAlien
         shipBoard.addAlien(true,1,3); //add alien
         assertTrue(shipBoard.getAssembledComponent(1,3).hasMembers());
-        assertTrue(((Cabin)shipBoard.getAssembledComponent(1, 3)).hasPurpleAlien());
+        assertTrue(((Cabin)shipBoard.getAssembledComponent(1, 3)).hasAlien(true));
     }
 
     @Test
