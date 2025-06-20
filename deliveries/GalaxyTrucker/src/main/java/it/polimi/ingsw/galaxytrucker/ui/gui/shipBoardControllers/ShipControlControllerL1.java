@@ -448,7 +448,22 @@ public class ShipControlControllerL1 implements ShipControlController {
     @Override
     public void updateCardPicking() throws Exception {
         Platform.runLater(() -> {
-            gameStateLabel.setText("CARD PICKING");
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/flightPhaseL1.fxml"));
+                Parent root = fxmlLoader.load();
+
+                FlightPhaseControllerL1 controller = fxmlLoader.getController();
+                controller.setServer(this.server);
+                controller.setPlayerInfo(this.gameID, this.playerNickname, this.playerColor);
+                GuiInterface.getInstance().setFlightPhaseController(controller);
+
+                controller.setControlledStage(controlledStage);
+                controlledStage.setScene(new Scene(root, 1210, 740));
+                controlledStage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
     }
 
