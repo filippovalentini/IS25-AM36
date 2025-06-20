@@ -1,6 +1,7 @@
 package it.polimi.ingsw.galaxytrucker.ui.view;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
+import it.polimi.ingsw.galaxytrucker.model.enumerations.Connector;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.List;
 
 public class ViewComponent {
     private String imageID;
+    private List<Connector> sides;
     private Orientation orientation;
     private int batteries;
     private int crew;
@@ -90,5 +92,10 @@ public class ViewComponent {
     }
     public int getNumberGoods() {
         return goods.size();
+    }
+
+    @Override
+    public String toString(){
+        return ImageIDToEIDConverter.imageIDtoEID(this.imageID);
     }
 }

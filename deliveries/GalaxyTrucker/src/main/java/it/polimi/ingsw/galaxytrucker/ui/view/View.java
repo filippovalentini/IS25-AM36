@@ -245,13 +245,13 @@ public class View {
         if (!shownComponents.isEmpty()) {
             System.out.print("🪐 Shown Components: ");
             for (ViewComponent comp : shownComponents) {
-                System.out.print("[" + comp.getImageID() + "] ");
+                System.out.print("[" + comp.toString() + "] ");
             }
             System.out.println();
         }
 
         if (pickedViewComponent != null) {
-            System.out.println("🛠️ Picked Component: [" + pickedViewComponent.getImageID() + " " + pickedViewComponent.getOrientation().toString().charAt(0) + "]");
+            System.out.println("🛠️ Picked Component: [" + pickedViewComponent.toString() + " " + pickedViewComponent.getOrientation().toString().charAt(0) + "]");
         }
 
         player.visualize();

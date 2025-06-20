@@ -56,7 +56,7 @@ public class ViewPlayer {
         if (!reservedComponents.isEmpty()) {
             System.out.print("📦 Reserved Components: ");
             for (ViewComponent comp : reservedComponents) {
-                System.out.print("[" + comp.getImageID() + "] ");
+                System.out.print("[" + comp.toString() + "] ");
             }
             System.out.println();
         }
@@ -78,7 +78,7 @@ public class ViewPlayer {
 
                 char ori = comp.getOrientation().toString().charAt(0);
                 String id = String.valueOf(comp.getImageID());
-
+                String eid = ImageIDToEIDConverter.imageIDtoEID(String.valueOf(comp.getImageID()));
                 String content1="";
                 String content2="";
                 if(id.equals("000")){
@@ -90,13 +90,13 @@ public class ViewPlayer {
                     content2 ="/////";
                 }
                 else{
-                    content1 = ori + " " + id;
+                    content1 = ori + eid; //ZYYYYYY where Z is the orientation and Y...Y the EID
                     content2 = generateComponentGraphics(comp);
                 }
 
-                content1 = String.format("%-4s", content1); // padding per allineamento
+                content1 = String.format("%-4s", content1); // padding for align
 
-                middle1.append("║ " + content1 + " ║ ");
+                middle1.append("║" + content1 + "║ "); //is wider
                 middle2.append("║ " + content2 + " ║ ");
                 bottom.append("╚═══════╝ ");
             }
@@ -105,7 +105,7 @@ public class ViewPlayer {
             System.out.println(middle1.toString());
             System.out.println(middle2.toString());
             System.out.println(bottom.toString());
-            System.out.println(); // spazio tra righe
+            System.out.println(); // space between lines
         }
     }
 
@@ -117,10 +117,10 @@ public class ViewPlayer {
             return "CC   ";
         }
         else if (comp.isBrownAlien()) {
-            return "🟫   ";
+            return "AB   ";
         }
         else if (comp.isPurpleAlien()) {
-            return "🟪   ";
+            return "AP   ";
         }
         else if(comp.getBatteries() == 1){
             return "B    ";
