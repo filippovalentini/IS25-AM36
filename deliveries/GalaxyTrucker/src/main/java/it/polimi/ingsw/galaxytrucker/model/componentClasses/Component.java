@@ -7,8 +7,12 @@ import it.polimi.ingsw.galaxytrucker.model.exceptions.*;
 import java.util.ArrayList;
 import java.util.*;
 
-//this class describes a generic component used to assemble the players' ships. Each subclass of "Component"
-//represents instead a specific type of component
+/**
+ * This class represents a generic component used to assemble the players' ships.
+ * This class describes a generic component used to assemble the players' ships. Each subclass of "Component" represents instead a specific type of component
+ */
+
+
 public class Component {
     protected final int imageID;       //path for the image describing the component
     protected List<Connector> sides;        //list of 4 connectors associated to the 4 sides of the component tile
