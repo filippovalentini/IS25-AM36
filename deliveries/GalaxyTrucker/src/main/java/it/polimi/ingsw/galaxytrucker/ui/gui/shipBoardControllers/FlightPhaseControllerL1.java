@@ -651,7 +651,7 @@ public class FlightPhaseControllerL1 implements FlightPhaseController {
     private void setupOtherPlayerButton(Button button) {
         button.setOnAction(event -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/shipBoardL2.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/shipBoardL1.fxml"));
                 ShipBoardController controller = new ShipBoardControllerL2(button.getText());
                 loader.setController(controller);
 
@@ -685,7 +685,7 @@ public class FlightPhaseControllerL1 implements FlightPhaseController {
     private void setupFlightBoardButton() {
         flightBoardButton.setOnAction(event -> {
             try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/flightBoardL2.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/flightBoardL1.fxml"));
                 Parent root = fxmlLoader.load();
 
                 FlightBoardControllerL2 controller = fxmlLoader.getController();
