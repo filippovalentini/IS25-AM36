@@ -82,11 +82,11 @@ public class ViewPlayer {
                 String content1="";
                 String content2="";
                 if(id.equals("000")){
-                    content1 ="     ";
+                    content1 ="       ";
                     content2 ="     ";
                 }
                 else if(id.equals("003")){
-                    content1 ="/////";
+                    content1 =" ///// ";
                     content2 ="/////";
                 }
                 else{
