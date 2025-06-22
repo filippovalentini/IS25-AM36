@@ -1246,6 +1246,9 @@ public class GameState {
                 minExposedConnectors = exposedConnectorsCount;
             }
         }
+        if(bestShipPlayer.equals("")){
+            return;
+        }
         if(firstFlight){
             updatePlayerCredits(bestShipPlayer, 2);
         }
