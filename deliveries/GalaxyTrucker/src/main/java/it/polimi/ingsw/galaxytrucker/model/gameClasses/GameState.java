@@ -1016,14 +1016,18 @@ public class GameState {
                 //if this condition is satisfied it means that the quitting player is the only player left,
                 //so the game must end
                 if(nickname.equals(turnPlayer)){
+                    playersPos.remove(nickname);
+                    playersPlay.get(nickname).quitGame();
                     computeTotalRewards();
                     setGameState(State.END);
                 }
             }
         }
 
-        playersPos.remove(nickname);
-        playersPlay.get(nickname).quitGame();
+        if(state!=State.END){
+            playersPos.remove(nickname);
+            playersPlay.get(nickname).quitGame();
+        }
 
         for(VirtualView view: clients.values()){
             try{view.updatePlayerQuit(nickname);}
