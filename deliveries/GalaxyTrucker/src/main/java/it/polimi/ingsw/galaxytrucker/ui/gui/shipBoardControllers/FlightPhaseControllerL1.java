@@ -7,7 +7,7 @@ import it.polimi.ingsw.galaxytrucker.ui.gui.GuiInterface;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ActionSettingsController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.FlightPhaseController;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.ShipBoardController;
-import it.polimi.ingsw.galaxytrucker.ui.gui.flightBoardControllers.FlightBoardControllerL2;
+import it.polimi.ingsw.galaxytrucker.ui.gui.flightBoardControllers.FlightBoardControllerL1;
 import it.polimi.ingsw.galaxytrucker.ui.gui.otherControllers.EndgameController;
 import it.polimi.ingsw.galaxytrucker.ui.view.ViewComponent;
 import javafx.animation.FadeTransition;
@@ -652,7 +652,7 @@ public class FlightPhaseControllerL1 implements FlightPhaseController {
         button.setOnAction(event -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/shipBoardL1.fxml"));
-                ShipBoardController controller = new ShipBoardControllerL2(button.getText());
+                ShipBoardController controller = new ShipBoardControllerL1(button.getText());
                 loader.setController(controller);
 
                 Parent root = loader.load();
@@ -688,7 +688,7 @@ public class FlightPhaseControllerL1 implements FlightPhaseController {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/flightBoardL1.fxml"));
                 Parent root = fxmlLoader.load();
 
-                FlightBoardControllerL2 controller = fxmlLoader.getController();
+                FlightBoardControllerL1 controller = fxmlLoader.getController();
                 controller.setServer(this.server);
                 controller.setPlayerInfo(this.gameID, this.playerNickname, this.playerColor);
                 GuiInterface.getInstance().setFlightBoardController(controller);

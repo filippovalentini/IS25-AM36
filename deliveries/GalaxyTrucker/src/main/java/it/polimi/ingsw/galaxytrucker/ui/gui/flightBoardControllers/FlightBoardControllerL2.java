@@ -267,6 +267,9 @@ public class FlightBoardControllerL2 implements FlightBoardController {
             else if(gameStateLabel.getText().equals("CARD PICKING") || gameStateLabel.getText().equals("CARD SOLVING")){
                 goBackToFlightPhase();
             }
+            else  if (start.getText().isEmpty()){
+                showError("Patience, hero");
+            }
         });
     }
 

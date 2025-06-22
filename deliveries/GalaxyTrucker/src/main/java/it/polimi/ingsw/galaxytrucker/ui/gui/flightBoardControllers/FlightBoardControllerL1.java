@@ -4,6 +4,7 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.ui.gui.GuiInterface;
 import it.polimi.ingsw.galaxytrucker.ui.gui.otherControllers.EndgameController;
+import it.polimi.ingsw.galaxytrucker.ui.gui.shipBoardControllers.FlightPhaseControllerL2;
 import it.polimi.ingsw.galaxytrucker.ui.gui.shipBoardControllers.ShipBuildingControllerL1;
 import it.polimi.ingsw.galaxytrucker.ui.gui.shipBoardControllers.ShipControlControllerL1;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.FlightBoardController;
@@ -208,7 +209,32 @@ public class FlightBoardControllerL1 implements FlightBoardController {
             else if(gameStateLabel.getText().equals("SHIP CONTROL")){
                 goBackToShipControl();
             }
+            else  if (start.getText().isEmpty()){
+                showError("Patience, hero");
+            }
+            else if(gameStateLabel.getText().equals("CARD PICKING") || gameStateLabel.getText().equals("CARD SOLVING")){
+                goBackToFlightPhase();
+            }
         });
+    }
+    public void goBackToFlightPhase(){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/flightPhaseL1.fxml"));
+            Parent root = fxmlLoader.load();
+
+            FlightPhaseControllerL2 controller = fxmlLoader.getController();
+            controller.setServer(this.server);
+            controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+            GuiInterface.getInstance().setFlightPhaseController(controller);
+
+            controller.setControlledStage(controlledStage);
+            controlledStage.setScene(new Scene(root, 1210, 740));
+            controlledStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
+        }
     }
 
     public void goBackToShipBuilding(){

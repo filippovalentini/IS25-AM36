@@ -44,7 +44,7 @@ public class MainServer {
 
     //launches the RMI server
     private static void startServerRMI(Map<Integer, GameController> controllers) throws RemoteException {
-        System.setProperty("java.rmi.server.hostname", "192.168.237.162");
+        //System.setProperty("java.rmi.server.hostname", "192.168.237.162");
         ServerRMI server = new ServerRMI(controllers);
         final String serverName = "GalaxyTruckerServer";
         Registry registry = LocateRegistry.createRegistry(1234);
