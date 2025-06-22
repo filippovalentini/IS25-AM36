@@ -20,7 +20,7 @@ public class MainServer {
 
         new Thread(() -> {
             try {
-                startServerRMI(controllers);
+                startServerRMI(controllers, args[0]);
             } catch (RemoteException e) {
                 System.out.println("Error: " + e.getMessage());
             }
@@ -43,8 +43,10 @@ public class MainServer {
     }
 
     //launches the RMI server
-    private static void startServerRMI(Map<Integer, GameController> controllers) throws RemoteException {
-        //System.setProperty("java.rmi.server.hostname", "192.168.237.162");
+    private static void startServerRMI(Map<Integer, GameController> controllers, String ipV4) throws RemoteException {
+        if(!ipV4.equals("127.0.0.1") && !ipV4.equals("localhost")) {
+            System.setProperty("java.rmi.server.hostname", ipV4);
+        }
         ServerRMI server = new ServerRMI(controllers);
         final String serverName = "GalaxyTruckerServer";
         Registry registry = LocateRegistry.createRegistry(1234);
