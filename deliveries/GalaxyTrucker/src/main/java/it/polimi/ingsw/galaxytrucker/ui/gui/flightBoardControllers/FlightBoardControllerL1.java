@@ -4,7 +4,7 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.ui.gui.GuiInterface;
 import it.polimi.ingsw.galaxytrucker.ui.gui.otherControllers.EndgameController;
-import it.polimi.ingsw.galaxytrucker.ui.gui.shipBoardControllers.FlightPhaseControllerL2;
+import it.polimi.ingsw.galaxytrucker.ui.gui.shipBoardControllers.FlightPhaseControllerL1;
 import it.polimi.ingsw.galaxytrucker.ui.gui.shipBoardControllers.ShipBuildingControllerL1;
 import it.polimi.ingsw.galaxytrucker.ui.gui.shipBoardControllers.ShipControlControllerL1;
 import it.polimi.ingsw.galaxytrucker.ui.gui.controllerInterfaces.FlightBoardController;
@@ -222,7 +222,7 @@ public class FlightBoardControllerL1 implements FlightBoardController {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/flightPhaseL1.fxml"));
             Parent root = fxmlLoader.load();
 
-            FlightPhaseControllerL2 controller = fxmlLoader.getController();
+            FlightPhaseControllerL1 controller = fxmlLoader.getController();
             controller.setServer(this.server);
             controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
             GuiInterface.getInstance().setFlightPhaseController(controller);

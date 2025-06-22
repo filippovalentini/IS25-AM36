@@ -273,7 +273,28 @@ public class ShipBoardControllerL1 implements ShipBoardController {
             else if(gameStateLabel.getText().equals("SHIP CONTROL")){
                 goBackToShipControl();
             }
+            else if(gameStateLabel.getText().equals("CARD PICKING") || gameStateLabel.getText().equals("CARD SOLVING")) {
+                goBackToFlightPhase();
+            }
         });
+    }
+    public void goBackToFlightPhase(){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/flightPhaseL1.fxml"));
+            Parent root = fxmlLoader.load();
+
+            FlightPhaseControllerL1 controller = fxmlLoader.getController();
+            controller.setServer(this.server);
+            controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+            GuiInterface.getInstance().setFlightPhaseController(controller);
+
+            controller.setControlledStage(controlledStage);
+            controlledStage.setScene(new Scene(root, 1210, 740));
+            controlledStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void goBackToShipBuilding(){
