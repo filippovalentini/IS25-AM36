@@ -86,7 +86,8 @@ public class ShipControlControllerL2 implements ShipControlController {
         this.lostComponents = GuiInterface.getInstance().getView().getLostComponents(playerNickname);
         gameStateLabel.setText(GuiInterface.getInstance().getView().getGameState());
         playerNameLabel.setText(playerNickname);
-        playerColorLabel.setText(Color.convertColorIntoEmoji(playerColor));
+        playerColorLabel.setText("██");
+        playerColorLabel.setStyle(Color.convertColorIntoStyle(playerColor));
         lostComponentsLabel.setText(String.valueOf(lostComponents));
     }
 

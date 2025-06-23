@@ -79,7 +79,8 @@ public class ShipBoardControllerL2 implements ShipBoardController {
     @FXML
     private void initialize() {
         playerNicknameLabel.setText(shipBoardPlayerNickname);
-        playerColorLabel.setText(Color.convertColorIntoEmoji(shipBoardcolor));
+        playerColorLabel.setText("██");
+        playerColorLabel.setStyle(Color.convertColorIntoStyle(shipBoardcolor));
         credits = GuiInterface.getInstance().getView().getCredits(shipBoardPlayerNickname);
         lostComponents = GuiInterface.getInstance().getView().getLostComponents(shipBoardPlayerNickname);
         playerCreditsLabel.setText(String.valueOf(credits));
@@ -123,6 +124,8 @@ public class ShipBoardControllerL2 implements ShipBoardController {
                 addAlien(row,column,true);
             }else if(component.isBrownAlien()){
                 addAlien(row,column,false);
+            }else if(component.getNumberGoods() > 0){
+                addGoods(row,column,component.getGoods());
             }
         }
     }
@@ -219,6 +222,60 @@ public class ShipBoardControllerL2 implements ShipBoardController {
                 }
             }
         });
+    }
+
+    public void addGoods(int row, int column, List<Color> goods) {
+        Platform.runLater(() -> {
+            // Trova la cella corretta
+            for (Node node : myGridPane.getChildren()) {
+                Integer col = GridPane.getColumnIndex(node);
+                Integer rw = GridPane.getRowIndex(node);
+                if (col == null) col = 0;
+                if (rw == null) rw = 0;
+
+                if (col == column && rw == row && node instanceof StackPane cell) {
+                    for (Node child : cell.getChildren()) {
+                        if (child instanceof GridPane overlay && overlay.getId() != null &&
+                                overlay.getId().equals("overlay-" + column + "-" + row)) {
+
+                            int numberGoods = goods.size();
+
+                            overlay.add(getCargoGoodImageView(overlay, goods.getFirst()), 0, 0);
+                            if(numberGoods > 1){
+                                overlay.add(getCargoGoodImageView(overlay, goods.get(1)), 1, 0);
+                            }
+                            if(numberGoods == 3){
+                                overlay.add(getCargoGoodImageView(overlay, goods.get(2)), 0, 1);
+                            }
+
+                            return;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public ImageView getCargoGoodImageView(GridPane overlay, Color goodColor){
+        Image goodImage;
+        if (goodColor == Color.GREEN) {
+            goodImage = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/green_good.png").toExternalForm());
+        }
+        else if (goodColor == Color.YELLOW) {
+            goodImage = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/yellow_good.png").toExternalForm());
+        }else if (goodColor == Color.RED) {
+            goodImage = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/red_good.png").toExternalForm());
+        }else {
+            goodImage = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/blue_good.png").toExternalForm());
+        }
+
+        ImageView goodImageView = new ImageView(goodImage);
+        goodImageView.setFitWidth(overlay.getPrefWidth() / 2);
+        goodImageView.setFitHeight(overlay.getPrefHeight() / 2);
+        goodImageView.setPreserveRatio(true);
+        goodImageView.setId("crew");
+
+        return goodImageView;
     }
 
     public ImageView getCrewMemberImageView(GridPane overlay){

@@ -193,7 +193,8 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
             playerNameLabel.setText(nn);
         }
         if (playerColorLabel != null) {
-            playerColorLabel.setText(Color.convertColorIntoEmoji(c));
+            playerColorLabel.setText("██");
+            playerColorLabel.setStyle(Color.convertColorIntoStyle(c));
         }
     }
 

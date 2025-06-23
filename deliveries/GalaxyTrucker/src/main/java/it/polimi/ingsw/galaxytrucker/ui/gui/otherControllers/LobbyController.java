@@ -50,8 +50,7 @@ public class LobbyController implements GuiController {
         Platform.runLater(() -> {
             playerList.getItems().clear();
             for (String nickname : currentPlayers.keySet()) {
-                Color color = currentPlayers.get(nickname);
-                playerList.getItems().add(nickname + " " + Color.convertColorIntoEmoji(color));
+                playerList.getItems().add(nickname);
             }
         });
     }
@@ -59,7 +58,7 @@ public class LobbyController implements GuiController {
 
     public void addPlayer(String nickname, Color color) {
         Platform.runLater(() -> {
-            playerList.getItems().add(nickname + " " + Color.convertColorIntoEmoji(color));
+            playerList.getItems().add(nickname);
         });
     }
 

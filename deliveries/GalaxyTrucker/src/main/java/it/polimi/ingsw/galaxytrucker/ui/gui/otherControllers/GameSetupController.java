@@ -215,7 +215,7 @@ public class GameSetupController implements GuiController {
         }
         this.gameID = Integer.parseInt(gID);
         this.playerNickname = nicknameTextField.getText();
-        this.color = Color.convertEmojiIntoColor(shipColorComboBox.getValue());
+        this.color = Color.convertToColor(shipColorComboBox.getValue());
         GuiInterface.getInstance().setNickname(this.playerNickname);
         GuiInterface.getInstance().setColor(this.color);
         if(!client.askIfGameStarted(this.gameID)){

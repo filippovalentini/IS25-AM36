@@ -35,17 +35,6 @@ public enum Color {
         };
     }
 
-    //converts a color in an emoji
-    public static Color convertEmojiIntoColor(String color) {
-        return switch (color) {
-            case "🟥" -> Color.RED;
-            case "🟩" -> Color.GREEN;
-            case "🟦" -> Color.BLUE;
-            case "🟨" -> Color.YELLOW;
-            default -> null;
-        };
-    }
-
     //converts a color into a letter
     public static String convertColorIntoLetter(Color color) {
         return switch (color) {
@@ -54,5 +43,17 @@ public enum Color {
             case Color.BLUE -> "b";
             case Color.YELLOW -> "y";
         };
+    }
+
+    //converts a color in to a style option for labels in javaFX
+    public static String convertColorIntoStyle(Color color) {
+        String colorString = "";
+        switch (color) {
+            case Color.RED -> colorString ="red";
+            case Color.GREEN -> colorString ="green";
+            case Color.BLUE -> colorString ="blue";
+            case Color.YELLOW -> colorString ="yellow";
+        }
+        return "-fx-text-fill: " + colorString + ";";
     }
 }

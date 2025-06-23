@@ -295,17 +295,17 @@ public class View {
         System.out.println("║    Final cosmic credits:   ║");
         System.out.println("╚════════════════════════════╝");
 
-        System.out.println("👨‍🚀 Player: " + player.getNickname() + " " + convertColorIntoEmoji(player.getColor()) + "          💰 Credits: " + player.getCredits());
+        System.out.println("👨‍🚀 Player: " + player.getNickname() + "          💰 Credits: " + player.getCredits());
         for(ViewPlayer p: otherPlayers.values()){
-            System.out.println("👨‍🚀 Player: " + p.getNickname() + " " + convertColorIntoEmoji(p.getColor()) + "          💰 Credits: " + p.getCredits());
+            System.out.println("👨‍🚀 Player: " + p.getNickname() + "          💰 Credits: " + p.getCredits());
         }
     }
 
     public List<String> getFinalRanking(){
         List<String> finalRankingList = new ArrayList<>();
-        finalRankingList.add(player.getNickname() + " " + convertColorIntoEmoji(player.getColor()) + "          💰 Credits: " + player.getCredits());
+        finalRankingList.add(player.getNickname() + "          💰 Credits: " + player.getCredits());
         for(ViewPlayer p: otherPlayers.values()){
-            finalRankingList.add(p.getNickname() + " " + convertColorIntoEmoji(p.getColor()) + "          💰 Credits: " + p.getCredits());
+            finalRankingList.add(p.getNickname() + "          💰 Credits: " + p.getCredits());
         }
         return finalRankingList;
     }

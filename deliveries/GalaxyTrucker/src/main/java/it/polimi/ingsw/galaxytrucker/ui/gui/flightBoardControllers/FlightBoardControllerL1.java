@@ -181,16 +181,24 @@ public class FlightBoardControllerL1 implements FlightBoardController {
 
         label.setOnDragEntered(event -> {
             if (event.getGestureSource() != label && event.getDragboard().hasString()) {
-                label.setStyle("-fx-border-color: white; -fx-border-width: 2px;");
+                String currentStyle = label.getStyle();
+                label.setStyle(currentStyle + "; -fx-border-color: white; -fx-border-width: 2px;");
             }
         });
 
-        label.setOnDragExited(event -> label.setStyle(""));
+        label.setOnDragExited(event -> {
+            String currentStyle = label.getStyle();
+            String newStyle = currentStyle
+                    .replaceAll("-fx-border-color: white;?", "")
+                    .replaceAll("-fx-border-width: 2px;?", "");
+            label.setStyle(newStyle.trim());
+        });
     }
 
     public void setPosition(Color color, int cell) {
         Label targetLabel = targetLabels.get(cell);
-        targetLabel.setText(Color.convertColorIntoEmoji(color));
+        targetLabel.setText("⬤");
+        targetLabel.setStyle(Color.convertColorIntoStyle(color));
         colorCellMap.put(color, cell);
     }
 
@@ -319,9 +327,9 @@ public class FlightBoardControllerL1 implements FlightBoardController {
             Color playerColor = playerColorMap.get(nickname);
             if (playerColor == null || position < 0 || position >= targetLabels.size()) return;
 
-            String emoji = Color.convertColorIntoEmoji(playerColor);
             Label targetLabel = targetLabels.get(position);
-            targetLabel.setText(emoji);
+            targetLabel.setText("⬤");
+            targetLabel.setStyle(Color.convertColorIntoStyle(playerColor));
 
             if(playerNickname.equals(nickname)){
                 start.setText("");

@@ -118,6 +118,7 @@ public class FlightPhaseControllerL1 implements FlightPhaseController {
         setupPickCardButton();
         setupQuitButton();
 
+        popupContainer.setMouseTransparent(true);
         setupSkipButton();
         setupHitShipButton();
         setupPlanetLandingButton();
@@ -225,6 +226,7 @@ public class FlightPhaseControllerL1 implements FlightPhaseController {
     public void hidePopup() {
         popupContainer.setVisible(false);
         popupContainer.getChildren().clear();
+        popupContainer.setMouseTransparent(true);
 
         popupOpened = false;
         disableActionButtons(false);
@@ -258,6 +260,7 @@ public class FlightPhaseControllerL1 implements FlightPhaseController {
             popupContainer.getChildren().clear();
             popupContainer.getChildren().add(popupContent);
             popupContainer.setVisible(true);
+            popupContainer.setMouseTransparent(false);
 
             popupOpened = true;
             disableActionButtons(true);
@@ -338,7 +341,8 @@ public class FlightPhaseControllerL1 implements FlightPhaseController {
         this.credits = GuiInterface.getInstance().getView().getCredits(playerNickname);
         gameStateLabel.setText(GuiInterface.getInstance().getView().getGameState());
         playerNameLabel.setText(playerNickname);
-        playerColorLabel.setText(Color.convertColorIntoEmoji(playerColor));
+        playerColorLabel.setText("██");
+        playerColorLabel.setStyle(Color.convertColorIntoStyle(playerColor));
         lostComponentsLabel.setText(String.valueOf(lostComponents));
         playerCreditsLabel.setText(String.valueOf(credits));
         turnPlayerLabel.setText(GuiInterface.getInstance().getView().getTurnPlayer());
@@ -584,6 +588,8 @@ public class FlightPhaseControllerL1 implements FlightPhaseController {
             }
         });
     }
+
+
     public ImageView getCargoGoodImageView(GridPane overlay, Color goodColor){
         Image goodImage;
         if (goodColor == Color.GREEN) {

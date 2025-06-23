@@ -205,7 +205,8 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
         this.color = c;
         notificationLabel.setText(gameState);
         playerNameLabel.setText(nn);
-        playerColorLabel.setText(Color.convertColorIntoEmoji(c));
+        playerColorLabel.setText("██");
+        playerColorLabel.setStyle(Color.convertColorIntoStyle(c));
     }
 
     public void initializeButtons(){

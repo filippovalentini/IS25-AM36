@@ -54,6 +54,7 @@ public class LoadGoodsController implements ActionSettingsController {
 
     @FXML
     public void initialize() {
+        cellComboBox.getItems().add(new CargoCell(0, 0));
         for (int x = 5; x <= 9; x++) {
             for (int y = 4; y <= 10; y++) {
                 cellComboBox.getItems().add(new CargoCell(x, y));
@@ -69,7 +70,7 @@ public class LoadGoodsController implements ActionSettingsController {
     private void setupAddButton() {
         addButton.setOnAction(event -> {
             CargoCell cargoCell = cellComboBox.getValue();
-            if (cargoCell == null || selectedCells.contains(cargoCell)) return;
+            if (cargoCell == null) return;
 
             selectedCells.add(cargoCell);
 
@@ -94,8 +95,13 @@ public class LoadGoodsController implements ActionSettingsController {
             List<Integer> x = new ArrayList<>();
             List<Integer> y = new ArrayList<>();
             for(CargoCell cargoCell : selectedCells){
-                x.add(cargoCell.getRow() - 5);
-                y.add(cargoCell.getCol() - 4);
+                if(cargoCell.getRow() == 0 && cargoCell.getCol() == 0){
+                    x.add(0);
+                    y.add(0);
+                }else{
+                    x.add(cargoCell.getRow() - 5);
+                    y.add(cargoCell.getCol() - 4);
+                }
             }
             try{
                 server.loadGoods(this.gameID, this.playerNickname, x, y);

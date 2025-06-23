@@ -52,10 +52,10 @@
                         <ComboBox fx:id="shipColorComboBox" prefWidth="150.0">
                            <items>
                               <FXCollections fx:factory="observableArrayList">
-                                 <String fx:value="🟦" />
-                                 <String fx:value="🟩" />
-                                 <String fx:value="🟥" />
-                                 <String fx:value="🟨" />
+                                 <String fx:value="BLUE" />
+                                 <String fx:value="GREEN" />
+                                 <String fx:value="RED" />
+                                 <String fx:value="YELLOW" />
                               </FXCollections>
                            </items>
                         </ComboBox>
