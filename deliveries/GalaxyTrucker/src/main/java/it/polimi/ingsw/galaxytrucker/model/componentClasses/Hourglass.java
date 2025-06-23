@@ -4,60 +4,71 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.State;
 import it.polimi.ingsw.galaxytrucker.model.exceptions.HourGlassException;
 import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 
+/**
+ * Represents the hourglass used in the game.
+ */
+
 public class Hourglass {
-    private final int cycleDurationSeconds; // Durata di un singolo ciclo della clessidra in secondi
-    private boolean isRunning;  // Specifica se la clessidra ha finito oppure no
-    private GameState gameState;    // GameState di appartenenza
-    private int numberFlips; // Numero di ribaltamenti della clessidra
+    private final int cycleDurationSeconds; // Duration of a single cycle of the hourglass in seconds.
+    private boolean isRunning;  //  Specify if the hourglass has finished or not.
+    private GameState gameState;    // Gamestate
+    private int numberFlips; // Nummber of times the hourglass has been flipped.
 
     /**
-     * Costruttore per la clessidra.
-     * @param cycleDurationSeconds Durata di un singolo ciclo della clessidra in secondi.
+     * Constructor for the Hourglass class.
+     * @param cycleDurationSeconds Duration of a single cycle of the hourglass in seconds.
+     * @param gameState The current game state.
+     * @throws HourGlassException if the cycle duration is not positive.
+     *
      */
     public Hourglass(int cycleDurationSeconds, GameState gameState) throws HourGlassException {
         if (cycleDurationSeconds <= 0) {
-            throw new HourGlassException("La durata del ciclo deve essere positiva.");
+            throw new HourGlassException("Duration must be positive.");
         }
-        this.cycleDurationSeconds = cycleDurationSeconds;
-        this.isRunning = false;
-        this.numberFlips = 0;
-        this.gameState = gameState;
+        this.cycleDurationSeconds = cycleDurationSeconds; // Set the duration of a single cycle.
+        this.isRunning = false; // Initially, the hourglass is not running.
+        this.numberFlips = 0; // Initially, the hourglass has not been flipped.
+        this.gameState = gameState; // Set the game state.
     }
 
     /**
-     * Avvia o riavvia il timer della clessidra per la durata del suo ciclo.
-     * Se era già in funzione, questo metodo la resetta e la fa ripartire.
+     * Starts a new cycle of the hourglass.
+     * @throws HourGlassException
      */
     public void startNewCycle() throws HourGlassException {
         if (isRunning) {
-            throw new HourGlassException("Hourglass is already running.");
+            throw new HourGlassException("Hourglass is already running."); // Check if the hourglass is already running.
         }
         if (numberFlips >= 2) {
-            throw new HourGlassException("Can't start a new cycle");
+            throw new HourGlassException("Can't start a new cycle"); // Check if the hourglass has already been flipped twice.
         }
 
-        isRunning = true;
-        numberFlips++;
+        isRunning = true; // Set the hourglass to running state.
+        numberFlips++; // Increment the number of flips.
 
-        Thread thread = new Thread(() -> {
+        Thread thread = new Thread(() -> { // Create a new thread to handle the hourglass cycle.
             try {
-                Thread.sleep(cycleDurationSeconds * 1000L); // conversione in millisecondi
-            } catch (InterruptedException e) {
+                Thread.sleep(cycleDurationSeconds * 1000L); // convert seconds to milliseconds.
+            } catch (InterruptedException e) { // Handle interruption of the thread.
                 throw new HourGlassException("Hourglass interrupted.");
             }
-            if(!gameState.getGameState().equals(State.SHIP_BUILDING)){
+            if(!gameState.getGameState().equals(State.SHIP_BUILDING)){ // Check if the game state is still in ship building.
                 return;
             }
-            isRunning = false;
-            gameState.finishedCycle();
-            if (numberFlips == 2) {
+            isRunning = false; // Set the hourglass to not running state after the cycle is finished.
+            gameState.finishedCycle(); // Notify the game state that the cycle is finished.
+            if (numberFlips == 2) { // If the hourglass has been flipped twice, change the game state to ship placement.
                 gameState.setGameState(State.SHIP_PLACEMENT);
             }
         });
 
-        thread.start();
+        thread.start(); // Start the thread to handle the hourglass cycle.
     }
 
+    /**
+     * Returns the duration of a single cycle of the hourglass.
+     * @return Duration of a single cycle in seconds.
+     */
     public int getNumberFlips() {
         return numberFlips;
     }
