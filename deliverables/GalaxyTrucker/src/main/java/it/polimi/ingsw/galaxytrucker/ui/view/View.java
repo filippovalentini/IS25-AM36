@@ -224,7 +224,7 @@ public class View {
             System.out.println("⏳ Hourglass state: " + hourglassState + "\n");
         }
         if(currentCard != null && currentCard != 9001 && currentCard != 9002){
-            System.out.println("🃏 Card to solve: " + currentCard + "\n");
+            System.out.println("🃏 Card to solve: " + ImageIDToStringConverter.imageIDtoCardDesc(currentCard.toString()) + "\n");
         }
         if(!dice.areThrowable()){
             System.out.println("\uD83C\uDFB2" + " Dice result: " + dice1result() + "   " + dice2result() + "\n");

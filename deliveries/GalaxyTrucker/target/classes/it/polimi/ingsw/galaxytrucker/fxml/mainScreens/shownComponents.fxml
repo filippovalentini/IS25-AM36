@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="740" prefWidth="1210" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.otherControllers.ShownComponentsController">
+
+    <!-- Background Image -->
+    <ImageView fitHeight="740" fitWidth="1210" pickOnBounds="true" preserveRatio="false">
+        <image>
+            <Image url="@../../images/cardboard/backgroundSpace.jpg" />
+        </image>
+    </ImageView>
+
+    <!-- Back Button -->
+    <Button fx:id="backButton" layoutX="1095.0" layoutY="139.0" prefHeight="64.0" prefWidth="61.0" style="-fx-background-color: #4682B4; -fx-font-size: 20px; -fx-text-fill: black;-fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="🔙" />
+
+    <!-- Layout container -->
+    <VBox alignment="CENTER" layoutX="240.0" prefHeight="740.0" prefWidth="683.0" spacing="20" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="240.0" AnchorPane.rightAnchor="287.0" AnchorPane.topAnchor="0.0">
+        <padding><Insets bottom="20" top="20" /></padding>
+
+        <!-- Title -->
+        <Label prefHeight="71.0" prefWidth="444.0" style="-fx-font-family: 'Courier New';" text="   Pick a component" textFill="#007bff">
+            <font>
+                <Font name="Arial Bold" size="36.0" />
+            </font>
+        </Label>
+
+        <!-- Scrollable grid -->
+        <ScrollPane fitToWidth="true" prefHeight="317.0" prefViewportHeight="300" prefViewportWidth="600" prefWidth="956.0" style="-fx-background: #87CEFA; -fx-background-color: #87CEFA; -fx-border-color: #87CEFA;" vbarPolicy="ALWAYS">
+            <content>
+                <GridPane fx:id="componentGrid" alignment="CENTER" hgap="10" minWidth="600" prefWidth="600" style="-fx-background-color: #87CEFA;" vgap="10" />
+            </content>
+        </ScrollPane>
+
+        <!-- Pick Button -->
+        <Button fx:id="pickButton" disable="true" maxWidth="150" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-size: 16px;-fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Pick" />
+    </VBox>
+
+    <!-- Top blue rectangle -->
+    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#00509a" height="50.0" layoutX="35.0" layoutY="37.0" stroke="BLACK" strokeType="INSIDE" width="1140.0" />
+
+    <!-- Green message background -->
+    <Rectangle fx:id="gameStateBackground" arcHeight="10.0" arcWidth="10.0" fill="#00ff0070" height="41.0" layoutX="50.0" layoutY="40.0" visible="true" width="519.0" />
+
+    <!-- Green message label -->
+    <Label fx:id="gameStateLabel" layoutX="61.0" layoutY="41.0" prefHeight="35.0" prefWidth="505.0" style="-fx-text-fill: #00ff00; -fx-font-size: 16px; -fx-font-weight: bold; -fx-font-family: 'Courier New';" text="Info: ready to pick a component." visible="true" />
+
+    <!-- Red error background -->
+    <Rectangle fx:id="errorBackground" arcHeight="10.0" arcWidth="10.0" fill="#ff000070" height="50.0" layoutX="648.0" layoutY="38.0" visible="false" width="519.0" />
+
+    <!-- Red error label -->
+    <Label fx:id="errorLabel" layoutX="688.0" layoutY="41.0" prefHeight="35.0" prefWidth="476.0" style="-fx-text-fill: red; -fx-font-size: 16px; -fx-font-weight: bold; -fx-font-family: 'Courier New';" visible="false" />
+
+</AnchorPane>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.flightBoardControllers.FlightBoardControllerL1">
+   <content>
+      <StackPane prefHeight="740" prefWidth="1210">
+      
+          <AnchorPane prefHeight="740" prefWidth="1210">
+      
+              <!-- Background -->
+              <ImageView fitHeight="795.0" fitWidth="1221.0" layoutX="-4.0" layoutY="-4.0">
+                  <image>
+                      <Image url="@../../images/cardboard/backgroundSpace.jpg" />
+                  </image>
+              </ImageView>
+      
+              <!-- Board -->
+              <ImageView fitHeight="621.0" fitWidth="1166.0" layoutX="36.0" layoutY="79.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                      <Image url="@../../images/cardboard/boardL1.png" />
+                  </image>
+              </ImageView>
+      
+              <Button fx:id="backButton" layoutX="1110.0" layoutY="88.0" prefHeight="64.0" prefWidth="61.0" style="-fx-background-color: #4682B4; -fx-font-size: 20px; -fx-text-fill: black;" text="🔙" />
+      
+              <!-- Posizioni 0-17 (vuote) -->
+              <Label fx:id="pos14" layoutX="305.0" layoutY="534.0" prefHeight="50.0" prefWidth="50.0" text="">
+                  <font>
+                  <Font size="36.0" />
+               </font>
+              </Label>
+              <Label fx:id="pos13" layoutX="413.0" layoutY="568.0" prefHeight="50.0" prefWidth="50.0" text="">
+                  <font>
+                  <Font size="36.0" />
+               </font>
+              </Label>
+              <Label fx:id="pos12" layoutX="515.0" layoutY="589.0" prefHeight="50.0" prefWidth="50.0" text="">
+                  <font>
+                  <Font size="36.0" />
+               </font>
+              </Label>
+              <Label fx:id="pos11" layoutX="623.0" layoutY="590.0" prefHeight="50.0" prefWidth="50.0" text="">
+                  <font>
+                  <Font size="36.0" />
+               </font>
+              </Label>
+              <Label fx:id="pos10" layoutX="729.0" layoutY="578.0" prefHeight="50.0" prefWidth="50.0" text="">
+                  <font>
+                  <Font size="36.0" />
+               </font>
+              </Label>
+              <Label fx:id="pos9" layoutX="830.0" layoutY="544.0" prefHeight="50.0" prefWidth="50.0" text="">
+                  <font>
+                  <Font size="36.0" />
+               </font>
+              </Label>
+              <Label fx:id="pos8" layoutX="916.0" layoutY="482.0" prefHeight="50.0" prefWidth="50.0" text="">
+                  <font>
+                  <Font size="36.0" />
+               </font>
+              </Label>
+              <Label fx:id="pos7" layoutX="978.0" layoutY="374.0" prefHeight="50.0" prefWidth="50.0" text="">
+                  <font>
+                  <Font size="36.0" />
+               </font>
+              </Label>
+              <Label fx:id="pos6" layoutX="934.0" layoutY="265.0" prefHeight="50.0" prefWidth="50.0" text="">
+                  <font>
+                  <Font size="36.0" />
+               </font>
+              </Label>
+              <Label fx:id="pos5" layoutX="839.0" layoutY="200.0" prefHeight="50.0" prefWidth="50.0" text="">
+                  <font>
+                  <Font size="36.0" />
+               </font>
+              </Label>
+              <Label fx:id="pos4" layoutX="735.0" layoutY="163.0" prefHeight="50.0" prefWidth="50.0" text="">
+                  <font>
+                  <Font size="36.0" />
+               </font>
+              </Label>
+              <Label fx:id="pos3" layoutX="632.0" layoutY="151.0" prefHeight="50.0" prefWidth="50.0" text="">
+                  <font>
+                  <Font size="36.0" />
+               </font>
+              </Label>
+              <Label fx:id="pos2" layoutX="525.0" layoutY="151.0" prefHeight="50.0" prefWidth="50.0" text="">
+                  <font>
+                  <Font size="36.0" />
+               </font>
+              </Label>
+              <Label fx:id="pos1" layoutX="413.0" layoutY="163.0" prefHeight="50.0" prefWidth="50.0" text="">
+                  <font>
+                  <Font size="36.0" />
+               </font>
+              </Label>
+              <Label fx:id="pos0" layoutX="314.0" layoutY="200.0" prefHeight="50.0" prefWidth="50.0" text="">
+                  <font>
+                  <Font size="36.0" />
+               </font>
+              </Label>
+              <Label fx:id="pos17" layoutX="220.0" layoutY="253.0" prefHeight="50.0" prefWidth="50.0" text="">
+                  <font>
+                  <Font size="36.0" />
+               </font>
+              </Label>
+              <Label fx:id="pos15" layoutX="209.0" layoutY="475.0" prefHeight="50.0" prefWidth="50.0" text="">
+                  <font>
+                  <Font size="36.0" />
+               </font>
+              </Label>
+              <Label fx:id="pos16" layoutX="164.0" layoutY="358.0" prefHeight="50.0" prefWidth="50.0" text="">
+                  <font>
+                  <Font size="36.0" />
+               </font>
+              </Label>
+      
+              <!-- Casella iniziale con navicella da trascinare -->
+              <Label fx:id="start" layoutX="164.0" layoutY="152.0" prefHeight="67.0" prefWidth="74.0" text="🚀" textAlignment="CENTER">
+                  <font>
+                  <Font size="72.0" />
+               </font>
+              </Label>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#004e97" height="51.0" layoutX="22.0" layoutY="14.0" stroke="BLACK" strokeType="INSIDE" width="1149.0" />
+              <!-- Rettangolo rosso sfumato per errori -->
+              <Rectangle fx:id="errorBackground" arcHeight="10.0" arcWidth="10.0" fill="#ff000070" height="41.0" layoutX="626.0" layoutY="20.0" visible="false" width="538.0" />
+
+              <!-- Label errore -->
+              <Label fx:id="errorLabel" layoutX="666.0" layoutY="17.0" prefHeight="45.0" prefWidth="498.0" style="-fx-text-fill: red; -fx-font-size: 16px; -fx-font-weight: bold; -fx-font-family: 'Courier New';" visible="false" />
+
+
+              <!-- Green message background -->
+              <Rectangle fx:id="gameStateBackground" arcHeight="10.0" arcWidth="10.0" fill="#00ff0070" height="40.0" layoutX="29.0" layoutY="22.0" visible="true" width="540.0" />
+
+              <!-- Green message label -->
+              <Label fx:id="gameStateLabel" layoutX="61.0" layoutY="17.0" prefHeight="47.0" prefWidth="505.0" style="-fx-text-fill: #01ff01; -fx-font-size: 16px; -fx-font-weight: bold; -fx-font-family: 'Courier New';" text="Info: ready to pick a component." visible="true" />
+
+
+
+          </AnchorPane>
+      </StackPane>
+   </content>
+</ScrollPane>

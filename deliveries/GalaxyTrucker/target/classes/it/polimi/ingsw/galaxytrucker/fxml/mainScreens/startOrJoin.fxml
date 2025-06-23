@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.otherControllers.GameSetupController">
+
+    <!-- SFONDO -->
+    <children>
+        <ImageView fitHeight="740.0" fitWidth="1210.0">
+            <image>
+                <Image url="@../../images/cardboard/backgroundSpace.jpg" />
+            </image>
+        </ImageView>
+
+        <!-- CONTENUTO PRINCIPALE -->
+        <AnchorPane prefHeight="20.0" prefWidth="30.0">
+            <children>
+                <VBox alignment="CENTER" layoutX="150.0" layoutY="100.0" spacing="15.0" style="-fx-background-color: #4682B4;" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="200.0">
+                    <children>
+
+                        <Label style="-fx-font-size: 24px; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Start a new game or Join one" />
+
+                        <HBox alignment="CENTER" spacing="30.0">
+                            <children>
+                                <Button fx:id="startButton" onAction="#onStartClick" style="-fx-background-color: #003366; -fx-text-fill: #87CEFA;-fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Start" />
+                                <Button fx:id="joinButton" onAction="#onJoinClick" style="-fx-background-color: #003366; -fx-text-fill: #87CEFA;-fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Join" />
+                            </children>
+                        </HBox>
+
+                        <Label fx:id="errorLabel" style="-fx-text-fill: red; -fx-font-size: 14px;" visible="false" />
+
+                    </children>
+                    <padding>
+                        <Insets bottom="20" left="20" right="20" top="20" />
+                    </padding>
+                </VBox>
+            </children>
+        </AnchorPane>
+    </children>
+</StackPane>

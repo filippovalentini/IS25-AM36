@@ -78,7 +78,7 @@ public class ViewPlayer {
 
                 char ori = comp.getOrientation().toString().charAt(0);
                 String id = String.valueOf(comp.getImageID());
-                String eid = ImageIDToEIDConverter.imageIDtoEID(String.valueOf(comp.getImageID()));
+                String eid = ImageIDToStringConverter.imageIDtoEID(String.valueOf(comp.getImageID()));
                 String content1="";
                 String content2="";
                 if(id.equals("000")){

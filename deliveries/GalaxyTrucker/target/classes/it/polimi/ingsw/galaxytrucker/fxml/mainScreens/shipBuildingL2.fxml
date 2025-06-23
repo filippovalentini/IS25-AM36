@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.Rectangle?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.galaxytrucker.ui.gui.shipBoardControllers.ShipBuildingControllerL2">
+   <content>
+      <AnchorPane prefHeight="740.0" prefWidth="1210.0">
+
+          <!-- Sfondo -->
+          <ImageView fitHeight="740.0" fitWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <Image url="@../../images/cardboard/backgroundSpace.jpg" />
+          </ImageView>
+
+          <!-- Immagine centrale -->
+          <ImageView fitHeight="600.0" fitWidth="854.0" preserveRatio="true" AnchorPane.leftAnchor="191.0" AnchorPane.rightAnchor="191.0" AnchorPane.topAnchor="70.0">
+              <Image url="@../../images/cardboard/shipL2.jpg" />
+          </ImageView>
+
+          <Pane layoutX="25.0" layoutY="103.0" prefHeight="100.0" prefWidth="157.0" style="-fx-background-color: #87CEFA;">
+              <children>
+                  <Label layoutX="10.0" prefHeight="26.0" prefWidth="66.0" style="-fx-font-size: 14px; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Player:" />
+                  <Label fx:id="playerNameLabel" layoutX="10.0" layoutY="20.0" prefHeight="28.0" prefWidth="130.0" style=" -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" />
+
+                  <Label layoutX="10.0" layoutY="50.0" prefHeight="18.0" prefWidth="89.0" style="-fx-font-size: 14px; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Color:" />
+                  <Label fx:id="playerColorLabel" layoutX="10.0" layoutY="70.0" prefHeight="27.0" prefWidth="130.0" style=" -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" />
+              </children>
+          </Pane>
+
+          <Pane fx:id="notificationPane" layoutX="20.0" layoutY="10.0" opacity="0.0" prefHeight="30.0" prefWidth="500.0">
+              <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b2ffb2" height="30.0" stroke="BLACK" strokeType="INSIDE" width="500.0" />
+                  <Label fx:id="notificationLabel" layoutX="10.0" layoutY="5.0" prefHeight="20.0" prefWidth="480.0" style="-fx-font-size: 14px; -fx-text-fill: green;" text="" />
+              </children>
+          </Pane>
+
+          <!-- Rettangolo per messaggi di errore (rosso) -->
+          <Pane fx:id="errorPane" layoutX="690.0" layoutY="10.0" opacity="0.0" prefHeight="30.0" prefWidth="500.0">
+              <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffb2b2" height="30.0" stroke="BLACK" strokeType="INSIDE" width="500.0" />
+                  <Label fx:id="errorLabel" layoutX="10.0" layoutY="5.0" prefHeight="20.0" prefWidth="480.0" style="-fx-font-size: 14px; -fx-text-fill: red;" text="" />
+              </children>
+          </Pane>
+
+          <!-- Green message background -->
+          <Rectangle fx:id="gameStateBackground" arcHeight="10.0" arcWidth="10.0" fill="#00ff0070" height="39.0" layoutX="11.0" layoutY="6.0" visible="true" width="558.0" />
+
+          <!-- Green message label -->
+          <Label fx:id="gameStateLabel" layoutX="18.0" layoutY="8.0" prefHeight="44.0" prefWidth="544.0" style="-fx-text-fill: #00ff00; -fx-font-size: 16px; -fx-font-weight: bold; -fx-font-family: 'Courier New';" text="Info: ready to pick a component." visible="true" />
+
+
+          <!-- GridPane -->
+          <GridPane fx:id="myGridPane" layoutX="222.0" prefHeight="550.0" prefWidth="767.0" AnchorPane.bottomAnchor="96.0" AnchorPane.leftAnchor="222.0" AnchorPane.rightAnchor="221.0" AnchorPane.topAnchor="94.0">
+              <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="147.0" minWidth="10.0" prefWidth="107.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="148.0" minWidth="10.0" prefWidth="108.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="159.0" minWidth="10.0" prefWidth="109.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.0" minWidth="10.0" prefWidth="110.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="139.0" minWidth="8.0" prefWidth="109.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="153.0" minWidth="10.0" prefWidth="110.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="147.0" minWidth="10.0" prefWidth="110.0" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints maxHeight="146.0" minHeight="10.0" prefHeight="112.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="130.0" minHeight="10.0" prefHeight="107.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="142.0" minHeight="10.0" prefHeight="110.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="199.0" minHeight="10.0" prefHeight="109.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="142.0" minHeight="10.0" prefHeight="112.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+          </GridPane>
+          <Button fx:id="player2ShipButton" layoutX="1068.0" layoutY="70.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="95.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Player 1" />
+          <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1478e363" height="50.0" layoutX="3.0" stroke="BLACK" strokeType="INSIDE" width="1203.0" />
+          <Button fx:id="pickComponent" layoutX="29.0" layoutY="553.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="145.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="pick" />
+          <Button fx:id="setButton" layoutX="553.0" layoutY="679.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="103.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="assemble" />
+          <Button fx:id="discardButton" layoutX="719.0" layoutY="679.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="103.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="release" />
+          <Pane fx:id="handComponentArea" layoutX="25.0" layoutY="295.0" prefHeight="150.0" prefWidth="157.0">
+              <children>
+
+                  <Button fx:id="handComponentButton" layoutX="3.0" maxHeight="150.0" maxWidth="150.0" minHeight="150.0" minWidth="150.0" prefHeight="150.0" prefWidth="150.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366;" text="" />      </children>
+          </Pane>
+          <Button fx:id="shownComponentButton" layoutX="29.0" layoutY="604.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="145.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="shown components" />
+          <Button fx:id="player1ShipButton" layoutX="1068.0" layoutY="122.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="95.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Player 2" />
+          <Button fx:id="player3ShipButton" layoutX="1068.0" layoutY="173.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="95.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Player 3" />
+          <Button fx:id="rotateButton" layoutX="30.0" layoutY="502.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="145.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="rotate" />
+         <Button fx:id="reserveButton" layoutX="386.0" layoutY="679.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="103.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="reserve" />
+         <Pane layoutX="1057.0" layoutY="467.0" prefHeight="212.0" prefWidth="118.0">
+            <children>
+               <Button fx:id="reserved0Button" layoutX="4.0" mnemonicParsing="false" prefHeight="104.0" prefWidth="110.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="reserved0" />
+               <Button fx:id="reserved1Button" layoutX="4.0" layoutY="104.0" mnemonicParsing="false" prefHeight="104.0" prefWidth="110.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="reserved1" />
+            </children>
+         </Pane>
+          <Button fx:id="flightBoardButton" layoutX="1047.0" layoutY="245.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="138.0" style="-fx-background-color: #87CEFA; -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="flight board" />
+         <Pane layoutX="1047.0" layoutY="386.0" prefHeight="68.0" prefWidth="137.0" style="-fx-background-color: #87CEFA;">
+            <children>
+               <Label layoutX="19.0" layoutY="14.0" prefHeight="17.0" prefWidth="95.0" style=" -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="  Reserved" textAlignment="CENTER" />
+               <Label layoutX="30.0" layoutY="34.0" prefHeight="17.0" prefWidth="95.0" style=" -fx-text-fill: #003366; -fx-font-family: 'Courier New'; -fx-font-weight: bold;" text="Components" textAlignment="CENTER" />
+            </children>
+         </Pane>
+
+      </AnchorPane>
+   </content>
+</ScrollPane>

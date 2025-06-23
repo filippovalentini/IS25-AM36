@@ -1,0 +1,54 @@
+{
+  "1000": "hourglass.png",
+
+  "1001": "abandonedshipL1_1.jpg",
+  "1002": "abandonedshipL1_2.jpg",
+  "1003": "abandonedshipL2_1.jpg",
+  "1004": "abandonedshipL2_2.jpg",
+
+  "2001": "abandonedstationL1_1.jpg",
+  "2002": "abandonedstationL1_2.jpg",
+  "2003": "abandonedstationL2_1.jpg",
+  "2004": "abandonedstationL2_2.jpg",
+
+  "3001": "combatzoneL1.jpg",
+  "3002": "combatzoneL2.jpg",
+
+  "4001": "epidemicL2.jpg",
+  "4002": "stardustL1.jpg",
+  "4003": "stardustL2.jpg",
+
+  "5001": "meteorswarmL1_1.jpg",
+  "5002": "meteorswarmL1_2.jpg",
+  "5003": "meteorswarmL1_3.jpg",
+  "5004": "meteorswarmL2_1.jpg",
+  "5005": "meteorswarmL2_2.jpg",
+  "5006": "meteorswarmL2_3.jpg",
+
+  "6001": "openspaceL1_1.jpg",
+  "6002": "openspaceL1_2.jpg",
+  "6003": "openspaceL1_3.jpg",
+  "6004": "openspaceL1_4.jpg",
+  "6005": "openspaceL2_1.jpg",
+  "6006": "openspaceL2_2.jpg",
+  "6007": "openspaceL2_3.jpg",
+
+  "7001": "planetsL1_1.jpg",
+  "7002": "planetsL1_2.jpg",
+  "7003": "planetsL1_3.jpg",
+  "7004": "planetsL1_4.jpg",
+  "7005": "planetsL2_1.jpg",
+  "7006": "planetsL2_2.jpg",
+  "7007": "planetsL2_3.jpg",
+  "7008": "planetsL2_4.jpg",
+
+  "8001": "piratesL1.jpg",
+  "8002": "piratesL2.jpg",
+  "8003": "slaversL1.jpg",
+  "8004": "slaversL2.jpg",
+  "8005": "smugglersL1.jpg",
+  "8006": "smugglersL2.jpg",
+
+  "9001": "levelOneCard.jpg",
+  "9002": "levelTwoCard.jpg"
+}

@@ -125,7 +125,7 @@ public class TuiInterface implements UserInterface {
             }while(gameID.length() != 3);
             gID = Integer.parseInt(gameID);
             do{
-                System.out.println("Number of players (from 1 to 4): ");
+                System.out.println("Number of players (from 2 to 4): ");
                 numPlayers = Integer.parseInt(inputScanner.nextLine());
             }while(numPlayers>4 || numPlayers<1);
             do{
@@ -215,6 +215,7 @@ public class TuiInterface implements UserInterface {
         System.out.println("18 - addBatteries <x> <y> (fill a battery component with batteries)");
         System.out.println("19 - pickCard (pick a next card)");
         System.out.println("20 - quit (quit the game)");
+        System.out.println("21 - compEID (shows EID description)");
         System.out.println("(commands for card solving)");
         System.out.println("1 - dice (throw the dice)");
         System.out.println("2 - skip (skip an action)");
@@ -225,9 +226,40 @@ public class TuiInterface implements UserInterface {
         System.out.println("7 - loadGoods [<x> <y>] ... (specify the cargo holds where to load goods found during the flight; specify (0,0) if you want to discard a good)");
         System.out.println("8 - planet <planetNumber> (land in the specified planet)");
         System.out.println("9 - useBatteries <numberBatteries> (declare your engine/cannon strength specifying the number of batteries to use)");
-
     }
 
+    //print EID(Extended ID) description for all components
+    public void printCompEID(){
+        System.out.println("Every component is shown as string composed of OXXYYYY\n" +
+                "         O: (orientation)\n" +
+                "            N: North\n" +
+                "            E: East\n" +
+                "            S: South\n" +
+                "            W: West\n" +
+                "        XX: (component types)\n" +
+                "            BD: Battery Double\n" +
+                "            BS: Battery Single\n" +
+                "            CA: CAbin\n" +
+                "            CD: Cannon Double\n" +
+                "            CS: Cannon Single\n" +
+                "            ED: Engine Double\n" +
+                "            EP: EmPty\n" +
+                "            ES: Engine Single\n" +
+                "            HD: cargo Hold Double\n" +
+                "            HT: cargo Hold Triple\n" +
+                "            LB: Life support Brown\n" +
+                "            LP: Life support Purple\n" +
+                "            SD: Special cargo hold Double\n" +
+                "            SH: Shield\n" +
+                "            SP: SPace\n" +
+                "            SS: Special cargo hold Single\n" +
+                "            ST: STructural\n" +
+                "        Y: (connectors starting from the corresponding orientation side and going clockwise)\n" +
+                "            0: Smooth\n" +
+                "            1: Single\n" +
+                "            2: Double\n" +
+                "            3: Universal");
+    }
     //runs a command line interface to send requests to the server
     public void runTui() {
         Scanner scan = new Scanner(System.in);
@@ -461,6 +493,9 @@ public class TuiInterface implements UserInterface {
                         int numberBatteries = Integer.parseInt(tokens[1]);
                         server.useBatteries(gameID, nickname, numberBatteries);
                         break;
+                    case "compEID":
+                        printCompEID();
+                        break;
                     default:
                         System.out.println("Error: unknown command");
                 }
@@ -583,12 +618,14 @@ public class TuiInterface implements UserInterface {
     @Override
     public void updateStartNewCycle() {
         this.view.updateStartNewCycle();
+        System.out.println("[hourglass has been turned]");
     }
 
     //notifies the view that the hourglass has finished running
     @Override
     public void updateFinishedCycle() {
         this.view.updateFinishedCycle();
+        System.out.println("[hourglass has finished running]");
     }
 
     //invoked when the game switches to the ship placement phase, which means that the players can only
@@ -603,12 +640,14 @@ public class TuiInterface implements UserInterface {
     @Override
     public void updateShipControl() {
         this.view.updateShipControl();
+        System.out.println("[ship control phase]");
     }
 
     //notifies the view that a player has to repair its ship board before the player in turn can pick a new card
     @Override
     public void updateShipRepair(String nickname) {
         this.view.updateShipRepair(nickname);
+        System.out.println("[ship board must be repaired]");
     }
 
     //notifies the view that a component of a player's ship board has been destroyed
@@ -658,18 +697,21 @@ public class TuiInterface implements UserInterface {
     public void updateNextTurn(String nickname) {
         this.view.updateNextTurn(nickname);
         this.view.updateThrowableDice();
+        System.out.println("["+nickname+"'s turn]");
     }
 
     //notifies the view that a new card has been picked and must be solved
     @Override
     public void updateCardSolving(int imageID) {
         this.view.updateCardSolving(imageID);
+        System.out.println("[card has been picked]");
     }
 
     //notifies the view that a player has quit the game
     @Override
     public void updatePlayerQuit(String nickname) {
         this.view.updatePlayerQuit(nickname);
+        System.out.println("[player "+nickname+" has quit]");
     }
 
     //notifies the view that a player has gained/lost credits
@@ -688,6 +730,7 @@ public class TuiInterface implements UserInterface {
     @Override
     public void updateEndGame() {
         this.view.updateEndGame();
+        System.out.println("[game finished]");
     }
 
 }

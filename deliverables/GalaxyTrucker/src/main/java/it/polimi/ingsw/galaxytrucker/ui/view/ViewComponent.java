@@ -96,6 +96,6 @@ public class ViewComponent {
 
     @Override
     public String toString(){
-        return ImageIDToEIDConverter.imageIDtoEID(this.imageID);
+        return ImageIDToStringConverter.imageIDtoEID(this.imageID);
     }
 }
