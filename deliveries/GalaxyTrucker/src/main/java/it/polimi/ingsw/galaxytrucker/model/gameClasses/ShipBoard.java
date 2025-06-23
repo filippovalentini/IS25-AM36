@@ -397,13 +397,13 @@ public class ShipBoard {
                     }
                     if(j>0){
                         Component c1 = assembledComponents.get(i).get(j-1);
-                        if(c.getEastSide()!=Connector.SMOOTH && (!c1.isNotEmpty() || !c1.belongsToShip())){
+                        if(c.getWestSide()!=Connector.SMOOTH && (!c1.isNotEmpty() || !c1.belongsToShip())){
                             exposedConnectors++;
                         }
                     }
                     if(j<assembledComponents.get(i).size()-1){
                         Component c1 = assembledComponents.get(i).get(j+1);
-                        if(c.getWestSide()!=Connector.SMOOTH && (!c1.isNotEmpty() || !c1.belongsToShip())){
+                        if(c.getEastSide()!=Connector.SMOOTH && (!c1.isNotEmpty() || !c1.belongsToShip())){
                             exposedConnectors++;
                         }
                     }
