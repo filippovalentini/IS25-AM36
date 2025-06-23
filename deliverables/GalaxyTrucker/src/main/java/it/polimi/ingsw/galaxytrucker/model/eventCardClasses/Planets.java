@@ -50,7 +50,7 @@ public class Planets extends SkipCard{
             throw new InvalidActionException("Invalid action");
         }
         if(planetGoods.get(numberPlanet)==null){
-            throw new InvalidActionException("A player has already landed on planet number "+numberPlanet);
+            throw new InvalidActionException("A player has already landed on planet number "+ (numberPlanet+1));
         }
         gameState.changePlayerPosition(nickname, -this.lostDays);
         landedPlanet = numberPlanet;
