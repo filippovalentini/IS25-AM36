@@ -7,12 +7,22 @@ import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 
 import java.util.List;
 
-//ABANDONED STATION
+/**
+ * AbandonedStation class representing an event card.
+ */
+
 public class AbandonedStation extends SkipCard{
     private final List<Color> stationGoods;     //goods that a player can gain by using the card
     private final int requiredCrew;     //required crew to land in the station
     private boolean used;       //set to true if a player has already used the card
 
+    /**
+     * Constructor for AbandonedStation.
+     * @param stationGoods
+     * @param requiredCrew
+     * @param lostDays
+     * @param imageID
+     */
     public AbandonedStation(List<Color> stationGoods, int requiredCrew, int lostDays, int imageID) { //constructor
         super(lostDays, imageID);
         this.stationGoods = stationGoods;
@@ -20,15 +30,34 @@ public class AbandonedStation extends SkipCard{
         this.used = false;
     }
 
+    /**
+     * Determines if the card has been used or not.
+     * @return true if the card has been used, false otherwise.
+     */
     public boolean isUsed() {       //determines if the card has been used or not
         return used;
     }
 
+    /**
+     * Sets the card as used.
+     * @throws InvalidActionException if the card has already been used.
+     */
     public void setUsed() {     //invoked when a player decides to use the card
         if (this.used) {throw new InvalidActionException("Abandoned station already used");}
         used = true;
     }
 
+    /**
+     * Loads goods.
+     * @param gameState
+     * @param nickname
+     * @param x
+     * @param y
+     * @throws InvalidActionException
+     * @throws UnsupportedCargoColorException
+     * @throws FullCargoHoldException
+     * @throws NoGoodsException
+     */
     @Override
     public void loadGoods(GameState gameState, String nickname, List<Integer> x, List<Integer> y) throws InvalidActionException, UnsupportedCargoColorException, FullCargoHoldException, NoGoodsException {
         if(x.size() != stationGoods.size() || y.size() != stationGoods.size()){
