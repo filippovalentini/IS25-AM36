@@ -5,7 +5,15 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 
 import java.util.*;
 
+/**
+ * This class represents a level two ship board, which is a specific type of ship board
+ */
 public class LevelTwoShipBoard extends ShipBoard{
+    /**
+     * Constructor for a level two ship board.
+     * @param nickname
+     * @param color
+     */
     public LevelTwoShipBoard(String nickname, Color color) {
         super(nickname, color);
         imageID = 2;

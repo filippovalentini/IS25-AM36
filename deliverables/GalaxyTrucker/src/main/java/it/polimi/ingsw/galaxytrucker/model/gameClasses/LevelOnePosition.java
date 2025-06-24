@@ -2,14 +2,26 @@ package it.polimi.ingsw.galaxytrucker.model.gameClasses;
 
 import java.util.Set;
 
+/**
+ * This class is used to manage the position of players on the flight board for Level One.
+ */
 public class LevelOnePosition extends Position {
     public static final Set<Integer> validStartingCells = Set.of(0,1,2,4);
+
+    /**
+     * Constructor for LevelOnePosition.
+     * @param startingCell
+     */
     public LevelOnePosition(int startingCell) {
         super(startingCell);
     }
 
+    /**
+     * Performs a change of position of one step, forwards or backwards based on the direction parameter.
+     * @param direction
+     */
     @Override
-    //performs a change of position of one step, forwards or backwards based on the direction parameter
+
     public void performStep(int direction){
         if (direction > 0) { //forward movement
             if (cell == 17) {

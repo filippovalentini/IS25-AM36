@@ -5,7 +5,15 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 
 import java.util.*;
 
+/**
+ * This class represents the ship board for level one of the game.
+ */
 public class LevelOneShipBoard extends ShipBoard {
+    /**
+     * Constructor for LevelOneShipBoard.
+     * @param nickname
+     * @param color
+     */
     public LevelOneShipBoard(String nickname, Color color) {
         super(nickname, color);
         imageID = 1;

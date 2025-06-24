@@ -10,7 +10,11 @@ import it.polimi.ingsw.galaxytrucker.model.shotClasses.Meteor;
 import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 
 import java.util.*;
-//this class is used to describe all information associated to the shipboard of a player
+
+/**
+ *
+ * This class is used to describe all information associated to the shipboard of a player
+ */
 public class ShipBoard {
     protected final String nickname;
     protected int imageID;
@@ -22,6 +26,11 @@ public class ShipBoard {
     protected boolean correct;      //determines if the ship is correctly assembled
     protected Map<String, VirtualView> clients;     //list of observers (clients of the game)
 
+    /**
+     * Constructor of the ship board
+     * @param nickname
+     * @param color
+     */
     public ShipBoard(String nickname, Color color) {     //constructor
         this.nickname = nickname;
         this.color = color;
@@ -59,46 +68,108 @@ public class ShipBoard {
 
     //EXTRA METHODS NEEDED FOR TESTING
 
+    /**
+     * Returns clients
+     * @return a map of clients
+     */
     public Map<String, VirtualView> getClients(){
         return new HashMap<>(this.clients);
     }
+
+    /**
+     * Assembles a component in the specified position of the ship board
+     * @param component
+     * @param x
+     * @param y
+     */
     public void assembleComponent(Component component, int x, int y) {
         assembledComponents.get(x).set(y, component);
         updateCorrectness();
     }
 
 
-    //GETTERS
+    /**
+     * Returns the assembled component in the specified position of the ship board
+     * @param x
+     * @param y
+     * @return a component
+     */
     public Component getAssembledComponent(int x, int y) { //return a copy of the assembled component in the given position
         return (assembledComponents.get(x).get(y)).clone();
     }
+
+    /**
+     * Checks if the component in the specified position of the ship board is empty
+     * @param x
+     * @param y
+     * @return true if the component is empty, false otherwise
+     */
     public boolean isEmptyComponent(int x, int y) { //should have used instead of getAssembledComponent for empty check
         return assembledComponents.get(x).get(y).getClass() == Empty.class;
     }
+
+    /**
+     * Returns the actual picked component
+     * @return the picked component
+     */
     public Component getPickedComponent() { //return the actual picked component
         return pickedComponent;
     }
+
+    /**
+     * Returns the color
+     * @return the color of the ship board
+     */
     public Color getColor() {
         return color;
     }
+
+    /**
+     * Return the image ID
+     * @return the image ID
+     */
     public int getImageID() {
         return imageID;
     }
+
+    /**
+     * Return the lost components
+     * @return the number of lost components
+     */
     public int getLostComponents() {
         return lostComponents;
     }
+
+    /**
+     * Return if the component is correctly assembled
+     * @return true if it is correctly assembled, false otherwise
+     */
     public boolean isCorrect() {
          return correct;
     }
+
+    /**
+     * Returns the number of reserved components
+     * @return the number of reserved components
+     */
     public int getNumberReservedComponents() {
         return reservedComponents.size();
     }
 
-    //adds a listener to the map of listeners of the ship board
+    /**
+     * Method that adds a listener to the map of listeners of the ship board
+     * @param nickname
+     * @param client
+     */
     public void addListener(String nickname, VirtualView client) {
         clients.put(nickname, client);
     }
-    //invoked when the owner of the ship board picks a component from the table
+
+    /**
+     * Method invoked when the owner of the ship board picks a component from the table
+     * @param component
+     * @throws PickedComponentException
+     */
     public void pickComponent(Component component) throws PickedComponentException {
         if(pickedComponent!=null){
             throw new PickedComponentException("Already one component");
@@ -107,7 +178,12 @@ public class ShipBoard {
             this.pickedComponent = component;
         }
     }
-    //the picked component is released, therefore returned so that it can be shown to the other players
+
+    /**
+     * Mathod that release he picked component, therefore returned so that it can be shown to the other players
+     * @return the picked component
+     * @throws PickedComponentException
+     */
     public Component releaseComponent() throws PickedComponentException {
         if(pickedComponent==null){
             throw new PickedComponentException("No picked component");
@@ -118,7 +194,13 @@ public class ShipBoard {
             return c;
         }
     }
-    //the picked component is added to the reserved components for the ship board
+
+    /**
+     * The picked component is added to the reserved components for the ship board
+     * @return the picked component
+     * @throws PickedComponentException
+     * @throws ReservedComponentException
+     */
     public Component reserveComponent() throws PickedComponentException, ReservedComponentException {
         if(pickedComponent==null){
             throw new PickedComponentException("No picked component");
@@ -136,21 +218,33 @@ public class ShipBoard {
             }
         }
     }
-    //invoked when a player picks a specific component among the ones reserved for its ship board
+
+    /**
+     * Method invoked when a player picks a specific component among the ones reserved for its ship board
+     * @param position
+     * @return the picked reserved component
+     * @throws ReservedComponentException
+     * @throws PickedComponentException
+     */
     public Component pickReservedComponent(int position) throws ReservedComponentException, PickedComponentException {
-        if(position < 0 || position >= reservedComponents.size()){
+        if(position < 0 || position >= reservedComponents.size()){ //checks if the position is valid
             throw new ReservedComponentException("Invalid reserved component position");
         }
-        else if(pickedComponent!=null){
+        else if(pickedComponent!=null){ //checks if the player has already picked a component
             throw new PickedComponentException("Already one component");
         }
         else {
-            pickedComponent = reservedComponents.remove(position);
+            pickedComponent = reservedComponents.remove(position); //removes the component from the reserved components
             return pickedComponent;
         }
     }
-    //determines if a position on the ship board is adjacent to an assembled component, in order to determine if
-    //the position is available for component placement
+
+    /**
+     * Method that determines if a position on the ship board is adjacent to an assembled component, in order to determine if the position is available for component placement
+     * @param x
+     * @param y
+     * @return true if the position is isolated, false otherwise
+     */
     public boolean isolatedPosition(int x, int y){
         Component c;
         if(x>0){
@@ -179,7 +273,15 @@ public class ShipBoard {
         }
         return true;
     }
-    //assembles the component picked by a player in the specified cell (x,y) of its ship board
+
+    /**
+     * Method that assembles the component picked by a player in the specified cell (x,y) of its ship board
+     * @param x
+     * @param y
+     * @return the assembled component
+     * @throws AssembledComponentException
+     * @throws PickedComponentException
+     */
     public Component assembleComponent(int x, int y) throws AssembledComponentException, PickedComponentException {
         Component c;
         if(!assembledComponents.get(x).get(y).belongsToShip()){
@@ -203,7 +305,11 @@ public class ShipBoard {
         return c;
 
     }
-    //rotates the picked component left
+
+    /**
+     * Method that rotates the picked component to the left
+     * @throws PickedComponentException
+     */
     public void rotatePickedComponent() throws PickedComponentException {
         if(pickedComponent==null){
             throw new PickedComponentException("No picked component");
@@ -212,7 +318,13 @@ public class ShipBoard {
             pickedComponent.rotateLeft();
         }
     }
-    //removes an assembled component from the ship board
+
+    /**
+     * Method that removes an assembled component from the ship board
+     * @param x
+     * @param y
+     * @throws AssembledComponentException
+     */
     public void destroyComponent(int x, int y) throws AssembledComponentException {
         Component emptySpace = new Empty(0, new ArrayList<>(Arrays.asList(Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH, Connector.SMOOTH)));
         if(!assembledComponents.get(x).get(y).isNotEmpty()){
@@ -230,11 +342,27 @@ public class ShipBoard {
             catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
     }
-    //initializes a cabin with 2 human crew members
+
+    /**
+     * Method that initializes a cabin with 2 human crew members
+     * @param x
+     * @param y
+     * @throws AssembledComponentException
+     * @throws FullCabinException
+     */
     public void addCrew(int x, int y) throws AssembledComponentException, FullCabinException {
         assembledComponents.get(x).get(y).addCrew();
     }
-    //initializes a cabin with an alien of the specified type, checking whether there is life support for it
+
+    /**
+     * Method that initializes a cabin with an alien of the specified type, checking whether there is life support for it
+     * @param isPurple
+     * @param x
+     * @param y
+     * @throws AssembledComponentException
+     * @throws FullCabinException
+     * @throws NoLifeSupportException
+     */
     public void addAlien(boolean isPurple, int x, int y) throws AssembledComponentException, FullCabinException, NoLifeSupportException {
         if(x==2 && y==3){
             throw new InvalidPositionException("Cannot add alien in the initial cabin");
@@ -265,32 +393,43 @@ public class ShipBoard {
         }
         assembledComponents.get(x).get(y).addAlien(isPurple);
     }
-    //invoked when the player wants to initialize a battery container with batteries
+
+    /**
+     * Method that invoked when the player wants to initialize a battery container with batteries
+     * @param x
+     * @param y
+     * @return the number of batteries added
+     * @throws AssembledComponentException
+     * @throws NoBatteriesException
+     */
     public int addBatteries(int x, int y) throws AssembledComponentException, NoBatteriesException{
         return assembledComponents.get(x).get(y).addBatteries();
     }
-    //determines if the ship board is correctly assembled
-    public void updateCorrectness(){
-        boolean correctness = true;
 
-        for (int i = 0; i < assembledComponents.size(); i++) {
-            for(int j = 0; j < assembledComponents.get(i).size(); j++){
-                Component c = assembledComponents.get(i).get(j);
-                if(c.isNotEmpty() && c.belongsToShip()){
+    /**
+     * Method that determines if the ship board is correctly assembled
+     */
+    public void updateCorrectness(){
+        boolean correctness = true; //assumes that the ship board is correctly assembled
+
+        for (int i = 0; i < assembledComponents.size(); i++) { //iterates through the rows of the ship board
+            for(int j = 0; j < assembledComponents.get(i).size(); j++){ //iterates through the columns of the ship board
+                Component c = assembledComponents.get(i).get(j); //gets the component in the current position
+                if(c.isNotEmpty() && c.belongsToShip()){ //if the component is not empty and belongs to the ship
                     if(!c.isWellOriented()){ //engines need to be well oriented
                         correctness = false;
                         break;
                     }
                     Component cNorth = null, cEast = null, cSouth = null, cWest = null; //adjacent components
-                    if(i>0){
-                        Component c1 = assembledComponents.get(i-1).get(j);
+                    if(i>0){ // checks the component above
+                        Component c1 = assembledComponents.get(i-1).get(j); // gets the component above
                         if(!c.getNorthSide().compatibleWith(c1.getSouthSide()) && c1.isNotEmpty() && c1.belongsToShip()){
                             correctness = false;
                             break;
                         }
                         cNorth = assembledComponents.get(i-1).get(j);
                     }
-                    if(i<assembledComponents.size()-1){
+                    if(i<assembledComponents.size()-1){ // checks the component below
                         Component c1 = assembledComponents.get(i+1).get(j);
                         if(!c.getSouthSide().compatibleWith(c1.getNorthSide()) && c1.isNotEmpty() && c1.belongsToShip()){
                             correctness = false;
@@ -298,7 +437,7 @@ public class ShipBoard {
                         }
                         cSouth = assembledComponents.get(i+1).get(j);
                     }
-                    if(j>0){
+                    if(j>0){ // checks the component on the left
                         Component c1 = assembledComponents.get(i).get(j-1);
                         if(!c.getWestSide().compatibleWith(c1.getEastSide()) && c1.isNotEmpty() && c1.belongsToShip()){
                             correctness = false;
@@ -331,11 +470,17 @@ public class ShipBoard {
         }
 
     }
-    //increases the number of lost components for the number of unused reserved components
+    /**
+     * Method that increases the number of lost components for the number of unused reserved components
+     */
     public void loseReservedComponents(){
         lostComponents+=reservedComponents.size();
     }
-    //checks if the ship board has multiple regions (floating group of components)
+
+    /**
+     * Method that checks if the ship board has multiple regions (floating group of components)
+     * @return true if the ship board has multiple regions, false otherwise
+     */
     private boolean hasMultipleRegions(){
         boolean[][] visitedComponents = new boolean[assembledComponents.size()][assembledComponents.get(0).size()];
         int regionCount = 0;
@@ -356,7 +501,14 @@ public class ShipBoard {
         }
         return regionCount > 1;
     }
-    //Deep-First-Search for multiple regions check
+
+    /**
+     * Method that performs a depth-first search on the ship board to find all components that belong to the same ship
+     * @param components
+     * @param row
+     * @param col
+     * @param visited
+     */
     private static void dfs(List<List<Component>> components, int row, int col, boolean[][] visited){
         if(row < 0 || col < 0 || row >= components.size() || col >= components.get(row).size()){
             return;
@@ -375,7 +527,11 @@ public class ShipBoard {
         dfs(components, row, col+1, visited);
         dfs(components, row, col-1, visited);
     }
-    //counts the number of exposed connectors of the ship board
+
+    /**
+     * Method that counts the number of exposed connectors of the ship board
+     * @return the number of exposed connectors
+     */
     public int countExposedConnectors() {
         int exposedConnectors = 0;
 
@@ -412,7 +568,10 @@ public class ShipBoard {
         }
         return exposedConnectors;
     }
-    //removes a member (human or alien) from each cabin that is directly connected with another busy cabin
+
+    /**
+     * Method that removes a member (human or alien) from each cabin that is directly connected with another busy cabin
+     */
     public void epidemicEffect() {
         List<int[]> hitCabins = new ArrayList<>();
 
@@ -462,8 +621,12 @@ public class ShipBoard {
             }
         }
     }
-    //determines whether a side of the ship board is protected by a shield and (if yes) activates it by using
-    //a battery
+
+    /**
+     * Method that determines whether a side of the ship board is protected by a shield and (if yes) activates it by using a battery
+     * @param orientation
+     * @return true if the ship board is protected, false otherwise
+     */
     public boolean protectedShipBoard(Orientation orientation) {
         boolean protection = false;
         for (List<Component> componentRow : assembledComponents) {
@@ -484,8 +647,14 @@ public class ShipBoard {
 
         return protection;
     }
-    //determines whether a row/column of a ship board is armed (has a cannon) in a specific direction; it can
-    //also activate a double cannon if specified and if necessary
+
+    /**
+     * Method that determines whether a row/column of a ship board is armed (has a cannon) in a specific direction; it can also activate a double cannon if specified and if necessary
+     * @param activatedCannon
+     * @param orientation
+     * @param direction
+     * @return true if the ship board is armed in the specified direction, false otherwise
+     */
     public boolean armedShipBoard(boolean activatedCannon, Orientation orientation, int direction) {
         for (int i = 0; i < assembledComponents.size(); i++) {
             for (int j = 0; j < assembledComponents.get(i).size(); j++) {
@@ -514,7 +683,13 @@ public class ShipBoard {
         }
         return false;
     }
-    //determines whether the ship board exposes a smooth side in a specific direction
+
+    /**
+     * Method that determines whether the ship board exposes a smooth side in a specific direction
+     * @param orientation
+     * @param direction
+     * @return
+     */
     public boolean smoothSide(Orientation orientation, int direction){
         Component c;
         if(orientation == Orientation.NORTH){
@@ -570,7 +745,11 @@ public class ShipBoard {
         }
         return true;
     }
-    //determines whether the shipBoard has all the cabins and battery containers full
+
+    /**
+     * Method that determines whether the shipBoard has all the cabins and battery containers full
+     * @return
+     */
     public boolean hasAllCabinsBatteriesFull(){
         for (List<Component> componentRow : assembledComponents) {
             for (Component component : componentRow) {
@@ -583,7 +762,11 @@ public class ShipBoard {
         }
         return true;
     }
-    //destroys the first component of the ship from north, in the specified column
+
+    /**
+     * Method that destroys the first component of the ship from north, in the specified column
+     * @param column
+     */
     public void destroyNorth(int column){
         for(int i=0; i<assembledComponents.size(); i++){
             Component c = assembledComponents.get(i).get(column);
@@ -593,7 +776,11 @@ public class ShipBoard {
             }
         }
     }
-    //destroys the first component of the ship from south, in the specified column
+
+    /**
+     * Method that destroys the first component of the ship from south, in the specified column
+     * @param column
+     */
     public void destroySouth(int column){
         for(int i=assembledComponents.size()-1; i>=0; i--){
             Component c = assembledComponents.get(i).get(column);
@@ -603,7 +790,11 @@ public class ShipBoard {
             }
         }
     }
-    //destroys the first component of the ship from east, in the specified row
+
+    /**
+     * Method that destroys the first component of the ship from east, in the specified row
+     * @param row
+     */
     public void destroyEast(int row){
         for(int j=assembledComponents.get(row).size() - 1; j>=0; j--){
             Component c = assembledComponents.get(row).get(j);
@@ -613,7 +804,11 @@ public class ShipBoard {
             }
         }
     }
-    //destroys the first component of the ship from west, in the specified row
+
+    /**
+     * Method that destroys the first component of the ship from west, in the specified row
+     * @param row
+     */
     public void destroyWest(int row){
         for(int j=0; j< assembledComponents.get(row).size(); j++){
             Component c = assembledComponents.get(row).get(j);
@@ -623,7 +818,14 @@ public class ShipBoard {
             }
         }
     }
-    //verifies that in all the specified positions there are cabins that contain at least the specified number of crew
+
+    /**
+     * Method that verifies that in all the specified positions there are cabins that contain at least the specified number of crew
+     * @param x
+     * @param y
+     * @param crewInEachCabin
+     * @return true if all the specified cabins have enough crew, false otherwise
+     */
     public boolean availableCabins(List<Integer> x, List<Integer> y, List<Integer> crewInEachCabin){
         Component c;
         for(int i=0; i<x.size(); i++){
@@ -634,7 +836,13 @@ public class ShipBoard {
         }
         return true;
     }
-    //verifies that in all the specified positions there are cargo holds that are not full
+
+    /**
+     * Method that verifies that in all the specified positions there are cargo holds that are not full
+     * @param x
+     * @param y
+     * @return
+     */
     public boolean availableCargoHolds(List<Integer> x, List<Integer> y){
         for(int i=0; i<x.size(); i++){
             if(x.get(i)==0 && y.get(i)==0){
@@ -647,7 +855,15 @@ public class ShipBoard {
         }
         return true;
     }
-    //remove the specified crew members from the specified cabins in the ship board
+
+    /**
+     * Method that removes the specified crew members from the specified cabins in the ship board
+     * @param x
+     * @param y
+     * @param crewInEachCabin
+     * @param numberCrewToRemove
+     * @throws NoCrewException
+     */
     public void removeCrewMembers(List<Integer> x, List<Integer> y, List<Integer> crewInEachCabin, int numberCrewToRemove) throws NoCrewException {
         int sumRemovedCrewMembers = crewInEachCabin.stream().mapToInt(Integer::intValue).sum();
         if(sumRemovedCrewMembers != numberCrewToRemove){
@@ -664,12 +880,28 @@ public class ShipBoard {
             }
         }
     }
-    //substitutes the cargo good at the given coordinates with the good given in input
+
+    /**
+     * Method that substitutes the cargo good at the given coordinates with the good given in input
+     * @param cargo_row
+     * @param cargo_col
+     * @param good
+     * @param posInCargo
+     * @throws FullCargoHoldException
+     * @throws UnsupportedCargoColorException
+     */
     public void substituteGoods(int cargo_row, int cargo_col, Color good, int posInCargo) throws FullCargoHoldException, UnsupportedCargoColorException {
         assembledComponents.get(cargo_row).get(cargo_col).substituteGood(good, posInCargo);
     }
-    //adds a set of goods in specific cargo holds of the player's ship board; discards the good if the specified
-    //coordinates are (0,0)
+
+    /**
+     *  Method that adds a set of goods in specific cargo holds of the player's ship board; discards the good if the specified coordinates are (0,0)
+     * @param x
+     * @param y
+     * @param goods
+     * @throws UnsupportedCargoColorException
+     * @throws FullCargoHoldException
+     */
     public void loadGoods(List<Integer> x, List<Integer> y, List<Color> goods) throws UnsupportedCargoColorException, FullCargoHoldException{
         if(!availableCargoHolds(x,y)){
             throw new NoCrewException("All specified cargo holds must have sufficient space");
@@ -687,7 +919,14 @@ public class ShipBoard {
             }
         }
     }
-    //invoked when a meteor/cannon shot hits the ship board
+
+    /**
+     * Method that invokes when a meteor/cannon shot hits the ship board
+     * @param meteor
+     * @param direction
+     * @param activateShield
+     * @param activateCannon
+     */
     public void meteorAttack(Meteor meteor, int direction, boolean activateShield, boolean activateCannon){
         Orientation orientation = meteor.getOrientation();
         //in this case the meteor doesn't hit the ship board
@@ -722,7 +961,13 @@ public class ShipBoard {
             destroyEast(direction);
         }
     }
-    //invoked when a cannon shot hits the ship board
+
+    /**
+     * Method invoked when a cannon shot hits the ship board
+     * @param cannonFire
+     * @param direction
+     * @param activateShield
+     */
     public void cannonFireAttack(CannonShot cannonFire, int direction, boolean activateShield){
         Orientation orientation = cannonFire.getOrientation();
         //in this case the cannon fire doesn't hit the ship board
@@ -750,7 +995,11 @@ public class ShipBoard {
             destroyEast(direction);
         }
     }
-    //returns the number of crew members in the ship board
+
+    /**
+     * Method that returns the number of crew members in the ship board
+     * @return the number of crew members
+     */
     public int getNumberCrew() {
         int numberCrew = 0;
         for (List<Component> componentRow : assembledComponents) {
@@ -760,7 +1009,11 @@ public class ShipBoard {
         }
         return numberCrew;
     }
-    //returns the number of batteries on the ship board
+
+    /**
+     * Method that returns the number of batteries on the ship board
+     * @return the number of batteries
+     */
     public int getNumberBatteries() {
         int numberBatteries = 0;
         for (List<Component> componentRow : assembledComponents) {
@@ -770,7 +1023,12 @@ public class ShipBoard {
         }
         return numberBatteries;
     }
-    //removes batteries from the ship board
+
+    /**
+     * Method that removes a specified number of batteries from the ship board; if there aren't enough batteries, it removes all the batteries available
+     * @param batteries
+     * @throws NoBatteriesException
+     */
     public void removeBatteries(int batteries) throws NoBatteriesException{
         int toRemove = batteries;
         int componentBatteries;
@@ -803,7 +1061,11 @@ public class ShipBoard {
             }
         }
     }
-    //returns the number of goods on the ship board
+
+    /**
+     * Method that returns the number of goods on the ship board
+     * @return the number of goods
+     */
     public int getNumberGoods() {
         int numberGoods = 0;
         for (List<Component> componentRow : assembledComponents) {
@@ -814,7 +1076,11 @@ public class ShipBoard {
         return numberGoods;
     }
 
-    //returns the number of aliens (purple or brown depending on the parameter) in the ship board
+    /**
+     * Method that returns the number of aliens on the ship board
+     * @param purpleAliens
+     * @return the number of aliens
+     */
     public int getNumberAliens(boolean purpleAliens){
         int numberAliens = 0;
         for (List<Component> componentRow : assembledComponents) {
@@ -826,8 +1092,13 @@ public class ShipBoard {
         }
         return numberAliens;
     }
-    //this method removes numberGoods goods of a specific color from the ship board; if there aren't enough
-    //goods of that color, it returns the number of missing goods, otherwise it returns 0
+
+    /**
+     *  Method that removes numberGoods goods of a specific color from the ship board; if there aren't enough goods of that color, it returns the number of missing goods, otherwise it returns 0
+     * @param color
+     * @param numberGoods
+     * @return the number of missing goods
+     */
     public int removeSpecificGoods(Color color, int numberGoods){
         int toRemove = numberGoods;
         int componentGoods;
@@ -865,7 +1136,11 @@ public class ShipBoard {
         }
         return toRemove;
     }
-    //this method removes the numberGoods-most precious goods from the  ship board
+
+    /**
+     * Method that removes a specified number of goods from the ship board, removing them in order of color (red, yellow, green, blue) and then batteries if necessary
+     * @param numberGoods
+     */
     public void losePreciousGoods(int numberGoods){
         int toRemove = numberGoods;
         toRemove = removeSpecificGoods(Color.RED, toRemove);
@@ -876,7 +1151,11 @@ public class ShipBoard {
             removeBatteries(toRemove);
         }
     }
-    //returns the number of double engines on the ship board
+
+    /**
+     * Method that returns the number of double engines on the ship board
+     * @return the number of double engines
+     */
     public int getNumberDoubleEngines() {
         int numberDoubleEngines = 0;
         for (List<Component> componentRow : assembledComponents) {
@@ -888,7 +1167,11 @@ public class ShipBoard {
         }
         return numberDoubleEngines;
     }
-    //returns the number of single engines on the ship board
+
+    /**
+     * Method that returns the number of single engines on the ship board
+     * @return the number of single engines
+     */
     public int getNumberSingleEngines() {
         int numberSingleEngines = 0;
         for (List<Component> componentRow : assembledComponents) {
@@ -900,7 +1183,11 @@ public class ShipBoard {
         }
         return numberSingleEngines;
     }
-    //returns the number of double cannons on the ship board
+
+    /**
+     * Method that returns the number of double cannons on the ship board
+     * @return the number of double cannons
+     */
     public int getNumberDoubleCannons() {
         int numberDoubleCannons = 0;
         for (List<Component> componentRow : assembledComponents) {
@@ -912,7 +1199,11 @@ public class ShipBoard {
         }
         return numberDoubleCannons;
     }
-    //returns the number of single cannons on the ship board
+
+    /**
+     * Method that returns the number of single cannons on the ship board
+     * @return the number of single cannons
+     */
     public int getNumberSingleCannons() {
         int numberSingleCannons = 0;
         for (List<Component> componentRow : assembledComponents) {
@@ -924,7 +1215,11 @@ public class ShipBoard {
         }
         return numberSingleCannons;
     }
-    //returns the number of double cannons on the ship board
+
+    /**
+     * Method that returns the number of double cannons that point forward on the ship board
+     * @return the number of forward double cannons
+     */
     public int getNumberForwardDoubleCannons() {
         int numberDoubleCannons = 0;
         for (List<Component> componentRow : assembledComponents) {
@@ -936,7 +1231,11 @@ public class ShipBoard {
         }
         return numberDoubleCannons;
     }
-    //returns the number of single cannons on the ship board
+
+    /**
+     * Method that returns the number of single cannons that point forward on the ship board
+     * @return the number of forward single cannons
+     */
     public int getNumberForwardSingleCannons() {
         int numberSingleCannons = 0;
         for (List<Component> componentRow : assembledComponents) {
@@ -948,7 +1247,13 @@ public class ShipBoard {
         }
         return numberSingleCannons;
     }
-    //returns the cannon strength of the ship board, removing the given batteries in order to activate double cannons
+
+    /**
+     * Method that returns the strength of the cannons on the ship board, removing the batteries used to activate double cannons
+     * @param usedBatteries
+     * @return the strength of the cannons
+     * @throws NoBatteriesException
+     */
     public double getCannonStrength(int usedBatteries) throws NoBatteriesException{
         int activatedDoubleCannons = Math.min(getNumberDoubleCannons(), usedBatteries);
         removeBatteries(activatedDoubleCannons);
@@ -964,7 +1269,13 @@ public class ShipBoard {
             return cannonStrength;
         }
     }
-    //returns the engine strength of the ship board, removing the given batteries in order to activate double engines
+
+    /**
+     * Method that returns the engine strength of the ship board, removing the given batteries in order to activate double engines
+     * @param usedBatteries
+     * @return the engine strength
+     * @throws NoBatteriesException
+     */
     public int getEngineStrength(int usedBatteries) throws NoBatteriesException {
         int activatedDoubleEngines = Math.min(getNumberDoubleEngines(), usedBatteries);
         removeBatteries(activatedDoubleEngines);
@@ -976,7 +1287,11 @@ public class ShipBoard {
             return engineStrength;
         }
     }
-    //returns the overall price for all the goods carried by the player's ship
+
+    /**
+     * Method that returns the overall price for all the goods carried by the player's ship
+     * @return the overall price of the goods
+     */
     public int getGoodsPrice(){
         int goodsPrice = 0;
         for(List<Component> componentRow : assembledComponents){
