@@ -246,8 +246,13 @@ public class GameSetupController implements GuiController {
 
     //launches the socket client
     public void startSocketClient(String IP) throws IOException {
-        int port = 1235;
-        Socket clientSocket = new Socket(IP, port);
+        String shortIP = IP; // only the ip without port
+        int port = 1235; //default port
+        if((IP.split(":")).length == 2) { // IP provided with port
+            shortIP = IP.split(":")[0];
+            port = Integer.parseInt(IP.split(":")[1]);
+        }
+        Socket clientSocket = new Socket(shortIP, port);
         SocketClient socketClient = new SocketClient(GuiInterface.getInstance(), clientSocket);
         this.server = socketClient.getServerHandler();
         this.client = socketClient;
@@ -256,8 +261,13 @@ public class GameSetupController implements GuiController {
     //launches the RMI client
     public void startClientRMI(String IP) throws RemoteException, NotBoundException {
         final String serverName = "GalaxyTruckerServer";
-        int port = 1234;
-        Registry registry = LocateRegistry.getRegistry(IP, port);
+        String shortIP = IP; // only the ip without port
+        int port = 1234; // default port
+        if((IP.split(":")).length == 2) { // IP provided with port
+            shortIP = IP.split(":")[0];
+            port = Integer.parseInt(IP.split(":")[1]);
+        }
+        Registry registry = LocateRegistry.getRegistry(shortIP, port);
         VirtualServerRMI server = (VirtualServerRMI) registry.lookup(serverName);
         this.server = server;
         this.client = new ClientRMI(GuiInterface.getInstance(), server);

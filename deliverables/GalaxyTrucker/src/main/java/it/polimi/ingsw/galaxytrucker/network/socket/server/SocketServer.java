@@ -21,7 +21,7 @@ public class SocketServer {
     public void runServer() throws IOException {
         Socket clientSocket;
         while ((clientSocket = this.listenSocket.accept()) != null) {
-            System.out.println("Accepted connection from " + clientSocket.getInetAddress().getHostAddress());
+            System.out.println("Accepted connection from " + clientSocket.getInetAddress().getHostAddress() + " on port " + clientSocket.getLocalPort());
             SocketClientHandler clientHandler = new SocketClientHandler(clientSocket);
 
             new Thread(() -> {

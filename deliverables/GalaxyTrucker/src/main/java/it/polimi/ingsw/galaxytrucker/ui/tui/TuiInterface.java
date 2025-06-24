@@ -31,7 +31,7 @@ public class TuiInterface implements UserInterface {
     //asks the user the technology to use (Socket or RMI) and launches the corresponding client typology
     public void launch(){
         Scanner sc = new Scanner(System.in);
-        System.out.println("Insert server IP address: ");
+        System.out.println("Insert server IP address (different port can be specified with [IP:PORT_NUM]): ");
         String IP = sc.nextLine();
         while(true) {
             try{
@@ -65,8 +65,13 @@ public class TuiInterface implements UserInterface {
 
     //launches the socket client
     public void startSocketClient(String IP) throws IOException {
-        int port = 1235;
-        Socket clientSocket = new Socket(IP, port);
+        String shortIP = IP; // only the ip without port
+        int port = 1235; //default port
+        if((IP.split(":")).length == 2) { // IP provided with port
+            shortIP = IP.split(":")[0];
+            port = Integer.parseInt(IP.split(":")[1]);
+        }
+        Socket clientSocket = new Socket(shortIP, port);
         System.out.println("Connected to server...");
         SocketClient socketClient = new SocketClient(this, clientSocket);
         this.server = socketClient.getServerHandler();
@@ -76,8 +81,13 @@ public class TuiInterface implements UserInterface {
     //launches the RMI client
     public void startClientRMI(String IP) throws RemoteException, NotBoundException {
         final String serverName = "GalaxyTruckerServer";
-        int port = 1234;
-        Registry registry = LocateRegistry.getRegistry(IP, port);
+        String shortIP = IP; // only the ip without port
+        int port = 1234; // default port
+        if((IP.split(":")).length == 2) { // IP provided with port
+            shortIP = IP.split(":")[0];
+            port = Integer.parseInt(IP.split(":")[1]);
+        }
+        Registry registry = LocateRegistry.getRegistry(shortIP, port);
         VirtualServerRMI server = (VirtualServerRMI) registry.lookup(serverName);
         this.server = server;
         this.client = new ClientRMI(this, server);
