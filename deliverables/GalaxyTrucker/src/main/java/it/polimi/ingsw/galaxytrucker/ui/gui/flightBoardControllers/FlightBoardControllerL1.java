@@ -133,7 +133,7 @@ public class FlightBoardControllerL1 implements FlightBoardController {
 
     public void initializeFlightBoardFromMap() {
         for (Label label : targetLabels) {
-            label.setText(""); // Pulisce le posizioni
+            label.setText("");
         }
 
         boolean playerAlreadyPlaced = false;
@@ -150,13 +150,11 @@ public class FlightBoardControllerL1 implements FlightBoardController {
                 }
             }
         }
-
-        // Se il giocatore non ha ancora piazzato, mostra 🚀 nella start
         if (!playerAlreadyPlaced) {
             start.setText("🚀");
         } else {
             start.setText("");
-            start.setOnDragDetected(null); // disattiva drag
+            start.setOnDragDetected(null);
         }
     }
 
@@ -240,8 +238,7 @@ public class FlightBoardControllerL1 implements FlightBoardController {
             controlledStage.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
+            showError(e.getMessage());
         }
     }
 
@@ -261,8 +258,7 @@ public class FlightBoardControllerL1 implements FlightBoardController {
             controlledStage.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Errore nel caricamento della Shipboard: " + e.getMessage());
+            showError(e.getMessage());
         }
     }
 
@@ -282,8 +278,7 @@ public class FlightBoardControllerL1 implements FlightBoardController {
             controlledStage.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Errore nel caricamento della Shipboard: " + e.getMessage());
+            showError(e.getMessage());
         }
     }
 
@@ -361,8 +356,7 @@ public class FlightBoardControllerL1 implements FlightBoardController {
                 controlledStage.show();
 
             } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
+                showError(e.getMessage());
             }
         });
     }
@@ -413,8 +407,7 @@ public class FlightBoardControllerL1 implements FlightBoardController {
                 controlledStage.show();
 
             } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
+                showError(e.getMessage());
             }
         });
     }

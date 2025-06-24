@@ -33,7 +33,7 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.util.*;
 
-public class ShipBuildingControllerL2 implements ShipBuildingController {
+public class ShipBuildingControllerL2 extends ShipBoardGraphics implements ShipBuildingController {
     private Stage controlledStage;
 
     private VirtualServer server;
@@ -62,7 +62,6 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     @FXML private Label playerNameLabel;
     @FXML private Label playerColorLabel;
     @FXML private Button handComponentButton;
-    @FXML private GridPane myGridPane;
     @FXML private Button setButton;
     @FXML private Button flightBoardButton;
     @FXML private Button pickComponent;
@@ -252,8 +251,8 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
         }
     }
 
+    @Override
     public void setImageOnGrid(String imageID, Orientation orientation, int column, int row){
-        // Recupera l'immagine del componente dalla mappa
         if(imageID.equals("000") || imageID.equals("003")){
             return;
         }
@@ -271,7 +270,6 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
         button.setMaxSize(buttonSize, buttonSize);
         button.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
 
-        // Crea l'ImageView con l'immagine della cabina
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(buttonSize);
         imageView.setFitHeight(buttonSize);
@@ -287,7 +285,6 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
         }
         button.setGraphic(imageView);
 
-        // Genera un ID univoco per il bottone
         String btnId = UUID.randomUUID().toString();
         button.setUserData(btnId);
 
@@ -303,7 +300,6 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
     private void fadeInThenOut(Pane pane) {
         pane.setOpacity(1.0);
 
-        // Timer: attende 3 secondi, poi parte il fade out
         PauseTransition wait = new PauseTransition(Duration.seconds(3));
         wait.setOnFinished(event -> {
             FadeTransition fade = new FadeTransition(Duration.seconds(1.5), pane);
@@ -333,13 +329,11 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
                 Button draggedButton = draggableButtons.get(btnId);
 
                 if (draggedButton != null) {
-                    // Rimozione sicura da qualunque contenitore
                     if (draggedButton.getParent() instanceof Pane parentPane) {
                         parentPane.getChildren().remove(draggedButton);
                     } else if (myGridPane.getChildren().contains(draggedButton)) {
                         myGridPane.getChildren().remove(draggedButton);
                     } else {
-                        // Se proviene da uno dei bottoni riservati, ripristina il placeholder
                         if (reserved0Button.getGraphic() == draggedButton.getGraphic()) {
                             setReservedButtonPlaceholder(reserved0Button);
                         } else if (reserved1Button.getGraphic() == draggedButton.getGraphic()) {
@@ -347,11 +341,9 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
                         }
                     }
 
-                    // Calcola posizione nella griglia
                     colDroppedComponent = getColumnIndexFromX(event.getX());
                     rowDroppedComponent = getRowIndexFromY(event.getY());
 
-                    // Impostazioni grafiche
                     double buttonSize = 110;
                     draggedButton.setPrefSize(buttonSize, buttonSize);
                     draggedButton.setMinSize(buttonSize, buttonSize);
@@ -364,7 +356,6 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
                         imageView.setPreserveRatio(true);
                     }
 
-                    // Aggiungi alla griglia
                     myGridPane.add(draggedButton, colDroppedComponent, rowDroppedComponent);
                     lastDroppedButton = draggedButton;
 
@@ -373,7 +364,6 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
                     draggedButton.setEffect(glow);
                     draggedButton.setOpacity(1);
 
-                    // Aggiorna stato pulsanti
                     rotateButton.setDisable(false);
                     discardButton.setDisable(false);
                     reserveButton.setDisable(false);
@@ -447,8 +437,7 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
                 controlledStage.show();
 
             } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
+                showError(e.getMessage());
             }
         });
     }
@@ -542,8 +531,7 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
                 controlledStage.show();
 
             } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
+                showError(e.getMessage());
             }
         });
     }
@@ -588,8 +576,7 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
                 controlledStage.show();
 
             } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
+                showError(e.getMessage());
             }
         });
     }
@@ -792,8 +779,7 @@ public class ShipBuildingControllerL2 implements ShipBuildingController {
                 controlledStage.show();
 
             } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
+                showError(e.getMessage());
             }
         });
     }

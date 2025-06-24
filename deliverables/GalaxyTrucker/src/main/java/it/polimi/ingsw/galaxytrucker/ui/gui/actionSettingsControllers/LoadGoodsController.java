@@ -12,6 +12,7 @@ import javafx.scene.layout.HBox;
 import java.util.ArrayList;
 import java.util.List;
 
+//this controller manages the graphic popup for the "load goods" action
 public class LoadGoodsController implements ActionSettingsController {
     @FXML
     private ComboBox<CargoCell> cellComboBox;

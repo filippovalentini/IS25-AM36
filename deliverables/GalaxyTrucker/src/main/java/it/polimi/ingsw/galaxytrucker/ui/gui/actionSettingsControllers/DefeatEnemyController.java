@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 
+//this controller manages the graphic popup for the "defeat enemy" action
 public class DefeatEnemyController implements ActionSettingsController {
     @FXML
     private ComboBox<String> flightDaysComboBox;

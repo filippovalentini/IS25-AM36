@@ -125,7 +125,7 @@ public class ShownComponentsController implements GuiController {
 
         imageView.setOnMouseClicked((MouseEvent event) -> {
             if (selectedImageView != null) {
-                selectedImageView.setEffect(null); // rimuovi highlight precedente
+                selectedImageView.setEffect(null);
             }
             selectedImageView = imageView;
             Glow glow = new Glow();
@@ -220,8 +220,7 @@ public class ShownComponentsController implements GuiController {
                 controlledStage.show();
 
             } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
+                showError(e.getMessage());
             }
         });
     }

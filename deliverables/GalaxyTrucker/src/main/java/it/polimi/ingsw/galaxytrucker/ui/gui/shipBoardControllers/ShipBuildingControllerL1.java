@@ -34,7 +34,7 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.util.*;
 
-public class ShipBuildingControllerL1 implements ShipBuildingController {
+public class ShipBuildingControllerL1 extends ShipBoardGraphics implements ShipBuildingController {
     private Stage controlledStage;
 
     private VirtualServer server;
@@ -57,7 +57,6 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
     @FXML private Rectangle gameStateBackground;
     @FXML private Pane handComponentArea;
     @FXML private Button handComponentButton;
-    @FXML private GridPane myGridPane;
     @FXML private Button setButton;
     @FXML private Button flightBoardButton;
     @FXML private Button pickComponent;
@@ -237,6 +236,7 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
         }
     }
 
+    @Override
     public void setImageOnGrid(String imageID, Orientation orientation, int column, int row){
         if(imageID.equals("000") || imageID.equals("003")){
             return;
@@ -441,8 +441,7 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
                     controlledStage.show();
 
                 } catch (IOException e) {
-                    e.printStackTrace();
-                    System.err.println("Errore nel caricamento del ShownComponents: " + e.getMessage());
+                    showError(e.getMessage());
                 }
             });
         }
@@ -464,8 +463,7 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
                 controlledStage.show();
 
             } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
+                showError(e.getMessage());
             }
         });
     }
@@ -510,12 +508,10 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
 
     private void setupImages() {
         try {
-            //Bottone HandComponent
             setupButtonWithImage(handComponentButton, "/it/polimi/ingsw/galaxytrucker/images/components/back.jpg", "handComponent", 150, 150);
 
         } catch (Exception e) {
-            System.err.println("Errore nel caricamento delle immagini: " + e.getMessage());
-            e.printStackTrace();
+            showError(e.getMessage());
         }
     }
 
@@ -534,7 +530,7 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
             button.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 
         } catch (Exception e) {
-            System.err.println("Impossibile caricare l'immagine: " + imagePath);
+            showError(e.getMessage());
             button.setText(text);
         }
     }
@@ -559,8 +555,7 @@ public class ShipBuildingControllerL1 implements ShipBuildingController {
                 controlledStage.show();
 
             } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
+                showError(e.getMessage());
             }
         });
     }

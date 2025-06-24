@@ -12,6 +12,7 @@ import javafx.scene.layout.HBox;
 import java.util.ArrayList;
 import java.util.List;
 
+//this controller manages the graphic popup for the "crew landing" action
 public class CrewLandingController implements ActionSettingsController {
     @FXML
     private ComboBox<CabinCell> cellComboBox;

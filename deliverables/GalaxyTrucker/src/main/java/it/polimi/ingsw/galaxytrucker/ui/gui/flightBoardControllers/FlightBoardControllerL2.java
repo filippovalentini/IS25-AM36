@@ -184,7 +184,7 @@ public class FlightBoardControllerL2 implements FlightBoardController {
 
     public void initializeFlightBoardFromMap() {
         for (Label label : targetLabels) {
-            label.setText(""); // Pulisce le posizioni
+            label.setText("");
         }
 
         boolean playerAlreadyPlaced = false;
@@ -201,13 +201,11 @@ public class FlightBoardControllerL2 implements FlightBoardController {
                 }
             }
         }
-
-        // Se il giocatore non ha ancora piazzato, mostra 🚀 nella start
         if (!playerAlreadyPlaced) {
             start.setText("🚀");
         } else {
             start.setText("");
-            start.setOnDragDetected(null); // disattiva drag
+            start.setOnDragDetected(null);
             deck1Button.setDisable(true);
             deck2Button.setDisable(true);
             deck3Button.setDisable(true);
@@ -297,7 +295,7 @@ public class FlightBoardControllerL2 implements FlightBoardController {
             controlledStage.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            showError(e.getMessage());
         }
     }
 
@@ -317,8 +315,7 @@ public class FlightBoardControllerL2 implements FlightBoardController {
             controlledStage.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Errore nel caricamento della Shipboard: " + e.getMessage());
+            showError(e.getMessage());
         }
     }
 
@@ -337,8 +334,7 @@ public class FlightBoardControllerL2 implements FlightBoardController {
             controlledStage.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
+            showError(e.getMessage());
         }
     }
 
@@ -409,27 +405,23 @@ public class FlightBoardControllerL2 implements FlightBoardController {
     }
 
     private void hourglassRotation(Button hourglassButton) {
-        // Recupera l'immagine dalla mappa
         Image image = cardImageMap.get("1000");
         if (image == null) {
-            showError("Immagine ID 1000 non trovata.");
+            showError("Image not found");
             return;
         }
 
-        // Crea ImageView e la adatta al bottone
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(hourglassButton.getPrefWidth());
         imageView.setFitHeight(hourglassButton.getPrefHeight());
         imageView.setPreserveRatio(true);
 
-        // Applica tinta rossa
         ColorAdjust redTint = new ColorAdjust();
         redTint.setHue(0.05);
         redTint.setSaturation(1.0);
         redTint.setBrightness(0.6);
         imageView.setEffect(redTint);
 
-        // Rotazione infinita
         javafx.animation.RotateTransition rotate = new javafx.animation.RotateTransition();
         rotate.setNode(imageView);
         rotate.setDuration(Duration.seconds(2));
@@ -438,27 +430,23 @@ public class FlightBoardControllerL2 implements FlightBoardController {
         rotate.setInterpolator(javafx.animation.Interpolator.LINEAR);
         rotate.play();
 
-        // Inserisce l'imageView nel bottone
         hourglassButton.setGraphic(imageView);
     }
 
 
     private void stopHourglass(Button hourglassButton, boolean lastCycle) {
-        // 1. Recupera l’immagine con ID "1000" dalla mappa
         Image image = cardImageMap.get("1000");
         if (image == null) {
-            showError("Immagine con ID 1000 non trovata.");
+            showError("Image not found");
             return;
         }
 
-        // 2. Crea una ImageView e la adatta al bottone
         ImageView hourglass = new ImageView(image);
         hourglass.setFitWidth(hourglassButton.getPrefWidth());
         hourglass.setFitHeight(hourglassButton.getPrefHeight());
         hourglass.setPreserveRatio(true);
         hourglass.setSmooth(true);
 
-        // 3. Applica una tinta
         ColorAdjust tint = new ColorAdjust();
         if (!lastCycle) {
             tint.setHue(0.33);
@@ -472,14 +460,13 @@ public class FlightBoardControllerL2 implements FlightBoardController {
 
         hourglass.setEffect(tint);
 
-        // 4. Imposta la grafica del bottone
         hourglassButton.setGraphic(hourglass);
         hourglassButton.setStyle("-fx-background-color: transparent;");
     }
 
     private void clearHourglassButton(Button hourglassButton) {
-        hourglassButton.setGraphic(null); // Rimuove l’immagine/graphic
-        hourglassButton.setStyle("-fx-background-color: transparent;"); // Sfondo trasparente
+        hourglassButton.setGraphic(null);
+        hourglassButton.setStyle("-fx-background-color: transparent;");
     }
 
     @Override
@@ -510,12 +497,11 @@ public class FlightBoardControllerL2 implements FlightBoardController {
     public void updatePickedDeck(List<Integer> deckIDs) {
         Platform.runLater(() -> {
             if (deckIDs == null || deckIDs.size() < 3) {
-                showError("Numero di carte non valido.");
+                showError("Invalid number of cards");
                 return;
             }
 
             try {
-                // Converti gli ID in stringhe, se le chiavi nella mappa sono basate sugli ID come stringa
                 String key1 = String.valueOf(deckIDs.get(0));
                 String key2 = String.valueOf(deckIDs.get(1));
                 String key3 = String.valueOf(deckIDs.get(2));
@@ -524,7 +510,6 @@ public class FlightBoardControllerL2 implements FlightBoardController {
                 Image img2 = cardImageMap.get(key2);
                 Image img3 = cardImageMap.get(key3);
 
-                // Adatta le immagini alla ImageView
                 if (img1 != null) {
                     deckCard1.setImage(img1);
                     deckCard1.setPreserveRatio(true);
@@ -554,7 +539,7 @@ public class FlightBoardControllerL2 implements FlightBoardController {
                 backButton.setDisable(true);
 
             } catch (Exception e) {
-                showError("Errore nel caricamento delle immagini delle carte.");
+                showError(e.getMessage());
             }
         });
     }
@@ -637,8 +622,7 @@ public class FlightBoardControllerL2 implements FlightBoardController {
                 controlledStage.show();
 
             } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
+                showError(e.getMessage());
             }
         });
     }
@@ -689,8 +673,7 @@ public class FlightBoardControllerL2 implements FlightBoardController {
                 controlledStage.show();
 
             } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
+                showError(e.getMessage());
             }
         });
     }

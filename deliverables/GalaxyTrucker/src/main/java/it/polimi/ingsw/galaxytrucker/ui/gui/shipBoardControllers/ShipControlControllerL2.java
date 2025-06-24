@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ShipControlControllerL2 implements ShipControlController {
+public class ShipControlControllerL2 extends  ShipBoardGraphics implements ShipControlController {
     private Stage controlledStage;
 
     @FXML private Label playerNameLabel;
@@ -38,7 +38,6 @@ public class ShipControlControllerL2 implements ShipControlController {
     @FXML private Label errorLabel;
     @FXML private Pane errorPane;
     @FXML private Label gameStateLabel;
-    @FXML private GridPane myGridPane;
     @FXML private Button player1ShipButton;
     @FXML private Button player2ShipButton;
     @FXML private Button player3ShipButton;
@@ -136,7 +135,7 @@ public class ShipControlControllerL2 implements ShipControlController {
                     if(component.getBatteries() > 0){
                         addBatteries(i,j, component.getBatteries());
                     }else if(component.getCrew()>0){
-                        addCrewMembers(i,j);
+                        addCrewMembers(i,j, 2);
                     }else if(component.isPurpleAlien()){
                         addAlien(i,j,true);
                     }else if(component.isBrownAlien()){
@@ -147,6 +146,7 @@ public class ShipControlControllerL2 implements ShipControlController {
         }
     }
 
+    @Override
     public void setImageOnGrid(String imageID, Orientation orientation, int column, int row) {
         if (imageID.equals("000") || imageID.equals("003")) {
             return;
@@ -156,20 +156,17 @@ public class ShipControlControllerL2 implements ShipControlController {
 
         double cellSize = 110;
 
-        // Crea ImageView del componente
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(cellSize);
         imageView.setFitHeight(cellSize);
         imageView.setPreserveRatio(true);
 
-        // Applica rotazione
         switch (orientation) {
             case WEST -> imageView.setRotate(270);
             case SOUTH -> imageView.setRotate(180);
             case EAST -> imageView.setRotate(90);
         }
 
-        // Crea Button trasparente con ImageView
         Button button = new Button();
         button.setPrefSize(cellSize, cellSize);
         button.setMinSize(cellSize, cellSize);
@@ -177,12 +174,11 @@ public class ShipControlControllerL2 implements ShipControlController {
         button.setStyle("-fx-padding: 0; -fx-background-color: transparent; -fx-border-color: transparent;");
         button.setGraphic(imageView);
 
-        // Crea un GridPane 2x2 per overlay di sticker (faccine, alieni, ecc)
         GridPane overlay = new GridPane();
         overlay.setPrefSize(cellSize, cellSize);
-        overlay.setMouseTransparent(true); // Lascia passare i click
+        overlay.setMouseTransparent(true);
         overlay.setPickOnBounds(false);
-        overlay.setId("overlay-" + column + "-" + row); // utile per ritrovarlo
+        overlay.setId("overlay-" + column + "-" + row);
         overlay.setHgap(2);
         overlay.setVgap(2);
 
@@ -191,12 +187,10 @@ public class ShipControlControllerL2 implements ShipControlController {
             overlay.getRowConstraints().add(new RowConstraints(cellSize / 2));
         }
 
-        // StackPane con Button + Overlay
         StackPane cell = new StackPane(button, overlay);
         cell.setStyle("-fx-border-color: transparent;");
         myGridPane.add(cell, column, row);
 
-        // Salvataggio per selezione
         button.setOnAction(event -> {
             if (lastSelectedImageView != null) {
                 lastSelectedImageView.setEffect(null);
@@ -222,7 +216,6 @@ public class ShipControlControllerL2 implements ShipControlController {
     private void fadeInThenOut(Pane pane) {
         pane.setOpacity(1.0);
 
-        // Timer: attende 3 secondi, poi parte il fade out
         PauseTransition wait = new PauseTransition(Duration.seconds(3));
         wait.setOnFinished(event -> {
             FadeTransition fade = new FadeTransition(Duration.seconds(1.5), pane);
@@ -252,128 +245,9 @@ public class ShipControlControllerL2 implements ShipControlController {
                 controlledStage.show();
 
             } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
+                showError(e.getMessage());
             }
         });
-    }
-
-    public void addCrewMembers(int row, int column) {
-        Platform.runLater(() -> {
-            // Trova la cella corretta
-            for (Node node : myGridPane.getChildren()) {
-                Integer col = GridPane.getColumnIndex(node);
-                Integer rw = GridPane.getRowIndex(node);
-                if (col == null) col = 0;
-                if (rw == null) rw = 0;
-
-                if (col == column && rw == row && node instanceof StackPane cell) {
-                    for (Node child : cell.getChildren()) {
-                        if (child instanceof GridPane overlay && overlay.getId() != null &&
-                                overlay.getId().equals("overlay-" + column + "-" + row)) {
-
-                            overlay.add(getCrewMemberImageView(overlay), 0, 0); // top-left
-                            overlay.add(getCrewMemberImageView(overlay), 1, 0); // top-right
-
-                            return;
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    public void addBatteries(int row, int column, int batteries) {
-        Platform.runLater(() -> {
-            // Trova la cella corretta
-            for (Node node : myGridPane.getChildren()) {
-                Integer col = GridPane.getColumnIndex(node);
-                Integer rw = GridPane.getRowIndex(node);
-                if (col == null) col = 0;
-                if (rw == null) rw = 0;
-
-                if (col == column && rw == row && node instanceof StackPane cell) {
-                    for (Node child : cell.getChildren()) {
-                        if (child instanceof GridPane overlay && overlay.getId() != null &&
-                                overlay.getId().equals("overlay-" + column + "-" + row)) {
-
-                            overlay.add(getBatteryImageView(overlay), 0, 0);
-                            overlay.add(getBatteryImageView(overlay), 1, 0);
-                            if(batteries == 3){
-                                overlay.add(getBatteryImageView(overlay), 0, 1);
-                            }
-
-                            return;
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    public void addAlien(int row, int column, boolean isPurple) {
-        Platform.runLater(() -> {
-            // Trova la cella corretta
-            for (Node node : myGridPane.getChildren()) {
-                Integer col = GridPane.getColumnIndex(node);
-                Integer rw = GridPane.getRowIndex(node);
-                if (col == null) col = 0;
-                if (rw == null) rw = 0;
-
-                if (col == column && rw == row && node instanceof StackPane cell) {
-                    for (Node child : cell.getChildren()) {
-                        if (child instanceof GridPane overlay && overlay.getId() != null &&
-                                overlay.getId().equals("overlay-" + column + "-" + row)) {
-
-                            overlay.add(getAlienImageView(overlay, isPurple), 0, 0);
-                            return;
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    public ImageView getCrewMemberImageView(GridPane overlay){
-        Image crewMember = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/crewMember.png").toExternalForm());
-
-        ImageView crewMemberImageView = new ImageView(crewMember);
-        crewMemberImageView.setFitWidth(overlay.getPrefWidth() / 2);
-        crewMemberImageView.setFitHeight(overlay.getPrefHeight() / 2);
-        crewMemberImageView.setPreserveRatio(true);
-        crewMemberImageView.setId("crew");
-
-        return crewMemberImageView;
-    }
-
-    public ImageView getBatteryImageView(GridPane overlay){
-        Image battery = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/battery.png").toExternalForm());
-
-        ImageView batteryImageView = new ImageView(battery);
-        batteryImageView.setFitWidth(overlay.getPrefWidth() / 2);
-        batteryImageView.setFitHeight(overlay.getPrefHeight() / 2);
-        batteryImageView.setPreserveRatio(true);
-        batteryImageView.setId("crew");
-
-        return batteryImageView;
-    }
-
-    public ImageView getAlienImageView(GridPane overlay, boolean isPurple){
-        Image alien;
-        if (isPurple) {
-            alien = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/purpleAlien.png").toExternalForm());
-        }
-        else {
-            alien = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/brownAlien.png").toExternalForm());
-        }
-
-        ImageView alienImageView = new ImageView(alien);
-        alienImageView.setFitWidth(overlay.getPrefWidth() / 2);
-        alienImageView.setFitHeight(overlay.getPrefHeight() / 2);
-        alienImageView.setPreserveRatio(true);
-        alienImageView.setId("crew");
-
-        return alienImageView;
     }
 
 
@@ -430,8 +304,7 @@ public class ShipControlControllerL2 implements ShipControlController {
                 controlledStage.show();
 
             } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("Errore nel caricamento del FlightBoard: " + e.getMessage());
+                showError(e.getMessage());
             }
         });
     }
@@ -493,7 +366,7 @@ public class ShipControlControllerL2 implements ShipControlController {
     public void updateCrewChange(String nickname, int x, int y, int change) throws Exception {
         Platform.runLater(() -> {
             if(nickname.equals(this.playerNickname)) {
-                addCrewMembers(x, y);
+                addCrewMembers(x, y, 2);
 
                 selectedRow = -1;
                 selectedColumn = -1;
@@ -548,7 +421,7 @@ public class ShipControlControllerL2 implements ShipControlController {
                 controlledStage.show();
 
             } catch (IOException e) {
-                e.printStackTrace();
+                showError(e.getMessage());
             }
         });
     }

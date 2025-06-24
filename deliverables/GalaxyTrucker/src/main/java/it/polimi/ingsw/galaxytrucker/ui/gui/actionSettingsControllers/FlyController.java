@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 
+//this controller manages the graphic popup for the "fly" action
 public class FlyController implements ActionSettingsController {
     @FXML
     private ComboBox<Integer> batteryComboBox;
