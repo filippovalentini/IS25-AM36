@@ -45,3 +45,10 @@ The jar exectuables are available at [jar artifacts](https://github.com/filippov
 3. (Optional) Run directly with TUI `java -jar ClientGalaxyTrucker.jar --tui`
 4. (Optional) Run directly with GUI `java --module-path "[PATH_TO_JavaFX_SDK]/lib" --add-modules javafx.controls,javafx.fxml -jar ClientGalaxyTrucker.jar --gui`
 5. (Optional) Run with custom ports: when ip is asked insert the ip as `IP:PORT`
+
+## Testing
+The tests achieved >80% line coverage on model.
+Since the controller contains no logic and its methods are void, controller tests were performed using the final application.
+There are also classes for testing the GUI indipendently (`TestGUI.java` and `TestEndgameGUI.java`).
+
+![impossibile to deliverables/testCoverage/testCoverage.png](deliverables/testCoverage/testCoverage.png)
