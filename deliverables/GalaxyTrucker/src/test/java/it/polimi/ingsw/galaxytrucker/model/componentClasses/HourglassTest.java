@@ -32,7 +32,7 @@ public class HourglassTest {
         HourGlassException exception = assertThrows(HourGlassException.class, () -> {
             new Hourglass(-2, gs);
         });
-        assertEquals("La durata del ciclo deve essere positiva.", exception.getMessage());
+        assertEquals("Duration must be positive.", exception.getMessage());
     }
 
     @Test
