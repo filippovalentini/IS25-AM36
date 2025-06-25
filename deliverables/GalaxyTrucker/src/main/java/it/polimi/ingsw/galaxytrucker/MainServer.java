@@ -15,13 +15,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainServer {
-    //asks the user the game settings (number of players and first flight/std game) and launches
-    // the Socket and RMI servers
+    //launches the Socket and RMI Servers based on the parameters (IP + port) provided by the user (otherwise
+    //it uses default parameters
     public static void main(String[] args) {
         Map<Integer, GameController> controllers = new HashMap<>();
         int rmiPort;
         int socketPort;
-        if(args[1].equals("--port")){
+        if(args.length > 1 && args[1].equals("--port")){
             if(args.length==4) {
                 rmiPort = Integer.parseInt(args[2]);
                 socketPort = Integer.parseInt(args[3]);
@@ -60,9 +60,7 @@ public class MainServer {
 
     //launches the RMI server
     private static void startServerRMI(Map<Integer, GameController> controllers, String ipV4, int port) throws RemoteException {
-        if(!ipV4.equals("127.0.0.1") && !ipV4.equals("localhost") && !ipV4.contains("127.0.0.1:") && !ipV4.contains("localhost:")) {
-            System.setProperty("java.rmi.server.hostname", ipV4);
-        }
+        System.setProperty("java.rmi.server.hostname", ipV4);
         ServerRMI server = new ServerRMI(controllers);
         final String serverName = "GalaxyTruckerServer";
         Registry registry = LocateRegistry.createRegistry(port);

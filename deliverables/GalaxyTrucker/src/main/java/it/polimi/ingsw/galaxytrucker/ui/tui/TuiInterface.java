@@ -110,7 +110,6 @@ public class TuiInterface implements UserInterface {
     public boolean requestStartOrJoinGame() {
         Scanner inputScanner = new Scanner(System.in);
         String input;
-        System.out.println("||| WELCOME TO GALAXY TRUCKER |||\n");
         do{
             System.out.println("Choose to start a new game (S) or join a game (J): ");
             input = inputScanner.nextLine();
