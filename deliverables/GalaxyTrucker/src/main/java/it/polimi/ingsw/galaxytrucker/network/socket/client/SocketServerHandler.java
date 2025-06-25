@@ -12,25 +12,49 @@ import java.util.List;
 
 //this class contains the methods to create and send serialized messages to the server starting from given
 //parameters
+
+/**
+ * This class handles the communication between the client and the server
+ */
 public class SocketServerHandler implements VirtualServerSocket {
     final ObjectOutputStream out;
 
+    /**
+     * Constructor for the SocketServerHandler class.
+     * @param out
+     */
     public SocketServerHandler(ObjectOutputStream out) {
         this.out = out;
     }
 
     //closes the client's output stream
+
+    /**
+     * Closes the output stream to the server.
+     * @throws IOException
+     */
     public void close() throws IOException {
         this.out.close();
     }
 
     //converts a list of integers in a string
+
+    /**
+     * Serializes a list of integers into a string format.
+     * @param list
+     * @return a string representation of the list without brackets and spaces
+     */
     public static String serializeList(List<Integer> list) {
         return list.toString()
                 .replaceAll("[\\[\\]\\s]", "");
     }
 
     //sends a heartbeat to the server to notify that the client is still alive and connected
+
+    /**
+     * Sends a PONG message to the server to indicate that the client is still connected.
+     * @throws IOException
+     */
     public void sendPong() throws IOException {
         List<String> params = new ArrayList<>();
         PlayerActionMessage message = new PlayerActionMessage(PlayerActionType.PONG, params);
@@ -38,6 +62,12 @@ public class SocketServerHandler implements VirtualServerSocket {
         out.flush();
     }
 
+    /**
+     * Sends a message to the server to check if a game has started.
+     * @param gameID
+     * @return true if the message was sent successfully
+     * @throws IOException
+     */
     @Override
     public boolean startedGame(int gameID) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(String.valueOf(gameID)));
@@ -47,6 +77,14 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when the first player decides to start the game
+    /**
+     * Sends a message to the server to start a new game.
+     * @param client
+     * @param gameID
+     * @param firstFlight
+     * @param numberPlayers
+     * @throws IOException
+     */
     @Override
     public void startNewGame(VirtualView client, int gameID, boolean firstFlight, int numberPlayers) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(String.valueOf(gameID), String.valueOf(firstFlight), String.valueOf(numberPlayers)));
@@ -56,6 +94,15 @@ public class SocketServerHandler implements VirtualServerSocket {
 
     //invoked when one of the players decides enter the game; the remote client view is added to the list
     //of connected clients
+    /**
+     * Sends a message to the server to add a player to the game.
+     * @param client
+     * @param gameID
+     * @param nickname
+     * @param color
+     * @return true if the message was sent successfully
+     * @throws IOException
+     */
     @Override
     public boolean addPlayer(VirtualView client, int gameID, String nickname, Color color) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(String.valueOf(gameID), nickname, color.toString()));
@@ -65,6 +112,13 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when a player wants to pick a component among the one placed face down (assembling phase)
+
+    /**
+     * Sends a message to the server to pick a hidden component.
+     * @param gameID
+     * @param nickname
+     * @throws IOException
+     */
     @Override
     public void pickHidden(int gameID, String nickname) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname));
@@ -73,6 +127,13 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when a player wants to pick a specific component among the one placed face up (assembling phase)
+    /**
+     * Sends a message to the server to pick a shown component.
+     * @param gameID
+     * @param nickname
+     * @param index
+     * @throws IOException
+     */
     @Override
     public void pickShown(int gameID, String nickname, int index) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(index)));
@@ -81,6 +142,12 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when a player wants to release (therefore, place face up) the component that it has picked
+    /**
+     * Sends a message to the server to release a shown component.
+     * @param gameID
+     * @param nickname
+     * @throws IOException
+     */
     @Override
     public void putShown(int gameID, String nickname) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname));
@@ -89,6 +156,12 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when a player wants to reserve the component that it has picked for its ship board
+    /**
+     * Sends a message to the server to reserve a component.
+     * @param gameID
+     * @param nickname
+     * @throws IOException
+     */
     @Override
     public void reserveComponent(int gameID, String nickname) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname));
@@ -97,6 +170,13 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when a player wants to pick one of the components that it has reserved for its ship board
+    /**
+     * Sends a message to the server to pick a reserved component.
+     * @param gameID
+     * @param nickname
+     * @param position
+     * @throws IOException
+     */
     @Override
     public void pickReservedComponent(int gameID, String nickname, int position) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(position)));
@@ -105,6 +185,12 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when a player wants to change the orientation of the component that it has picked
+    /**
+     * Sends a message to the server to rotate a picked component.
+     * @param gameID
+     * @param nickname
+     * @throws IOException
+     */
     @Override
     public void rotatePickedComponent(int gameID, String nickname) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname));
@@ -113,6 +199,14 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when a player wants to assemble on the ship board the component that it has picked
+    /**
+     * Sends a message to the server to assemble a component on the ship board.
+     * @param gameID
+     * @param nickname
+     * @param x
+     * @param y
+     * @throws IOException
+     */
     @Override
     public void assembledComponent(int gameID, String nickname, int x, int y) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(x), String.valueOf(y)));
@@ -121,6 +215,13 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when a player wants to pick a deck during the assembling phase to see its content
+    /**
+     * Sends a message to the server to pick a deck.
+     * @param gameID
+     * @param nickname
+     * @param deckNumber
+     * @throws IOException
+     */
     @Override
     public void pickDeck(int gameID, String nickname, int deckNumber) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(deckNumber)));
@@ -129,6 +230,12 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when a player wants to release the deck it has picked, during the assembling phase
+    /**
+     * Sends a message to the server to release a deck.
+     * @param gameID
+     * @param nickname
+     * @throws IOException
+     */
     @Override
     public void releaseDeck(int gameID, String nickname) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname));
@@ -137,6 +244,13 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when a player has finished the assembling phase and has to pick a free position on the flight board
+    /**
+     * Sends a message to the server to set the initial position of a player on the flight board.
+     * @param gameID
+     * @param nickname
+     * @param initCell
+     * @throws IOException
+     */
     @Override
     public void setPosition(int gameID, String nickname, int initCell) throws IOException {
         List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(initCell)));
@@ -145,6 +259,12 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when a player wants to turn around the hourglass
+    /**
+     * Sends a message to the server to start a new cycle by turning the hourglass.
+     * @param gameID
+     * @param nickname
+     * @throws IOException
+     */
     @Override
     public void startNewCycle(int gameID, String nickname) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname));
@@ -154,6 +274,14 @@ public class SocketServerHandler implements VirtualServerSocket {
 
     //invoked when a player wants to destroy a component in order to validate its ship board or when a
     //component is destroyed due to a cannon shot/meteor attack
+    /**
+     * Sends a message to the server to destroy a component on the ship board.
+     * @param gameID
+     * @param nickname
+     * @param x
+     * @param y
+     * @throws IOException
+     */
     @Override
     public void destroyComponent(int gameID, String nickname, int x, int y) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(x), String.valueOf(y)));
@@ -162,6 +290,14 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when a player wants to initialize a cabin of its shipboard with 2 human crew members
+    /**
+     * Sends a message to the server to add crew members to a cabin on the ship board.
+     * @param gameID
+     * @param nickname
+     * @param x
+     * @param y
+     * @throws IOException
+     */
     @Override
     public void addCrew(int gameID, String nickname, int x, int y) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(x), String.valueOf(y)));
@@ -170,6 +306,14 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when a player wants to initialize a battery container of its shipboard with batteries
+    /**
+     * Sends a message to the server to add batteries to a battery container on the ship board.
+     * @param gameID
+     * @param nickname
+     * @param x
+     * @param y
+     * @throws IOException
+     */
     @Override
     public void addBatteries(int gameID, String nickname, int x, int y) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(x), String.valueOf(y)));
@@ -178,6 +322,15 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when a player wants to initialize a cabin of its shipboard with an alien
+    /**
+     * Sends a message to the server to add an alien to a cabin on the ship board.
+     * @param gameID
+     * @param nickname
+     * @param isPurple
+     * @param x
+     * @param y
+     * @throws IOException
+     */
     @Override
     public void addAlien(int gameID, String nickname, boolean isPurple, int x, int y) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(isPurple), String.valueOf(x), String.valueOf(y)));
@@ -186,6 +339,12 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when a player wants to pick a new card from the game deck
+    /**
+     * Sends a message to the server to pick the next card from the game deck.
+     * @param gameID
+     * @param nickname
+     * @throws IOException
+     */
     @Override
     public void pickNextCard(int gameID, String nickname) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname));
@@ -194,6 +353,12 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when a player wants to leave the game
+    /**
+     * Sends a message to the server to quit the game.
+     * @param gameID
+     * @param nickname
+     * @throws IOException
+     */
     @Override
     public void quitGame(int gameID, String nickname) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname));
@@ -202,6 +367,12 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when a player wants to skip an action during the flight phase
+    /**
+     * Sends a message to the server to skip the current action.
+     * @param gameID
+     * @param nickname
+     * @throws IOException
+     */
     @Override
     public void skip(int gameID, String nickname) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname));
@@ -210,6 +381,15 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when a player wants to land on an abandoned ship or station
+    /**
+     * Sends a message to the server to land on an abandoned ship or station.
+     * @param gameID
+     * @param nickname
+     * @param x
+     * @param y
+     * @param z
+     * @throws IOException
+     */
     @Override
     public void landing(int gameID, String nickname, List<Integer> x, List<Integer> y, List<Integer> z) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname, serializeList(x), serializeList(y), serializeList(z)));
@@ -218,6 +398,15 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when th ship board of a player must be hit by meteor/cannon shot
+    /**
+     * Sends a message to the server to hit the ship with a meteor or cannon shot.
+     * @param gameID
+     * @param nickname
+     * @param diceResult
+     * @param activateShield
+     * @param activateCannon
+     * @throws IOException
+     */
     @Override
     public void hitShip(int gameID, String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(diceResult), String.valueOf(activateShield), String.valueOf(activateCannon)));
@@ -226,6 +415,13 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when a player wants to fly across the flight board exploiting its engine strength
+    /**
+     * Sends a message to the server to fly across the flight board.
+     * @param gameID
+     * @param nickname
+     * @param usedBatteries
+     * @throws IOException
+     */
     @Override
     public void fly(int gameID, String nickname, int usedBatteries) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(usedBatteries)));
@@ -235,6 +431,14 @@ public class SocketServerHandler implements VirtualServerSocket {
 
     //invoked when a player wants to defeat an enemy; the player can decide whether to lose flight days
     //to gain credits/goods or not
+    /**
+     * Sends a message to the server to defeat an enemy.
+     * @param gameID
+     * @param nickname
+     * @param usedBatteries
+     * @param loseDays
+     * @throws IOException
+     */
     @Override
     public void defeat(int gameID, String nickname, int usedBatteries, boolean loseDays) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(usedBatteries), String.valueOf(loseDays)));
@@ -243,6 +447,14 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when a player decides to load goods inside cargo hold components of its ship
+    /**
+     * Sends a message to the server to load goods into cargo holds.
+     * @param gameID
+     * @param nickname
+     * @param x
+     * @param y
+     * @throws IOException
+     */
     @Override
     public void loadGoods(int gameID, String nickname, List<Integer> x, List<Integer> y) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname, serializeList(x), serializeList(y)));
@@ -251,6 +463,13 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when a player wants to land on a planet
+    /**
+     * Sends a message to the server to land on a planet.
+     * @param gameID
+     * @param nickname
+     * @param numberPlanet
+     * @throws IOException
+     */
     @Override
     public void planetLanding(int gameID, String nickname, int numberPlanet) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(numberPlanet)));
@@ -259,6 +478,13 @@ public class SocketServerHandler implements VirtualServerSocket {
     }
 
     //invoked when a player wants to use batteries to declare its engine/cannon strength
+    /**
+     * Sends a message to the server to use batteries for engine or cannon strength.
+     * @param gameID
+     * @param nickname
+     * @param usedBatteries
+     * @throws IOException
+     */
     @Override
     public void useBatteries(int gameID, String nickname, int usedBatteries) throws IOException{
         List<String> params = new ArrayList<>(Arrays.asList(nickname, String.valueOf(usedBatteries)));

@@ -8,113 +8,319 @@ import java.util.List;
 //this interface defines the methods that are invoked by the model in order to notify/update the views after
 //a change in the model
 
+/**
+ * Interface representing a virtual view in the Galaxy Trucker game.
+ */
 public interface VirtualView {
 
     //notifies a view about an error committed while executing a method on the remote server; the parameter
     //errorMessage describes the type of error
+
+    /**
+     * Notifies the view about an error that occurred while executing a method on the remote server.
+     * @param errorMessage
+     * @throws Exception
+     */
     void notifyError(String errorMessage) throws Exception;
 
     //notifies a view about the fact that the corresponding player has been correctly added to the game, but
     //the server is waiting for other players in order to start the assembling phase; the parameter firstFlight
     //in needed for the view to determine which type of ship board/flight board to show to the user
+
+    /**
+     * Notifies the view that the player has been added to the game and is waiting for other players.
+     * @param firstFlight
+     * @throws Exception
+     */
     void updateWaitingForPlayers(boolean firstFlight) throws Exception;
 
     //notifies a view about the presence of another player in the game; this method is invoked before the
     //beginning of the assembling phase, therefore just the nickname and color of the new player is required
+
+    /**
+     * Notifies the view about the presence of a new player in the game.
+     * @param nickname
+     * @param color
+     * @throws Exception
+     */
     void updateNewPlayer(String nickname, Color color) throws Exception;
 
     //notifies a view about the beginning of the assembling phase
+
+    /**
+     * Notifies the view that the assembling phase has started.
+     * @throws Exception
+     */
     void updateStartAssembling() throws Exception;
 
     //notifies the view about the fact that a component has been successfully picked/released (depending on
     //the value of the boolean parameter) by the corresponding player; the parameter imageID is needed for the
     //view in order to show the right component to the user
+
+    /**
+     * Notifies the view about a component that has been picked or released by the player.
+     * @param imageID
+     * @param released
+     * @throws Exception
+     */
     void updatePickedComponent(int imageID, boolean released) throws Exception;
 
     //notifies the view about the fact that a shown component has been picked/released (depending on the value
     //of the boolean parameter); the parameter imageID is needed for the view in order to show the right
     //component to the user
+
+    /**
+     * Notifies the view about a shown component that has been picked or released.
+     * @param imageID
+     * @param released
+     * @throws Exception
+     */
     void updateShownComponent(int imageID, boolean released) throws Exception;
 
     //notifies the view about the fact that a player (identified by the nickname parameter) has picked a reserved
     //component/ reserved a component (depending on the value of the boolean parameter); the parameter imageID
     //is needed for the view in order to show the right component to the user
+
+    /**
+     * Notifies the view about a reserved component that has been picked or released by a player.
+     * @param nickname
+     * @param imageID
+     * @param released
+     * @throws Exception
+     */
     void updateReservedComponent(String nickname, int imageID, boolean released) throws Exception;
 
     //notifies the view about the fact that the picked component of the corresponding player has been rotated
+
+    /**
+     * Notifies the view that the picked component has been rotated.
+     * @throws Exception
+     */
     void updateRotatePickedComponent() throws Exception;
 
     //notifies the view about the fact that a player (identified by the nickname parameter) has assembled a
     //component in position (x,y) of its ship board; the parameter imageID is needed for the view in order
     //to show the right component to the user
+
+    /**
+     * Notifies the view that a player has assembled a component in their ship board.
+     * @param nickname
+     * @param imageID
+     * @param orientation
+     * @param x
+     * @param y
+     * @throws Exception
+     */
     void updateAssembledComponent(String nickname, int imageID, Orientation orientation, int x, int y) throws Exception;
 
     //notifies the view about the fact that the corresponding player has successfully picked a deck; the parameter
     //contains the list of image IDs of the cards contained in the deck, so that the view can show the
     //correct adventure cards to the user
+
+    /**
+     * Notifies the view that a player has successfully picked a deck.
+     * @param deckIDs
+     * @throws Exception
+     */
     void updatePickedDeck(List<Integer> deckIDs) throws Exception;
 
     //notifies the view about the fact that the corresponding player has successfully released a deck
+
+    /**
+     * Notifies the view that a player has successfully released a deck.
+     * @throws Exception
+     */
     void updateReleasedDeck() throws Exception;
 
     //notifies the view about the fact that a player has finished the assembling phase and is
     //correctly positioned on the flight board; still, other players have to finish building their ships
+
+    /**
+     * Notifies the view that a player has finished assembling their ship.
+     * @param nickname
+     * @param position
+     * @throws Exception
+     */
     void updateFinishAssembling(String nickname, int position) throws Exception;
 
     //notifies the view that the hourglass has been turned around
+
+    /**
+     * Notifies the view that the hourglass has been turned around.
+     * @throws Exception
+     */
     void updateStartNewCycle() throws Exception;
 
     //notifies the view that the hourglass has finished running
+
+    /**
+     * Notifies the view that the hourglass has finished running.
+     * @throws Exception
+     */
     void updateFinishedCycle() throws Exception;
 
     //invoked when the game switches to the ship placement phase, which means that the players can only
     //place their ship on the flight board
+
+    /**
+     * Notifies the view that the game has switched to the ship placement phase.
+     * @throws Exception
+     */
     void updateShipPlacement() throws Exception;
 
     //notifies the view that all the players have concluded the assembling phase, which means that the players
     //enter the ship control phase
+
+    /**
+     * Notifies the view that all players have finished assembling their ships.
+     * @throws Exception
+     */
     void updateShipControl() throws Exception;
 
     //notifies the view that a player has to repair its ship board before the player in turn can pick a new card
+
+    /**
+     * Notifies the view that a player has to repair their ship board.
+     * @param nickname
+     * @throws Exception
+     */
     void updateShipRepair(String nickname) throws Exception;
 
     //notifies the view that a component of a player's ship board has been destroyed
+
+    /**
+     * Notifies the view that a component of a player's ship board has been destroyed.
+     * @param nickname
+     * @param x
+     * @param y
+     * @throws Exception
+     */
     void updateDestroyedComponent(String nickname, int x, int y) throws Exception;
 
     //notifies the view about a change in the number of crew of a cabin
+
+    /**
+     * Notifies the view about a change in the number of crew members in a cabin.
+     * @param nickname
+     * @param x
+     * @param y
+     * @param change
+     * @throws Exception
+     */
     void updateCrewChange(String nickname, int x, int y, int change) throws Exception;
 
     //notifies the view that a player has initialized a battery container with batteries
+
+    /**
+     * Notifies the view that a player has initialized a battery container with batteries.
+     * @param nickname
+     * @param x
+     * @param y
+     * @param change
+     * @throws Exception
+     */
     void updateBatteries(String nickname, int x, int y, int change) throws Exception;
 
     //notifies the view about a change in the number of aliens of a cabin
+
+    /**
+     * Notifies the view about a change in the number of aliens in a cabin.
+     * @param nickname
+     * @param x
+     * @param y
+     * @param isPurple
+     * @param added
+     * @throws Exception
+     */
     void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws Exception;
 
     //notifies the view that a good has been loaded in a cargo hold
+
+    /**
+     * Notifies the view that a good has been loaded in a cargo hold.
+     * @param nickname
+     * @param x
+     * @param y
+     * @param good
+     * @throws Exception
+     */
     void updateLoadedGood(String nickname, int x, int y, Color good) throws Exception;
 
     //notifies the view that some goods have been removed form a cargo hold
+
+    /**
+     * Notifies the view that some goods have been removed from a cargo hold.
+     * @param nickname
+     * @param x
+     * @param y
+     * @param good
+     * @param numberGoods
+     * @throws Exception
+     */
     void updateRemovedGoods(String nickname, int x, int y, Color good, int numberGoods) throws Exception;
 
     //notifies the view about the fact that a player has to pick a card in order to continue the game
+
+    /**
+     * Notifies the view that a player has to pick a card to continue the game.
+     * @throws Exception
+     */
     void updateCardPicking() throws Exception;
 
     //notifies the view about the next player whose turn it is to perform an action
+
+    /**
+     * Notifies the view about the next player whose turn it is to perform an action.
+     * @param nickname
+     * @throws Exception
+     */
     void updateNextTurn(String nickname) throws Exception;
 
     //notifies the view that a new card has been picked and must be solved
+
+    /**
+     * Notifies the view that a new card has been picked and must be solved.
+     * @param imageID
+     * @throws Exception
+     */
     void updateCardSolving(int imageID) throws Exception;
 
     //notifies the view that a player has quit the game
+
+    /**
+     * Notifies the view that a player has quit the game.
+     * @param nickname
+     * @throws Exception
+     */
     void updatePlayerQuit(String nickname) throws Exception;
 
     //notifies the view that a player has gained/lost credits
+
+    /**
+     * Notifies the view that a player has gained or lost credits.
+     * @param nickname
+     * @param change
+     * @throws Exception
+     */
     void updatePlayerCredits(String nickname, int change) throws Exception;
 
     //notifies the view that the position of a player has changed
+
+    /**
+     * Notifies the view that the position of a player has changed.
+     * @param nickname
+     * @param lap
+     * @param cell
+     * @throws Exception
+     */
     void updatePlayerPosition(String nickname, int lap, int cell) throws Exception;
 
     //notifies the view about the fact that the game is finished
+
+    /**
+     * Notifies the view that the game has ended.
+     * @throws Exception
+     */
     void updateEndGame() throws Exception;
 
 }

@@ -8,13 +8,22 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-
+/** * This thread is responsible for sending periodic ping messages to the client to check if it is still connected.
+ * If the client does not respond, it will set the client status to disconnected.
+ */
 public class SocketPingThread extends Thread {
     Socket socket;
     ObjectInputStream in;
     ObjectOutputStream out;
     SocketClientHandler clientHandler;
-
+    /**
+     * Constructor for the SocketPingThread.
+     *
+     * @param socket         The socket connected to the client.
+     * @param clientHandler  The handler for managing client connections.
+     * @param in             The input stream to read messages from the client.
+     * @param out            The output stream to send messages to the client.
+     */
     public SocketPingThread(Socket socket, SocketClientHandler clientHandler, ObjectInputStream in, ObjectOutputStream out) {
         this.clientHandler = clientHandler;
         this.in = in;
@@ -22,7 +31,10 @@ public class SocketPingThread extends Thread {
         this.socket = socket;
     }
 
-
+    /**
+     * The run method of the thread that sends ping messages to the client every 5 seconds.
+     * If the client does not respond, it sets the client status to disconnected and closes the streams and socket.
+     */
     public void run() {
         try {
             while (true) {

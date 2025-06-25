@@ -9,14 +9,20 @@ import it.polimi.ingsw.galaxytrucker.network.VirtualView;
 import java.rmi.RemoteException;
 import java.util.List;
 
-
+/**
+ * GameController is the controller of the game.
+ */
 
 public class GameController {
     private final GameState model;      //instance of the game model
     private final Object lock;          //lock to manage synchronization
 
 
-
+    /**
+     * Constructor of the GameController.
+     * @param firstFlight
+     * @param numberPlayers
+     */
     public GameController(boolean firstFlight, int numberPlayers) {
         this.lock = new Object();
         this.model = new GameState(firstFlight, numberPlayers);
@@ -24,6 +30,11 @@ public class GameController {
 
     //transfers the end-game-management to the model, in such way that when the game is over the controller
     //is removed form the list of active controllers server-side
+
+    /**
+     * Sets the end game management runnable.
+     * @param endGameManagement
+     */
     public void setEndGameManagement(Runnable endGameManagement) {
         this.model.setEndGameManagement(endGameManagement);
     }
@@ -31,6 +42,16 @@ public class GameController {
     //STARTING PHASE
 
     //invoked when one of the players decides enter the game
+
+    /**
+     * Adds a player to the game.
+     * @param client
+     * @param nickname
+     * @param color
+     * @throws UniqueNicknameException
+     * @throws UniquePlayerColorException
+     * @throws InvalidActionException
+     */
     public void addPlayer(VirtualView client, String nickname, Color color) throws UniqueNicknameException, UniquePlayerColorException, InvalidActionException {
         synchronized (lock) {
             model.addPlayer(client, nickname, color);
@@ -40,6 +61,13 @@ public class GameController {
     //ASSEMBLING PHASE
 
     //invoked when a player wants to pick a component among the one placed face down (assembling phase)
+
+    /**
+     * Picks a hidden component.
+     * @param nickname
+     * @throws PickedComponentException
+     * @throws InvalidActionException
+     */
     public void pickHidden(String nickname) throws PickedComponentException, InvalidActionException {
         synchronized (lock) {
             model.pickHidden(nickname);
@@ -47,6 +75,14 @@ public class GameController {
     }
 
     //invoked when a player wants to pick a specific component among the one placed face up (assembling phase)
+
+    /**
+     * Picks a shown component.
+     * @param nickname
+     * @param index
+     * @throws PickedComponentException
+     * @throws InvalidActionException
+     */
     public void pickShown(String nickname, int index) throws PickedComponentException, InvalidActionException {
         synchronized (lock) {
             model.pickShown(nickname, index);
@@ -54,6 +90,14 @@ public class GameController {
     }
 
     //invoked when a player wants to reserve the component that it has picked for its ship board
+
+    /**
+     * Reserves a component.
+     * @param nickname
+     * @throws PickedComponentException
+     * @throws ReservedComponentException
+     * @throws InvalidActionException
+     */
     public void reserveComponent(String nickname) throws PickedComponentException, ReservedComponentException, InvalidActionException {
         synchronized (lock) {
             model.reserveComponent(nickname);
@@ -61,6 +105,15 @@ public class GameController {
     }
 
     //invoked when a player wants to pick one of the components that it has reserved for its ship board
+
+    /**
+     * Picks a reserved component.
+     * @param nickname
+     * @param position
+     * @throws ReservedComponentException
+     * @throws PickedComponentException
+     * @throws InvalidActionException
+     */
     public void pickReservedComponent(String nickname, int position) throws ReservedComponentException, PickedComponentException, InvalidActionException {
         synchronized (lock) {
             model.pickReservedComponent(nickname, position);
@@ -68,6 +121,13 @@ public class GameController {
     }
 
     //invoked when a player wants to release (therefore, place face up) the component that it has picked
+
+    /**
+     * Releases a picked component.
+     * @param nickname
+     * @throws PickedComponentException
+     * @throws InvalidActionException
+     */
     public void putShown(String nickname) throws PickedComponentException, InvalidActionException {
         synchronized (lock) {
             model.putShown(nickname);
@@ -75,6 +135,16 @@ public class GameController {
     }
 
     //invoked when a player wants to assemble on the ship board the component that it has picked
+
+    /**
+     * Assembles a component on the ship board.
+     * @param nickname
+     * @param x
+     * @param y
+     * @throws AssembledComponentException
+     * @throws PickedComponentException
+     * @throws InvalidActionException
+     */
     public void assembleComponent(String nickname, int x, int y) throws AssembledComponentException, PickedComponentException, InvalidActionException {
         synchronized (lock) {
             model.assembleComponent(nickname, x, y);
@@ -82,6 +152,13 @@ public class GameController {
     }
 
     //invoked when a player wants to change the orientation of the component that it has picked
+
+    /**
+     * Rotates a picked component.
+     * @param nickname
+     * @throws InvalidActionException
+     * @throws PickedComponentException
+     */
     public void rotatePickedComponent(String nickname) throws InvalidActionException, PickedComponentException {
         synchronized (lock) {
             model.rotatePickedComponent(nickname);
@@ -89,6 +166,14 @@ public class GameController {
     }
 
     //invoked when a player wants to pick a deck during the assembling phase to see its content
+
+    /**
+     * Picks a deck.
+     * @param nickname
+     * @param deckNumber
+     * @throws PickedDeckException
+     * @throws InvalidActionException
+     */
     public void pickDeck (String nickname, int deckNumber) throws PickedDeckException, InvalidActionException {
         synchronized (lock) {
             model.pickDeck(nickname, deckNumber);
@@ -96,6 +181,13 @@ public class GameController {
     }
 
     //invoked when a player wants to release the deck it has picked, during the assembling phase
+
+    /**
+     * Releases a picked deck.
+     * @param nickname
+     * @throws InvalidActionException
+     * @throws PickedDeckException
+     */
     public void releaseDeck(String nickname) throws InvalidActionException, PickedDeckException {
         synchronized (lock) {
             model.releaseDeck(nickname);
@@ -103,6 +195,14 @@ public class GameController {
     }
 
     //invoked when a player has finished the assembling phase and has to pick a free position on the flight board
+
+    /**
+     * Sets the position of a player on the flight board.
+     * @param nickname
+     * @param initCell
+     * @throws InvalidActionException
+     * @throws PickedDeckException
+     */
     public void setPosition(String nickname, int initCell) throws InvalidActionException, PickedDeckException{
         synchronized (lock) {
             model.setPosition(nickname, initCell);
@@ -110,6 +210,13 @@ public class GameController {
     }
 
     //invoked when a player wants to turn around the hourglass
+
+    /**
+     * Starts a new cycle of the hourglass.
+     * @param nickname
+     * @throws InvalidActionException
+     * @throws HourGlassException
+     */
     public void startNewCycle(String nickname) throws InvalidActionException, HourGlassException{
         synchronized (lock) {
             model.startNewCycle(nickname);
@@ -119,6 +226,15 @@ public class GameController {
     //SHIP CONTROL PHASE
 
     //invoked when a player wants to destroy a component in order to correct its ship board
+
+    /**
+     * Destroys a component on the ship board.
+     * @param nickname
+     * @param x
+     * @param y
+     * @throws AssembledComponentException
+     * @throws InvalidActionException
+     */
     public void destroyComponent(String nickname, int x, int y) throws AssembledComponentException, InvalidActionException {
         synchronized (lock) {
             model.destroyComponent(nickname, x, y);
@@ -126,12 +242,33 @@ public class GameController {
     }
 
     //invoked when a player wants to initialize a cabin of its shipboard with 2 human crew members
+
+    /**
+     * Adds crew members to a cabin.
+     * @param nickname
+     * @param x
+     * @param y
+     * @throws AssembledComponentException
+     * @throws FullCabinException
+     * @throws InvalidActionException
+     */
     public void addCrew(String nickname, int x, int y) throws AssembledComponentException, FullCabinException, InvalidActionException {
         synchronized (lock) {
             model.addCrew(nickname, x, y);
         }
     }
     //invoked when a player wants to initialize a cabin of its shipboard with an alien
+
+    /**
+     * Adds an alien to a cabin.
+     * @param nickname
+     * @param isPurple
+     * @param x
+     * @param y
+     * @throws AssembledComponentException
+     * @throws FullCabinException
+     * @throws InvalidActionException
+     */
     public void addAlien(String nickname, boolean isPurple, int x, int y) throws AssembledComponentException, FullCabinException, InvalidActionException {
         synchronized (lock) {
             model.addAlien(nickname, isPurple, x, y);
@@ -139,6 +276,16 @@ public class GameController {
     }
 
     //invoked when the player wants to initialize a battery container with batteries
+
+    /**
+     * Adds batteries to a battery container.
+     * @param nickname
+     * @param x
+     * @param y
+     * @throws AssembledComponentException
+     * @throws NoBatteriesException
+     * @throws InvalidActionException
+     */
     public void addBatteries(String nickname, int x, int y) throws AssembledComponentException, NoBatteriesException, InvalidActionException{
         synchronized (lock) {
             model.addBatteries(nickname, x, y);
@@ -150,6 +297,12 @@ public class GameController {
     //FLIGHT PHASE
 
     //this method is invoked when a player has to leave the game
+
+    /**
+     * Quits the game.
+     * @param nickname
+     * @throws InvalidActionException
+     */
     public void quitGame(String nickname) throws InvalidActionException{
         synchronized (lock) {
             model.quitGame(nickname,true);
@@ -157,6 +310,12 @@ public class GameController {
     }
 
     //this method is invoked by the network server when the connection with a client is lost
+
+    /**
+     * Force quits a player from the game.
+     * @param nickname
+     * @throws InvalidActionException
+     */
     public void forceQuit(String nickname) throws InvalidActionException{
         synchronized (lock) {
             model.forceQuit(nickname);
@@ -164,6 +323,12 @@ public class GameController {
     }
 
     //invoked when the leader draws a new card from the deck (during the game), which must be solved
+
+    /**
+     * Picks the next card.
+     * @param nickname
+     * @throws InvalidActionException
+     */
     public void pickNextCard(String nickname) throws InvalidActionException {
         synchronized (lock) {
             model.pickNextCard(nickname);
@@ -171,12 +336,28 @@ public class GameController {
     }
 
     //invoked when a player decides to land on a planet in order to gain goods
+
+    /**
+     * Lands on a planet.
+     * @param nickname
+     * @param numberPlanet
+     * @throws InvalidActionException
+     */
     public void planetLanding(String nickname, int numberPlanet) throws InvalidActionException {
         synchronized (lock) {
             model.planetLanding(nickname, numberPlanet);
         }
     }
 
+    /**
+     * Switches goods in the cargo hold of a ship.
+     * @param nickname
+     * @param cargo_row
+     * @param cargo_col
+     * @param good
+     * @param pos
+     * @throws InvalidActionException
+     */
     public void switchGoods(String nickname,int cargo_row, int cargo_col, Color good, int pos) throws InvalidActionException {
         synchronized (lock) {
             model.switchGoods(nickname, cargo_row, cargo_col, good, pos);
@@ -186,6 +367,16 @@ public class GameController {
 
         //invoked when a player's ship has to be hit by a meteor/cannon shot; the player can decide whether to
     //activate a shield or a cannon to defend its ship
+
+    /**
+     * Hits a player's ship.
+     * @param nickname
+     * @param diceResult
+     * @param activateShield
+     * @param activateCannon
+     * @throws InvalidActionException
+     * @throws NoBatteriesException
+     */
     public void hit(String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException, NoBatteriesException {
         synchronized (lock) {
             model.hit(nickname, diceResult, activateShield, activateCannon);
@@ -193,6 +384,16 @@ public class GameController {
     }
 
     //invoked when a player decides to land on an abandoned station/ship
+
+    /**
+     * Lands on an abandoned station or ship.
+     * @param nickname
+     * @param x
+     * @param y
+     * @param z
+     * @throws InvalidActionException
+     * @throws NoCrewException
+     */
     public void landing(String nickname, List<Integer> x, List<Integer> y, List<Integer> z) throws InvalidActionException, NoCrewException {
         synchronized (lock) {
             model.landing(nickname, x, y, z);
@@ -201,6 +402,15 @@ public class GameController {
 
     //invoked when a player wants to defeat an enemy; the player can decide whether to lose flight days
     //to gain credits/goods or not
+
+    /**
+     * Defeats an enemy.
+     * @param nickname
+     * @param usedBatteries
+     * @param loseDays
+     * @throws InvalidActionException
+     * @throws NoBatteriesException
+     */
     public void defeat(String nickname, int usedBatteries, boolean loseDays) throws InvalidActionException, NoBatteriesException {
         synchronized (lock) {
             model.defeat(nickname, usedBatteries, loseDays);
@@ -208,6 +418,14 @@ public class GameController {
     }
 
     //invoked when a player wants to fly across the flight board exploiting its engine strength
+
+    /**
+     * Fly across the flight board.
+     * @param nickname
+     * @param usedBatteries
+     * @throws InvalidActionException
+     * @throws NoBatteriesException
+     */
     public void fly(String nickname, int usedBatteries) throws InvalidActionException, NoBatteriesException {
         synchronized (lock) {
             model.fly(nickname, usedBatteries);
@@ -215,6 +433,14 @@ public class GameController {
     }
 
     //invoked when a player wants to use batteries to have an advantage while solving a card
+
+    /**
+     * Uses batteries to solve a card.
+     * @param nickname
+     * @param usedBatteries
+     * @throws InvalidActionException
+     * @throws NoBatteriesException
+     */
     public void useBatteries(String nickname, int usedBatteries) throws InvalidActionException, NoBatteriesException {
         synchronized (lock) {
             model.useBatteries(nickname, usedBatteries);
@@ -222,6 +448,12 @@ public class GameController {
     }
 
     //invoked when a player doesn't want to exploit the benefits of a card and therefore skips the turn
+
+    /**
+     * Skips the turn.
+     * @param nickname
+     * @throws InvalidActionException
+     */
     public void skip(String nickname) throws InvalidActionException {
         synchronized (lock) {
             model.skip(nickname);
@@ -229,6 +461,17 @@ public class GameController {
     }
 
     //invoked when a player decides to load goods inside cargo hold components of its ship
+
+    /**
+     * Loads goods into the cargo hold.
+     * @param nickname
+     * @param x
+     * @param y
+     * @throws InvalidActionException
+     * @throws UnsupportedCargoColorException
+     * @throws FullCargoHoldException
+     * @throws NoGoodsException
+     */
     public void loadGoods(String nickname, List<Integer> x, List<Integer> y) throws InvalidActionException, UnsupportedCargoColorException, FullCargoHoldException, NoGoodsException{
         synchronized (lock) {
             model.loadGoods(nickname, x, y);

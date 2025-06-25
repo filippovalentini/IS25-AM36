@@ -14,9 +14,17 @@ import java.rmi.registry.Registry;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * MainServer class is the entry point of the server application.
+ */
 public class MainServer {
     //launches the Socket and RMI Servers based on the parameters (IP + port) provided by the user (otherwise
     //it uses default parameters
+
+    /**
+     * Main method to start the server.
+     * @param args
+     */
     public static void main(String[] args) {
         Map<Integer, GameController> controllers = new HashMap<>();
         int rmiPort;
@@ -52,6 +60,13 @@ public class MainServer {
     }
 
     //launches the socket server
+
+    /**
+     * Starts the socket server.
+     * @param controllers
+     * @param port
+     * @throws IOException
+     */
     private static void startSocketServer(Map<Integer, GameController> controllers, int port) throws IOException {
         ServerSocket listenSocket = new ServerSocket(port);
         System.out.println("Socket server running...");
@@ -59,6 +74,14 @@ public class MainServer {
     }
 
     //launches the RMI server
+
+    /**
+     * Starts the RMI server.
+     * @param controllers
+     * @param ipV4
+     * @param port
+     * @throws RemoteException
+     */
     private static void startServerRMI(Map<Integer, GameController> controllers, String ipV4, int port) throws RemoteException {
         System.setProperty("java.rmi.server.hostname", ipV4);
         ServerRMI server = new ServerRMI(controllers);
