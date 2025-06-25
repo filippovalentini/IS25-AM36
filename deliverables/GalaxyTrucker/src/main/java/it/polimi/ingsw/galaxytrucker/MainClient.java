@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class MainClient {
     public static void main(String[] args) {
         boolean noParams = true;
-        for (String arg : args) { // with command line params
+        for (String arg : args) { // with command line parameters
             if (arg.equals("--gui")) {
                 noParams = false;
                 new GuiInterface().launch();
@@ -19,7 +19,7 @@ public class MainClient {
                 break;
             }
         }
-        if (noParams) { // without command line params
+        if (noParams) { // without command line parameters
             int interfaceNumber = askInterface();
             if(interfaceNumber == 2){
                 new GuiInterface().launch();
