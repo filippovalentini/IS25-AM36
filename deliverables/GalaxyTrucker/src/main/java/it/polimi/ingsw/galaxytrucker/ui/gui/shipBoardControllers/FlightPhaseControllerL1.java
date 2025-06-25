@@ -32,7 +32,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/** * FlightPhaseControllerL1 is the controller for the flight phase in Level 1 of the Galaxy Trucker game.
+ * It manages the user interface for the flight phase, including displaying player information,
+ * handling button actions, and updating the game state.
+ */
 public class FlightPhaseControllerL1 extends ShipBoardGraphics implements FlightPhaseController {
     private Stage controlledStage;
 
@@ -91,7 +94,9 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
     int lostComponents;
     int credits;
     VirtualServer server;
-
+    /** * Initializes the controller after its root element has been completely processed.
+     * Loads images, initializes game information, sets up buttons, and prepares the UI for the flight phase.
+     */
     @FXML
     public void initialize() {
         componentImageMap = GuiInterface.getInstance().loadImageMap("components");
@@ -127,6 +132,9 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
     //UTILITIES CARD METHODS:
 
     //PlanetLanding
+    /** * Sets up the action for the planet landing button.
+     * When clicked, it shows a popup with planet landing settings or hides the popup if already opened.
+     */
     public void setupPlanetLandingButton() {
         planetLandingButton.setOnAction(event -> {
             if(!popupOpened) {
@@ -139,6 +147,9 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
     }
 
     //Crew Landing
+    /** * Sets up the action for the crew landing button.
+     * When clicked, it shows a popup with crew landing settings or hides the popup if already opened.
+     */
     public void setupCrewLandingButton() {
         crewLandingButton.setOnAction(event -> {
             if(!popupOpened) {
@@ -151,6 +162,9 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
     }
 
     //Use Batteries
+    /** * Sets up the action for the use batteries button.
+     * When clicked, it shows a popup with use batteries settings or hides the popup if already opened.
+     */
     public void setupUseBatteriesButton() {
         useBatteriesButton.setOnAction(event -> {
             if(!popupOpened) {
@@ -163,6 +177,9 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
     }
 
     //Load Goods
+    /** * Sets up the action for the load goods button.
+     * When clicked, it shows a popup with load goods settings or hides the popup if already opened.
+     */
     public void setupLoadGoodsButton() {
         loadGoodsButton.setOnAction(event -> {
             if(!popupOpened) {
@@ -175,6 +192,9 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
     }
 
     //Fly
+    /** * Sets up the action for the fly button.
+     * When clicked, it shows a popup with fly settings or hides the popup if already opened.
+     */
     public void setupFlyButton() {
         flyButton.setOnAction(event -> {
             if(!popupOpened) {
@@ -187,6 +207,9 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
     }
 
     //defeat enemy
+    /** * Sets up the action for the defeat enemy button.
+     * When clicked, it shows a popup with defeat enemy settings or hides the popup if already opened.
+     */
     public void setupDefeatEnemyButton() {
         defeatEnemyButton.setOnAction(event -> {
             if(!popupOpened) {
@@ -201,6 +224,9 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
 
 
     //Hit Ship Button
+    /** * Sets up the action for the hit ship button.
+     * When clicked, it checks if the dice have been thrown and shows a popup with hit ship settings or hides the popup if already opened.
+     */
     public void setupHitShipButton() {
         hitShipButton.setOnAction(event -> {
             if(!diceButton.isDisable()){
@@ -215,6 +241,9 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
             }
         });
     }
+    /** * Hides the popup container and clears its content.
+     * Resets the popup state and enables action buttons.
+     */
     public void hidePopup() {
         popupContainer.setVisible(false);
         popupContainer.getChildren().clear();
@@ -223,6 +252,9 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
         popupOpened = false;
         disableActionButtons(false);
     }
+    /** * Disables or enables all action buttons based on the provided boolean value.
+     * @param disable true to disable buttons, false to enable them.
+     */
     public void disableActionButtons(boolean disable){
         flyButton.setDisable(disable);
         useBatteriesButton.setDisable(disable);
@@ -234,16 +266,20 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
         planetLandingButton.setDisable(disable);
         skipButton.setDisable(disable);
     }
+    /** * Shows a popup with the specified FXML file for action settings.
+     * Loads the FXML file, sets up the controller, and displays the popup content.
+     * @param fxml the name of the FXML file to load.
+     */
     public void showPopup(String fxml) {
         try {
-            String resourcePath = "/it/polimi/ingsw/galaxytrucker/fxml/actionSettings/" + fxml;
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(resourcePath));
-            Parent popupContent = loader.load();
+            String resourcePath = "/it/polimi/ingsw/galaxytrucker/fxml/actionSettings/" + fxml; // Construct the resource path for the FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(resourcePath)); // Load the FXML file
+            Parent popupContent = loader.load(); // Load the content of the popup
 
-            ActionSettingsController controller = loader.getController();
-            controller.setServer(this.server);
-            controller.setPlayerInfo(this.gameID, this.playerNickname);
-            controller.setOnConfirm(() -> {
+            ActionSettingsController controller = loader.getController(); // Get the controller from the loaded FXML
+            controller.setServer(this.server); // Set the server for the controller
+            controller.setPlayerInfo(this.gameID, this.playerNickname); // Set player information for the controller
+            controller.setOnConfirm(() -> { // Define the action to perform when the confirm button is clicked
                 GuiInterface.getInstance().getView().updateThrowableDice();
                 invalidDice();
                 hidePopup();
@@ -261,6 +297,9 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
             showError(e.getMessage());
         }
     }
+    /** * Invalidates the dice state by enabling the dice button and clearing the dice images.
+     * Resets the styles of the dice buttons to their default state.
+     */
     public void invalidDice(){
         diceButton.setDisable(false);
         dice1Button.setGraphic(null);
@@ -270,6 +309,10 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
     }
 
     //Skip Button
+    /** * Sets up the action for the skip button.
+     * When clicked, it sends a skip request to the server for the current game and player.
+     * If an error occurs, it displays the error message in the error label.
+     */
     public void setupSkipButton() {
         skipButton.setOnAction(event -> {
             try{
@@ -282,6 +325,9 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
     }
 
     // Initialize Current Card
+    /** * Initializes the current card by retrieving its image ID from the GUI interface.
+     * If the image ID is not available, it sets a default image.
+     */
     public void initializeCurrentCard(){
         Integer imageID = GuiInterface.getInstance().getView().getCurrentCard();
         if (imageID != null) {
@@ -290,6 +336,10 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
             setPickedCardImage("9001");
         }
     }
+    /** * Sets the image of the picked card button based on the provided image ID.
+     * It retrieves the image from the cardImageMap, creates an ImageView, and sets it as the graphic of the button.
+     * @param imageID the ID of the image to be set on the picked card button.
+     */
     public void setPickedCardImage(String imageID) {
         Image image = cardImageMap.get(imageID);
         ImageView imageView = new ImageView(image);
@@ -302,11 +352,18 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
     }
 
     // Dice setting
+    /** * Initializes the dice by checking if the GUI interface allows throwing dice.
+     * If not, it sets the dice images based on the results from the GUI interface.
+     */
     public void initializeDice(){
         if(!GuiInterface.getInstance().getView().throwableDice()){
             setDice();
         }
     }
+    /** * Sets the dice images based on the results from the GUI interface.
+     * Retrieves the results of the dice rolls, sets the images on the respective buttons,
+     * and disables the dice button to prevent further rolls.
+     */
     public void setDice() {
         int result1 = GuiInterface.getInstance().getView().dice1result();
         int result2 = GuiInterface.getInstance().getView().dice2result();
@@ -314,6 +371,11 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
         setDiceImage(dice2Button, result2);
         diceButton.setDisable(true);
     }
+    /** * Sets the image of a dice button based on the provided result.
+     * It retrieves the image from the diceImageMap, creates an ImageView, and sets it as the graphic of the button.
+     * @param diceButton the button to set the dice image on.
+     * @param result the result of the dice roll to determine which image to use.
+     */
     public void setDiceImage(Button diceButton, int result){
         Image image = diceImageMap.get(String.valueOf(result));
         ImageView imageView = new ImageView(image);
@@ -326,28 +388,34 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
     }
 
     // Initialize Game Info
+    /** * Initializes the game information by retrieving player details from the GUI interface.
+     * Sets the player's nickname, color, lost components, credits, game state, and other relevant labels.
+     */
     public void initializeGameInfo() {
-        this.playerNickname = GuiInterface.getInstance().getView().getNickname();
-        this.playerColor = GuiInterface.getInstance().getView().getColor();
-        this.lostComponents = GuiInterface.getInstance().getView().getLostComponents(playerNickname);
-        this.credits = GuiInterface.getInstance().getView().getCredits(playerNickname);
-        gameStateLabel.setText(GuiInterface.getInstance().getView().getGameState());
-        playerNameLabel.setText(playerNickname);
-        playerColorLabel.setText("██");
-        playerColorLabel.setStyle(Color.convertColorIntoStyle(playerColor));
-        lostComponentsLabel.setText(String.valueOf(lostComponents));
-        playerCreditsLabel.setText(String.valueOf(credits));
-        turnPlayerLabel.setText(GuiInterface.getInstance().getView().getTurnPlayer());
-        if(GuiInterface.getInstance().getView().hasAbandoned(playerNickname)){
-            statusLabel.setText("ABANDONED");
-            statusLabel.setStyle("-fx-text-fill: red;");
+        this.playerNickname = GuiInterface.getInstance().getView().getNickname(); // Get the player's nickname from the GUI interface
+        this.playerColor = GuiInterface.getInstance().getView().getColor(); // Get the player's color from the GUI interface
+        this.lostComponents = GuiInterface.getInstance().getView().getLostComponents(playerNickname); // Get the number of lost components for the player
+        this.credits = GuiInterface.getInstance().getView().getCredits(playerNickname); // Get the player's credits from the GUI interface
+        gameStateLabel.setText(GuiInterface.getInstance().getView().getGameState()); // Get the current game state from the GUI interface
+        playerNameLabel.setText(playerNickname); // Set the player's name label to the player's nickname
+        playerColorLabel.setText("██"); // Set the player's color label to a colored block
+        playerColorLabel.setStyle(Color.convertColorIntoStyle(playerColor)); // Set the style of the player's color label based on the player's color
+        lostComponentsLabel.setText(String.valueOf(lostComponents)); // Set the lost components label to the number of lost components
+        playerCreditsLabel.setText(String.valueOf(credits)); // Set the player's credits label to the number of credits
+        turnPlayerLabel.setText(GuiInterface.getInstance().getView().getTurnPlayer()); // Set the turn player label to the current turn player
+        if(GuiInterface.getInstance().getView().hasAbandoned(playerNickname)){ // Check if the player has abandoned the game
+            statusLabel.setText("ABANDONED"); // Set the status label to "ABANDONED"
+            statusLabel.setStyle("-fx-text-fill: red;"); // Set the style of the status label to red
         }else{
-            statusLabel.setText("IN THE GAME");
-            statusLabel.setStyle("-fx-text-fill: green;");
+            statusLabel.setText("IN THE GAME"); // Set the status label to "IN THE GAME"
+            statusLabel.setStyle("-fx-text-fill: green;"); // Set the style of the status label to green
         }
     }
 
     //initialize Buttons
+    /** * Initializes the buttons on the ship board.
+     * Disables the destroy button initially and sets up other player ship buttons based on the number of players in the game.
+     */
     public void initializeButtons(){
         destroyButton.setDisable(true);
 
@@ -376,6 +444,9 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
     }
 
     // Initialize Assembled Component
+    /** * Initializes the assembled components on the ship board.
+     * Retrieves the list of assembled components for the player and sets them on the grid.
+     */
     public void initializeAssembledComponents(){
         List<List<ViewComponent>> assembledComponents = GuiInterface.getInstance().getView().getAssembledComponents(this.playerNickname);
         for(int i = 0; i < assembledComponents.size(); i++){
@@ -387,6 +458,14 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
     }
 
     //set Images methods
+
+    /**
+     * Sets a component on the grid based on the provided ViewComponent.
+     * @param imageID
+     * @param orientation
+     * @param column
+     * @param row
+     */
     @Override
     public void setImageOnGrid(String imageID, Orientation orientation, int column, int row) {
         if (imageID.equals("000") || imageID.equals("003")) {
@@ -450,10 +529,16 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
     }
 
     //Show Errors
+    /** * Displays an error message in the error label and fades it in and out after a short duration.
+     * @param message the error message to be displayed.
+     */
     public void showError(String message) {
         errorLabel.setText(message);
         fadeInThenOut(errorPane);
     }
+    /** * Fades in the specified pane, waits for a duration, and then fades it out.
+     * @param pane the pane to be faded in and out.
+     */
     private void fadeInThenOut(Pane pane) {
         pane.setOpacity(1.0);
 
@@ -468,6 +553,10 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
     }
 
     //Quit button
+    /** * Sets up the action for the quit button.
+     * When clicked, it sends a quit request to the server for the current game and player.
+     * If an error occurs, it displays the error message in the error label.
+     */
     public void setupQuitButton() {
         quitButton.setOnAction(event -> {
             try{
@@ -478,7 +567,10 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
             }
         });
     }
-
+    /** * Sets up the action for the dice button.
+     * When clicked, it sends a request to roll the dice and updates the dice images accordingly.
+     * If an error occurs, it displays the error message in the error label.
+     */
     @FXML
     public void setupDiceButton() {
         diceButton.setOnAction(event -> {
@@ -489,6 +581,11 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
             catch (Exception e) { showError(e.getMessage()); }
         });
     }
+    /** * Sets up the action for the other player ship buttons.
+     * When clicked, it loads the ship board for the selected player and displays it in the controlled stage.
+     * If an error occurs, it displays the error message in the error label.
+     * @param button the button representing another player's ship.
+     */
     @FXML
     private void setupOtherPlayerButton(Button button) {
         button.setOnAction(event -> {
@@ -512,6 +609,10 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
             }
         });
     }
+    /** * Sets up the action for the destroy button.
+     * When clicked, it sends a request to destroy a component at the selected row and column.
+     * If an error occurs, it displays the error message in the error label.
+     */
     @FXML
     private void setupDestroyButton() {
         destroyButton.setOnAction(event -> {
@@ -523,6 +624,10 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
             }
         });
     }
+    /** * Sets up the action for the flight board button.
+     * When clicked, it loads the flight board for Level 1 and displays it in the controlled stage.
+     * If an error occurs, it displays the error message in the error label.
+     */
     @FXML
     private void setupFlightBoardButton() {
         flightBoardButton.setOnAction(event -> {
@@ -544,6 +649,10 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
             }
         });
     }
+    /** * Sets up the action for the pick card button.
+     * When clicked, it sends a request to pick the next card for the current game and player.
+     * If an error occurs, it displays the error message in the error label.
+     */
     @FXML
     public void setupPickCardButton() {
         pickCardButton.setOnAction(event -> {
@@ -555,16 +664,25 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
             }
         });
     }
+    /** * Sets the controlled stage for this controller.
+     * @param stage the stage to be controlled by this controller.
+     */
     @Override
     public void setControlledStage(Stage stage) {
         this.controlledStage = stage;
     }
-
+    /** * Sets the server for this controller.
+     * @param server the virtual server to be used by this controller.
+     */
     @Override
     public void setServer(VirtualServer server) {
         this.server = server;
     }
-
+    /** * Sets the player information for this controller.
+     * @param gameID the ID of the game the player is in.
+     * @param playerNickname the nickname of the player.
+     * @param color the color associated with the player.
+     */
     @Override
     public void setPlayerInfo(int gameID, String playerNickname, Color color) {
         this.gameID = gameID;
@@ -572,6 +690,11 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
         this.playerColor = color;
     }
 
+    /**
+     * Notifies the controller of an error that occurred during the game.
+     * @param error the error message to be displayed
+     * @throws Exception
+     */
     @Override
     public void notifyError(String error) throws Exception {
         Platform.runLater(() -> {
@@ -579,6 +702,11 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
         });
     }
 
+    /**
+     * Notifies the controller of a change in the game phase.
+     * @param gamePhase the new game phase to be displayed
+     * @throws Exception
+     */
     @Override
     public void notifyGamePhase(String gamePhase) throws Exception {
         Platform.runLater(() -> {
@@ -586,6 +714,11 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
         });
     }
 
+    /**
+     * Updates the ship repair phase for a specific player.
+     * @param nickname the nickname of the player who needs to repair their ship
+     * @throws Exception
+     */
     @Override
     public void updateShipRepair(String nickname) throws Exception {
         Platform.runLater(() -> {
@@ -593,6 +726,13 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
         });
     }
 
+    /**
+     * Updates the destroyed component on the player's ship grid.
+     * @param nickname the nickname of the player whose ship component was destroyed
+     * @param x        the x-coordinate of the destroyed component
+     * @param y        the y-coordinate of the destroyed component
+     * @throws Exception
+     */
     @Override
     public void updateDestroyedComponent(String nickname, int x, int y) throws Exception {
         Platform.runLater(() -> {
@@ -608,6 +748,13 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
         });
     }
 
+    /**
+     * Updates the ship component change on the player's ship grid.
+     * @param nickname the nickname of the player whose ship component has changed
+     * @param x        the x-coordinate of the changed component
+     * @param y        the y-coordinate of the changed component
+     * @throws Exception
+     */
     @Override
     public void updateComponentChange(String nickname, int x, int y) throws Exception {
         Platform.runLater(() -> {
@@ -619,6 +766,10 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
         });
     }
 
+    /**
+     * Updates the card picking phase for the game.
+     * @throws Exception
+     */
     @Override
     public void updateCardPicking() throws Exception {
         Platform.runLater(() -> {
@@ -627,6 +778,11 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
         });
     }
 
+    /**
+     * Updates the next turn for the game.
+     * @param nickname the nickname of the player whose turn it is
+     * @throws Exception
+     */
     @Override
     public void updateNextTurn(String nickname) throws Exception {
         Platform.runLater(() -> {
@@ -635,6 +791,11 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
         });
     }
 
+    /**
+     * Updates the card solving phase for the game.
+     * @param imageID the ID of the image representing the card to be solved
+     * @throws Exception
+     */
     @Override
     public void updateCardSolving(int imageID) throws Exception {
         Platform.runLater(() -> {
@@ -642,10 +803,18 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
             setPickedCardImage(String.valueOf(imageID));
         });
     }
+    /** * Displays the current game phase message in the game state label.
+     * @param message the message to be displayed for the current game phase.
+     */
     public void showGamePhase(String message){
         gameStateLabel.setText(message);
     }
 
+    /**
+     * Updates the player quit status in the game.
+     * @param nickname the nickname of the player who has quit
+     * @throws Exception
+     */
     @Override
     public void updatePlayerQuit(String nickname) throws Exception {
         Platform.runLater(() -> {
@@ -656,6 +825,12 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
         });
     }
 
+    /**
+     * Updates the player's credits based on the change in credits.
+     * @param nickname the nickname of the player whose credits have changed
+     * @param change   the amount of credits gained (positive value) or lost (negative value)
+     * @throws Exception
+     */
     @Override
     public void updatePlayerCredits(String nickname, int change) throws Exception {
         Platform.runLater(() -> {
@@ -665,7 +840,11 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
             }
         });
     }
-
+    /**
+     * Updates the end game state of the game.
+     * It loads the endgame FXML file, sets the controller, and displays the endgame screen.
+     * @throws Exception if an error occurs while loading the FXML file or setting up the controller.
+     */
     @Override
     public void updateEndGame() throws Exception {
         Platform.runLater(() -> {

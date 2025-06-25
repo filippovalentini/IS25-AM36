@@ -12,15 +12,34 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import java.util.List;
 
-//This class contains all the methods needed to show a specific component of a ship board, including batteries, crew
-//members, aliens, goods and providing the correct size and orientation of the component.
+
+
+/**
+ * This class contains all the methods needed to show a specific component of a ship board, including batteries, crew members, aliens, goods and providing the correct size and orientation of the component.
+ */
 public abstract class ShipBoardGraphics {
     @FXML protected GridPane myGridPane;
 
     //sets an image in a specific position of the grid pane and with a specific orientation
+    /**
+     * Sets an image on the grid pane at the specified column and row with the given orientation.
+     *
+     * @param imageID      The ID of the image to be set.
+     * @param orientation  The orientation of the image (e.g., HORIZONTAL, VERTICAL).
+     * @param column       The column index in the grid pane.
+     * @param row          The row index in the grid pane.
+     */
     public abstract void setImageOnGrid(String imageID, Orientation orientation, int column, int row);
 
     //sets all the graphic information regarding a component in a specific position of the grid pane
+    /**
+     * Sets a component on the grid pane at the specified row and column.
+     * This method updates the grid with the component's image, orientation, and any additional attributes like batteries, crew members, aliens, or goods.
+     *
+     * @param component The ViewComponent to be set on the grid.
+     * @param row       The row index in the grid pane.
+     * @param column    The column index in the grid pane.
+     */
     public void setComponentOnGrid(ViewComponent component, int row, int column){
         if(component != null){
             setImageOnGrid(component.getImageID(), component.getOrientation(), column, row);
@@ -39,6 +58,13 @@ public abstract class ShipBoardGraphics {
     }
 
     //removes all the graphic information regarding a component from a specific position of the grid pane
+    /**
+     * Removes a component from the grid pane at the specified row and column.
+     * This method searches for the component in the grid and removes it, including any associated images or overlays.
+     *
+     * @param row    The row index in the grid pane.
+     * @param column The column index in the grid pane.
+     */
     public void removeComponentFromGrid(int row, int column){
         for (Node node : myGridPane.getChildren()) {
             Integer colIndex = GridPane.getColumnIndex(node);
@@ -54,6 +80,13 @@ public abstract class ShipBoardGraphics {
     }
 
     //attaches battery images to a component on the grid pane
+
+    /**
+     * Adds battery images to a specific cell in the grid pane.
+     * @param row
+     * @param column
+     * @param batteries
+     */
     public void addBatteries(int row, int column, int batteries) {
         Platform.runLater(() -> {
             for (Node node : myGridPane.getChildren()) {
@@ -84,31 +117,44 @@ public abstract class ShipBoardGraphics {
     }
 
     //returns the image of a battery
+
+    /**
+     * Returns an ImageView containing the battery image, scaled to fit the specified overlay.
+     * @param overlay
+     * @return
+     */
     public ImageView getBatteryImageView(GridPane overlay){
         Image battery = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/battery.png").toExternalForm());
 
-        ImageView batteryImageView = new ImageView(battery);
-        batteryImageView.setFitWidth(overlay.getPrefWidth() / 2);
-        batteryImageView.setFitHeight(overlay.getPrefHeight() / 2);
-        batteryImageView.setPreserveRatio(true);
-        batteryImageView.setId("crew");
+        ImageView batteryImageView = new ImageView(battery); // Load the battery image
+        batteryImageView.setFitWidth(overlay.getPrefWidth() / 2); // Set the width to half of the overlay's width
+        batteryImageView.setFitHeight(overlay.getPrefHeight() / 2); // Set the height to half of the overlay's height
+        batteryImageView.setPreserveRatio(true); // Preserve the aspect ratio of the image
+        batteryImageView.setId("crew"); // Set an ID for the ImageView, if needed
 
-        return batteryImageView;
+        return batteryImageView; // Return the ImageView containing the battery image
     }
 
     //attaches crew member images to a component on the grid pane
+
+    /**
+     * Adds crew member images to a specific cell in the grid pane.
+     * @param row
+     * @param column
+     * @param crew
+     */
     public void addCrewMembers(int row, int column, int crew) {
-        Platform.runLater(() -> {
-            for (Node node : myGridPane.getChildren()) {
-                Integer col = GridPane.getColumnIndex(node);
-                Integer rw = GridPane.getRowIndex(node);
+        Platform.runLater(() -> { // This method runs on the JavaFX Application Thread
+            for (Node node : myGridPane.getChildren()) { // Iterate through all nodes in the GridPane
+                Integer col = GridPane.getColumnIndex(node); // Get the column index of the node
+                Integer rw = GridPane.getRowIndex(node);     // Get the row index of the node
                 if (col == null) col = 0;
                 if (rw == null) rw = 0;
 
-                if (col == column && rw == row && node instanceof StackPane cell) {
-                    for (Node child : cell.getChildren()) {
+                if (col == column && rw == row && node instanceof StackPane cell) { // Check if the node is in the specified cell
+                    for (Node child : cell.getChildren()) { // Iterate through the children of the StackPane
                         if (child instanceof GridPane overlay && overlay.getId() != null &&
-                                overlay.getId().equals("overlay-" + column + "-" + row)) {
+                                overlay.getId().equals("overlay-" + column + "-" + row)) { // Check if the child is a GridPane with the correct overlay ID
 
                             overlay.add(getCrewMemberImageView(overlay), 0, 0);
                             if(crew > 1){
@@ -124,33 +170,46 @@ public abstract class ShipBoardGraphics {
     }
 
     //returns the image of a crew member
+
+    /**
+     * Returns an ImageView containing the crew member image, scaled to fit the specified overlay.
+     * @param overlay
+     * @return
+     */
     public ImageView getCrewMemberImageView(GridPane overlay){
         Image crewMember = new Image(getClass().getResource("/it/polimi/ingsw/galaxytrucker/images/pieces/crewMember.png").toExternalForm());
 
-        ImageView crewMemberImageView = new ImageView(crewMember);
-        crewMemberImageView.setFitWidth(overlay.getPrefWidth() / 2);
-        crewMemberImageView.setFitHeight(overlay.getPrefHeight() / 2);
-        crewMemberImageView.setPreserveRatio(true);
-        crewMemberImageView.setId("crew");
+        ImageView crewMemberImageView = new ImageView(crewMember); // Load the crew member image
+        crewMemberImageView.setFitWidth(overlay.getPrefWidth() / 2); // Set the width to half of the overlay's width
+        crewMemberImageView.setFitHeight(overlay.getPrefHeight() / 2); // Set the height to half of the overlay's height
+        crewMemberImageView.setPreserveRatio(true); // Preserve the aspect ratio of the image
+        crewMemberImageView.setId("crew"); // Set an ID for the ImageView, if needed
 
         return crewMemberImageView;
     }
 
     //attaches images of cargo goods to a component on the grid pane
+
+    /**
+     * Adds cargo goods images to a specific cell in the grid pane.
+     * @param row
+     * @param column
+     * @param goods
+     */
     public void addGoods(int row, int column, List<Color> goods) {
-        Platform.runLater(() -> {
-            for (Node node : myGridPane.getChildren()) {
-                Integer col = GridPane.getColumnIndex(node);
-                Integer rw = GridPane.getRowIndex(node);
+        Platform.runLater(() -> { // This method runs on the JavaFX Application Thread
+            for (Node node : myGridPane.getChildren()) { // Iterate through all nodes in the GridPane
+                Integer col = GridPane.getColumnIndex(node); // Get the column index of the node
+                Integer rw = GridPane.getRowIndex(node); // Get the row index of the node
                 if (col == null) col = 0;
                 if (rw == null) rw = 0;
 
-                if (col == column && rw == row && node instanceof StackPane cell) {
-                    for (Node child : cell.getChildren()) {
+                if (col == column && rw == row && node instanceof StackPane cell) { // Check if the node is in the specified cell
+                    for (Node child : cell.getChildren()) { // Iterate through the children of the StackPane
                         if (child instanceof GridPane overlay && overlay.getId() != null &&
-                                overlay.getId().equals("overlay-" + column + "-" + row)) {
+                                overlay.getId().equals("overlay-" + column + "-" + row)) { // Check if the child is a GridPane with the correct overlay ID
 
-                            int numberGoods = goods.size();
+                            int numberGoods = goods.size(); // Get the number of goods to display
 
                             overlay.add(getCargoGoodImageView(overlay, goods.getFirst()), 0, 0);
                             if(numberGoods > 1){
@@ -169,6 +228,13 @@ public abstract class ShipBoardGraphics {
     }
 
     //returns the image of a specific cargo good
+
+    /**
+     * Returns an ImageView containing the cargo good image based on its color, scaled to fit the specified overlay.
+     * @param overlay
+     * @param goodColor
+     * @return
+     */
     public ImageView getCargoGoodImageView(GridPane overlay, Color goodColor){
         Image goodImage;
         if (goodColor == Color.GREEN) {
@@ -192,6 +258,13 @@ public abstract class ShipBoardGraphics {
     }
 
     //attaches the image of an alien to a component on the grid pane
+
+    /**
+     * Adds an alien image to a specific cell in the grid pane.
+     * @param row
+     * @param column
+     * @param isPurple
+     */
     public void addAlien(int row, int column, boolean isPurple) {
         Platform.runLater(() -> {
             for (Node node : myGridPane.getChildren()) {
@@ -215,6 +288,13 @@ public abstract class ShipBoardGraphics {
     }
 
     //returns the image of an alien
+
+    /**
+     * Returns an ImageView containing the alien image based on its color, scaled to fit the specified overlay.
+     * @param overlay
+     * @param isPurple
+     * @return
+     */
     public ImageView getAlienImageView(GridPane overlay, boolean isPurple){
         Image alien;
         if (isPurple) {

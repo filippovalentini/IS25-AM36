@@ -7,8 +7,14 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import java.io.IOException;
-
+/** * JavaFX application launcher.
+ */
 public class JavaFxLauncher extends Application {
+    /**
+     * Starts the JavaFX application.
+     * @param stage
+     * @throws IOException
+     */
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(JavaFxLauncher.class.getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/selectNetwork.fxml"));

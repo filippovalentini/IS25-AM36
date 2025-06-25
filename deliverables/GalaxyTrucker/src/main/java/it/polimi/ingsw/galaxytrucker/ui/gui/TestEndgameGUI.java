@@ -7,7 +7,16 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+/**
+ * This class is used to test the endgame GUI.
+ */
 public class TestEndgameGUI extends Application {
+    /**
+     * Starts the GUI application and sets up the endgame view.
+     *
+     * @param stage the primary stage for this application
+     * @throws Exception if an error occurs during loading the FXML
+     */
     @Override
     public void start(Stage stage) throws Exception {
         new GuiInterface();
@@ -35,6 +44,10 @@ public class TestEndgameGUI extends Application {
         stage.show();
     }
 
+    /**
+     * Main method to launch the GUI application.
+     * @param args
+     */
     public static void main(String[] args) {
         launch(args);
     }

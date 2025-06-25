@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * This class implements the TUI (Text User Interface).
+ */
 public class TuiInterface implements UserInterface {
     private VirtualServer server;
     private GameSessionManager client;
@@ -29,6 +32,10 @@ public class TuiInterface implements UserInterface {
     Color color;
 
     //asks the user the technology to use (Socket or RMI) and launches the corresponding client typology
+
+    /**
+     * Launches the TUI interface, asking the user for the server IP address and connection type.
+     */
     public void launch(){
         Scanner sc = new Scanner(System.in);
         System.out.println("Insert server IP address (different port can be specified with [IP:PORT_NUM]): ");
@@ -64,6 +71,12 @@ public class TuiInterface implements UserInterface {
     }
 
     //launches the socket client
+
+    /**
+     * Starts the socket client with the specified IP address.
+     * @param IP
+     * @throws IOException
+     */
     public void startSocketClient(String IP) throws IOException {
         String shortIP = IP; // only the ip without port
         int port = 1235; //default port
@@ -79,6 +92,13 @@ public class TuiInterface implements UserInterface {
     }
 
     //launches the RMI client
+
+    /**
+     * Starts the RMI client with the specified IP address.
+     * @param IP
+     * @throws RemoteException
+     * @throws NotBoundException
+     */
     public void startClientRMI(String IP) throws RemoteException, NotBoundException {
         final String serverName = "GalaxyTruckerServer";
         String shortIP = IP; // only the ip without port
@@ -97,6 +117,10 @@ public class TuiInterface implements UserInterface {
     //this method asks the user whether it wants to start a game or join one; in case of game creation,
     //it takes in input number of players and type of game. Once the game has been created (or an existing one
     //has been found) the method takes in input nickname and color of the player and adds it to the game.
+
+    /**
+     * Runs the game by asking the user whether to start a new game or join an existing one.
+     */
     public void runGame() {
         boolean userStartsGame = requestStartOrJoinGame();
         if(userStartsGame){
@@ -107,6 +131,11 @@ public class TuiInterface implements UserInterface {
     }
 
     //this method asks the user to start a new game or join an existing one
+
+    /**
+     * Asks the user whether to start a new game or join an existing one.
+     * @return
+     */
     public boolean requestStartOrJoinGame() {
         Scanner inputScanner = new Scanner(System.in);
         String input;
@@ -119,6 +148,10 @@ public class TuiInterface implements UserInterface {
     }
 
     //this method asks the user the parameters to set up a new game and asks the server to create the game
+
+    /**
+     * Requests the user to start a new game by providing game ID, number of players, and game type.
+     */
     public void requestStartNewGame() {
         System.out.println("START A NEW GAME");
         int numPlayers;
@@ -159,6 +192,11 @@ public class TuiInterface implements UserInterface {
     }
 
     //this method asks the user for nickname and color and asks the server to add the player to the game
+
+    /**
+     * Requests the user to add a player to the game by providing nickname and color.
+     * @param userStartsGame
+     */
     public void requestAddPlayerToGame(boolean userStartsGame) {
         System.out.println("JOIN GAME");
         Scanner inputScanner = new Scanner(System.in);
@@ -201,6 +239,10 @@ public class TuiInterface implements UserInterface {
 
 
     //prints the list of commands available for the CLI of the game
+
+    /**
+     * Prints the list of available commands for the TUI interface.
+     */
     public void printCommands(){
         System.out.println("Available commands:");
         System.out.println("0 - commands (list of available commands)");
@@ -238,6 +280,10 @@ public class TuiInterface implements UserInterface {
     }
 
     //print EID(Extended ID) description for all components
+
+    /**
+     * Prints the description of the Extended ID (EID) for all components.
+     */
     public void printCompEID(){
         System.out.println("Every component is shown as string composed of OXXYYYY\n" +
                 "         O: (orientation)\n" +
@@ -270,6 +316,10 @@ public class TuiInterface implements UserInterface {
                 "            3: Universal");
     }
     //runs a command line interface to send requests to the server
+
+    /**
+     * Runs the TUI interface, allowing the user to input commands and interact with the game.
+     */
     public void runTui() {
         Scanner scan = new Scanner(System.in);
         printCommands();
@@ -525,6 +575,11 @@ public class TuiInterface implements UserInterface {
 
     //notifies a view about an error committed while executing a method on the remote server; the parameter
     //errorMessage describes the type of error
+
+    /**
+     * Notifies the user about an error that occurred during the game.
+     * @param errorMessage
+     */
     @Override
     public void notifyError(String errorMessage) {
         System.out.println(errorMessage);
@@ -533,6 +588,11 @@ public class TuiInterface implements UserInterface {
     //notifies a view about the fact that the corresponding player has been correctly added to the game, but
     //the server is waiting for other players in order to start the assembling phase; the parameter firstFlight
     //in needed for the view to determine which type of ship board/flight board to show to the user
+
+    /**
+     * Updates the view to indicate that the player is waiting for other players to join the game.
+     * @param firstFlight
+     */
     @Override
     public void updateWaitingForPlayers(boolean firstFlight) {
         this.view = new View(nickname, color, firstFlight);
@@ -540,12 +600,21 @@ public class TuiInterface implements UserInterface {
 
     //notifies a view about the presence of another player in the game; this method is invoked before the
     //beginning of the assembling phase, therefore just the nickname and color of the new player is required
+    /**
+     * Updates the view to indicate that a new player has joined the game.
+     * @param nickname
+     * @param color
+     */
     @Override
     public void updateNewPlayer(String nickname, Color color) {
         this.view.updateNewPlayer(nickname, color);
     }
 
     //notifies a view about the beginning of the assembling phase
+
+    /**
+     * Updates the view to indicate the start of the assembling phase.
+     */
     @Override
     public void updateStartAssembling() {
         this.view.updateStartAssembling();
@@ -567,6 +636,12 @@ public class TuiInterface implements UserInterface {
     //notifies the view about the fact that a component has been successfully picked/released (depending on
     //the value of the boolean parameter) by the corresponding player; the parameter imageID is needed for the
     //view in order to show the right component to the user
+
+    /**
+     * Notifies the view about a picked or released component.
+     * @param imageID
+     * @param released
+     */
     @Override
     public void updatePickedComponent(int imageID, boolean released) {
         this.view.updatePickedComponent(imageID, released);
@@ -575,6 +650,11 @@ public class TuiInterface implements UserInterface {
     //notifies the view about the fact that a shown component has been picked/released (depending on the value
     //of the boolean parameter); the parameter imageID is needed for the view in order to show the right
     //component to the user
+    /**
+     * Notifies the view about a shown component that has been picked or released.
+     * @param imageID
+     * @param released
+     */
     @Override
     public void updateShownComponent(int imageID, boolean released) {
         this.view.updateShownComponent(imageID, released);
@@ -583,12 +663,23 @@ public class TuiInterface implements UserInterface {
     //notifies the view about the fact that a player (identified by the nickname parameter) has picked a reserved
     //component/ reserved a component (depending on the value of the boolean parameter); the parameter imageID
     //is needed for the view in order to show the right component to the user
+
+    /**
+     * Notifies the view about a reserved component that has been picked or released.
+     * @param nickname
+     * @param imageID
+     * @param released
+     */
     @Override
     public void updateReservedComponent(String nickname, int imageID, boolean released) {
         this.view.updateReservedComponent(nickname, imageID, released);
     }
 
     //notifies the view about the fact that the picked component of the corresponding player has been rotated
+
+    /**
+     * Notifies the view that the picked component has been rotated.
+     */
     @Override
     public void updateRotatePickedComponent() {
         this.view.updateRotatePickedComponent();
@@ -597,6 +688,14 @@ public class TuiInterface implements UserInterface {
     //notifies the view about the fact that a player (identified by the nickname parameter) has assembled a
     //component in position (x,y) of its ship board; the parameter imageID is needed for the view in order
     //to show the right component to the user
+    /**
+     * Notifies the view that a component has been assembled by a player.
+     * @param nickname
+     * @param imageID
+     * @param orientation
+     * @param x
+     * @param y
+     */
     @Override
     public void updateAssembledComponent(String nickname, int imageID, Orientation orientation, int x, int y) {
         this.view.updateAssembledComponent(nickname, imageID, orientation, x, y);
@@ -605,12 +704,21 @@ public class TuiInterface implements UserInterface {
     //notifies the view about the fact that the corresponding player has successfully picked a deck; the parameter
     //contains the list of image IDs of the cards contained in the deck, so that the view can show the
     //correct adventure cards to the user
+
+    /**
+     * Notifies the view that a deck has been picked by the player.
+     * @param deckIDs
+     */
     @Override
     public void updatePickedDeck(List<Integer> deckIDs) {
         this.view.updatePickedDeck(deckIDs);
     }
 
     //notifies the view about the fact that the corresponding player has successfully released a deck
+
+    /**
+     * Notifies the view that a deck has been released by the player.
+     */
     @Override
     public void updateReleasedDeck() {
         this.view.updateReleasedDeck();
@@ -618,12 +726,22 @@ public class TuiInterface implements UserInterface {
 
     //notifies the view about the fact that the corresponding player has finished the assembling phase and is
     //correctly positioned on the flight board; still, other players have to finish building their ships
+
+    /**
+     * Notifies the view that a player has finished assembling their ship.
+     * @param nickname
+     * @param position
+     */
     @Override
     public void updateFinishAssembling(String nickname, int position) {
         this.view.updateFinishAssembling(nickname, position);
     }
 
     //notifies the view that the hourglass has been turned around
+
+    /**
+     * Notifies the view that the hourglass has been turned around to start a new cycle.
+     */
     @Override
     public void updateStartNewCycle() {
         this.view.updateStartNewCycle();
@@ -631,6 +749,10 @@ public class TuiInterface implements UserInterface {
     }
 
     //notifies the view that the hourglass has finished running
+
+    /**
+     * Notifies the view that the hourglass has finished running and the cycle is complete.
+     */
     @Override
     public void updateFinishedCycle() {
         this.view.updateFinishedCycle();
@@ -639,6 +761,10 @@ public class TuiInterface implements UserInterface {
 
     //invoked when the game switches to the ship placement phase, which means that the players can only
     //place their ship on the flight board
+
+    /**
+     * Notifies the view that the ship placement phase has started.
+     */
     @Override
     public void updateShipPlacement() {
         this.view.updateShipPlacement();
@@ -646,6 +772,10 @@ public class TuiInterface implements UserInterface {
 
     //notifies the view that all the players have concluded the assembling phase, which means that the players
     //enter the ship control phase
+
+    /**
+     * Notifies the view that all players have finished assembling their ships and the game is now in the ship control phase.
+     */
     @Override
     public void updateShipControl() {
         this.view.updateShipControl();
@@ -653,6 +783,11 @@ public class TuiInterface implements UserInterface {
     }
 
     //notifies the view that a player has to repair its ship board before the player in turn can pick a new card
+
+    /**
+     * Notifies the view that a player's ship board must be repaired.
+     * @param nickname
+     */
     @Override
     public void updateShipRepair(String nickname) {
         this.view.updateShipRepair(nickname);
@@ -660,48 +795,107 @@ public class TuiInterface implements UserInterface {
     }
 
     //notifies the view that a component of a player's ship board has been destroyed
+
+    /**
+     * Notifies the view that a component of a player's ship board has been destroyed.
+     * @param nickname
+     * @param x
+     * @param y
+     */
     @Override
     public void updateDestroyedComponent(String nickname, int x, int y) {
         this.view.updateDestroyedComponent(nickname, x, y);
     }
 
     //notifies the view about a change in the number of crew of a cabin
+
+    /**
+     * Notifies the view about a change in the number of crew members in a cabin.
+     * @param nickname
+     * @param x
+     * @param y
+     * @param change
+     */
     @Override
     public void updateCrewChange(String nickname, int x, int y, int change){
         this.view.updateCrewChange(nickname, x, y, change);
     }
 
     //notifies the view that a player has initialized a battery container with batteries
+
+    /**
+     * Notifies the view that a player has updated the batteries in a battery container.
+     * @param nickname
+     * @param x
+     * @param y
+     * @param change
+     * @throws IOException
+     */
     @Override
     public void updateBatteries(String nickname, int x, int y, int change) throws IOException{
         this.view.updateBatteries(nickname, x, y, change);
     }
 
     //notifies the view about a change in the number of aliens of a cabin
+
+    /**
+     * Notifies the view about a change in the number of aliens in a cabin.
+     * @param nickname
+     * @param x
+     * @param y
+     * @param isPurple
+     * @param added
+     */
     @Override
     public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) {
         this.view.updateAlienChange(nickname, x, y, isPurple, added);
     }
 
     //notifies the view that a good has been loaded in a cargo hold
+
+    /**
+     * Notifies the view that a good has been loaded into a cargo hold.
+     * @param nickname
+     * @param x
+     * @param y
+     * @param good
+     */
     @Override
     public void updateLoadedGood(String nickname, int x, int y, Color good){
         this.view.updateLoadedGood(nickname, x, y, good);
     }
 
     //notifies the view that some goods have been removed form a cargo hold
+
+    /**
+     * Notifies the view that goods have been removed from a cargo hold.
+     * @param nickname
+     * @param x
+     * @param y
+     * @param good
+     * @param numberGoods
+     */
     @Override
     public void updateRemovedGoods(String nickname, int x, int y, Color good, int numberGoods) {
         this.view.updateRemovedGoods(nickname, x, y, good, numberGoods);
     }
 
     //notifies the view about the fact that a player has to pick a card in order to continue the game
+
+    /**
+     * Notifies the view that a player must pick a card to continue the game.
+     */
     @Override
     public void updateCardPicking() {
         this.view.updateCardPicking();
     }
 
     //notifies the view about the next player whose turn it is to perform an action
+
+    /**
+     * Notifies the view about the next player's turn.
+     * @param nickname
+     */
     @Override
     public void updateNextTurn(String nickname) {
         this.view.updateNextTurn(nickname);
@@ -710,6 +904,11 @@ public class TuiInterface implements UserInterface {
     }
 
     //notifies the view that a new card has been picked and must be solved
+
+    /**
+     * Notifies the view that a new card has been picked and must be solved.
+     * @param imageID
+     */
     @Override
     public void updateCardSolving(int imageID) {
         this.view.updateCardSolving(imageID);
@@ -717,6 +916,11 @@ public class TuiInterface implements UserInterface {
     }
 
     //notifies the view that a player has quit the game
+
+    /**
+     * Notifies the view that a player has quit the game.
+     * @param nickname
+     */
     @Override
     public void updatePlayerQuit(String nickname) {
         this.view.updatePlayerQuit(nickname);
@@ -724,18 +928,36 @@ public class TuiInterface implements UserInterface {
     }
 
     //notifies the view that a player has gained/lost credits
+
+    /**
+     * Notifies the view that a player has gained or lost credits.
+     * @param nickname
+     * @param change
+     * @throws IOException
+     */
     @Override
     public void updatePlayerCredits(String nickname, int change) throws IOException{
         this.view.updatePlayerCredits(nickname, change);
     }
 
     //notifies the view that the position of a player has changed
+
+    /**
+     * Notifies the view that a player's position on the flight board has changed.
+     * @param nickname
+     * @param lap
+     * @param cell
+     * @throws IOException
+     */
     @Override
     public void updatePlayerPosition(String nickname, int lap, int cell) throws IOException{
         this.view.updatePlayerPosition(nickname, lap, cell);
     }
 
     //notifies the view about the fact that the game is finished
+    /**
+     * Notifies the view that the game has ended.
+     */
     @Override
     public void updateEndGame() {
         this.view.updateEndGame();

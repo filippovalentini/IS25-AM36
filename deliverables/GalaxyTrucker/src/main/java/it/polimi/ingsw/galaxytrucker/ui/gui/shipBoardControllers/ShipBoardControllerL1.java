@@ -31,7 +31,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/** * ShipBoardControllerL1 is the controller for the ship board in Level 1.
+ */
 public class ShipBoardControllerL1 extends ShipBoardGraphics implements ShipBoardController {
     private Stage controlledStage;
 
@@ -67,6 +68,10 @@ public class ShipBoardControllerL1 extends ShipBoardGraphics implements ShipBoar
     private VirtualServer server;
     private Map<String, Image> componentImageMap = new HashMap<>();
 
+    /**
+     * Constructor for ShipBoardControllerL1.
+     * @param otherPlayerNickname
+     */
     public ShipBoardControllerL1(String otherPlayerNickname) {
         this.shipBoardPlayerNickname = otherPlayerNickname;
         this.shipBoardcolor = GuiInterface.getInstance().getView().getCurrentPlayers().get(otherPlayerNickname);
@@ -93,7 +98,10 @@ public class ShipBoardControllerL1 extends ShipBoardGraphics implements ShipBoar
         setupBackButton();
         initializeAssembledComponents();
     }
-
+    /**
+     * Initializes the assembled components on the ship board grid.
+     * It retrieves the assembled components from the view and places them on the grid.
+     */
     public void initializeAssembledComponents() {
         List<List<ViewComponent>> assembledComponents = GuiInterface.getInstance().getView().getAssembledComponents(this.shipBoardPlayerNickname);
         for(int i = 0; i < assembledComponents.size(); i++){
@@ -104,12 +112,23 @@ public class ShipBoardControllerL1 extends ShipBoardGraphics implements ShipBoar
         }
     }
 
+    /**
+     * Sets a component on the grid at the specified position.
+     * @param message
+     */
     public void showGameState(String message){
         if (gameStateLabel != null) {
             gameStateLabel.setText(message);
         }
     }
 
+    /**
+     * Sets a component on the grid at the specified position.
+     * @param imageID
+     * @param orientation
+     * @param col
+     * @param row
+     */
     @Override
     public void setImageOnGrid(String imageID, Orientation orientation, int col, int row) {
         if (imageID.equals("000") || imageID.equals("003")) {
@@ -156,6 +175,9 @@ public class ShipBoardControllerL1 extends ShipBoardGraphics implements ShipBoar
         myGridPane.add(cell, col, row);
     }
 
+    /**
+     * Removes a component from the grid at the specified position.
+     */
     public void setupBackButton() {
         backButton.setOnAction(event -> {
             if(gameStateLabel.getText().equals("ASSEMBLING PHASE")){
@@ -169,6 +191,10 @@ public class ShipBoardControllerL1 extends ShipBoardGraphics implements ShipBoar
             }
         });
     }
+
+    /**
+     * Navigates back to the flight phase screen.
+     */
     public void goBackToFlightPhase(){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/flightPhaseL1.fxml"));
@@ -188,6 +214,9 @@ public class ShipBoardControllerL1 extends ShipBoardGraphics implements ShipBoar
         }
     }
 
+    /**
+     * Navigates back to the ship building screen.
+     */
     public void goBackToShipBuilding(){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/shipBuildingL1.fxml"));
@@ -208,31 +237,38 @@ public class ShipBoardControllerL1 extends ShipBoardGraphics implements ShipBoar
         }
     }
 
+    /**
+     * Navigates back to the ship control screen.
+     */
     public void goBackToShipControl(){
-        try {
+        try { // Load the FXML file for the ship control screen
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/shipControlL1.fxml"));
             Parent root = fxmlLoader.load();
 
-            ShipControlControllerL1 controller = fxmlLoader.getController();
-            controller.setServer(this.server);
-            controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
-            GuiInterface.getInstance().setShipControlController(controller);
+            ShipControlControllerL1 controller = fxmlLoader.getController(); // Get the controller for the ship control screen
+            controller.setServer(this.server); // Set the server for the controller
+            controller.setPlayerInfo(this.gameID, this.playerNickname, this.color); // Set the player info for the controller
+            GuiInterface.getInstance().setShipControlController(controller); // Update the global interface with the controller
 
-            controller.setControlledStage(controlledStage);
-            Scene scene = new Scene(root, 1210, 740);
-            controlledStage.setScene(scene);
-            controlledStage.show();
+            controller.setControlledStage(controlledStage); // Set the controlled stage for the controller
+            Scene scene = new Scene(root, 1210, 740); // Create a new scene with the loaded root
+            controlledStage.setScene(scene); // Set the scene to the controlled stage
+            controlledStage.show(); // Show the controlled stage
 
-        } catch (IOException e) {
+        } catch (IOException e) { // Handle any IO exceptions that may occur during the loading of the FXML file
             showError(e.getMessage());
         }
     }
 
+    /**
+     * Displays an error message on the screen.
+     * @param message
+     */
     public void showError(String message) {
-        Platform.runLater(() -> {
-            errorLabel.setText(message);
-            errorLabel.setVisible(true);
-            errorBackground.setVisible(true);
+        Platform.runLater(() -> { // Update the error label and background with the provided message
+            errorLabel.setText(message); // Set the error message text
+            errorLabel.setVisible(true); // Make the error label visible
+            errorBackground.setVisible(true); // Make the error background visible
 
             // Fade in
             FadeTransition fadeInLabel = new FadeTransition(Duration.millis(300), errorLabel);
@@ -271,16 +307,30 @@ public class ShipBoardControllerL1 extends ShipBoardGraphics implements ShipBoar
         });
     }
 
+    /**
+     * Sets the stage to be controlled by this controller.
+     * @param stage the stage to be controlled
+     */
     @Override
     public void setControlledStage(Stage stage) {
         controlledStage = stage;
     }
 
+    /**
+     * Sets the server to be used for communication.
+     * @param server the server to be used for communication
+     */
     @Override
     public void setServer(VirtualServer server) {
         this.server = server;
     }
 
+    /**
+     * Sets the player information for this controller.
+     * @param gameID          the ID of the game
+     * @param playerNickname  the nickname of the player
+     * @param color           the color associated with the player
+     */
     @Override
     public void setPlayerInfo(int gameID, String playerNickname, Color color) {
         this.gameID = gameID;
@@ -288,9 +338,25 @@ public class ShipBoardControllerL1 extends ShipBoardGraphics implements ShipBoar
         this.color = color;
     }
 
+    /**
+     * Updates the reserved component on the ship board.
+     * @param nickname the nickname of the player who picked or released the component
+     * @param imageID the ID of the component image
+     * @param released true if the component was released, false if it was picked
+     * @throws Exception
+     */
     @Override
     public void updateReservedComponent(String nickname, int imageID, boolean released) throws Exception {}
 
+    /**
+     * Updates the assembled component on the ship board.
+     * @param nickname the nickname of the player who assembled the component
+     * @param imageID the ID of the component image
+     * @param orientation the orientation of the component
+     * @param x the x-coordinate of the component on the ship board
+     * @param y the y-coordinate of the component on the ship board
+     * @throws Exception
+     */
     @Override
     public void updateAssembledComponent(String nickname, int imageID, Orientation orientation, int x, int y) throws Exception {
         if(!nickname.equals(shipBoardPlayerNickname)){
@@ -301,28 +367,37 @@ public class ShipBoardControllerL1 extends ShipBoardGraphics implements ShipBoar
         });
     }
 
+    /**
+     * Updates the ship control screen.
+     * @throws Exception
+     */
     @Override
     public void updateShipControl() throws Exception {
         Platform.runLater(() -> {
-            try {
+            try { // Load the FXML file for the ship control screen
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/shipControlL1.fxml"));
-                Parent root = loader.load();
+                Parent root = loader.load(); // Load the root node from the FXML file
 
-                ShipControlControllerL1 controller = loader.getController();
-                controller.setServer(this.server);
-                controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
-                GuiInterface.getInstance().setShipControlController(controller);
+                ShipControlControllerL1 controller = loader.getController(); // Get the controller for the ship control screen
+                controller.setServer(this.server); // Set the server for the controller
+                controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);  // Set the player info for the controller
+                GuiInterface.getInstance().setShipControlController(controller); // Update the global interface with the controller
 
-                controller.setControlledStage(controlledStage);
-                controlledStage.setScene(new Scene(root, 1210, 740));
-                controlledStage.show();
+                controller.setControlledStage(controlledStage); // Set the controlled stage for the controller
+                controlledStage.setScene(new Scene(root, 1210, 740)); // Create a new scene with the loaded root
+                controlledStage.show(); // Show the controlled stage
 
-            } catch (IOException e) {
+            } catch (IOException e) { // Handle any IO exceptions that may occur during the loading of the FXML file
                 showError(e.getMessage());
             }
         });
     }
 
+    /**
+     * Updates the ship repair screen.
+     * @param nickname the nickname of the player who needs to repair their ship
+     * @throws Exception
+     */
     @Override
     public void updateShipRepair(String nickname) throws Exception {
         Platform.runLater(() -> {
@@ -330,6 +405,13 @@ public class ShipBoardControllerL1 extends ShipBoardGraphics implements ShipBoar
         });
     }
 
+    /**
+     * Updates the destroyed component on the ship board.
+     * @param nickname the nickname of the player whose component was destroyed
+     * @param x the x-coordinate of the destroyed component
+     * @param y the y-coordinate of the destroyed component
+     * @throws Exception
+     */
     @Override
     public void updateDestroyedComponent(String nickname, int x, int y) throws Exception {
         Platform.runLater(() -> {
@@ -343,6 +425,13 @@ public class ShipBoardControllerL1 extends ShipBoardGraphics implements ShipBoar
         });
     }
 
+    /**
+     * Updates the component change on the ship board.
+     * @param nickname the nickname of the player whose component has changed
+     * @param x the x-coordinate of the changed component
+     * @param y the y-coordinate of the changed component
+     * @throws Exception
+     */
     @Override
     public void updateComponentChange(String nickname, int x, int y) throws Exception {
         Platform.runLater(() -> {
@@ -354,6 +443,10 @@ public class ShipBoardControllerL1 extends ShipBoardGraphics implements ShipBoar
         });
     }
 
+    /**
+     * Updates the card picking phase on the ship board.
+     * @throws Exception
+     */
     @Override
     public void updateCardPicking() throws Exception {
         Platform.runLater(() -> {
@@ -361,6 +454,11 @@ public class ShipBoardControllerL1 extends ShipBoardGraphics implements ShipBoar
         });
     }
 
+    /**
+     * Updates the card solving phase on the ship board.
+     * @param imageID the ID of the image representing the card
+     * @throws Exception
+     */
     @Override
     public void updateCardSolving(int imageID) throws Exception {
         Platform.runLater(() -> {
@@ -368,6 +466,11 @@ public class ShipBoardControllerL1 extends ShipBoardGraphics implements ShipBoar
         });
     }
 
+    /**
+     * Updates the player quit status on the ship board.
+     * @param nickname the nickname of the player who quit
+     * @throws Exception
+     */
     @Override
     public void updatePlayerQuit(String nickname) throws Exception {
         Platform.runLater(() -> {
@@ -378,6 +481,12 @@ public class ShipBoardControllerL1 extends ShipBoardGraphics implements ShipBoar
         });
     }
 
+    /**
+     * Updates the player's credits on the ship board.
+     * @param nickname the nickname of the player whose credits are being updated
+     * @param change the amount to change the player's credits by (can be positive or negative)
+     * @throws Exception
+     */
     @Override
     public void updatePlayerCredits(String nickname, int change) throws Exception {
         Platform.runLater(() -> {
@@ -388,20 +497,24 @@ public class ShipBoardControllerL1 extends ShipBoardGraphics implements ShipBoar
         });
     }
 
+    /**
+     * Updates the end game screen.
+     * @throws Exception
+     */
     @Override
     public void updateEndGame() throws Exception {
-        Platform.runLater(() -> {
+        Platform.runLater(() -> { // This method is called to update the end game screen
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/polimi/ingsw/galaxytrucker/fxml/mainScreens/endgame.fxml"));
-                Parent root = loader.load();
+                Parent root = loader.load(); // Load the FXML file for the end game screen
 
-                EndgameController controller = loader.getController();
-                controller.setServer(this.server);
-                controller.setPlayerInfo(this.gameID, this.playerNickname, this.color);
+                EndgameController controller = loader.getController(); // Get the controller for the end game screen
+                controller.setServer(this.server); // Set the server for the controller
+                controller.setPlayerInfo(this.gameID, this.playerNickname, this.color); // Set the player info for the controller
 
-                controller.setControlledStage(controlledStage);
-                controlledStage.setScene(new Scene(root, 1210, 740));
-                controlledStage.show();
+                controller.setControlledStage(controlledStage); // Set the controlled stage for the controller
+                controlledStage.setScene(new Scene(root, 1210, 740)); // Create a new scene with the loaded root
+                controlledStage.show(); // Show the controlled stage
 
             } catch (IOException e) {
                 showError(e.getMessage());
@@ -409,11 +522,19 @@ public class ShipBoardControllerL1 extends ShipBoardGraphics implements ShipBoar
         });
     }
 
+    /**
+     * Displays an error message on the GUI.
+     * @param error the error message to be displayed
+     */
     @Override
     public void notifyError(String error) {
         Platform.runLater(() -> showError(error));
     }
 
+    /**
+     * Displays the current game phase on the GUI.
+     * @param gamePhase the new game phase to be displayed
+     */
     @Override
     public void notifyGamePhase(String gamePhase) {
         Platform.runLater(() -> {

@@ -30,6 +30,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controller for the ship control screen in Level 1 of the game.
+ */
 public class ShipControlControllerL1 extends ShipBoardGraphics implements ShipControlController {
     private Stage controlledStage;
 
@@ -59,6 +62,9 @@ public class ShipControlControllerL1 extends ShipBoardGraphics implements ShipCo
     int lostComponents;
     VirtualServer server;
 
+    /**
+     * Initializes the controller by loading the component images, setting up the game information,
+     */
     @FXML
     public void initialize() {
         componentImageMap = GuiInterface.getInstance().loadImageMap("components");
@@ -75,7 +81,9 @@ public class ShipControlControllerL1 extends ShipBoardGraphics implements ShipCo
         setupCrewButton();
         setupBatteriesButton();
     }
-
+    /**
+     * Initializes the game information such as player nickname, color, lost components, and game state.
+     */
     public void initializeGameInfo() {
         this.playerNickname = GuiInterface.getInstance().getView().getNickname();
         this.playerColor = GuiInterface.getInstance().getView().getColor();
@@ -87,6 +95,9 @@ public class ShipControlControllerL1 extends ShipBoardGraphics implements ShipCo
         lostComponentsLabel.setText(String.valueOf(lostComponents));
     }
 
+    /**
+     * Initializes the buttons on the ship control screen, enabling or disabling them based on the number of players.
+     */
     public void initializeButtons(){
         setActionButtons(true);
 
@@ -114,12 +125,18 @@ public class ShipControlControllerL1 extends ShipBoardGraphics implements ShipCo
         }
     }
 
+    /**
+     * Sets the action buttons (destroy, crew, batteries) to be enabled or disabled.
+     * @param disabled
+     */
     public void setActionButtons(boolean disabled){
         destroyButton.setDisable(disabled);
         crewButton.setDisable(disabled);
         batteriesButton.setDisable(disabled);
     }
-
+    /**
+     * Initializes the assembled components on the ship board by retrieving them from the view and placing them on the grid.
+     */
     public void initializeAssembledComponents(){
         List<List<ViewComponent>> assembledComponents = GuiInterface.getInstance().getView().getAssembledComponents(this.playerNickname);
         for(int i = 0; i < assembledComponents.size(); i++){
@@ -137,6 +154,13 @@ public class ShipControlControllerL1 extends ShipBoardGraphics implements ShipCo
         }
     }
 
+    /**
+     * Sets an image on the grid pane at the specified column and row with the given orientation.
+     * @param imageID      The ID of the image to be set.
+     * @param orientation  The orientation of the image (e.g., HORIZONTAL, VERTICAL).
+     * @param column       The column index in the grid pane.
+     * @param row          The row index in the grid pane.
+     */
     @Override
     public void setImageOnGrid(String imageID, Orientation orientation, int column, int row) {
         if (imageID.equals("000") || imageID.equals("003")) {
@@ -199,11 +223,19 @@ public class ShipControlControllerL1 extends ShipBoardGraphics implements ShipCo
         });
     }
 
+    /**
+     * Displays an error message in the error pane and fades it out after a few seconds.
+     * @param message
+     */
     public void showError(String message) {
         errorLabel.setText(message);
         fadeInThenOut(errorPane);
     }
 
+    /**
+     * Fades in the error pane and then fades it out after a specified duration.
+     * @param pane
+     */
     private void fadeInThenOut(Pane pane) {
         pane.setOpacity(1.0);
 
@@ -217,6 +249,10 @@ public class ShipControlControllerL1 extends ShipBoardGraphics implements ShipCo
         wait.play();
     }
 
+    /**
+     * Sets up the button for other players' ship boards.
+     * @param button
+     */
     @FXML
     private void setupOtherPlayerButton(Button button) {
         button.setOnAction(event -> {
@@ -241,7 +277,9 @@ public class ShipControlControllerL1 extends ShipBoardGraphics implements ShipCo
         });
     }
 
-
+    /**
+     * Sets up the crew button to allow the player to add crew members to their ship.
+     */
     @FXML
     private void setupCrewButton() {
         crewButton.setOnAction(event -> {
@@ -254,6 +292,9 @@ public class ShipControlControllerL1 extends ShipBoardGraphics implements ShipCo
         });
     }
 
+    /**
+     * Sets up the batteries button to allow the player to add batteries to their ship.
+     */
     @FXML
     private void setupBatteriesButton() {
         batteriesButton.setOnAction(event -> {
@@ -265,7 +306,9 @@ public class ShipControlControllerL1 extends ShipBoardGraphics implements ShipCo
             }
         });
     }
-
+    /**
+     * Sets up the destroy button to allow the player to destroy a component on their ship.
+     */
     @FXML
     private void setupDestroyButton() {
         destroyButton.setOnAction(event -> {
@@ -278,6 +321,9 @@ public class ShipControlControllerL1 extends ShipBoardGraphics implements ShipCo
         });
     }
 
+    /**
+     * Sets up the flight board button to navigate to the flight board screen.
+     */
     @FXML
     private void setupFlightBoardButton() {
         flightBoardButton.setOnAction(event -> {
@@ -300,6 +346,13 @@ public class ShipControlControllerL1 extends ShipBoardGraphics implements ShipCo
         });
     }
 
+    /**
+     * Updates the destroyed component on the ship board when a component is destroyed.
+     * @param nickname the nickname of the player whose ship board component was destroyed
+     * @param x the x-coordinate of the destroyed component
+     * @param y the y-coordinate of the destroyed component
+     * @throws Exception
+     */
     @Override
     public void updateDestroyedComponent(String nickname, int x, int y) throws Exception {
         Platform.runLater(() -> {
@@ -329,6 +382,14 @@ public class ShipControlControllerL1 extends ShipBoardGraphics implements ShipCo
         });
     }
 
+    /**
+     * Updates the crew count on the ship board when a player adds or removes crew members.
+     * @param nickname the nickname of the player whose cabin's crew count has changed
+     * @param x the x-coordinate of the cabin
+     * @param y the y-coordinate of the cabin
+     * @param change the change in the number of crew members (positive or negative)
+     * @throws Exception
+     */
     @Override
     public void updateCrewChange(String nickname, int x, int y, int change) throws Exception {
         Platform.runLater(() -> {
@@ -343,6 +404,14 @@ public class ShipControlControllerL1 extends ShipBoardGraphics implements ShipCo
         });
     }
 
+    /**
+     * Updates the battery count on the ship board when a player adds or removes batteries.
+     * @param nickname the nickname of the player who initialized the battery container
+     * @param x the x-coordinate of the battery container
+     * @param y the y-coordinate of the battery container
+     * @param change the number of batteries added to the container
+     * @throws Exception
+     */
     @Override
     public void updateBatteries(String nickname, int x, int y, int change) throws Exception {
         Platform.runLater(() -> {
@@ -357,9 +426,22 @@ public class ShipControlControllerL1 extends ShipBoardGraphics implements ShipCo
         });
     }
 
+    /**
+     * Updates the alien count on the ship board when a player adds or removes aliens from their cabin.
+     * @param nickname the nickname of the player whose cabin's alien count has changed
+     * @param x the x-coordinate of the cabin
+     * @param y the y-coordinate of the cabin
+     * @param isPurple true if the alien is purple, false otherwise
+     * @param added true if an alien was added, false if one was removed
+     * @throws Exception
+     */
     @Override
     public void updateAlienChange(String nickname, int x, int y, boolean isPurple, boolean added) throws Exception {}
 
+    /**
+     * Updates the card picking phase by loading the flight phase screen for Level 1.
+     * @throws Exception
+     */
     @Override
     public void updateCardPicking() throws Exception {
         Platform.runLater(() -> {
@@ -382,16 +464,30 @@ public class ShipControlControllerL1 extends ShipBoardGraphics implements ShipCo
         });
     }
 
+    /**
+     * Sets the stage that this controller will control.
+     * @param stage the stage to be controlled
+     */
     @Override
     public void setControlledStage(Stage stage) {
         controlledStage = stage;
     }
 
+    /**
+     * Sets the server for communication with the game server.
+     * @param server the server to be used for communication
+     */
     @Override
     public void setServer(VirtualServer server) {
         this.server = server;
     }
 
+    /**
+     * Sets the player information including game ID, nickname, and color.
+     * @param gameID          the ID of the game
+     * @param playerNickname  the nickname of the player
+     * @param color           the color associated with the player
+     */
     @Override
     public void setPlayerInfo(int gameID, String playerNickname, Color color) {
         this.gameID = gameID;
@@ -399,6 +495,11 @@ public class ShipControlControllerL1 extends ShipBoardGraphics implements ShipCo
         this.playerColor = color;
     }
 
+    /**
+     * Displays an error message in the GUI.
+     * @param error the error message to be displayed
+     * @throws Exception
+     */
     @Override
     public void notifyError(String error) throws Exception {
         Platform.runLater(() -> {
@@ -406,6 +507,11 @@ public class ShipControlControllerL1 extends ShipBoardGraphics implements ShipCo
         });
     }
 
+    /**
+     * Updates the game phase displayed in the GUI.
+     * @param gamePhase the new game phase to be displayed
+     * @throws Exception
+     */
     @Override
     public void notifyGamePhase(String gamePhase) throws Exception {
         Platform.runLater(() -> {

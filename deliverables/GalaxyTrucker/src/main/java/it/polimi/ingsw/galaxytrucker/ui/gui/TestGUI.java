@@ -8,7 +8,17 @@ import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import java.io.IOException;
 
+/**
+ * This class is used to test the GUI interface.
+ */
 public class TestGUI extends Application {
+    /**
+     * This method is the entry point of the application.
+     * It initializes the GUI interface and sets up the stage.
+     *
+     * @param stage the primary stage for this application
+     * @throws Exception if an error occurs during initialization
+     */
     @Override
     public void start(Stage stage) throws Exception {
         new GuiInterface();
@@ -29,6 +39,10 @@ public class TestGUI extends Application {
         stage.show();
     }
 
+    /**
+     * This is the main method that launches the JavaFX application.
+     * @param args
+     */
     public static void main(String[] args) {
         launch(args);
     }

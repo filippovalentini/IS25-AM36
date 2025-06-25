@@ -15,6 +15,12 @@ public class ViewPlayer {
     private List<List<ViewComponent>> assembledComponents = new ArrayList<>();
     private List<ViewComponent> reservedComponents = new ArrayList<>();
 
+    /**
+     * Constructor for a player in the game.
+     * @param nickname
+     * @param color
+     * @param firstFlight
+     */
     public ViewPlayer(String nickname, Color color, boolean firstFlight) {
         this.nickname = nickname;
         this.color = color;
@@ -24,34 +30,65 @@ public class ViewPlayer {
         initializeShipboard(firstFlight);
     }
 
+    /**
+     * Returns the nickname of the player.
+     * @return the nickname of the player
+     */
     public String getNickname() {
         return nickname;
     }
 
+    /**
+     * Returns the color of the player.
+     * @return the color of the player
+     */
     public Color getColor() {
         return color;
     }
 
+    /**
+     * Returns the number of credits of the player.
+     * @return the number of credits of the player
+     */
     public int getCredits() {
         return credits;
     }
 
+    /**
+     * Returns true if the player has abandoned the game, false otherwise.
+     * @return true if the player has abandoned the game, false otherwise
+     */
     public boolean hasAbandoned() {
         return abandoned;
     }
 
+    /**
+     * Returns the number of lost components of the player.
+     * @return the number of lost components of the player
+     */
     public int getLostComponents() {
         return lostComponents;
     }
 
+    /**
+     * Returns the assembled components of the player.
+     * @return the assembled components of the player
+     */
     public List<List<ViewComponent>> getAssembledComponents() {
         return new ArrayList<>(assembledComponents);
     }
 
+    /**
+     * Returns the reserved components of the player.
+     * @return the reserved components of the player
+     */
     public List<ViewComponent> getReservedComponents() {
         return new ArrayList<>(reservedComponents);
     }
 
+    /**
+     * Visualizes the player's ship layout and reserved components.
+     */
     public void visualize(){
         if (!reservedComponents.isEmpty()) {
             System.out.print("📦 Reserved Components: ");
@@ -109,6 +146,11 @@ public class ViewPlayer {
         }
     }
 
+    /**
+     * Generates the graphics for a component based on its properties.
+     * @param comp
+     * @return a string representing the component's graphics
+     */
     public String generateComponentGraphics(ViewComponent comp){
         if (comp.getCrew() == 1) {
             return "C    ";
@@ -153,6 +195,10 @@ public class ViewPlayer {
         }
     }
 
+    /**
+     * Initializes the shipboard for the player with default components.
+     * @param firstFlight
+     */
     public void initializeShipboard(boolean firstFlight) {
         for (int i = 0; i < 5; i++) {
             List<ViewComponent> row = new ArrayList<>();
@@ -206,6 +252,11 @@ public class ViewPlayer {
         }
     }
 
+    /**
+     * Updates the reserved components of the player.
+     * @param imageID
+     * @param released
+     */
     public void updateReservedComponent(int imageID, boolean released) {
         if(released){
             reservedComponents.add(new ViewComponent(View.convertImageID(imageID)));
@@ -220,53 +271,111 @@ public class ViewPlayer {
         }
     }
 
+    /**
+     * Updates the assembled components of the player.
+     * @param imageID
+     * @param orientation
+     * @param x
+     * @param y
+     */
     public void updateAssembledComponent(int imageID, Orientation orientation, int x, int y) {
         assembledComponents.get(x).set(y, new ViewComponent(View.convertImageID(imageID)));
         assembledComponents.get(x).get(y).setOrientation(orientation);
     }
 
+    /**
+     * Updates the assembled components of the player when a component is destroyed.
+     * @param x
+     * @param y
+     */
     public void updateDestroyedComponent(int x, int y) {
         assembledComponents.get(x).set(y, new ViewComponent("000"));
     }
 
+    /**
+     * Updates the ship control by clearing the reserved components.
+     */
     public void updateShipControl(){
         reservedComponents.clear();
     }
 
+    /**
+     * Updates the ship control by losing all reserved components.
+     */
     public void loseReservedComponents() {
         lostComponents+=reservedComponents.size();
     }
 
+    /**
+     * Increments the count of lost components when a component is destroyed.
+     */
     public void loseComponent(){
         lostComponents++;
     }
 
+    /**
+     * Updates the alien status of a component in the player's ship.
+     * @param x
+     * @param y
+     * @param isPurple
+     */
     public void updateAlienChange(int x, int y, boolean isPurple) {
         assembledComponents.get(x).get(y).updateAlien(isPurple);
     }
 
+    /**
+     * Updates the crew count of a component in the player's ship.
+     * @param x
+     * @param y
+     * @param change
+     */
     public void updateCrewChange(int x, int y, int change) {
         assembledComponents.get(x).get(y).updateCrew(change);
     }
 
+    /**
+     * Updates the battery count of a component in the player's ship.
+     * @param x
+     * @param y
+     * @param change
+     */
     public void updateBatteries(int x, int y, int change) {
         assembledComponents.get(x).get(y).updateBatteries(change);
     }
 
+    /**
+     * Updates the credits of the player.
+     * @param change
+     */
     public void updateCredits(int change) {
         this.credits+=change;
     }
 
+    /**
+     * Updates the loaded good in a component of the player's ship.
+     * @param x
+     * @param y
+     * @param good
+     */
     public void updateLoadedGood(int x, int y, Color good) {
         assembledComponents.get(x).get(y).loadGood(good);
     }
 
+    /**
+     * Updates the removed goods from a component of the player's ship.
+     * @param x
+     * @param y
+     * @param good
+     * @param numberGoods
+     */
     public void updateRemovedGoods(int x, int y, Color good, int numberGoods) {
         for(int i = 0; i<numberGoods; i++){
             assembledComponents.get(x).get(y).removeGood(good);
         }
     }
-
+    /**
+     * Updates the player's status to abandoned.
+     */
     public void updateQuit(){
         abandoned = true;
     }

@@ -5,7 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-
+/** * This class is used to convert image IDs to Extended IDs (EIDs) and card descriptions.
+ */
 public class ImageIDToStringConverter {
     /*
         Used to retrieve the Extended ID(EID) of a component
@@ -37,16 +38,30 @@ public class ImageIDToStringConverter {
             3: Universal
      */
     private static final ImageIDToStringConverter instance = new ImageIDToStringConverter();
+
+    /**
+     * Private constructor to prevent instantiation.
+     */
     private ImageIDToStringConverter() {
         idToEIDmap = jsonToMap("/it/polimi/ingsw/galaxytrucker/jsonImageMappings/componentsEID.json"); //loads EIDs from json
         idToCardDesc = jsonToMap("/it/polimi/ingsw/galaxytrucker/jsonImageMappings/cardDescriptions.json");
     }
     private static Map<String, String> idToEIDmap;
     private static Map<String, String> idToCardDesc;
+
+    /**
+     * Returns the singleton instance of ImageIDToStringConverter.
+     * @return the singleton instance of ImageIDToStringConverter
+     */
     public static ImageIDToStringConverter getInstance() {
         return instance;
     }
 
+    /**
+     * Converts a JSON file to a Map<String, String>.
+     * @param path
+     * @return a Map where keys are image IDs and values are either EIDs or card descriptions
+     */
     private Map<String, String> jsonToMap(String path) {
         Map<String, String> result = new HashMap<>();
         try (InputStream jsonStream = getClass().getResourceAsStream(path)) {
@@ -67,6 +82,12 @@ public class ImageIDToStringConverter {
         return result;
     }
         //converts ID to EID
+
+    /**
+     * Converts an image ID to its corresponding Extended ID (EID).
+     * @param imageID
+     * @return the Extended ID (EID) corresponding to the image ID, or "error" if not found
+     */
         public static String imageIDtoEID(String imageID){
             String retStr = "error";
             if(idToEIDmap.containsKey(String.valueOf(imageID))){
@@ -76,6 +97,12 @@ public class ImageIDToStringConverter {
         }
 
         //converts ID to card description
+
+    /**
+     * Converts an image ID to its corresponding card description.
+     * @param imageID
+     * @return the card description corresponding to the image ID, or "error" if not found
+     */
         public static String imageIDtoCardDesc(String imageID){
             String retStr = "error";
             if(idToCardDesc.containsKey(String.valueOf(imageID))){
