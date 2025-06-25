@@ -521,11 +521,19 @@ public class ShipBoard {
             return;
         }
         visited[row][col] = true;
-        //all adjacent directions
-        dfs(components, row+1, col, visited);
-        dfs(components, row-1, col, visited);
-        dfs(components, row, col+1, visited);
-        dfs(components, row, col-1, visited);
+        //all explorable adjacent directions
+        if(analyzedComponent.getNorthSide() != Connector.SMOOTH){
+            dfs(components, row+1, col, visited);
+        }
+        if (analyzedComponent.getSouthSide() != Connector.SMOOTH) {
+            dfs(components, row-1, col, visited);
+        }
+        if (analyzedComponent.getEastSide() != Connector.SMOOTH) {
+            dfs(components, row, col+1, visited);
+        }
+        if (analyzedComponent.getWestSide() != Connector.SMOOTH) {
+            dfs(components, row, col-1, visited);
+        }
     }
 
     /**
