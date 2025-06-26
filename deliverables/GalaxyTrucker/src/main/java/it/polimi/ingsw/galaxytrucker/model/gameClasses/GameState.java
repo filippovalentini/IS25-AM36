@@ -9,8 +9,9 @@ import it.polimi.ingsw.galaxytrucker.model.shotClasses.*;
 
 import java.util.*;
 
-//this class describes the entire status of the game, the controller will invoke its methods in order to modify the
-//model according to specific actions performed by the players on the view
+/**
+ * This class describes the entire status of the game, the controller will invoke its methods in order to modify the model according to specific actions performed by the players on the view
+ */
 public class GameState {
     private final boolean firstFlight;      //true if the game has been set as "learning flight", false if it is a standard game
     private final int numPlayers;     //number of players
@@ -27,6 +28,11 @@ public class GameState {
     private Hourglass hourglass;        //hourglass used during the assembling phase
     private Runnable endGameManagement;   //implements a callback procedure to remove the controller after the end of the game
 
+    /**
+     * Constructor, creates the game state for a new game
+     * @param firstFlight
+     * @param numPlayers
+     */
     public GameState(boolean firstFlight, int numPlayers) {     //constructor, creates the deck(s) of cards and instantiates the components
         this.firstFlight = firstFlight;
         this.playersPos = new LinkedHashMap<>();
@@ -43,14 +49,33 @@ public class GameState {
     //
 
     //[method for testing] assembles a custom component in the specified position
+
+    /**
+     * Assembles a component in the specified position of the player's ship board
+     * @param nickname
+     * @param component
+     * @param x
+     * @param y
+     */
     public void assembleComponent(String nickname, Component component, int x, int y){
         playersPlay.get(nickname).assembleComponent(component, x, y);
     }
     //[method for testing] set the game deck with a custom one
+
+    /**
+     * Sets the game deck with a custom one
+     * @param deck
+     */
     public void setGameDeck(Deck deck){
         gameDeck = deck;
     }
     //[method for testing] set the current picked card with a custom one
+
+    /**
+     * Sets the current picked card with a custom one
+     * @param eventCardIn
+     * @throws InvalidActionException
+     */
     public void pickGivenCard(EventCard eventCardIn) throws InvalidActionException{
         if(state != State.CARD_PICKING){
             throw new InvalidActionException("Can't pick a new card");
@@ -71,19 +96,40 @@ public class GameState {
     //
 
     //returns the state of the game
+
+    /**
+     * Returns the current state of the game
+     * @return the current state of the game
+     */
     public State getGameState() {
         return this.state;
     }
     //returns a copy of the nickname-position mapping
+
+    /**
+     * Returns a copy of the nickname-position mapping
+     * @return a copy of the nickname-position mapping
+     */
     public Map<String,Position> getPlayersPos() { //return a copy of the player postion map
         if(this.playersPos == null) { return null;}
         return new LinkedHashMap<>(playersPos);
     }
     //returns the nickname of the current player in turn
+
+    /**
+     * Returns the nickname of the current player in turn
+     * @return the nickname of the current player in turn
+     */
     public String getTurnPlayer() {
         return turnPlayer;
     }
     //returns true if a player is the last one for the current game turn
+
+    /**
+     * Determines whether a player is the last one in the current game turn
+     * @param nickname
+     * @return true if the player is the last one in the current game turn, false otherwise
+     */
     public boolean isLastInTurn(String nickname){
         String lastPlayer = null;
 
@@ -94,29 +140,68 @@ public class GameState {
         return nickname.equals(lastPlayer);
     }
     //returns a copy of the nickname-player mapping
+
+    /**
+     * Returns a copy of the nickname-player mapping
+     * @return a copy of the nickname-player mapping
+     */
     public Map<String,Player> getPlayersPlay() { // return a copy of the player nickanme map
         if(this.playersPlay == null) { return null;}
         return new HashMap<>(playersPlay);
     }
     //returns the number of current active players in the game
+
+    /**
+     * Returns the number of current active players in the game
+     * @return the number of current active players in the game
+     */
     public int getCurrentPlayers(){return playersPlay.size();}
     //returns the list of player nicknames (in position order)
+
+    /**
+     * Returns the list of player nicknames (in position order)
+     * @return the list of player nicknames (in position order)
+     */
     public List<String> getNicknames(){
         return new ArrayList<>(playersPos.keySet());
     }
     //determines whether a player has abandoned the game
+
+    /**
+     * Determines whether a player has abandoned the game
+     * @param nickname
+     * @return true if the player has abandoned the game, false otherwise
+     */
     public boolean hasAbandoned(String nickname){
         return playersPlay.get(nickname).hasAbandoned();
     }
     //determines whether ha player is correctly positioned on the flight board
+
+    /**
+     * Determines whether a player is correctly positioned on the flight board
+     * @param nickname
+     * @return true if the player is correctly positioned, false otherwise
+     */
     public boolean isPositioned(String nickname){
         return playersPos.get(nickname) != null;
     }
     //return the ship board color of a player
+
+    /**
+     * Returns the ship board color of a player
+     * @param nickname
+     * @return the ship board color of a player
+     */
     public Color getColor(String nickname){
         return playersPlay.get(nickname).getColor();
     }
     //returns a list of image IDs of the cards contained in the deck
+
+    /**
+     * Converts a deck of event cards into a list of image IDs
+     * @param deck
+     * @return a list of image IDs of the cards contained in the deck
+     */
     public List<Integer> convertDeck(Deck deck){
         List<Integer> IDs = new ArrayList<>();
         for(EventCard card : deck.getCards()){
@@ -125,23 +210,52 @@ public class GameState {
         return IDs;
     }
     //returns teh number of exposed connectors on a player's ship board
+
+    /**
+     * Counts the number of exposed connectors on a player's ship board
+     * @param nickname
+     * @return the number of exposed connectors on a player's ship board
+     */
     public int countExposedConnectors(String nickname){
         return playersPlay.get(nickname).countExposedConnectors();
 
     }
     //returns the number of crew members in a player's ship board
+
+    /**
+     * Returns the number of crew members in a player's ship board
+     * @param nickname
+     * @return the number of crew members in a player's ship board
+     */
     public int getCrewCount(String nickname) {
         return playersPlay.get(nickname).getNumberCrew();
     }
     //returns the number of batteries on a player's ship board
+
+    /**
+     * Returns the number of batteries on a player's ship board
+     * @param nickname
+     * @return the number of batteries on a player's ship board
+     */
     public int getNumberBatteries(String nickname){
         return playersPlay.get(nickname).getNumberBatteries();
     }
     //returns the number of goods on a player's ship board
+
+    /**
+     * Returns the number of goods on a player's ship board
+     * @param nickname
+     * @return the number of goods on a player's ship board
+     */
     public int getNumberGoods(String nickname){
         return playersPlay.get(nickname).getNumberGoods();
     }
     //this method returns the nickname of the player with fewer crew members
+
+    /**
+     * Returns the nickname of the player with fewer crew members
+     * @return the nickname of the player with fewer crew members
+     */
     public String getCrewMinPlayer() {
         int numberCrew;
         int crewMin=1000;
@@ -161,15 +275,34 @@ public class GameState {
     }
     //returns the cannon strength of a player, removing the given batteries from its ship board in order
     // to activate double cannons
+
+    /**
+     * Returns the cannon strength of a player, removing the given batteries from its ship board in order
+     * @param nickname
+     * @param usedBatteries
+     * @return the cannon strength of a player
+     */
     public double getCannonStrength(String nickname, int usedBatteries){
         return playersPlay.get(nickname).getCannonStrength(usedBatteries);
     }
     //returns the engine strength of a player, removing the given batteries from its ship board in order
     // to activate double engines
+
+    /**
+     * Returns the engine strength of a player, removing the given batteries from its ship board in order
+     * @param nickname
+     * @param usedBatteries
+     * @return
+     */
     public int getEngineStrength(String nickname, int usedBatteries){
         return playersPlay.get(nickname).getEngineStrength(usedBatteries);
     }
     //returns the cell numbers of the busy (taken by the players) cells on the flight board
+
+    /**
+     * Returns the cell numbers of the busy (taken by the players) cells on the flight board
+     * @return a list of busy cell numbers
+     */
     public List<Integer> getBusyCells(){
         List<Integer> busyCells = new ArrayList<>();
         for(Position p : playersPos.values()){
@@ -189,6 +322,11 @@ public class GameState {
 
 
     //this method instantiates all the components (tiles) of the game, which will be placed face down (hidden)
+
+    /**
+     * Instantiates all the components (tiles) of the game, which will be placed face down (hidden)
+     * @param firstFlight
+     */
     public void createComponents(boolean firstFlight) {
         hiddenComponents = new ArrayList<>();
         shownComponents = new ArrayList<>();
@@ -358,6 +496,11 @@ public class GameState {
     //if the game is set as "standard", this method instantiates all the adventure cards of the game and creates the 4 decks
     // for the assembling phase; instead, if the game is set as "fist flight", this method creates directly the
     // game deck by selecting 8 level 1 cards
+
+    /**
+     * Creates all the adventure cards of the game and creates the 4 decks for the assembling phase
+     * @param firstFlight
+     */
     public void createDecks(boolean firstFlight){
 
         if(!firstFlight) {  //standard game
@@ -459,6 +602,16 @@ public class GameState {
         currentCard = null;
     }
     //adds a player to the game
+
+    /**
+     * Adds a player to the game
+     * @param client
+     * @param nickname
+     * @param color
+     * @throws UniqueNicknameException
+     * @throws UniquePlayerColorException
+     * @throws InvalidActionException
+     */
     public void addPlayer(VirtualView client, String nickname, Color color) throws UniqueNicknameException, UniquePlayerColorException, InvalidActionException {
         if(state != State.WAITING_FOR_PLAYERS){
             throw new InvalidActionException("Game has already started");
@@ -500,6 +653,10 @@ public class GameState {
         }
     }
     //invoked when one of the players decides to start the assembling phase
+
+    /**
+     * Starts the assembling phase of the game.
+     */
     public void startAssembling() {
         createComponents(firstFlight);
         createDecks(firstFlight);
@@ -514,6 +671,13 @@ public class GameState {
 
 
     //invoked when a player wants to pick a component among the one placed face down (assembling phase)
+
+    /**
+     * Allows a player to pick a hidden component during the ship building phase.
+     * @param nickname
+     * @throws PickedComponentException
+     * @throws InvalidActionException
+     */
     public void pickHidden(String nickname) throws PickedComponentException, InvalidActionException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Wait for assembling phase");
@@ -529,6 +693,14 @@ public class GameState {
         catch(Exception e){System.out.println("Error during remote method invocation on client");}
     }
     //invoked when a player wants to pick a specific component among the one placed face up (assembling phase)
+
+    /**
+     * Allows a player to pick a specific shown component during the ship building phase.
+     * @param nickname
+     * @param index
+     * @throws PickedComponentException
+     * @throws InvalidActionException
+     */
     public void pickShown(String nickname, int index) throws PickedComponentException, InvalidActionException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Wait for assembling phase");
@@ -552,6 +724,14 @@ public class GameState {
         catch(Exception e){System.out.println("Error during remote method invocation on client");}
     }
     //invoked when a player wants to reserve the component that it has picked for its ship board
+
+    /**
+     * Reserves a component for a player during the ship building phase.
+     * @param nickname
+     * @throws PickedComponentException
+     * @throws ReservedComponentException
+     * @throws InvalidActionException
+     */
     public void reserveComponent(String nickname) throws PickedComponentException, ReservedComponentException, InvalidActionException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Wait for assembling phase");
@@ -573,6 +753,15 @@ public class GameState {
         catch(Exception e){System.out.println("Error during remote method invocation on client");}
     }
     //invoked when a player wants to pick one of the components that it has reserved for its ship board
+
+    /**
+     * Allows a player to pick a reserved component during the ship building phase.
+     * @param nickname
+     * @param position
+     * @throws ReservedComponentException
+     * @throws PickedComponentException
+     * @throws InvalidActionException
+     */
     public void pickReservedComponent(String nickname, int position) throws ReservedComponentException, PickedComponentException, InvalidActionException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Wait for assembling phase");
