@@ -48,12 +48,14 @@ public class SocketPingThread extends Thread {
                     clientHandler.setClientStatus(false);
                 }
                 else{
+                    clientHandler.forceQuit();
                     break;
                 }
             }
         } catch (Exception ignored) {
         } finally {
             try {
+                clientHandler.forceQuit();
                 in.close();
                 out.close();
                 socket.close();

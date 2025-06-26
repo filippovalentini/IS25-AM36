@@ -226,7 +226,7 @@ public class SocketClientHandler implements VirtualViewSocket {
                 }
             }
             catch (IOException e) {
-                controller.forceQuit(nickname);
+                forceQuit();
                 break;
             } catch (ClassNotFoundException e) {
                 System.err.println("Error: failed to deserialize class");
@@ -236,7 +236,7 @@ public class SocketClientHandler implements VirtualViewSocket {
                     notifyError(e.getMessage());
                 }
                 catch(Exception e1){
-                    controller.forceQuit(nickname);
+                    forceQuit();
                     break;
                 }
             }
@@ -244,6 +244,14 @@ public class SocketClientHandler implements VirtualViewSocket {
         in.close();
         out.close();
         socket.close();
+    }
+
+    /**
+     * Forces the player to quit the game
+     *
+     */
+    public void forceQuit(){
+        try{controller.forceQuit(nickname);} catch (Exception ignored) {}
     }
 
     //converts a serialized list of integers in an effective list
