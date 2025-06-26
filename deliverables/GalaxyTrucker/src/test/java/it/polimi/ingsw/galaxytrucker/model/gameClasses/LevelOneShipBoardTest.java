@@ -15,6 +15,10 @@ class LevelOneShipBoardTest {
     private LevelOneShipBoard levelOneShipBoard;
     private Component component1;
 
+    /**
+     * Initializes a new {@code LevelOneShipBoard} and a {@code Component}
+     * before each test.
+     */
     @BeforeEach
     void init(){
         levelOneShipBoard = new LevelOneShipBoard("filippo", Color.RED);
@@ -26,15 +30,25 @@ class LevelOneShipBoardTest {
         component1 = new Component(9, connectorList1);
     }
 
+    /**
+     * Tests the pick and release functionality of a component.
+     * Verifies that the picked component is correctly stored and released,
+     * and that the picked component is null after release.
+     */
     @Test
     void testPickAndReleaseComponent() {
-        levelOneShipBoard.pickComponent(component1); //pick
+        levelOneShipBoard.pickComponent(component1);
         assertEquals(component1, levelOneShipBoard.getPickedComponent());
-        Component releasedComponent = levelOneShipBoard.releaseComponent(); //release
+
+        Component releasedComponent = levelOneShipBoard.releaseComponent();
         assertEquals(component1, releasedComponent);
         assertNull(levelOneShipBoard.getPickedComponent());
     }
 
+    /**
+     * Tests picking a reserved component.
+     * Verifies that the reserved component can be picked correctly.
+     */
     @Test
     void testPickReservedComponent() {
         levelOneShipBoard.pickComponent(component1);
@@ -43,17 +57,26 @@ class LevelOneShipBoardTest {
         assertEquals(component1, levelOneShipBoard.getPickedComponent());
     }
 
+    /**
+     * Tests assembling a component on the board.
+     * Verifies that the component is correctly placed at the specified position.
+     */
     @Test
     void testAssembleComponent() {
         levelOneShipBoard.pickComponent(component1);
-        levelOneShipBoard.assembleComponent(1, 3); //above the initial cabin
+        levelOneShipBoard.assembleComponent(1, 3);
         assertEquals(component1, levelOneShipBoard.getAssembledComponent(1, 3));
     }
 
+    /**
+     * Tests destroying a component on the board.
+     * Verifies that the component is removed, the lost component count is updated,
+     * and the position is marked as empty.
+     */
     @Test
     void testDestroyComponent() {
         levelOneShipBoard.pickComponent(component1);
-        levelOneShipBoard.assembleComponent(1, 3); //above the initial cabin
+        levelOneShipBoard.assembleComponent(1, 3);
         levelOneShipBoard.destroyComponent(1, 3);
         assertEquals(1, levelOneShipBoard.getLostComponents());
         assertTrue(levelOneShipBoard.isEmptyComponent(1, 3));

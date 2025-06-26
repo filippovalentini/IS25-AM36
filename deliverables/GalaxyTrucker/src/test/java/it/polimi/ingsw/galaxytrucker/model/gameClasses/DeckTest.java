@@ -18,6 +18,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DeckTest {
 
+    /**
+     * Test to verify that the getCards() method returns a copy of the card list
+     * and that modifications to the copy do not affect the original deck (defensive copying).
+     * Also verifies that the size and content are correct.
+     */
     @Test
     void testGetCards(){
         List<EventCard> listOfEventCards = new ArrayList<>();
@@ -31,12 +36,20 @@ class DeckTest {
         assertEquals(1, d.getCards().size());
     }
 
+    /**
+     * Test to verify the behavior of the getCards() method when the deck
+     * is initialized with null. Must return null without throwing exceptions.
+     */
     @Test
     void testGetCardsNull(){
         Deck d = new Deck(null);
         assertNull(d.getCards());
     }
 
+    /**
+     * Test to verify that the drawCard() method correctly throws
+     * EmptyDeckException when attempting to draw from an empty deck.
+     */
     @Test
     void testDrawCardFromEmptyDeck() {
         List<EventCard> listOfEventCards = new ArrayList<>();
@@ -44,6 +57,10 @@ class DeckTest {
         assertThrows(EmptyDeckException.class, deck::drawCard);
     }
 
+    /**
+     * Test to verify that the drawCard() method works correctly
+     * with a non-empty deck, returning a card of the correct type.
+     */
     @Test
     void testDrawCardFromNonEmptyDeck() {
         List<EventCard> listOfEventCards = new ArrayList<>();
@@ -52,6 +69,10 @@ class DeckTest {
         assertEquals(AbandonedShip.class, deck.drawCard().getClass());
     }
 
+    /**
+     * Test to verify that the drawn card is exactly the same instance
+     * that was inserted into the deck (object identity test).
+     */
     @Test
     void testDrawCardAndSameCard() {
         List<EventCard> listOfEventCards = new ArrayList<>();
@@ -61,6 +82,10 @@ class DeckTest {
         assertEquals(ec, deck.drawCard());
     }
 
+    /**
+     * Test to verify that getCards() returns the correct content of the deck
+     * by comparing the returned list with the original one.
+     */
     @Test
     void testGetActualCardsFromDeck() {
         List<EventCard> listOfEventCards = new ArrayList<>();
@@ -70,6 +95,10 @@ class DeckTest {
         assertEquals(listOfEventCards, deck.getCards());
     }
 
+    /**
+     * Test to verify that the shuffle() method does not cause card loss.
+     * The number of cards must remain unchanged after the shuffle operation.
+     */
     @Test
     void testShuffleHasNoLeaks() {
         List<EventCard> listOfEventCards = new ArrayList<>();
@@ -81,6 +110,10 @@ class DeckTest {
         assertEquals(initialSize, deck.getNumberCards());
     }
 
+    /**
+     * Test to verify that after a shuffle it is still possible to draw cards
+     * and that the card count decreases correctly after the draw.
+     */
     @Test
     void testDrawAfterShuffle(){
         List<EventCard> listOfEventCards = new ArrayList<>();
@@ -93,6 +126,10 @@ class DeckTest {
         assertEquals(initialSize-1, deck.getNumberCards());
     }
 
+    /**
+     * Test to verify that it is not possible to mark as "picked" a deck
+     * that has already been picked by another player. Must throw PickedDeckException.
+     */
     @Test
     void testShouldNotPickPickedDeck(){
         List<EventCard> listOfEventCards = new ArrayList<>();
@@ -102,6 +139,10 @@ class DeckTest {
         assertThrows(PickedDeckException.class, deck::setPicked);
     }
 
+    /**
+     * Test to verify the complete picked/not-picked cycle.
+     * A deck can be marked as picked and subsequently as not-picked.
+     */
     @Test
     void testSetNotPickedDeck(){
         Deck deck = new Deck(null);
@@ -111,6 +152,11 @@ class DeckTest {
         assertFalse(deck.isPicked());
     }
 
+    /**
+     * Test to verify that it is not possible to mark as "not picked" a deck
+     * that is already not-picked. Must throw PickedDeckException to maintain
+     * state consistency.
+     */
     @Test
     void testShouldNotSetNotPickedDeckAlreadyNotPicked(){
         Deck deck = new Deck(null);

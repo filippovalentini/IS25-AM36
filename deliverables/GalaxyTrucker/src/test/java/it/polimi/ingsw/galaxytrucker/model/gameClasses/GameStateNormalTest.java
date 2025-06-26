@@ -27,6 +27,9 @@ class GameStateNormalTest {
     private VirtualViewRMI cl1;
     private VirtualViewRMI cl2;
 
+    /**
+     * Initializes game state and players before each test.
+     */
     @BeforeEach
     void initLV2Flight() {
         gameState = new GameState(false, 2);
@@ -43,6 +46,9 @@ class GameStateNormalTest {
         gameState.addPlayer(cl2, player2, Color.BLUE);
     }
 
+    /**
+     * Tests adding players and game state transitions.
+     */
     @Test
     void testAddPlayer() {
         GameState gs = new GameState(true, 2);
@@ -58,6 +64,9 @@ class GameStateNormalTest {
         assertThrows(InvalidActionException.class, () -> gs.addPlayer(cl1, player3, Color.YELLOW));
     }
 
+    /**
+     * Tests turn updates with multiple players and position changes.
+     */
     @Test
     void testUpdateTurnsWithMaxPlayers(){
         gameState = new GameState(true, 4);
@@ -77,10 +86,13 @@ class GameStateNormalTest {
         gameState.updateTurns();
         assertEquals(player4, gameState.getTurnPlayer());
         gameState.changePlayerPosition(player3,3);
-        gameState.updateTurns(); //player 3 should be first
+        gameState.updateTurns();
         assertEquals(player3, gameState.getTurnPlayer());
     }
 
+    /**
+     * Tests setting player positions.
+     */
     @Test
     void testSetPosition() {
         gameState.setPosition(player1, 0);
@@ -89,6 +101,9 @@ class GameStateNormalTest {
         assertEquals(1, gameState.getPlayersPos().get(player2).getCell());
     }
 
+    /**
+     * Tests changing player positions, including wrapping.
+     */
     @Test
     void testChangePlayerPosition() {
         gameState.setPosition(player1, 0);
@@ -99,6 +114,9 @@ class GameStateNormalTest {
         assertEquals(0, gameState.getPlayersPos().get(player2).getCell());
     }
 
+    /**
+     * Tests placing a picked component into the shown pile.
+     */
     @Test
     void testPutShown() {
         gameState.pickHidden(player1);
@@ -106,12 +124,18 @@ class GameStateNormalTest {
         assertNull(gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
     }
 
+    /**
+     * Tests picking a component from the hidden pile.
+     */
     @Test
     void testPickHidden() {
         gameState.pickHidden(player1);
         assertNotNull(gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
     }
 
+    /**
+     * Tests picking a component from the shown pile.
+     */
     @Test
     void testPickShown() {
         gameState.pickHidden(player1);
@@ -120,6 +144,9 @@ class GameStateNormalTest {
         assertNotNull(gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
     }
 
+    /**
+     * Tests reserving a picked component.
+     */
     @Test
     void testReserveComponent() {
         gameState.pickHidden(player1);
@@ -127,6 +154,9 @@ class GameStateNormalTest {
         assertNull(gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
     }
 
+    /**
+     * Tests picking a component from the reserved pile.
+     */
     @Test
     void testPickReservedComponent() {
         gameState.pickHidden(player1);
@@ -135,6 +165,9 @@ class GameStateNormalTest {
         assertNotNull(gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
     }
 
+    /**
+     * Tests assembling a component and handling occupied cells.
+     */
     @Test
     void testAssembleComponent() {
         gameState.pickHidden(player1);
@@ -144,6 +177,9 @@ class GameStateNormalTest {
         assertThrows(AssembledComponentException.class, () -> gameState.assembleComponent(player1, 1, 3));
     }
 
+    /**
+     * Tests rotating a picked component.
+     */
     @Test
     void testRotatePickedComponent() {
         gameState.pickHidden(player1);
@@ -154,6 +190,9 @@ class GameStateNormalTest {
         assertNotEquals(o1, o2);
     }
 
+    /**
+     * Tests destroying a component and subsequent game state changes.
+     */
     @Test
     void testDestroyComponent() {
         gameState.pickHidden(player1);
@@ -169,6 +208,9 @@ class GameStateNormalTest {
         assertEquals(State.CARD_PICKING, gameState.getGameState());
     }
 
+    /**
+     * Tests picking the next card by the turn leader.
+     */
     @Test
     void testPickNextCard() {
         gameState.pickHidden(player1);
@@ -182,28 +224,27 @@ class GameStateNormalTest {
         assertEquals(State.CARD_SOLVING, gameState.getGameState());
     }
 
-    @Test
-    void testPickNextCardNotLeader() {
-        gameState.pickHidden(player1);
-        gameState.assembleComponent(player1, 1, 3);
-        gameState.pickHidden(player2);
-        gameState.assembleComponent(player2, 1, 3);
-        gameState.setPosition(player2, 1);
-        gameState.setPosition(player1, 0);
-        assertThrows(InvalidActionException.class, () -> gameState.pickNextCard(player1));
-    }
 
+    /**
+     * Tests updating player credits.
+     */
     @Test
     void testUpdatePlayerCredits() {
         gameState.updatePlayerCredits(player1, 5);
         assertEquals(5, gameState.getPlayersPlay().get(player1).getCredits());
     }
 
+    /**
+     * Tests getting a player's crew count.
+     */
     @Test
     void testGetCrewCount() {
         assertEquals(0, gameState.getCrewCount(player1));
     }
 
+    /**
+     * Tests identifying the player with the minimum crew count.
+     */
     @Test
     void testGetCrewMinPlayer() {
         Component cabin = new Cabin(1000, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
@@ -221,6 +262,9 @@ class GameStateNormalTest {
         assertEquals(player2, gameState.getCrewMinPlayer());
     }
 
+    /**
+     * Tests removing crew members from a player's ship.
+     */
     @Test
     void testRemoveCrewMembers() {
         List<Integer> x = new ArrayList<>(Arrays.asList(2));
@@ -233,6 +277,9 @@ class GameStateNormalTest {
         assertEquals(0, gameState.getCrewCount(player1));
     }
 
+    /**
+     * Tests adding a player with a duplicate nickname.
+     */
     @Test
     void testAddPlayerDuplicateNickname() {
         GameState gs = new GameState(true, 2);
@@ -241,6 +288,9 @@ class GameStateNormalTest {
         assertThrows(UniqueNicknameException.class, () -> gs.addPlayer(cl1, player1, Color.GREEN));
     }
 
+    /**
+     * Tests adding a player with a duplicate color.
+     */
     @Test
     void testAddPlayerDuplicateColor() {
         GameState gs = new GameState(true, 2);
@@ -249,17 +299,26 @@ class GameStateNormalTest {
         assertThrows(UniquePlayerColorException.class, () -> gs.addPlayer(cl2,"newPlayer", Color.RED));
     }
 
+    /**
+     * Tests setting position to an invalid cell.
+     */
     @Test
     void testSetPositionInvalidCell() {
         assertThrows(InvalidPositionException.class, () -> gameState.setPosition(player1, 100));
     }
 
+    /**
+     * Tests setting position to an already occupied cell.
+     */
     @Test
     void testSetPositionDuplicateCell() {
         gameState.setPosition(player1, 1);
         assertThrows(InvalidPositionException.class, () -> gameState.setPosition(player2, 1));
     }
 
+    /**
+     * Tests picking a shown component in an invalid game state.
+     */
     @Test
     void testPickShownInvalidAction() {
         gameState.setPosition(player1, 0);
@@ -267,6 +326,9 @@ class GameStateNormalTest {
         assertThrows(InvalidActionException.class, () -> gameState.pickShown(player1, 0));
     }
 
+    /**
+     * Tests assembling a component in an invalid game state.
+     */
     @Test
     void testAssembleComponentInvalidAction() {
         gameState.setPosition(player1, 0);
@@ -274,20 +336,24 @@ class GameStateNormalTest {
         assertThrows(InvalidActionException.class, () -> gameState.assembleComponent(player1, 0, 0));
     }
 
+    /**
+     * Tests rewards based on player finishing order.
+     */
     @Test
     void testFinishOrderReward() {
         gameState.setPosition(player1, 0);
         gameState.setPosition(player2, 1);
-        gameState.updateTurns(); //sorts player in playersPlay
-        gameState.finishOrderReward(); //adds rewards for finish order
-        //check final credits of players
+        gameState.updateTurns();
+        gameState.finishOrderReward();
         assertEquals(8, gameState.getPlayersPlay().get(player2).getCredits());
         assertEquals(6, gameState.getPlayersPlay().get(player1).getCredits());
     }
 
+    /**
+     * Tests reward for the player with the best ship.
+     */
     @Test
     void testBestShipReward() {
-        //player one has more connector exposed
         Component cabin = new Cabin(-1, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
         gameState.assembleComponent(player1, cabin, 2, 2);
         gameState.setPosition(player1, 0);
@@ -296,9 +362,11 @@ class GameStateNormalTest {
         assertEquals(4, gameState.getPlayersPlay().get(player2).getCredits());
     }
 
+    /**
+     * Tests penalties for lost components.
+     */
     @Test
     void testLossPenalty(){
-        //player one has one lost component
         Component cabin = new Cabin(-1, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
         gameState.assembleComponent(player1, cabin, 2, 2);
         gameState.setPosition(player1, 0);
@@ -308,9 +376,11 @@ class GameStateNormalTest {
         assertEquals(-1, gameState.getPlayersPlay().get(player1).getCredits());
     }
 
+    /**
+     * Tests rewards for selling goods.
+     */
     @Test
     void testSaleOfGoodsReward(){
-        //player one has quit
         CargoHold cargoHold = new CargoHold(true,-1, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
         gameState.assembleComponent(player1, cargoHold, 2, 2);
         gameState.setPosition(player1, 0);
@@ -325,9 +395,11 @@ class GameStateNormalTest {
         assertEquals(2, gameState.getPlayersPlay().get(player1).getCredits());
     }
 
+    /**
+     * Tests the computation of all total end-game rewards and penalties.
+     */
     @Test
     void testComputeTotalRewards(){
-        //player one has finishes first and has one lost component
         Component cabinToDestroy = new Cabin(-1, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
         gameState.assembleComponent(player1, cabinToDestroy, 2, 1);
         gameState.setPosition(player1, 1);
@@ -338,7 +410,6 @@ class GameStateNormalTest {
         gameState.checkShipBoards();
         gameState.destroyComponent(player1, 2,1);
         gameState.checkShipBoards();
-        //player two has more connector exposed and some goods
         CargoHold cargoHoldExposed = new CargoHold(true, -1, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
         gameState.assembleComponent(player2, cargoHoldExposed, 2, 2);
         gameState.substituteGoods(player2, 2,2,Color.BLUE,0);

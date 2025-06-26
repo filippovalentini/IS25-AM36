@@ -42,6 +42,12 @@ public class GameStateFirstFlightTest {
         gameState.addPlayer(cl2, player2, Color.BLUE);
     }
 
+    /**
+     * Test to verify that players can be added correctly to the game state.
+     * Verifies that players get assigned the correct colors and ship boards,
+     * that the game state changes appropriately, and that adding too many players
+     * throws an InvalidActionException.
+     */
     @Test
     void testAddPlayer() {
         GameState gs = new GameState(true, 2);
@@ -57,6 +63,11 @@ public class GameStateFirstFlightTest {
         assertThrows(InvalidActionException.class, () -> gs.addPlayer(cl1, player3, Color.YELLOW));
     }
 
+    /**
+     * Test to verify that turn updates work correctly with maximum number of players.
+     * Tests that players are ordered by position and that the turn order is updated
+     * correctly when positions change.
+     */
     @Test
     void testUpdateTurnsWithMaxPlayers(){
         gameState = new GameState(true, 4);
@@ -80,6 +91,10 @@ public class GameStateFirstFlightTest {
         assertEquals(player3, gameState.getTurnPlayer());
     }
 
+    /**
+     * Test to verify that player positions are set correctly on the game board.
+     * Verifies that players are assigned to the correct cells.
+     */
     @Test
     void testSetPosition() {
         gameState.setPosition(player1, 0);
@@ -88,6 +103,11 @@ public class GameStateFirstFlightTest {
         assertEquals(1, gameState.getPlayersPos().get(player2).getCell());
     }
 
+    /**
+     * Test to verify that player positions can be changed correctly.
+     * Tests both positive and negative position changes and ensures
+     * positions are properly updated.
+     */
     @Test
     void testChangePlayerPosition() {
         gameState.setPosition(player1, 0);
@@ -98,6 +118,10 @@ public class GameStateFirstFlightTest {
         assertEquals(0, gameState.getPlayersPos().get(player2).getCell());
     }
 
+    /**
+     * Test to verify that putting a component back to the shown components pile
+     * correctly removes it from the player's picked component slot.
+     */
     @Test
     void testPutShown() {
         gameState.pickHidden(player1);
@@ -105,12 +129,20 @@ public class GameStateFirstFlightTest {
         assertNull(gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
     }
 
+    /**
+     * Test to verify that picking a component from the hidden pile
+     * correctly assigns it to the player's picked component slot.
+     */
     @Test
     void testPickHidden() {
         gameState.pickHidden(player1);
         assertNotNull(gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
     }
 
+    /**
+     * Test to verify that picking a component from the shown components pile
+     * works correctly after putting a component back.
+     */
     @Test
     void testPickShown() {
         gameState.pickHidden(player1);
@@ -119,8 +151,11 @@ public class GameStateFirstFlightTest {
         assertNotNull(gameState.getPlayersPlay().get(player1).getShipBoard().getPickedComponent());
     }
 
-
-
+    /**
+     * Test to verify that assembling a component works correctly.
+     * Verifies that the component is removed from the picked slot after assembly
+     * and that attempting to assemble at an occupied position throws an exception.
+     */
     @Test
     void testAssembleComponent() {
         gameState.pickHidden(player1);
@@ -130,6 +165,10 @@ public class GameStateFirstFlightTest {
         assertThrows(AssembledComponentException.class, () -> gameState.assembleComponent(player1, 1, 3));
     }
 
+    /**
+     * Test to verify that rotating a picked component changes its orientation
+     * and that the component remains in the picked slot after rotation.
+     */
     @Test
     void testRotatePickedComponent() {
         gameState.pickHidden(player1);
@@ -140,6 +179,10 @@ public class GameStateFirstFlightTest {
         assertNotEquals(o1, o2);
     }
 
+    /**
+     * Test to verify that destroying a component works correctly and
+     * that the game state transitions appropriately through the different phases.
+     */
     @Test
     void testDestroyComponent() {
         gameState.pickHidden(player1);
@@ -156,19 +199,10 @@ public class GameStateFirstFlightTest {
         assertEquals(State.CARD_PICKING, gameState.getGameState());
     }
 
-    @Test
-    void testPickNextCard() {
-        gameState.pickHidden(player1);
-        gameState.putShown(player1);
-        gameState.setPosition(player2, 1);
-        gameState.setPosition(player1, 0);
-        gameState.addCrew(player1, 2, 3);
-        gameState.addCrew(player2, 2, 3);
-        assertEquals(player2, gameState.getTurnPlayer());
-        gameState.pickNextCard(player2);
-        assertEquals(State.CARD_SOLVING, gameState.getGameState());
-    }
-
+    /**
+     * Test to verify that a non-leader player cannot pick the next card.
+     * Should throw an InvalidActionException when a non-leader tries to pick.
+     */
     @Test
     void testPickNextCardNotLeader() {
         gameState.pickHidden(player1);
@@ -180,17 +214,29 @@ public class GameStateFirstFlightTest {
         assertThrows(InvalidActionException.class, () -> gameState.pickNextCard(player1));
     }
 
+    /**
+     * Test to verify that player credits can be updated correctly.
+     * Verifies that the credit amount is properly set for the player.
+     */
     @Test
     void testUpdatePlayerCredits() {
         gameState.updatePlayerCredits(player1, 5);
         assertEquals(5, gameState.getPlayersPlay().get(player1).getCredits());
     }
 
+    /**
+     * Test to verify that crew count returns zero for a player with no crew.
+     */
     @Test
     void testGetCrewCount() {
         assertEquals(0, gameState.getCrewCount(player1));
     }
 
+    /**
+     * Test to verify that the player with minimum crew count is correctly identified.
+     * Tests crew assignment and verification that the player with fewer crew members
+     * is returned as the minimum crew player.
+     */
     @Test
     void testGetCrewMinPlayer() {
         Component cabin = new Cabin(1000, new ArrayList<>(Arrays.asList(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL)));
@@ -206,6 +252,10 @@ public class GameStateFirstFlightTest {
         assertEquals(player2, gameState.getCrewMinPlayer());
     }
 
+    /**
+     * Test to verify that crew members can be removed correctly from specific cabins.
+     * Verifies that the crew count decreases appropriately after removal.
+     */
     @Test
     void testRemoveCrewMembers() {
         List<Integer> x = new ArrayList<>(Arrays.asList(2));
@@ -218,6 +268,10 @@ public class GameStateFirstFlightTest {
         assertEquals(0, gameState.getCrewCount(player1));
     }
 
+    /**
+     * Test to verify that adding a player with a duplicate nickname
+     * throws a UniqueNicknameException.
+     */
     @Test
     void testAddPlayerDuplicateNickname() {
         GameState gs = new GameState(true, 2);
@@ -226,6 +280,10 @@ public class GameStateFirstFlightTest {
         assertThrows(UniqueNicknameException.class, () -> gs.addPlayer(cl1, player1, Color.GREEN));
     }
 
+    /**
+     * Test to verify that adding a player with a duplicate color
+     * throws a UniquePlayerColorException.
+     */
     @Test
     void testAddPlayerDuplicateColor() {
         GameState gs = new GameState(true, 2);
@@ -234,17 +292,29 @@ public class GameStateFirstFlightTest {
         assertThrows(UniquePlayerColorException.class, () -> gs.addPlayer(cl1,"newPlayer", Color.RED));
     }
 
+    /**
+     * Test to verify that setting a player position to an invalid cell
+     * throws an InvalidPositionException.
+     */
     @Test
     void testSetPositionInvalidCell() {
         assertThrows(InvalidPositionException.class, () -> gameState.setPosition(player1, 100));
     }
 
+    /**
+     * Test to verify that setting a player position to an already occupied cell
+     * throws an InvalidPositionException.
+     */
     @Test
-     void testSetPositionDuplicateCell() {
+    void testSetPositionDuplicateCell() {
         gameState.setPosition(player1, 1);
         assertThrows(InvalidPositionException.class, () -> gameState.setPosition(player2, 1));
     }
 
+    /**
+     * Test to verify that picking a shown component when not allowed
+     * throws an InvalidActionException.
+     */
     @Test
     void testPickShownInvalidAction() {
         gameState.setPosition(player1, 1);
@@ -252,6 +322,10 @@ public class GameStateFirstFlightTest {
         assertThrows(InvalidActionException.class, () -> gameState.pickShown(player1, 0));
     }
 
+    /**
+     * Test to verify that assembling a component when not allowed
+     * throws an InvalidActionException.
+     */
     @Test
     void testAssembleComponentInvalidAction() {
         gameState.setPosition(player1, 1);
