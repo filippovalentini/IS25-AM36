@@ -59,7 +59,7 @@ public class Slavers extends AdvancedEnemies{
     @Override
     //the player decides which crew members to remove from the ship because the slavers have defeated him
     public void landing(GameState gameState, String nickname, List<Integer> x, List<Integer> y, List<Integer> crewInEachCabin) throws InvalidActionException, NoCrewException {
-        if (isDefeated() || !crewLossPhase) { // if the player has already defeated the slavers or we are not in the crew loss phase
+        if (isDefeated() || !crewLossPhase) { // if the player has already defeated the slavers, or we are not in the crew loss phase
             throw new InvalidActionException("Invalid action");
         }
         gameState.removeCrewMembers(nickname, x, y, crewInEachCabin, this.crewLoss); // remove the crew members from the ship
@@ -80,7 +80,7 @@ public class Slavers extends AdvancedEnemies{
      */
     @Override
     public void defeat(GameState gameState, String nickname, int usedBatteries, boolean loseDays) throws InvalidActionException{
-        if(isDefeated() || crewLossPhase){ // if the player has already defeated the slavers or we are in the crew loss phase
+        if(isDefeated() || crewLossPhase){ // if the player has already defeated the slavers, or we are in the crew loss phase
             throw new InvalidActionException("Invalid action");
         }
         if(gameState.getNumberBatteries(nickname) < usedBatteries) { // if the player does not have enough batteries
@@ -105,7 +105,7 @@ public class Slavers extends AdvancedEnemies{
         else{
             //if cannonStrength<this.enemyStrength, the slavers have defeated the player; nothing happens, but
             //the player is forced to lose crew members, otherwise the game can't go on
-            if (gameState.getCrewCount(nickname)< this.crewLoss) {
+            if (gameState.getCrewCount(nickname) <= this.crewLoss) {
                 if(gameState.isLastInTurn(nickname)) {
                     gameState.setGameState(State.CARD_PICKING);
                 }
