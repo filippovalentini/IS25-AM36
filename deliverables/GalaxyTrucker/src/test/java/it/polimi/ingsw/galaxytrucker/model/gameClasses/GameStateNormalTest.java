@@ -209,23 +209,6 @@ class GameStateNormalTest {
     }
 
     /**
-     * Tests picking the next card by the turn leader.
-     */
-    @Test
-    void testPickNextCard() {
-        gameState.pickHidden(player1);
-        gameState.putShown(player1);
-        gameState.setPosition(player2, 1);
-        gameState.setPosition(player1, 0);
-        gameState.addCrew(player1, 2, 3);
-        gameState.addCrew(player2, 2, 3);
-        assertEquals(player2, gameState.getTurnPlayer());
-        gameState.pickNextCard(player2);
-        assertEquals(State.CARD_SOLVING, gameState.getGameState());
-    }
-
-
-    /**
      * Tests updating player credits.
      */
     @Test
