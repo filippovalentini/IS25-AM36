@@ -572,7 +572,7 @@ public class FlightBoardControllerL2 implements FlightBoardController {
     }
     /**
      * Notifies the view about an error.
-     * @param errorMessage The errore message.
+     * @param errorMessage The error message.
      */
     @Override
     public void notifyError(String errorMessage) {
