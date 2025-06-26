@@ -8,7 +8,6 @@ public enum PlayerActionType {
     ASK_STARTED_GAME,
     START_GAME,
     ADD_PLAYER,
-    //components
     PICK_HIDDEN,
     PICK_SHOWN,
     RELEASE,
@@ -17,10 +16,8 @@ public enum PlayerActionType {
     ROTATE,
     ASSEMBLE,
     DESTROY,
-    //decks
     PICK_DECK,
     RELEASE_DECK,
-    //others
     SET_POSITION,
     HOURGLASS,
     QUIT,

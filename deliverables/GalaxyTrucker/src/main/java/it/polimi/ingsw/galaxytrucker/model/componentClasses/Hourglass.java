@@ -11,8 +11,8 @@ import it.polimi.ingsw.galaxytrucker.model.gameClasses.GameState;
 public class Hourglass {
     private final int cycleDurationSeconds; // Duration of a single cycle of the hourglass in seconds.
     private boolean isRunning;  //  Specify if the hourglass has finished or not.
-    private GameState gameState;    // Gamestate
-    private int numberFlips; // Nummber of times the hourglass has been flipped.
+    private GameState gameState;    // instance of the reference game model of the hourglass
+    private int numberFlips; // number of times the hourglass has been flipped.
 
     /**
      * Constructor for the Hourglass class.

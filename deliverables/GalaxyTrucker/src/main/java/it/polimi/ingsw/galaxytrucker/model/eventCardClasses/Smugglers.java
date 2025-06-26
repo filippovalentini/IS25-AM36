@@ -15,7 +15,7 @@ public class Smugglers extends DayLossCard{
     private final int goodLoss;     //goods that a player loses if defeated by the smugglers
     private final int enemyStrength;        //strength required to defeat the smugglers
     private boolean defeated;       //set to true if a player has defeated the smugglers
-    private boolean goodsExchangePhase;
+    private boolean goodsExchangePhase;     //true if we are in the phase where the player in turn loads goods
 
     /**
      * Constructor for the Smugglers event card.

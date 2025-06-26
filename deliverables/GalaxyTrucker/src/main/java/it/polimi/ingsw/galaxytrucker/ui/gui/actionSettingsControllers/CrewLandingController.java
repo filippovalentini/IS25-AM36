@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-/**ù
+/**
  * This controller manages the graphic popup for the "crew landing" action
  */
 public class CrewLandingController implements ActionSettingsController {

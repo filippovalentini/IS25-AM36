@@ -6,7 +6,7 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 //to set up a new game or join an existing one
 
 /**
- * This interface defines the methods that are used by the clients to interact with the server,
+ * This interface defines the methods that are used by the clients to interact with the server for game session setup
  */
 public interface GameSessionManager {
     //this method asks the server if a game with the specified ID has already started

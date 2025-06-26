@@ -20,18 +20,18 @@ import java.util.Map;
 /** * This class implements the UserInterface for the GUI version.
  */
 public class GuiInterface implements UserInterface {
-    private static GuiInterface instance;
-    private GameSetupController setupController;
-    private LobbyController lobbyController;
-    private ShipBuildingController shipBuildingController;
-    private FlightBoardController flightBoardController;
-    private ShownComponentsController shownComponentsController;
-    private ShipBoardController shipBoardController;
-    private ShipControlController shipControlController;
-    private FlightPhaseController flightPhaseController;
-    private View view;
-    private String nickname;
-    private Color color;
+    private static GuiInterface instance;     //unique instance of the GUI interface for a player in the game
+    private GameSetupController setupController;     //instance of the controller for the game setup page
+    private LobbyController lobbyController;        //instance of the controller for the lobby page
+    private ShipBuildingController shipBuildingController;  //instance of the controller for the ship building page
+    private FlightBoardController flightBoardController;    //instance of the controller for the flight board page
+    private ShownComponentsController shownComponentsController;    //instance of the controller for the shown components page
+    private ShipBoardController shipBoardController;    //instance of the controller for the ship board (of other players) page
+    private ShipControlController shipControlController;    //instance of the controller for the ship control page
+    private FlightPhaseController flightPhaseController;    //instance of the controller for the flight phase page
+    private View view;  //instance of the view, which stores all the information needed to implement the GUI
+    private String nickname;    //nickname of the reference player
+    private Color color;        //color of the reference player
 
     /**
      * Constructor for GuiInterface.

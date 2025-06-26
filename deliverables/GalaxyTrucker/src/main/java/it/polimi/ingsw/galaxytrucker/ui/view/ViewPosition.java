@@ -1,8 +1,11 @@
 package it.polimi.ingsw.galaxytrucker.ui.view;
 
+/**
+ * ViewPosition class represents a simplified version (client-side) of the Position class (server-side)
+ */
 public class ViewPosition {
-    int lap;
-    int cell;
+    int lap;        //lap on the flight board
+    int cell;       //actual position on the flight board
 
     /**
      * Constructor for ViewPosition.

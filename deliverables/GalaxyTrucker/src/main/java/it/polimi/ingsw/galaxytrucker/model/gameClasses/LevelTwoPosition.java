@@ -6,7 +6,7 @@ import java.util.Set;
  * This class is used to manage the position of players on the flight board in Level Two.
  */
 public class LevelTwoPosition extends Position {
-    public static final Set<Integer> validStartingCells = Set.of(0,1,3,6);
+    public static final Set<Integer> validStartingCells = Set.of(0,1,3,6);  //valid positions for ship placement
 
     /**
      * Constructor for LevelTwoPosition.
@@ -17,7 +17,7 @@ public class LevelTwoPosition extends Position {
     }
 
     /**
-     * This methods performs a change of position of one step, forwards or backwards based on the direction parameter
+     * This method performs a change of position of one step, forwards or backwards based on the direction parameter
      * @param direction
      */
     @Override

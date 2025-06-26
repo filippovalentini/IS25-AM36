@@ -2,15 +2,13 @@ package it.polimi.ingsw.galaxytrucker.ui.view;
 
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
-import it.polimi.ingsw.galaxytrucker.ui.gui.GuiInterface;
-
-import java.rmi.RemoteException;
 import java.util.*;
 
 import static it.polimi.ingsw.galaxytrucker.model.enumerations.Color.convertColorIntoEmoji;
 
 /**
- * View class represents the state of the game and the players' ships.
+ * View class represents a simplified copy (client-side) of the state of the game and of the players' ships,
+ * storing all the information needed to implement the TUI and the GUI consistently.
  */
 public class View {
     public boolean firstFlight;     //true if the view refers to a first flight game, false otherwise

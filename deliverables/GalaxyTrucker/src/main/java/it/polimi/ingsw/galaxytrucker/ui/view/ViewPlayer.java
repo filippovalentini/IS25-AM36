@@ -6,14 +6,17 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Orientation;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * ViewPlayer class represents a simplified version (client-side) of the Player and ShipBoard classes (server-side)
+ */
 public class ViewPlayer {
-    private String nickname;
-    private Color color;
-    int credits;
-    int lostComponents;
-    boolean abandoned;
-    private List<List<ViewComponent>> assembledComponents = new ArrayList<>();
-    private List<ViewComponent> reservedComponents = new ArrayList<>();
+    private final String nickname;      //nickname of the player
+    private final Color color;       //color of the player
+    int credits;            //credits of the player
+    int lostComponents;     //lost components of the player
+    boolean abandoned;      //true if the player has abandoned the game
+    private List<List<ViewComponent>> assembledComponents = new ArrayList<>();  //components assembled on the ship board
+    private List<ViewComponent> reservedComponents = new ArrayList<>();     //components reserved by the player
 
     /**
      * Constructor for a player in the game.

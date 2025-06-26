@@ -24,12 +24,12 @@ import java.util.Scanner;
  * This class implements the TUI (Text User Interface).
  */
 public class TuiInterface implements UserInterface {
-    private VirtualServer server;
-    private GameSessionManager client;
-    private View view;
-    int gameID;
-    String nickname;
-    Color color;
+    private VirtualServer server;       //instance of the virtual server
+    private GameSessionManager client;      //instance of the virtual client
+    private View view;  //instance of the view, which stores all the information needed to implement the TUI
+    int gameID;     //game ID of the reference game instance
+    String nickname;        //nickname of the reference player
+    Color color;        //color of the reference player
 
     //asks the user the technology to use (Socket or RMI) and launches the corresponding client typology
 

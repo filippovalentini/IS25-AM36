@@ -6,7 +6,7 @@ import java.util.Set;
  * This class is used to manage the position of players on the flight board for Level One.
  */
 public class LevelOnePosition extends Position {
-    public static final Set<Integer> validStartingCells = Set.of(0,1,2,4);
+    public static final Set<Integer> validStartingCells = Set.of(0,1,2,4);  //valid positions for ship placement
 
     /**
      * Constructor for LevelOnePosition.

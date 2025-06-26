@@ -2,9 +2,12 @@ package it.polimi.ingsw.galaxytrucker.ui.view;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * ViewDice class stores the information of the dice of the game
+ */
 public class ViewDice {
-    private int dice1, dice2;
-    private boolean throwable;
+    private int dice1, dice2;       //dice 1 and dice 2 results
+    private boolean throwable;      //true if the player can throw the dice
     /**
      * Constructor for ViewDice.
      * Initializes the dice values to 0 and sets throwable to true.

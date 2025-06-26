@@ -5,8 +5,11 @@ import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import java.util.HashMap;
 import java.util.*;
 
+/**
+ * ViewFlightBoard class represents a simplified version (client-side) of the FlightBoard class (server-side)
+ */
 public class ViewFlightBoard {
-    Map<ViewPlayer, ViewPosition> positions = new HashMap<>();
+    Map<ViewPlayer, ViewPosition> positions = new HashMap<>();  //map the players with their position on the flight board
     /**
      * Constructor for the flight board, initializes the positions of all players to null.
      * @param players the list of players in the game

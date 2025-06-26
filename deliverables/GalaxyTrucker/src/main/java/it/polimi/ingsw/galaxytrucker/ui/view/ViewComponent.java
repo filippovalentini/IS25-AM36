@@ -8,16 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
+/**
+ * ViewComponent class represents a simplified version (client-side) of the Component class (server-side)
+ */
 public class ViewComponent {
-    private String imageID;
-    private List<Connector> sides;
-    private Orientation orientation;
-    private int batteries;
-    private int crew;
-    private boolean purpleAlien;
-    private boolean brownAlien;
-    private List<Color> goods;
+    private final String imageID;     //game ID of the reference game
+    private Orientation orientation;    //orientation of the component
+    private int batteries;      //number of batteries contained
+    private int crew;       //number of crew members contained
+    private boolean purpleAlien;      //true if the component contains a purple alien
+    private boolean brownAlien;     //true if the component contains a brown alien
+    private List<Color> goods;      //list of goods contained
     /**
      * Constructor for a ViewComponent.
      * @param imageID the identifier of the component's image
