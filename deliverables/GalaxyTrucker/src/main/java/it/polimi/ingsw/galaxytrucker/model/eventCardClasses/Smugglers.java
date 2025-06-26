@@ -126,7 +126,7 @@ public class Smugglers extends DayLossCard{
      *
      */
     public void loadGoods(GameState gameState, String nickname, List<Integer> x, List<Integer> y) throws InvalidActionException, UnsupportedCargoColorException, FullCargoHoldException, NoGoodsException {
-        if (isDefeated() || !goodsExchangePhase) { //if the smugglers have already been defeated or the player is not in the goods exchange phase
+        if (!isDefeated() || !goodsExchangePhase) { //if the smugglers haven't been defeated or the player is not in the goods exchange phase
             throw new InvalidActionException("Invalid action");
         }
         if(x.size() != prizeGoods.size() || y.size() != prizeGoods.size()){ //if the number of coordinates does not match the number of goods to be loaded
