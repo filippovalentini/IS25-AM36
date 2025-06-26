@@ -72,7 +72,6 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
     @FXML private Button crewLandingButton;
     @FXML private Button defeatEnemyButton;
     @FXML private Button loadGoodsButton;
-    @FXML private Button switchGoodsButton;
     @FXML private Button useBatteriesButton;
     @FXML private Button flyButton;
     @FXML private Button skipButton;
@@ -261,7 +260,6 @@ public class FlightPhaseControllerL1 extends ShipBoardGraphics implements Flight
         defeatEnemyButton.setDisable(disable);
         hitShipButton.setDisable(disable);
         loadGoodsButton.setDisable(disable);
-        switchGoodsButton.setDisable(disable);
         crewLandingButton.setDisable(disable);
         planetLandingButton.setDisable(disable);
         skipButton.setDisable(disable);

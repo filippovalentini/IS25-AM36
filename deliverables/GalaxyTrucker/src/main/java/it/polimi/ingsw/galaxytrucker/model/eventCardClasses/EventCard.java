@@ -149,20 +149,6 @@ public class EventCard  {
         throw new InvalidActionException("Invalid action for solving the current card");
     }
 
-    /**
-     * Method invoked when a player wants to switch goods inside its cargo holds
-     * @param gamestate
-     * @param nickname
-     * @param cargo_row
-     * @param cargo_col
-     * @param good
-     * @param pos
-     * @throws InvalidActionException
-     */
-    public void switchGoods(GameState gamestate, String nickname, int cargo_row, int cargo_col, Color good, int pos)throws InvalidActionException{
-        throw new InvalidActionException("Invalid action for solving the current card");
-    }
-
 }
 
 

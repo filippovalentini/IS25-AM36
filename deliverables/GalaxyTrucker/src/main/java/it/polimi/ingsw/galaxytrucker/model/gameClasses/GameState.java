@@ -1561,26 +1561,7 @@ public class GameState {
         }
         currentCard.planetLanding(this, nickname, numberPlanet);
     }
-    /**
-     * Handles switching goods during planet effects.
-     * Only the player whose turn it is can perform this action.
-     *
-     * @param nickname the nickname of the player switching goods
-     * @param cargo_row the row of the cargo container
-     * @param cargo_col the column of the cargo container
-     * @param good the color of the good to switch
-     * @param pos the position of the good in the cargo
-     * @throws InvalidActionException if no card has been picked yet or if it's not the player's turn
-     */
-    public void switchGoods(String nickname,int cargo_row, int cargo_col, Color good, int pos) throws InvalidActionException {
-        if(state != State.CARD_SOLVING){
-            throw new InvalidActionException("Card must be picked first");
-        }
-        if(!nickname.equals(turnPlayer)){
-            throw new InvalidActionException("Wait for the turn");
-        }
-        currentCard.switchGoods(this, nickname,cargo_row,cargo_col,good,pos);
-    }
+
     /**
      * Handles a hit on a player's ship (meteor or cannon shot). The player can decide
      * whether to activate shields or cannons for defense.

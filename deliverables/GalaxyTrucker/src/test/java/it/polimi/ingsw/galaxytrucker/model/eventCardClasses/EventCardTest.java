@@ -100,10 +100,6 @@ public class EventCardTest {
         assertThrows(InvalidActionException.class, () -> eventCard.loadGoods(gameState, player1, null, null));
         
     } // Test the loadGoods method and expect an InvalidActionException
-    //test switchGoods()
-    @Test
-    public void testSwitchGoods() {
-        assertThrows(InvalidActionException.class, () -> eventCard.switchGoods(gameState, player1, 0, 0, Color.RED, 1));
-    } // Test the switchGoods method and expect an InvalidActionException
+
 
 }
