@@ -268,7 +268,7 @@ public class CombatZone extends EventCard{
                         gameState.quitGame(nickname, false); // quits the game
                         throw new NoCrewException("You have lost all your crew: quitting game...");
                     }else{
-                        gameState.nextTurn();
+                        gameState.updateTurns();
                     }
                 }
                 else{

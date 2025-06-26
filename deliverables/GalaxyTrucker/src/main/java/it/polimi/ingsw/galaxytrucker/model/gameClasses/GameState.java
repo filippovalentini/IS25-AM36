@@ -1352,7 +1352,7 @@ public class GameState {
      * @throws InvalidActionException if the player cannot quit in the current phase
      */
     public void quitGame(String nickname, boolean playerDecision) throws InvalidActionException {
-        if(state != State.CARD_PICKING && state != State.CARD_SOLVING){
+        if(state != State.CARD_PICKING && state != State.CARD_SOLVING && state != State.SHIP_REPAIR){
             throw new InvalidActionException("Can't leave the game in this phase");
         }
         if(state == State.CARD_SOLVING && playerDecision){
