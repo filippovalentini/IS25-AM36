@@ -57,4 +57,17 @@ public class Engine extends ConfigurableComponent {
         retComponent.orientation = this.orientation; // copy the orientation from the original component
         return retComponent;
     }
+
+    /**
+     * Checks if the engine has an adjacent placement conflict.
+     * @param cNorth the component to the north of this component
+     * @param cEast the component to the east of this component
+     * @param cSouth the component to the south of this component
+     * @param cWest the component to the west of this component
+     * @return true if there is an adjacent placement conflict, false otherwise
+     */
+    @Override
+    public boolean hasAdjacentPlacementConflict(Component cNorth, Component cEast, Component cSouth, Component cWest){
+        return cSouth != null && cSouth.isNotEmpty() && cSouth.belongsToShip();
+    }
 }

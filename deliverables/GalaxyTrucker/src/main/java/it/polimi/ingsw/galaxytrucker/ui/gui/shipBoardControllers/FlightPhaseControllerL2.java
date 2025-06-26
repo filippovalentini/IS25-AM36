@@ -814,6 +814,7 @@ public class FlightPhaseControllerL2 extends ShipBoardGraphics implements Flight
                 statusLabel.setText("ABANDONED");
                 statusLabel.setStyle("-fx-text-fill: red;");
             }
+            showError("Player " + nickname + " has left the game");
         });
     }
 

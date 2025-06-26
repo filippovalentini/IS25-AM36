@@ -67,7 +67,7 @@ public class Cannon extends ConfigurableComponent { //constructor
      * @param cWest the component to the west of this component
      * @return true if there is an adjacent placement conflict, false otherwise
      */
-    @Override //return if violates the rule constraint of empty component over the cannon
+    @Override
     public boolean hasAdjacentPlacementConflict(Component cNorth, Component cEast, Component cSouth, Component cWest){
         if(orientation == Orientation.NORTH && (cNorth == null || !cNorth.isNotEmpty() || cNorth.isSpace())){
             return false;

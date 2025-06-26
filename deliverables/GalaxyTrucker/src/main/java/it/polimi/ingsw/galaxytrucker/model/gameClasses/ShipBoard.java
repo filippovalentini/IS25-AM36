@@ -523,10 +523,10 @@ public class ShipBoard {
         visited[row][col] = true;
         //all explorable adjacent directions
         if(analyzedComponent.getNorthSide() != Connector.SMOOTH){
-            dfs(components, row+1, col, visited);
+            dfs(components, row-1, col, visited);
         }
         if (analyzedComponent.getSouthSide() != Connector.SMOOTH) {
-            dfs(components, row-1, col, visited);
+            dfs(components, row+1, col, visited);
         }
         if (analyzedComponent.getEastSide() != Connector.SMOOTH) {
             dfs(components, row, col+1, visited);
