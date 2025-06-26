@@ -31,7 +31,7 @@ class OpenSpaceTest {
     private List<Connector> sides;
     private Position position;
     @BeforeEach
-    void init() {
+    void init() { // Initialize OpenSpace event card
         os = new OpenSpace(2);
         gameState = new GameState(false, 2);
         player1="filippo";
@@ -43,33 +43,33 @@ class OpenSpaceTest {
         catch (Exception e){
             System.exit(-1);
         }
-        gameState.addPlayer(cl1, player1, Color.RED);
-        gameState.addPlayer(cl2, player2, Color.GREEN);
-        gameState.setPosition(player1, 6);
-        gameState.setPosition(player2, 3);
-        gameState.updateTurns();
-        sides = new ArrayList<>();
-        sides.add(Connector.UNIVERSAL);
-        sides.add(Connector.UNIVERSAL);
-        sides.add(Connector.SMOOTH);
-        sides.add(Connector.UNIVERSAL);
-        engine2= new Engine(false,24244, sides);
-        gameState.assembleComponent(player1, engine2,1,3);
-        position= new LevelTwoPosition(gameState.getPlayersPos().get(player1).getCell());
+        gameState.addPlayer(cl1, player1, Color.RED); // Add first player
+        gameState.addPlayer(cl2, player2, Color.GREEN); // Add second player
+        gameState.setPosition(player1, 6); // Set position of first player
+        gameState.setPosition(player2, 3); // Set position of second player
+        gameState.updateTurns(); // Update turns to set the current player
+        sides = new ArrayList<>(); // Initialize sides for the engine
+        sides.add(Connector.UNIVERSAL); // Add connectors to the engine
+        sides.add(Connector.UNIVERSAL); // Add connectors to the engine
+        sides.add(Connector.SMOOTH); // Add connectors to the engine
+        sides.add(Connector.UNIVERSAL); // Add connectors to the engine
+        engine2= new Engine(false,24244, sides); // Create a new engine component
+        gameState.assembleComponent(player1, engine2,1,3); // Assemble the engine component for player1
+        position= new LevelTwoPosition(gameState.getPlayersPos().get(player1).getCell()); // Create a position for player1
     }
 
     @Test
-    void testFly(){
-        os.fly(gameState,player1,0);
-        assertEquals(player2, gameState.getTurnPlayer(), "The leader should be player2 (thomas)");
-        assertEquals(position.getCell()+1, gameState.getPlayersPos().get(player1).getCell(), "The leader should be the lap");
-        gameState.destroyComponent(player1,1,3);
+    void testFly(){ // Test the fly method of OpenSpace event card
+        os.fly(gameState,player1,0); // Attempt to fly with player1
+        assertEquals(player2, gameState.getTurnPlayer(), "The leader should be player2 (thomas)"); // Check if the turn has changed to player2
+        assertEquals(position.getCell()+1, gameState.getPlayersPos().get(player1).getCell(), "The leader should be the lap"); // Check if player1 has moved one cell forward
+        gameState.destroyComponent(player1,1,3); // Destroy the engine component of player1
     }
     @Test
-    void testFly_secondAttemptAfterDestruction() {
-        gameState.destroyComponent(player1, 1, 3);
-        gameState.setGameState(State.CARD_PICKING);
-        assertThrows(NoStrengthException.class, () -> os.fly(gameState, player1, 0));
-        assertFalse(gameState.getPlayersPos().containsKey(player1));
+    void testFly_secondAttemptAfterDestruction() { // Test flying after the engine component has been destroyed
+        gameState.destroyComponent(player1, 1, 3); // Destroy the engine component of player1
+        gameState.setGameState(State.CARD_PICKING); // Set the game state to CARD_PICKING
+        assertThrows(NoStrengthException.class, () -> os.fly(gameState, player1, 0)); // Attempt to fly again, expecting a NoStrengthException
+        assertFalse(gameState.getPlayersPos().containsKey(player1)); // Check that player1 is no longer in the game state
     }
 }

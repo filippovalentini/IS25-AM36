@@ -15,7 +15,7 @@ public class EngineTest {
     private Engine engine2;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() { // Initialize the engines with appropriate parameters
         List<Connector> connectors = new ArrayList<>();
         connectors.add(Connector.SMOOTH);
         connectors.add(Connector.SINGLE);
@@ -29,41 +29,43 @@ public class EngineTest {
 
     //test for isWellOriented method
     @Test
-    public void isWellOriented_true() {
+    public void isWellOriented_true() { // Test when the engine is well oriented
         engine1.orientation= Orientation.NORTH; // Set orientation to NORTH
-        assertTrue(engine1.isWellOriented());
+        assertTrue(engine1.isWellOriented()); // Check if the engine is well oriented
     }
     @Test
-    public void isWellOriented_false() {
+    public void isWellOriented_false() { // Test when the engine is not well oriented
         engine1.orientation= Orientation.EAST; // Set orientation to EAST
-        assertFalse(engine1.isWellOriented());
+        assertFalse(engine1.isWellOriented()); // Check if the engine is not well oriented
     }
     //test for hasDoubleEngines method
     @Test
     public void hasDoubleEngines_true() {
         assertTrue(engine1.hasDoubleEngines());
-    }
+    } // Test for hasDoubleEngines method when engine1 is a double engine
     @Test
     public void hasDoubleEngines_false() {
         assertFalse(engine2.hasDoubleEngines());
-    }
+    } // Test for hasDoubleEngines method when engine2 is a single engine
+
+
     //test for hasSingleEngine method
     @Test
     public void hasSingleEngine_true() {
         assertTrue(engine2.hasSingleEngine());
-    }
+    } // Test for hasSingleEngine method when engine2 is a single engine
     @Test
     public void hasSingleEngine_false() {
         assertFalse(engine1.hasSingleEngine());
-    }
+    } // Test for hasSingleEngine method when engine1 is a double engine
     //test for clone method
     @Test
-    public void cloneTest() {
-        Engine clonedEngine = (Engine) engine1.clone();
-        assertEquals(clonedEngine.isDouble(), engine1.isDouble());
-        assertEquals(clonedEngine.getImageID(), engine1.getImageID());
-        assertSame(clonedEngine.getOrientation(), engine1.getOrientation());
-        assertSame(clonedEngine.orientation, engine1.orientation);
+    public void cloneTest() { // Test for clone method
+        Engine clonedEngine = (Engine) engine1.clone(); // Clone engine1
+        assertEquals(clonedEngine.isDouble(), engine1.isDouble()); // Check if the cloned engine has the same double status
+        assertEquals(clonedEngine.getImageID(), engine1.getImageID()); // Check if the cloned engine has the same image ID
+        assertSame(clonedEngine.getOrientation(), engine1.getOrientation()); // Check if the cloned engine has the same orientation
+        assertSame(clonedEngine.orientation, engine1.orientation); // Check if the cloned engine's orientation is the same as engine1's orientation
     }
 
 }

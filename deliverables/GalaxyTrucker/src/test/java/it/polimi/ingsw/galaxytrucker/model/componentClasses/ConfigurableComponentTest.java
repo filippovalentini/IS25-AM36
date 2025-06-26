@@ -14,7 +14,7 @@ public class ConfigurableComponentTest {
     private ConfigurableComponent configurableComponent1; //where isDouble is set to true
     private ConfigurableComponent configurableComponent2; //where isDouble is set to false
     @BeforeEach
-    public void setUp() {
+    public void setUp() { // Initialize the components with a list of connectors
         List<Connector> connectors = new ArrayList<>();
         connectors.add(Connector.SMOOTH);
         connectors.add(Connector.SINGLE);
@@ -27,12 +27,12 @@ public class ConfigurableComponentTest {
     @Test
     public void testIsDouble_true() {
         assertTrue(configurableComponent1.isDouble());
-    }
+    } // Test for isDouble method when isDouble is true
 
 
     @Test
     public void testIsDouble_false() {
         assertTrue(!configurableComponent2.isDouble());
-    }
+    } // Test for isDouble method when isDouble is false
 }
 

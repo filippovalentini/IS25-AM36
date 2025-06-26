@@ -17,55 +17,55 @@ class CargoHoldTest {
     private CargoHold doubleCargoHold;
 
     @BeforeEach
-    void init() {
+    void init() { // Initialize the CargoHold instances with appropriate connectors
         List<Connector> sides = new ArrayList<>();
         sides.add(Connector.SMOOTH);
         sides.add(Connector.SMOOTH);
         sides.add(Connector.DOUBLE);
         sides.add(Connector.UNIVERSAL);
-        tripleCargoHold = new CargoHold(false, 0, sides);
-        doubleCargoHold = new CargoHold(true, 1, sides);
+        tripleCargoHold = new CargoHold(false, 0, sides); //initializing cargo hold
+        doubleCargoHold = new CargoHold(true, 1, sides); //initializing double cargo hold
     }
 
     @Test
-    void testAddGoodToTripleCargoHold() {
-        tripleCargoHold.addGood(Color.BLUE);
-        assertEquals(1, tripleCargoHold.getNumberGoods());
-        assertTrue(tripleCargoHold.getGoods().contains(Color.BLUE));
+    void testAddGoodToTripleCargoHold() { // Test adding a good to the triple cargo hold
+        tripleCargoHold.addGood(Color.BLUE); // Adding a good of color BLUE
+        assertEquals(1, tripleCargoHold.getNumberGoods()); // Check if the number of goods is 1
+        assertTrue(tripleCargoHold.getGoods().contains(Color.BLUE)); // Check if the goods list contains the added good
     }
 
     @Test
-    void testAddGoodToDoubleCargoHold() {
-        doubleCargoHold.addGood(Color.GREEN);
-        assertEquals(1, doubleCargoHold.getNumberGoods());
-        assertTrue(doubleCargoHold.getGoods().contains(Color.GREEN));
+    void testAddGoodToDoubleCargoHold() { // Test adding a good to the double cargo hold
+        doubleCargoHold.addGood(Color.GREEN); // Adding a good of color GREEN
+        assertEquals(1, doubleCargoHold.getNumberGoods()); // Check if the number of goods is 1
+        assertTrue(doubleCargoHold.getGoods().contains(Color.GREEN)); // Check if the goods list contains the added good
     }
 
     @Test
-    void testShouldNotAddRedGood() {
-        assertThrows(UnsupportedCargoColorException.class, () -> tripleCargoHold.addGood(Color.RED));
+    void testShouldNotAddRedGood() { // Test that adding a red good to a triple cargo hold throws an exception
+        assertThrows(UnsupportedCargoColorException.class, () -> tripleCargoHold.addGood(Color.RED)); // Adding a red good should not be allowed
     }
 
     @Test
-    void testShouldNotAddGoodToFullTripleCargoHold() {
-        tripleCargoHold.addGood(Color.BLUE);
-        tripleCargoHold.addGood(Color.GREEN);
-        tripleCargoHold.addGood(Color.YELLOW);
-        assertThrows(FullCargoHoldException.class, () -> tripleCargoHold.addGood(Color.BLUE));
+    void testShouldNotAddGoodToFullTripleCargoHold() { // Test that adding a good to a full triple cargo hold throws an exception
+        tripleCargoHold.addGood(Color.BLUE); // Adding a good of color BLUE
+        tripleCargoHold.addGood(Color.GREEN); // Adding a good of color GREEN
+        tripleCargoHold.addGood(Color.YELLOW);   // Adding a good of color YELLOW
+        assertThrows(FullCargoHoldException.class, () -> tripleCargoHold.addGood(Color.BLUE)); // Adding another good should throw an exception
     }
 
     @Test
-    void testShouldNotAddGoodToFullDoubleCargoHold() {
-        doubleCargoHold.addGood(Color.BLUE);
-        doubleCargoHold.addGood(Color.GREEN);
-        assertThrows(FullCargoHoldException.class, () -> doubleCargoHold.addGood(Color.YELLOW));
+    void testShouldNotAddGoodToFullDoubleCargoHold() { // Test that adding a good to a full double cargo hold throws an exception
+        doubleCargoHold.addGood(Color.BLUE); // Adding a good of color BLUE
+        doubleCargoHold.addGood(Color.GREEN); // Adding a good of color GREEN
+        assertThrows(FullCargoHoldException.class, () -> doubleCargoHold.addGood(Color.YELLOW)); // Adding another good should throw an exception
     }
 
     @Test
-    void testGetGoodsReturnsCopy() {
-        tripleCargoHold.addGood(Color.BLUE);
-        List<Color> goods = tripleCargoHold.getGoods();
-        goods.add(Color.GREEN);
-        assertEquals(1, tripleCargoHold.getNumberGoods());
+    void testGetGoodsReturnsCopy() { // Test that the getGoods method returns a copy of the goods list
+        tripleCargoHold.addGood(Color.BLUE); // Adding a good of color BLUE
+        List<Color> goods = tripleCargoHold.getGoods(); // Getting the list of goods
+        goods.add(Color.GREEN); // Attempting to modify the returned list
+        assertEquals(1, tripleCargoHold.getNumberGoods()); // Check if the number of goods in the original cargo hold is still 1
     }
 }

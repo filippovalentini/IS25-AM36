@@ -15,7 +15,7 @@ class CabinTest {
     private Cabin cabin;
 
     @BeforeEach
-    void init(){
+    void init(){ // Initialize a Cabin with 4 sides
         List<Connector> sides = new ArrayList<Connector>();
         sides.add(Connector.SMOOTH);
         sides.add(Connector.SMOOTH);
@@ -25,49 +25,49 @@ class CabinTest {
     }
 
     @Test
-    void testAddCrewEnoughSpace(){
-        cabin.addCrew();
-        assertEquals(2 , cabin.getNumberCrew());
+    void testAddCrewEnoughSpace(){ // Test adding crew when there is space
+        cabin.addCrew(); // Add one crew member
+        assertEquals(2 , cabin.getNumberCrew()); // Check if the number of crew members is 2 (1 initial + 1 added)
     }
 
     @Test
-    void testAddAlienWithSpace() {
-        cabin.addAlien(true);
-        assertTrue(cabin.hasAlien(true));
-        assertFalse(cabin.hasAlien(false));
+    void testAddAlienWithSpace() { // Test adding alien when there is space
+        cabin.addAlien(true); // Add an alien
+        assertTrue(cabin.hasAlien(true)); // Check if the cabin has an alien
+        assertFalse(cabin.hasAlien(false)); // Check if the cabin does not have a space alien
     }
 
     @Test
-    void testAddAlienWithoutSpaceCrew() {
-        cabin.addCrew();
-        assertThrows(FullCabinException.class, () -> cabin.addAlien(false));
+    void testAddAlienWithoutSpaceCrew() { // Test adding alien when there is no space for crew
+        cabin.addCrew(); // Add one crew member
+        assertThrows(FullCabinException.class, () -> cabin.addAlien(false)); // Attempt to add a space alien, which should throw an exception
     }
 
     @Test
-    void testAddAlienWithoutSpaceAlien(){
-        cabin.addAlien(true);
-        assertThrows(FullCabinException.class, () -> cabin.addAlien(false));
+    void testAddAlienWithoutSpaceAlien(){ // Test adding alien when there is no space for aliens
+        cabin.addAlien(true); // Add a purple alien
+        assertThrows(FullCabinException.class, () -> cabin.addAlien(false)); // Attempt to add a brown alien, which should throw an exception
     }
 
     @Test
     void testRemoveCrewNoCrew() {
         assertThrows(NoCrewException.class, () -> cabin.removeCrew(1));
+    } // Test removing crew when there is no crew
+
+    @Test
+    void testRemoveCrewWithCrew() { // Test removing crew when there is crew
+        cabin.addCrew(); // Add one crew member
+        cabin.removeCrew(1); // Remove one crew member
+        assertEquals(1, cabin.getNumberCrew()); // Check if the number of crew members is 1 (initial 1 - 1 removed)
     }
 
     @Test
-    void testRemoveCrewWithCrew() {
-        cabin.addCrew();
-        cabin.removeCrew(1);
-        assertEquals(1, cabin.getNumberCrew());
-    }
-
-    @Test
-    void testRemoveAlien(){
-        cabin.addAlien(true);
-        cabin.removeAlien(true);
-        assertFalse(cabin.hasAlien(true));
-        cabin.addAlien(false);
-        cabin.removeAlien(false);
-        assertFalse(cabin.hasAlien(false));
+    void testRemoveAlien(){ // Test removing alien when there is an alien
+        cabin.addAlien(true); // Add a purple alien
+        cabin.removeAlien(true); // Remove the purple alien
+        assertFalse(cabin.hasAlien(true)); // Check if the cabin does not have a purple alien
+        cabin.addAlien(false); // Add a brown alien
+        cabin.removeAlien(false); // Remove the brown alien
+        assertFalse(cabin.hasAlien(false)); // Check if the cabin does not have a brown alien
     }
 }

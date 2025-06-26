@@ -33,7 +33,7 @@ class AbandonedStationTest {
     List<Integer> goodsPosCargo;
 
     @BeforeEach
-    void init() {
+    void init() { // Initialize the game state and players
         gameState = new GameState(false, 2);
         player1 = "player1";
         player2 = "player2";
@@ -44,76 +44,76 @@ class AbandonedStationTest {
         catch (Exception e){
             System.exit(-1);
         }
-        gameState.addPlayer(cl1, player1, Color.RED);
-        gameState.addPlayer(cl2, player2, Color.BLUE);
-        gameState.setPosition(player1, 6);
-        gameState.setPosition(player2, 3);
-        gameState.addCrew(player1, 2, 3);
-        gameState.addCrew(player2, 2, 3);
-        gameState.updateTurns();
+        gameState.addPlayer(cl1, player1, Color.RED); // Add first player
+        gameState.addPlayer(cl2, player2, Color.BLUE); // Add second player
+        gameState.setPosition(player1, 6); // Set position for first player
+        gameState.setPosition(player2, 3); // Set position for second player
+        gameState.addCrew(player1, 2, 3); // Add crew for first player
+        gameState.addCrew(player2, 2, 3); // Add crew for second player
+        gameState.updateTurns(); // Update turns for the game state
 
         CargoHold cargoHoldUniversal = new CargoHold(true, -1, List.of(Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL, Connector.UNIVERSAL));
-        gameState.assembleComponent(player1, cargoHoldUniversal, 2, 2);
-        gameState.checkShipBoards();
+        gameState.assembleComponent(player1, cargoHoldUniversal, 2, 2); // Assemble a cargo hold for the first player
+        gameState.checkShipBoards(); // Check the ship boards for the game state
 
-        List<Color> stationGoods = new ArrayList<Color>();
-        stationGoods.add(Color.YELLOW);
-        stationGoods.add(Color.GREEN);
-        abandonedStation = new AbandonedStation(stationGoods, 5, 1, -1);
+        List<Color> stationGoods = new ArrayList<Color>(); // Initialize the goods for the abandoned station
+        stationGoods.add(Color.YELLOW); // Add yellow goods
+        stationGoods.add(Color.GREEN); // Add green goods
+        abandonedStation = new AbandonedStation(stationGoods, 5, 1, -1); // Create an abandoned station with the goods, a cost of 5, and a required crew of 1
         //init abandonedStationFreeCrew
-        List<Color> sG = new ArrayList<Color>();
-        sG.add(Color.YELLOW);
-        sG.add(Color.GREEN);
-        abandonedStationFreeCrew = new AbandonedStation(sG, 0, 1, -1);
-        x_cargo = new ArrayList<>();
-        y_cargo = new ArrayList<>();
-        goodsPosCargo = new ArrayList<>();
-        x_cargo.add(2);
-        y_cargo.add(2);
-        goodsPosCargo.add(0);
-        x_cargo.add(2);
-        y_cargo.add(2);
-        goodsPosCargo.add(1);
+        List<Color> sG = new ArrayList<Color>(); // Initialize the goods for the abandoned station with free crew
+        sG.add(Color.YELLOW); // Add yellow goods
+        sG.add(Color.GREEN); // Add green goods
+        abandonedStationFreeCrew = new AbandonedStation(sG, 0, 1, -1); // Create an abandoned station with the goods, no cost, and a required crew of 1
+        x_cargo = new ArrayList<>(); // Initialize the x coordinates for cargo
+        y_cargo = new ArrayList<>(); // Initialize the y coordinates for cargo
+        goodsPosCargo = new ArrayList<>(); // Initialize the positions of goods in cargo
+        x_cargo.add(2); // Add x coordinate for cargo
+        y_cargo.add(2); // Add y coordinate for cargo
+        goodsPosCargo.add(0); // Add position of goods in cargo
+        x_cargo.add(2); // Add another x coordinate for cargo
+        y_cargo.add(2); // Add another y coordinate for cargo
+        goodsPosCargo.add(1); // Add another position of goods in cargo
     }
 
     @Test
-    void testUseStation() {
-        gameState.pickGivenCard(abandonedStation);
-        abandonedStation.setUsed();
-        assertTrue(abandonedStation.isUsed());
+    void testUseStation() { // Test using the abandoned station
+        gameState.pickGivenCard(abandonedStation); // Pick the abandoned station card
+        abandonedStation.setUsed(); // Set the station as used
+        assertTrue(abandonedStation.isUsed()); // Check if the station is marked as used
     }
 
     @Test
-    void testShouldNotUseStationAlreadyUsed() {
-        gameState.pickGivenCard(abandonedStation);
-        abandonedStation.setUsed();
-        assertThrows(InvalidActionException.class, () -> abandonedStation.setUsed());
+    void testShouldNotUseStationAlreadyUsed() { // Test that the station cannot be used again if it has already been used
+        gameState.pickGivenCard(abandonedStation); // Pick the abandoned station card
+        abandonedStation.setUsed(); // Set the station as used
+        assertThrows(InvalidActionException.class, () -> abandonedStation.setUsed()); // Attempt to set the station as used again, which should throw an exception
     }
 
     @Test
-    void testLoadGoodsWithRequiredCrew() {
-        assertTrue(gameState.getCrewCount(player1)>0);
-        gameState.pickGivenCard(abandonedStationFreeCrew);
-        abandonedStationFreeCrew.loadGoods(gameState, player1, x_cargo, y_cargo);
-        assertTrue(abandonedStationFreeCrew.isUsed());
+    void testLoadGoodsWithRequiredCrew() { // Test loading goods with the required crew
+        assertTrue(gameState.getCrewCount(player1)>0); // Check that the player has crew available
+        gameState.pickGivenCard(abandonedStationFreeCrew); // Pick the abandoned station card with free crew
+        abandonedStationFreeCrew.loadGoods(gameState, player1, x_cargo, y_cargo); // Load goods into the cargo hold
+        assertTrue(abandonedStationFreeCrew.isUsed()); // Check if the station is marked as used after loading goods
     }
 
     @Test
-    void testShouldNotLoadGoodsMismatchingGoodsSize(){
-        gameState.pickGivenCard(abandonedStationFreeCrew);
-        assertThrows(NoGoodsException.class, () -> abandonedStationFreeCrew.loadGoods(gameState, player1, new ArrayList<>(), new ArrayList<>()));
+    void testShouldNotLoadGoodsMismatchingGoodsSize(){ // Test that loading goods fails if the size of goods does not match
+        gameState.pickGivenCard(abandonedStationFreeCrew); // Pick the abandoned station card with free crew
+        assertThrows(NoGoodsException.class, () -> abandonedStationFreeCrew.loadGoods(gameState, player1, new ArrayList<>(), new ArrayList<>())); // Attempt to load goods with empty lists, which should throw an exception
     }
 
     @Test
-    void testShouldNotLoadGoodsCardAlreadyUsed(){
-        gameState.pickGivenCard(abandonedStationFreeCrew);
-        abandonedStationFreeCrew.setUsed();
-        assertThrows(InvalidActionException.class, () -> abandonedStationFreeCrew.loadGoods(gameState, player1, x_cargo, y_cargo));
+    void testShouldNotLoadGoodsCardAlreadyUsed(){ // Test that loading goods fails if the card has already been used
+        gameState.pickGivenCard(abandonedStationFreeCrew); // Pick the abandoned station card with free crew
+        abandonedStationFreeCrew.setUsed(); // Set the station as used
+        assertThrows(InvalidActionException.class, () -> abandonedStationFreeCrew.loadGoods(gameState, player1, x_cargo, y_cargo)); // Attempt to load goods after the station has been used, which should throw an exception
     }
     @Test
-    void testShouldNotLoadGoodsInvalidRequiredCrew() {
-        gameState.pickGivenCard(abandonedStationFreeCrew);
-        assertThrows(InvalidActionException.class, () -> abandonedStation.loadGoods(gameState, player1, x_cargo, y_cargo));
+    void testShouldNotLoadGoodsInvalidRequiredCrew() { // Test that loading goods fails if the player does not have enough crew
+        gameState.pickGivenCard(abandonedStationFreeCrew); // Pick the abandoned station card with free crew
+        assertThrows(InvalidActionException.class, () -> abandonedStation.loadGoods(gameState, player1, x_cargo, y_cargo)); // Attempt to load goods without enough crew, which should throw an exception
     }
 
 }

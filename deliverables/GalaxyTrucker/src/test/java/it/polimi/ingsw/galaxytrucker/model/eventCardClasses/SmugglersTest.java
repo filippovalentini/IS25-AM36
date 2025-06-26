@@ -27,18 +27,18 @@ class SmugglersTest {
     List<Color> prizeGoods;
 
     @BeforeEach
-    void init(){
-        prizeGoods = new ArrayList<>();
-        prizeGoods.add(Color.YELLOW);
+    void init(){ // Initialize the smugglers event card and game state
+        prizeGoods = new ArrayList<>(); // Initialize the prize goods for smugglers
+        prizeGoods.add(Color.YELLOW); // Add different colors of goods to the prize list
         prizeGoods.add(Color.GREEN);
         prizeGoods.add(Color.BLUE);
-        List<Connector> sides = new ArrayList<>();
-        sides.add(Connector.SMOOTH);
+        List<Connector> sides = new ArrayList<>(); // Initialize the sides
+        sides.add(Connector.SMOOTH); // Add different types of connectors to the sides list
         sides.add(Connector.UNIVERSAL);
         sides.add(Connector.SINGLE);
         sides.add(Connector.DOUBLE);
-        smugglers = new Smugglers(prizeGoods, 2,4, 1, 0);
-        gameState = new GameState(false, 2);
+        smugglers = new Smugglers(prizeGoods, 2,4, 1, 0); // Create a new instance of Smugglers with the prize goods and other parameters
+        gameState = new GameState(false, 2); // Create a new game state with 2 players
         nickname = "a";
         nickname2 = "b";
         try{
@@ -48,29 +48,29 @@ class SmugglersTest {
         catch (Exception e){
             System.exit(-1);
         }
-        gameState.addPlayer(cl1, nickname, Color.BLUE);
-        gameState.addPlayer(cl2, nickname2, Color.RED);
-        gameState.setPosition(nickname, 0);
-        gameState.setPosition(nickname2, 1);
-        Battery battery = new Battery(true,4, sides);
+        gameState.addPlayer(cl1, nickname, Color.BLUE); // Add the first player to the game state with a nickname and color
+        gameState.addPlayer(cl2, nickname2, Color.RED); // Add the second player to the game state with a different nickname and color
+        gameState.setPosition(nickname, 0); // Set the position of the first player to 0
+        gameState.setPosition(nickname2, 1); // Set the position of the second player to 1
+        Battery battery = new Battery(true,4, sides); // Create a new battery with the specified parameters
 
-        gameState.assembleComponent(nickname, battery, 1,3);
-        gameState.setGameState(State.CARD_SOLVING);
+        gameState.assembleComponent(nickname, battery, 1,3); // Assemble the battery component for the first player at position (1,3)
+        gameState.setGameState(State.CARD_SOLVING); // Set the game state to CARD_SOLVING
     }
 
     @Test
-    void testShouldNotAttackIfDefeated() {
-        int usedBatteries = 4;
-        boolean looseDays = true;
-        smugglers.setDefeated();
-        assertThrows(InvalidActionException.class, () -> smugglers.defeat(gameState, nickname, usedBatteries, looseDays));
+    void testShouldNotAttackIfDefeated() { // Test that the smugglers cannot be defeated again if they have already been defeated
+        int usedBatteries = 4; // Number of batteries used to defeat smugglers
+        boolean looseDays = true; // Whether the player loses days or not
+        smugglers.setDefeated(); // Set the smugglers as defeated
+        assertThrows(InvalidActionException.class, () -> smugglers.defeat(gameState, nickname, usedBatteries, looseDays)); // Assert that an InvalidActionException is thrown when trying to defeat smugglers again
     }
 
     @Test
-    void testShouldNotAttackIfNotEnoughBatteries() {
-        int usedBatteries = 5;
-        gameState.getNumberBatteries(nickname);
-        boolean looseDays = true;
-        assertThrows(NoBatteriesException.class, () -> smugglers.defeat(gameState, nickname, usedBatteries, looseDays));
+    void testShouldNotAttackIfNotEnoughBatteries() { // Test that the smugglers cannot be defeated if there are not enough batteries
+        int usedBatteries = 5; // Number of batteries used to defeat smugglers
+        gameState.getNumberBatteries(nickname); // Get the number of batteries for the first player
+        boolean looseDays = true; // Whether the player loses days or not
+        assertThrows(NoBatteriesException.class, () -> smugglers.defeat(gameState, nickname, usedBatteries, looseDays)); // Assert that a NoBatteriesException is thrown when trying to defeat smugglers with insufficient batteries
     }
 }

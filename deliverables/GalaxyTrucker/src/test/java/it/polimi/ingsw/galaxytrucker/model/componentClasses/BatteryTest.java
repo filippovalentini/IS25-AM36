@@ -14,7 +14,7 @@ class BatteryTest {
     private Battery battery;
 
     @BeforeEach
-    void init() {
+    void init() { // Initialize a Battery with a list of connectors
         List<Connector> sides = new ArrayList<Connector>();
         sides.add(Connector.SMOOTH);
         sides.add(Connector.SMOOTH);
@@ -24,14 +24,14 @@ class BatteryTest {
     }
 
     @Test
-    void testUseAvailableBattery() {
-        battery.addBatteries();
-        battery.useBatteries(2);
-        assertEquals(0, battery.getNumberBatteries());
+    void testUseAvailableBattery() { // Test using a battery when available
+        battery.addBatteries(); // Add a battery to the battery component
+        battery.useBatteries(2); // Use 2 batteries
+        assertEquals(0, battery.getNumberBatteries()); // Check that the number of batteries is now 0
     }
 
     @Test
-    void testShouldNotUseUnavailableBattery() {
-        assertThrows(NoBatteriesException.class, () -> {battery.useBatteries(3);});
+    void testShouldNotUseUnavailableBattery() { // Test using a battery when none are available
+        assertThrows(NoBatteriesException.class, () -> {battery.useBatteries(3);});  // Expect an exception when trying to use 3 batteries when none are available
     }
 }

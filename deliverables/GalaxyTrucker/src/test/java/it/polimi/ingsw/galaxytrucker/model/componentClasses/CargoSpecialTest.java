@@ -17,55 +17,55 @@ class CargoSpecialTest {
     private List<Connector> sides;
 
     @BeforeEach
-    void init() {
+    void init() { // Initialize the CargoSpecial instances with appropriate sides
         sides = new ArrayList<>();
         sides.add(Connector.SMOOTH);
         sides.add(Connector.SMOOTH);
         sides.add(Connector.DOUBLE);
         sides.add(Connector.UNIVERSAL);
-        singleCargoSpecial = new CargoSpecial(false, 0, sides);
-        doubleCargoSpecial = new CargoSpecial(true, 1, sides);
+        singleCargoSpecial = new CargoSpecial(false, 0, sides); // cargo special with no goods
+        doubleCargoSpecial = new CargoSpecial(true, 1, sides); // Double cargo special with no goods
     }
 
     @Test
-    void testAddGoodToSingleCargoSpecial() {
-        singleCargoSpecial.addGood(Color.BLUE);
-        assertEquals(1, singleCargoSpecial.getNumberGoods());
-        assertTrue(singleCargoSpecial.getGoods().contains(Color.BLUE));
+    void testAddGoodToSingleCargoSpecial() { // Test adding a good to a single cargo special
+        singleCargoSpecial.addGood(Color.BLUE); // Add a good of color BLUE
+        assertEquals(1, singleCargoSpecial.getNumberGoods()); // Check if the number of goods is 1
+        assertTrue(singleCargoSpecial.getGoods().contains(Color.BLUE)); // Check if the goods list contains the added good
     }
 
     @Test
-    void testAddGoodToDoubleCargoSpecial() {
-        doubleCargoSpecial.addGood(Color.GREEN);
-        assertEquals(1, doubleCargoSpecial.getNumberGoods());
-        assertTrue(doubleCargoSpecial.getGoods().contains(Color.GREEN));
+    void testAddGoodToDoubleCargoSpecial() { // Test adding a good to a double cargo special
+        doubleCargoSpecial.addGood(Color.GREEN); // Add a good of color GREEN
+        assertEquals(1, doubleCargoSpecial.getNumberGoods()); // Check if the number of goods is 1
+        assertTrue(doubleCargoSpecial.getGoods().contains(Color.GREEN)); // Check if the goods list contains the added good
     }
 
     @Test
-    void testAddRedGood() {
-        singleCargoSpecial.addGood(Color.RED);
-        assertEquals(1, singleCargoSpecial.getNumberGoods());
-        assertTrue(singleCargoSpecial.getGoods().contains(Color.RED));
+    void testAddRedGood() { // Test adding a red good to a single cargo special
+        singleCargoSpecial.addGood(Color.RED); // Add a good of color RED
+        assertEquals(1, singleCargoSpecial.getNumberGoods()); // Check if the number of goods is 1
+        assertTrue(singleCargoSpecial.getGoods().contains(Color.RED)); // Check if the goods list contains the added good
     }
 
     @Test
-    void testShouldNotAddGoodToFullSingleCargoSpecial() {
-        singleCargoSpecial.addGood(Color.BLUE);
-        assertThrows(FullCargoHoldException.class, () -> singleCargoSpecial.addGood(Color.GREEN));
+    void testShouldNotAddGoodToFullSingleCargoSpecial() { // Test that a good cannot be added to a full single cargo special
+        singleCargoSpecial.addGood(Color.BLUE); // Add a good of color BLUE
+        assertThrows(FullCargoHoldException.class, () -> singleCargoSpecial.addGood(Color.GREEN)); // Attempt to add another good of color GREEN, which should throw an exception
     }
 
     @Test
-    void testShouldNotAddGoodToFullDoubleCargoSpecial() {
-        doubleCargoSpecial.addGood(Color.BLUE);
-        doubleCargoSpecial.addGood(Color.GREEN);
-        assertThrows(FullCargoHoldException.class, () -> doubleCargoSpecial.addGood(Color.YELLOW));
+    void testShouldNotAddGoodToFullDoubleCargoSpecial() { // Test that a good cannot be added to a full double cargo special
+        doubleCargoSpecial.addGood(Color.BLUE); // Add a good of color BLUE
+        doubleCargoSpecial.addGood(Color.GREEN); // Add another good of color GREEN
+        assertThrows(FullCargoHoldException.class, () -> doubleCargoSpecial.addGood(Color.YELLOW)); // Attempt to add a third good of color YELLOW, which should throw an exception
     }
 
     @Test
-    void testGetGoodsReturnsCopy() {
-        singleCargoSpecial.addGood(Color.BLUE);
-        List<Color> goods = singleCargoSpecial.getGoods();
-        goods.add(Color.GREEN);
-        assertEquals(1, singleCargoSpecial.getNumberGoods());
+    void testGetGoodsReturnsCopy() { // Test that the getGoods method returns a copy of the goods list
+        singleCargoSpecial.addGood(Color.BLUE); // Add a good of color BLUE
+        List<Color> goods = singleCargoSpecial.getGoods(); // Get the goods list
+        goods.add(Color.GREEN); // Attempt to modify the goods list by adding a good of color GREEN
+        assertEquals(1, singleCargoSpecial.getNumberGoods()); // Check if the number of goods in the original cargo special is still 1
     }
 }
