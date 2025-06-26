@@ -571,9 +571,8 @@ public class FlightBoardControllerL2 implements FlightBoardController {
         this.gameID = gameID;
     }
     /**
-     * Notifies the view about a change in the game phase.
-     * It updates the game state label with the new game phase.
-     * @param gamePhase The new game phase to display.
+     * Notifies the view about an error.
+     * @param errorMessage The errore message.
      */
     @Override
     public void notifyError(String errorMessage) {
@@ -582,9 +581,8 @@ public class FlightBoardControllerL2 implements FlightBoardController {
         });
     }
     /**
-     * Notifies the view about a change in the game phase.
-     * It updates the game state label with the new game phase.
-     * @param gamePhase The new game phase to display.
+     * Notifies the view about a picked deck.
+     * @param deckIDs The deck picked.
      */
     @Override
     public void updatePickedDeck(List<Integer> deckIDs) {

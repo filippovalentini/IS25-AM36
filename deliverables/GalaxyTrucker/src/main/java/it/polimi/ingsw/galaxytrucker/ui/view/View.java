@@ -52,7 +52,7 @@ public class View {
 
     /**
      * Returns a map associating the nickname of each current player with its color.
-     * @return Map<String, Color> - a map of player nicknames and their colors
+     * @return Map&lt;String, Color&gt; - a map of player nicknames and their colors
      */
     public Map<String, Color> getCurrentPlayers() {
         Map<String, Color> players = new HashMap<>();
@@ -67,7 +67,7 @@ public class View {
 
     /**
      * Returns the nicknames of the other players in the game.
-     * @return List<String> - a list of nicknames of other players
+     * @return List&lt;String&gt; - a list of nicknames of other players
      */
     public List<String> getOtherPlayerNicknames() {
         return new ArrayList<>(otherPlayers.keySet());
@@ -118,7 +118,7 @@ public class View {
 
     /**
      * Returns a map that associates each player's color with their position on the flight board.
-     * @return Map<Color, Integer> - a map of player colors and their positions
+     * @return Map&lt;Color, Integer&gt; - a map of player colors and their positions
      */
     public Map<Color,Integer> getColorCellMap(){
         return flightBoard.getColorCellMap();
@@ -128,7 +128,7 @@ public class View {
 
     /**
      * Returns a map that associates each player's nickname with their color.
-     * @return Map<String, Color> - a map of player nicknames and their colors
+     * @return Map&lt;String, Color&gt; - a map of player nicknames and their colors
      */
     public Map<String, Color> getPlayerColorMap(){
         Map<String, Color> map = new HashMap<>();
@@ -213,7 +213,7 @@ public class View {
 
     /**
      * Returns the list of image IDs of the components currently shown face up.
-     * @return List<Integer> - a list of image IDs of the shown components
+     * @return List&lt;Integer&gt; - a list of image IDs of the shown components
      */
     public List<Integer> getShownComponents() {
         List<Integer> shownComponentsImageIDs = new ArrayList<>();
@@ -228,7 +228,7 @@ public class View {
     /**
      * Returns the list of assembled components for a player.
      * @param nickname
-     * @return List<List<ViewComponent>> - a list of lists of ViewComponent objects representing the assembled components
+     * @return List&lt;List&lt;ViewComponent&gt;    &gt; - a list of lists of ViewComponent objects representing the assembled components
      */
     public List<List<ViewComponent>> getAssembledComponents(String nickname) {
         if(nickname.equals(this.player.getNickname())){
@@ -244,7 +244,7 @@ public class View {
     /**
      * Returns the list of reserved components for a player.
      * @param nickname
-     * @return List<ViewComponent> - a list of ViewComponent objects representing the reserved components
+     * @return List&lt;ViewComponent&gt; - a list of ViewComponent objects representing the reserved components
      */
     public List<ViewComponent> getReservedComponents(String nickname) {
         if(nickname.equals(this.player.getNickname())){
@@ -447,7 +447,7 @@ public class View {
 
     /**
      * Returns the final ranking of the game as a list of strings, each representing a player and their credits.
-     * @return List<String> - a list of strings representing the final ranking
+     * @return List&lt;String&gt; - a list of strings representing the final ranking
      */
     public List<String> getFinalRanking(){
         List<String> finalRankingList = new ArrayList<>();
