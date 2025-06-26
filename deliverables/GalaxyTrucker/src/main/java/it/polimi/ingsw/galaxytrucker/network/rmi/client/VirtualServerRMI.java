@@ -3,6 +3,7 @@ package it.polimi.ingsw.galaxytrucker.network.rmi.client;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.Color;
 import it.polimi.ingsw.galaxytrucker.network.VirtualServer;
 import it.polimi.ingsw.galaxytrucker.network.VirtualView;
+import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -15,6 +16,14 @@ import java.util.List;
 //RMI client to change the state of the model
 
 public interface VirtualServerRMI extends Remote, VirtualServer {
+    //sets the client connection status
+    /**
+     * Sets the connection status of the client.
+     * @param client
+     * @param connected 1 if the client is connected, 0 otherwise
+     */
+    void setClientStatus(VirtualViewRMI client, int connected) throws RemoteException;
+
     //determines if a game with the specified ID has exists already
 
     /**

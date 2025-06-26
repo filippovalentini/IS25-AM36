@@ -2,6 +2,7 @@ package it.polimi.ingsw.galaxytrucker.network.rmi.client;
 
 import it.polimi.ingsw.galaxytrucker.network.GameSessionManager;
 import it.polimi.ingsw.galaxytrucker.network.VirtualView;
+import it.polimi.ingsw.galaxytrucker.network.rmi.server.ServerRMI;
 import it.polimi.ingsw.galaxytrucker.ui.UserInterface;
 import it.polimi.ingsw.galaxytrucker.model.enumerations.*;
 import it.polimi.ingsw.galaxytrucker.network.rmi.server.VirtualViewRMI;
@@ -28,13 +29,6 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI, Ga
         this.ui = ui;
         this.server = server;
     }
-
-    /**
-     * This method is invoked by the server periodically to understand if the client is still alive.
-     * @throws RemoteException
-     */
-    @Override
-    public void ping() throws RemoteException {}
 
     /**
      * This method determines if a game with the specified ID has already started.
@@ -125,6 +119,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualViewRMI, Ga
     public void updateWaitingForPlayers(boolean firstFlight) throws RemoteException {
         try{
             this.ui.updateWaitingForPlayers(firstFlight);
+            new PongThreadRMI(this.server, this).start();
         }
         catch(Exception e){
             System.out.println(e.getMessage());

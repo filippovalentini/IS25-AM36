@@ -16,6 +16,7 @@ import java.util.*;
 public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
     private final Map<Integer, GameController> controllers;             //maps each controller with the ID of the respective game
     private final Map<String, VirtualViewRMI> clients = new HashMap<>();    //maps each client with the nickname of the respective player
+    private final Map<VirtualViewRMI, Integer> clientsConnections = new HashMap<>();    //maps each client with an integer that determines if the client is connected or not
 
     //constructor, initializes the controllers mapping with a provided empty map
 
@@ -42,6 +43,27 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
             controllers.get(gameID).forceQuit(nickname);
             clients.remove(nickname);
         } catch (Exception ignored) {}
+    }
+
+    //determines if the maneged client is still correctly connected or not
+    /**
+     * Checks if the client is connected.
+     * @param client
+     * @return true if the client is connected, false otherwise
+     */
+    public boolean isClientConnected(VirtualViewRMI client) throws RemoteException {
+        return clientsConnections.get(client) == 1;
+    }
+
+    //sets the client connection status
+    /**
+     * Sets the connection status of the client.
+     * @param client nickname of the client
+     * @param connected 1 if the client is connected, 0 otherwise
+     */
+    @Override
+    public void setClientStatus(VirtualViewRMI client, int connected) throws RemoteException {
+        clientsConnections.put(client, connected);
     }
 
     //determines if a game with the specified ID has exists already
@@ -104,6 +126,7 @@ public class ServerRMI extends UnicastRemoteObject implements VirtualServerRMI {
         try{
             controllers.get(gameID).addPlayer(client, nickname, color);
             clients.put(nickname, (VirtualViewRMI) client);
+            clientsConnections.put((VirtualViewRMI) client, 1);
             addedToGame = true;
             new PingThreadRMI(this, (VirtualViewRMI) client, gameID, nickname).start();
         }

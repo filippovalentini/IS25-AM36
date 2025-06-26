@@ -1,4 +1,5 @@
 package it.polimi.ingsw.galaxytrucker.network.rmi.server;
+
 import java.rmi.RemoteException;
 
 /**
@@ -30,13 +31,17 @@ public class PingThreadRMI extends Thread {
     public void run() {
         while (true) {
             try {
-                remoteClient.ping();
                 Thread.sleep(5000);
+                if(!server.isClientConnected(remoteClient)) {
+                    throw new Exception("Client is not connected");
+                }else{
+                    server.setClientStatus(remoteClient, 0);
+                }
             } catch (Exception e) {
                 try{
                     server.manageClientDisconnection(gameID, nickname);
                     break;
-                } catch (RemoteException ignored) {
+                } catch (RemoteException e1) {
                     break;
                 }
             }
