@@ -596,7 +596,14 @@ public class GameState {
         try{clients.get(nickname).updatePickedComponent(c.getImageID(), false);}
         catch(Exception e){System.out.println("Error during remote method invocation on client");}
     }
-    //invoked when a player wants to release (therefore, place face up) the component that it has picked
+    /**
+     * Handles the release of a picked component by a player during the ship building phase.
+     * The component is placed face up and made visible to all players.
+     *
+     * @param nickname the nickname of the player releasing the component
+     * @throws PickedComponentException if the player has no component to release
+     * @throws InvalidActionException if the game is not in ship building phase or if the player has already finished assembling
+     */
     public void putShown(String nickname) throws PickedComponentException, InvalidActionException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Wait for assembling phase");
@@ -616,7 +623,18 @@ public class GameState {
         try{clients.get(nickname).updatePickedComponent(c.getImageID(), true);}
         catch(Exception e){System.out.println("Error during remote method invocation on client");}
     }
-    //invoked when a player wants to assemble on the ship board the component that it has picked
+
+    /**
+     * Assembles a picked component onto the player's ship board at the specified coordinates.
+     * Updates all clients with the assembled component information.
+     *
+     * @param nickname the nickname of the player assembling the component
+     * @param x the x-coordinate where to place the component
+     * @param y the y-coordinate where to place the component
+     * @throws AssembledComponentException if there's an issue with component assembly
+     * @throws PickedComponentException if the player has no component to assemble
+     * @throws InvalidActionException if the game is not in ship building phase or if the player has already finished assembling
+     */
     public void assembleComponent(String nickname, int x, int y) throws AssembledComponentException, PickedComponentException, InvalidActionException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Wait for assembling phase");
@@ -634,7 +652,14 @@ public class GameState {
         try{clients.get(nickname).updatePickedComponent(c.getImageID(), true);}
         catch(Exception e){System.out.println("Error during remote method invocation on client");}
     }
-    //invoked when a player wants to change the orientation of the component that it has picked
+
+    /**
+     * Rotates the currently picked component of a player by changing its orientation.
+     *
+     * @param nickname the nickname of the player rotating the component
+     * @throws InvalidActionException if the game is not in ship building phase or if the player has already finished assembling
+     * @throws PickedComponentException if the player has no component to rotate
+     */
     public void rotatePickedComponent(String nickname) throws InvalidActionException, PickedComponentException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Wait for assembling phase");
@@ -648,7 +673,17 @@ public class GameState {
         try{clients.get(nickname).updateRotatePickedComponent();}
         catch(Exception e){System.out.println("Error during remote method invocation on client");}
     }
-    //invoked when a player wants to pick a deck during the assembling phase to see its content
+
+    /**
+     * Allows a player to pick a deck during the assembling phase to view its contents.
+     * Only available in non-first flight games.
+     *
+     * @param nickname the nickname of the player picking the deck
+     * @param deckNumber the number of the deck to pick (must be valid and not already picked)
+     * @throws PickedDeckException if the deck is already picked by another player
+     * @throws InvalidActionException if the game is not in ship building phase, if it's a first flight game,
+     *                               if the player has already finished assembling, or if the deck number is invalid
+     */
     public void pickDeck(String nickname, int deckNumber) throws PickedDeckException, InvalidActionException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Wait for assembling phase");
@@ -672,7 +707,16 @@ public class GameState {
         try{clients.get(nickname).updatePickedDeck(deckIDs);}
         catch(Exception e){System.out.println("Error during remote method invocation on client");}
     }
-    //invoked when a player wants to release the deck it has picked, during the assembling phase
+
+    /**
+     * Releases a previously picked deck, making it available for other players to pick.
+     * Only available in non-first flight games.
+     *
+     * @param nickname the nickname of the player releasing the deck
+     * @throws InvalidActionException if the game is not in ship building phase, if it's a first flight game,
+     *                               or if the player has already finished assembling
+     * @throws PickedDeckException if the player has no deck to release
+     */
     public void releaseDeck(String nickname) throws InvalidActionException, PickedDeckException {
         if(state != State.SHIP_BUILDING){
             throw new InvalidActionException("Wait for assembling phase");
@@ -689,7 +733,16 @@ public class GameState {
         try{clients.get(nickname).updateReleasedDeck();}
         catch(Exception e){System.out.println("Error during remote method invocation on client");}
     }
-    //invoked when a player has finished the assembling phase and has to pick a free position on the flight board
+
+    /**
+     * Sets the starting position of a player on the flight board after they finish assembling their ship.
+     * Validates the position based on game level and availability.
+     *
+     * @param nickname the nickname of the player setting their position
+     * @param initCell the initial cell number on the flight board
+     * @throws InvalidPositionException if the starting position is invalid or already taken
+     * @throws InvalidActionException if the game is not in the appropriate phase or if the player has already set their position
+     */
     public void setPosition(String nickname, int initCell) throws InvalidPositionException, InvalidActionException {
         if(state != State.SHIP_BUILDING && state != State.SHIP_PLACEMENT){
             throw new InvalidActionException("Wait for assembling phase");
@@ -730,7 +783,16 @@ public class GameState {
             checkShipBoards();
         }
     }
-    //invoked when a player wants to turn around the hourglass
+
+    /**
+     * Starts a new cycle by turning the hourglass. Can be invoked by a player who has finished assembling
+     * during the ship building phase. Only available in non-first flight games.
+     *
+     * @param nickname the nickname of the player starting the new cycle
+     * @throws InvalidActionException if the player hasn't finished assembling, if the game is not in ship building phase,
+     *                               or if it's a first flight game
+     * @throws HourGlassException if there's an issue with the hourglass mechanism
+     */
     public void startNewCycle(String nickname) throws InvalidActionException, HourGlassException{
         if (!isPositioned(nickname)) {
             throw new InvalidActionException("First finish assembling!!!");
@@ -747,7 +809,11 @@ public class GameState {
             }
         }
     }
-    //invoked when the assembling phase starts, turns around the hourglass
+
+    /**
+     * Starts a new cycle automatically when the assembling phase begins.
+     * This method turns the hourglass and notifies all clients.
+     */
     public void startNewCycle(){
         hourglass.startNewCycle();
 
@@ -756,7 +822,10 @@ public class GameState {
             catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
     }
-    //invoked when the hourglass has finished running
+
+    /**
+     * Called when the hourglass has finished running to notify all clients.
+     */
     public void finishedCycle() {
         for(VirtualView view: clients.values()){
             try{view.updateFinishedCycle();}
@@ -765,10 +834,19 @@ public class GameState {
     }
 
 
-     //SHIP CONTROL/REPAIR PHASE
+    //SHIP CONTROL/REPAIR PHASE
 
 
-    //invoked when a component of a player's ship board must be destroyed
+    /**
+     * Destroys a component at the specified coordinates on a player's ship board.
+     * Can be used during ship control phase or ship repair phase.
+     *
+     * @param nickname the nickname of the player whose component is being destroyed
+     * @param x the x-coordinate of the component to destroy
+     * @param y the y-coordinate of the component to destroy
+     * @throws AssembledComponentException if there's no component at the specified coordinates
+     * @throws InvalidActionException if the game is not in control or repair phase
+     */
     public void destroyComponent(String nickname, int x, int y) throws AssembledComponentException, InvalidActionException {
         if(state == State.SHIP_CONTROL){
             playersPlay.get(nickname).destroyComponent(x,y);
@@ -780,7 +858,18 @@ public class GameState {
             throw new InvalidActionException("Wait for control or repair phase");
         }
     }
-    //invoked when a player wants to initialize a cabin of its shipboard with 2 human crew members
+
+    /**
+     * Initializes a cabin component with 2 human crew members.
+     * Only available during the ship control phase.
+     *
+     * @param nickname the nickname of the player adding crew
+     * @param x the x-coordinate of the cabin
+     * @param y the y-coordinate of the cabin
+     * @throws AssembledComponentException if there's no cabin component at the specified coordinates
+     * @throws FullCabinException if the cabin is already full
+     * @throws InvalidActionException if the game is not in ship control phase
+     */
     public void addCrew(String nickname, int x, int y) throws AssembledComponentException, FullCabinException, InvalidActionException {
         if(state != State.SHIP_CONTROL){
             throw new InvalidActionException("Wait for ship control phase");
@@ -794,7 +883,18 @@ public class GameState {
 
         checkShipBoards();
     }
-    //invoked when the player wants to initialize a battery container with batteries
+
+    /**
+     * Initializes a battery container with batteries.
+     * Only available during the ship control phase.
+     *
+     * @param nickname the nickname of the player adding batteries
+     * @param x the x-coordinate of the battery container
+     * @param y the y-coordinate of the battery container
+     * @throws AssembledComponentException if there's no battery container at the specified coordinates
+     * @throws NoBatteriesException if there are no batteries available to add
+     * @throws InvalidActionException if the game is not in ship control phase
+     */
     public void addBatteries(String nickname, int x, int y) throws AssembledComponentException, NoBatteriesException, InvalidActionException {
         if(state != State.SHIP_CONTROL){
             throw new InvalidActionException("Wait for ship control phase");
@@ -808,7 +908,19 @@ public class GameState {
 
         checkShipBoards();
     }
-    //invoked when a player wants to initialize a cabin of its shipboard with an alien
+
+    /**
+     * Initializes a cabin component with an alien crew member.
+     * Only available during the ship control phase in non-first flight games.
+     *
+     * @param nickname the nickname of the player adding the alien
+     * @param isPurple true if the alien is purple, false otherwise
+     * @param x the x-coordinate of the cabin
+     * @param y the y-coordinate of the cabin
+     * @throws AssembledComponentException if there's no cabin component at the specified coordinates
+     * @throws FullCabinException if the cabin is already full
+     * @throws InvalidActionException if the game is not in ship control phase or if it's a first flight game
+     */
     public void addAlien(String nickname, boolean isPurple, int x, int y) throws AssembledComponentException, FullCabinException, InvalidActionException {
         if(state != State.SHIP_CONTROL){
             throw new InvalidActionException("Wait for ship control phase");
@@ -825,8 +937,13 @@ public class GameState {
 
         checkShipBoards();
     }
-    //checks the correctness of all the ships in the game in order to start the flight phase (ships must me
-    //well assembled, each cabin must be full of crew and each container full of batteries)
+
+    /**
+     * Checks the correctness of all ships in the game to determine if the flight phase can start.
+     * Ships must be well assembled with all cabins full of crew and all containers full of batteries.
+     * If all ships are correct, transitions to the card picking phase.
+     */
+
     public void checkShipBoards(){
         boolean correctShips = true;
         for(String nickname : playersPos.keySet()) {
@@ -843,8 +960,12 @@ public class GameState {
             updateTurns();
         }
     }
-    //creates the main deck for the game by unifying and shuffling the 4 decks used during the assembling phase;
-    //this method is invoked after the assembling phase
+
+    /**
+     * Creates the main game deck by unifying and shuffling the 4 decks used during the assembling phase.
+     * This method is invoked after the assembling phase when all ships are ready.
+     */
+
     public void createGameDeck() {
         List<EventCard> gameDeckCards = new ArrayList<>();
         for (Deck deck : decks) {
@@ -855,11 +976,16 @@ public class GameState {
     }
 
 
-     //FLIGHT PHASE
+    //FLIGHT PHASE
 
 
 
-    //this method changes the state of the game
+    /**
+     * Changes the state of the game and notifies all clients.
+     * Handles special cleanup when transitioning to the END state.
+     *
+     * @param state the new game state to set
+     */
     public void setGameState(State state) {
         this.state = state;
 
@@ -894,7 +1020,12 @@ public class GameState {
             cancelGame();
         }
     }
-    //this method is invoked when a player has to repair its ship after it has been damaged
+
+    /**
+     * Sets the game to ship repair phase for a specific player whose ship has been damaged.
+     *
+     * @param nickname the nickname of the player who needs to repair their ship
+     */
     public void setShipRepair(String nickname){
         this.state = State.SHIP_REPAIR;
 
@@ -903,8 +1034,12 @@ public class GameState {
             catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
     }
-    //this method is invoked after a card has been solved, in order to determine whether some ship boards
-    //have been damaged due to the effect of the card and have to be repaired
+
+    /**
+     * Checks if any ship boards have been damaged and need repair after a card has been solved.
+     * If damages are found, sets the game to repair phase; otherwise, returns to card picking phase.
+     */
+
     public void checkDamages(){
         boolean correctShips = true;
         for(String nickname : playersPos.keySet()) {
@@ -918,7 +1053,11 @@ public class GameState {
             setGameState(State.CARD_PICKING);
         }
     }
-    //this method orders playersPos in (decreasing) position order and assigns the leader's nickname to turnPlayer
+
+    /**
+     * Orders players by their position on the flight board (descending order) and assigns
+     * the leader's nickname to turnPlayer. Updates all clients with the new turn order.
+     */
     public void updateTurns(){
         playersPos = playersPos.entrySet()
                 .stream()
@@ -934,7 +1073,11 @@ public class GameState {
             catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
     }
-    //this method updates turnPlayer with the nickname of the next player that has to perform an action
+
+    /**
+     * Updates turnPlayer to the next player in the turn order.
+     * If the current player is the last in order, calls updateTurns() to restart from the leader.
+     */
     public void nextTurn(){
         Iterator<String> iterator = playersPos.keySet().iterator();
         boolean found = false;
@@ -956,6 +1099,12 @@ public class GameState {
         //if turnPlayer is the last player in position order, turns are updated and the leader nickname is assigned to turnPlayer
         updateTurns();
     }
+
+    /**
+     * Sets the turn player to a specific player's nickname and notifies all clients.
+     *
+     * @param nickname the nickname of the player whose turn it should be
+     */
     //sets turnPlayer to a specific player's nickname
     public void setTurnPlayer(String nickname){
         this.turnPlayer = nickname;
@@ -965,7 +1114,14 @@ public class GameState {
             catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
     }
-    //this method is invoked by the network server when the connection with a client is lost
+
+    /**
+     * Handles forced disconnection of a player from the game.
+     * Manages different scenarios based on the current game state.
+     *
+     * @param nickname the nickname of the player being forcibly disconnected
+     * @throws InvalidActionException if there's an issue processing the disconnection
+     */
     public void forceQuit(String nickname) throws InvalidActionException{
         clients.remove(nickname);
 
@@ -997,8 +1153,15 @@ public class GameState {
             setGameState(State.END);
         }
     }
-    //this method is invoked when a player wants to leave the game; the parameter playerDecision specifies
-    //whether the player decided to leave the game or it was forced to do so
+
+    /**
+     * Handles a player's request to leave the game or forced removal.
+     * Updates turn order and checks for game end conditions.
+     *
+     * @param nickname the nickname of the player quitting
+     * @param playerDecision true if the player chose to quit, false if forced to quit
+     * @throws InvalidActionException if the player cannot quit in the current phase
+     */
     public void quitGame(String nickname, boolean playerDecision) throws InvalidActionException {
         if(state != State.CARD_PICKING && state != State.CARD_SOLVING){
             throw new InvalidActionException("Can't leave the game in this phase");
@@ -1034,7 +1197,14 @@ public class GameState {
             catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
     }
-    //invoked when the leader draws a new card from the deck (during the game), which must be solved
+
+    /**
+     * Allows the leader to draw a new card from the deck during the card picking phase.
+     * Transitions to card solving phase and applies the card's special effect.
+     *
+     * @param nickname the nickname of the player (must be the leader) picking the card
+     * @throws InvalidActionException if the game is not in card picking phase or if the player is not the leader
+     */
     public void pickNextCard(String nickname) throws InvalidActionException {
         if(state != State.CARD_PICKING){
             throw new InvalidActionException("Can't pick a new card");
@@ -1052,19 +1222,40 @@ public class GameState {
             setGameState(State.END);
         }
     }
-    //removes a member (human or alien) from each cabin (of a player's ship board) that is directly
-    //connected with another busy cabin
+
+    /**
+     * Applies epidemic effect to a player's ship, removing crew members from cabins
+     * that are directly connected to other busy cabins.
+     *
+     * @param nickname the nickname of the player affected by the epidemic
+     * @throws InvalidActionException if no card has been picked yet
+     */
     public void epidemicEffect(String nickname) throws InvalidActionException {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
         }
         playersPlay.get(nickname).epidemicEffect();
     }
-    //this method is invoked when a player has/wants to remove crew members from its ship board
+
+    /**
+     * Removes specified crew members from a player's ship board.
+     *
+     * @param nickname the nickname of the player removing crew members
+     * @param x list of x-coordinates of cabins
+     * @param y list of y-coordinates of cabins
+     * @param crewInEachCabin list of crew counts in each cabin
+     * @param numberCrewToRemove total number of crew members to remove
+     */
     public void removeCrewMembers(String nickname, List<Integer> x, List<Integer> y, List<Integer> crewInEachCabin, int numberCrewToRemove) {
         playersPlay.get(nickname).removeCrewMembers(x, y, crewInEachCabin, numberCrewToRemove);
     }
-    //updates the cosmic credits of a player
+
+    /**
+     * Updates the cosmic credits of a player and notifies all clients.
+     *
+     * @param nickname the nickname of the player whose credits are being updated
+     * @param update the amount to add or subtract from current credits
+     */
     public void updatePlayerCredits(String nickname, int update) {
         playersPlay.get(nickname).updateCredits(update);
 
@@ -1073,7 +1264,13 @@ public class GameState {
             catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
     }
-    //updates the position of a player on the ship board
+
+    /**
+     * Changes a player's position on the flight board by the specified number of cells.
+     *
+     * @param nickname the nickname of the player moving
+     * @param cells the number of cells to move (positive for forward, negative for backward)
+     */
     public void changePlayerPosition(String nickname, int cells) {
         playersPos.get(nickname).changePosition(getBusyCells(), cells);
 
@@ -1083,29 +1280,74 @@ public class GameState {
             catch(Exception e){System.out.println("Error during remote method invocation on client");}
         }
     }
-    //invoked when a meteor hits a player's ship board
+
+    /**
+     * Handles a meteor attack on a player's ship. The player can choose to activate
+     * shields or cannons for defense.
+     *
+     * @param nickname the nickname of the player being attacked
+     * @param meteor the meteor object containing attack parameters
+     * @param direction the direction of the meteor attack
+     * @param activateShield true to activate shield defense
+     * @param activateCannon true to activate cannon defense
+     * @throws InvalidActionException if no card has been picked yet
+     */
+
     public void meteorAttack(String nickname, Meteor meteor, int direction, boolean activateShield, boolean activateCannon) throws InvalidActionException {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
         }
         playersPlay.get(nickname).meteorAttack(meteor, direction, activateShield, activateCannon);
     }
-    //invoked when a cannon shot hits a player's ship board
+    /**
+     * Handles a cannon fire attack on a player's ship. The player can choose to activate shields.
+     *
+     * @param nickname the nickname of the player being attacked
+     * @param cannonFire the cannon shot object containing attack parameters
+     * @param direction the direction of the cannon fire attack
+     * @param activateShield true to activate shield defense
+     * @throws InvalidActionException if no card has been picked yet
+     */
     public void cannonFireAttack(String nickname, CannonShot cannonFire, int direction, boolean activateShield) throws InvalidActionException{
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
         }
         playersPlay.get(nickname).cannonFireAttack(cannonFire, direction, activateShield);
     }
-    //substitutes (or adds) a good in a specific container of a player's cargo hold
+    /**
+     * Substitutes or adds a good in a specific container of a player's cargo hold.
+     *
+     * @param nickname the nickname of the player
+     * @param cargo_row the row of the cargo container
+     * @param cargo_col the column of the cargo container
+     * @param good the color of the good to add/substitute
+     * @param posInCargo the position within the cargo container
+     * @throws FullCargoHoldException if the cargo hold is full
+     * @throws UnsupportedCargoColorException if the cargo color is not supported
+     */
     public void substituteGoods(String nickname, int cargo_row, int cargo_col, Color good, int posInCargo) throws FullCargoHoldException, UnsupportedCargoColorException{
         playersPlay.get(nickname).substituteGoods(cargo_row, cargo_col, good, posInCargo);
     }
-    //adds a set of goods in specific cargo holds of a player's ship board
+    /**
+     * Adds a set of goods to specific cargo holds of a player's ship board.
+     *
+     * @param nickname the nickname of the player
+     * @param x list of x-coordinates of cargo holds
+     * @param y list of y-coordinates of cargo holds
+     * @param goods list of goods to load
+     * @throws UnsupportedCargoColorException if any cargo color is not supported
+     * @throws FullCargoHoldException if any cargo hold is full
+     */
     public void loadGoods(String nickname, List<Integer> x, List<Integer> y, List<Color> goods) throws UnsupportedCargoColorException, FullCargoHoldException {
         playersPlay.get(nickname).loadGoods(x, y, goods);
     }
-    //this method removes the numberGoods-most precious goods from a player's ship board
+
+    /**
+     * Removes the specified number of most precious goods from a player's ship board.
+     *
+     * @param nickname the nickname of the player losing goods
+     * @param numberGoods the number of precious goods to remove
+     */
     public void losePreciousGoods(String nickname, int numberGoods){
         playersPlay.get(nickname).losePreciousGoods(numberGoods);
     }
@@ -1113,7 +1355,14 @@ public class GameState {
 
     //ACTIONS THAT A PLAYER CAN PERFORM TO SOLVE A CARD
 
-    //invoked when a player decides to land on a planet in order to gain goods
+    /**
+     * Handles a player's decision to land on a planet to gain goods.
+     * Only the player whose turn it is can perform this action.
+     *
+     * @param nickname the nickname of the player landing on the planet
+     * @param numberPlanet the number/identifier of the planet to land on
+     * @throws InvalidActionException if no card has been picked yet or if it's not the player's turn
+     */
     public void planetLanding(String nickname, int numberPlanet) throws InvalidActionException {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
@@ -1123,7 +1372,17 @@ public class GameState {
         }
         currentCard.planetLanding(this, nickname, numberPlanet);
     }
-   //invoked when a player need to switch his goods in Planets effect
+    /**
+     * Handles switching goods during planet effects.
+     * Only the player whose turn it is can perform this action.
+     *
+     * @param nickname the nickname of the player switching goods
+     * @param cargo_row the row of the cargo container
+     * @param cargo_col the column of the cargo container
+     * @param good the color of the good to switch
+     * @param pos the position of the good in the cargo
+     * @throws InvalidActionException if no card has been picked yet or if it's not the player's turn
+     */
     public void switchGoods(String nickname,int cargo_row, int cargo_col, Color good, int pos) throws InvalidActionException {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
@@ -1133,8 +1392,18 @@ public class GameState {
         }
         currentCard.switchGoods(this, nickname,cargo_row,cargo_col,good,pos);
     }
-    //invoked when a player's ship has to be hit by a meteor/cannon shot; the player can decide whether to
-    //activate a shield or a cannon to defend its ship
+    /**
+     * Handles a hit on a player's ship (meteor or cannon shot). The player can decide
+     * whether to activate shields or cannons for defense.
+     *
+     * @param nickname the nickname of the player being hit
+     * @param diceResult the result of the dice roll determining hit severity
+     * @param activateShield true to activate shield defense
+     * @param activateCannon true to activate cannon defense
+     * @throws InvalidActionException if no card has been picked yet or if it's not the player's turn
+     * @throws NoBatteriesException if there are insufficient batteries to activate defenses
+     */
+
     public void hit(String nickname, int diceResult, boolean activateShield, boolean activateCannon) throws InvalidActionException, NoBatteriesException {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
@@ -1144,7 +1413,17 @@ public class GameState {
         }
         currentCard.hitShip(this, nickname, diceResult, activateShield, activateCannon);
     }
-    //invoked when a player decides to land on an abandoned ship
+    /**
+     * Handles a player's decision to land on an abandoned ship.
+     * Requires crew members to perform the landing.
+     *
+     * @param nickname the nickname of the player landing on the abandoned ship
+     * @param x list of x-coordinates for the landing action
+     * @param y list of y-coordinates for the landing action
+     * @param z list of additional parameters for the landing action
+     * @throws InvalidActionException if no card has been picked yet or if it's not the player's turn
+     * @throws NoCrewException if there are insufficient crew members for the landing
+     */
     public void landing(String nickname, List<Integer> x, List<Integer> y, List<Integer> z) throws InvalidActionException, NoCrewException {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
@@ -1154,8 +1433,17 @@ public class GameState {
         }
         currentCard.landing(this, nickname, x, y, z);
     }
-    //invoked when a player wants to defeat an enemy; the player can decide whether to lose flight days
-    //to gain credits/goods or not
+    /**
+     * Handles a player's attempt to defeat an enemy. The player can choose to lose flight days
+     * in exchange for credits or goods.
+     *
+     * @param nickname the nickname of the player defeating the enemy
+     * @param usedBatteries the number of batteries used in the defeat attempt
+     * @param loseDays true if the player chooses to lose flight days for additional rewards
+     * @throws InvalidActionException if no card has been picked yet or if it's not the player's turn
+     * @throws NoBatteriesException if there are insufficient batteries
+     */
+
     public void defeat(String nickname, int usedBatteries, boolean loseDays) throws InvalidActionException, NoBatteriesException {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
@@ -1165,7 +1453,14 @@ public class GameState {
         }
         currentCard.defeat(this, nickname, usedBatteries, loseDays);
     }
-    //invoked when a player wants to fly across the flight board exploiting its engine strength
+    /**
+     * Handles a player's decision to fly across the flight board using engine strength.
+     *
+     * @param nickname the nickname of the player flying
+     * @param usedBatteries the number of batteries used to power the flight
+     * @throws InvalidActionException if no card has been picked yet or if it's not the player's turn
+     * @throws NoBatteriesException if there are insufficient batteries
+     */
     public void fly(String nickname, int usedBatteries) throws InvalidActionException, NoBatteriesException {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
@@ -1175,7 +1470,14 @@ public class GameState {
         }
         currentCard.fly(this, nickname, usedBatteries);
     }
-    //invoked when a player wants to use batteries to have an advantage while solving a card
+    /**
+     * Allows a player to use batteries to gain an advantage while solving a card.
+     *
+     * @param nickname the nickname of the player using batteries
+     * @param usedBatteries the number of batteries to use
+     * @throws InvalidActionException if no card has been picked yet or if it's not the player's turn
+     * @throws NoBatteriesException if there are insufficient batteries
+     */
     public void useBatteries(String nickname, int usedBatteries) throws InvalidActionException, NoBatteriesException {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
@@ -1185,7 +1487,12 @@ public class GameState {
         }
         currentCard.useBatteries(this, nickname, usedBatteries);
     }
-    //invoked when a player doesn't want to exploit the benefits of a card and therefore skips the turn
+    /**
+     * Allows a player to skip their turn without taking any action from the current card.
+     *
+     * @param nickname the nickname of the player skipping their turn
+     * @throws InvalidActionException if no card has been picked yet or if it's not the player's turn
+     */
     public void skip(String nickname) throws InvalidActionException {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
@@ -1195,7 +1502,17 @@ public class GameState {
         }
         currentCard.skip(this, nickname);
     }
-    //invoked when a player decides to load goods inside cargo hold components of its ship
+    /**
+     * Handles a player's decision to load goods into cargo hold components of their ship.
+     *
+     * @param nickname the nickname of the player loading goods
+     * @param x list of x-coordinates of cargo holds
+     * @param y list of y-coordinates of cargo holds
+     * @throws InvalidActionException if no card has been picked yet or if it's not the player's turn
+     * @throws UnsupportedCargoColorException if the cargo color is not supported
+     * @throws FullCargoHoldException if the cargo hold is full
+     * @throws NoGoodsException if there are no goods available to load
+     */
     public void loadGoods(String nickname, List<Integer> x, List<Integer> y) throws InvalidActionException, UnsupportedCargoColorException, FullCargoHoldException, NoGoodsException {
         if(state != State.CARD_SOLVING){
             throw new InvalidActionException("Card must be picked first");
@@ -1211,15 +1528,20 @@ public class GameState {
     //
 
 
-    //invoked when the game is over (all players have abandoned or the adventure card deck is empty) in order
-    //to compute the final amount of cosmic credits for each player, including final rewards and penalties
+    /**
+     * Computes the total rewards and penalties for all players when the game ends.
+     * Includes finish order rewards, best ship rewards, goods sale rewards, and loss penalties.
+     */
     public void computeTotalRewards(){
         finishOrderReward();
         bestShipReward();
         saleOfGoodsReward();
         lossPenalty();
     }
-    //assigns rewards to players based on their final order on the flight board
+    /**
+     * Assigns rewards to players based on their final position order on the flight board.
+     * Earlier finishers receive higher rewards.
+     */
     public void finishOrderReward(){
         List<Integer> rewards;
         if(firstFlight){
@@ -1234,7 +1556,10 @@ public class GameState {
             i++;
         }
     }
-    //assigns a reward to the player with the best ship, i.e. the one with the lowest number of exposed connectors
+    /**
+     * Assigns a reward to the player with the best ship, determined by having the
+     * lowest number of exposed connectors.
+     */
     public void bestShipReward(){
         String bestShipPlayer = "";
         int minExposedConnectors = 1000;
@@ -1256,13 +1581,20 @@ public class GameState {
             updatePlayerCredits(bestShipPlayer, 4);
         }
     }
-    //assigns a penalty to each player based on the number of components lost during the game
+
+    /**
+     * Assigns penalties to each player based on the number of components they lost during the game.
+     */
     public void lossPenalty(){
         for(String nickname: playersPlay.keySet()){
             updatePlayerCredits(nickname, -playersPlay.get(nickname).getLostComponents());
         }
     }
-    //assigns to each player a reward based on the number and type of goods carried by their ships
+    /**
+     * Assigns rewards to each player based on the number and type of goods they are carrying.
+     * Players who abandoned the game receive half the normal reward.
+     */
+
     public void saleOfGoodsReward(){
         for(String nickname: playersPlay.keySet()){
             if(hasAbandoned(nickname)){
@@ -1273,20 +1605,21 @@ public class GameState {
             }
         }
     }
-    //sets the end-game procedure
+    /**
+     * Sets the callback procedure to be executed when the game ends.
+     *
+     * @param endGameManagement the Runnable to execute for end-game cleanup
+     */
+
     public void setEndGameManagement(Runnable endGameManagement) {
         this.endGameManagement = endGameManagement;
     }
-    //runs the callback procedure to remove the controller from the server's list
+    /**
+     * Executes the callback procedure to remove the controller from the server's list
+     * and perform other end-game cleanup.
+     */
     public void cancelGame(){
         this.endGameManagement.run();
     }
-
-
-
-
-
-
-
- }
+}
 
