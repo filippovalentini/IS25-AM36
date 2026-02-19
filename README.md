@@ -8,6 +8,9 @@
 This project is a Java-based implementation of the table game Galaxy Trucker developed at Politecnico di Milano. The team members are Bonora Lorenzo, Bove Thomas, Dal Monte Nicolò, Valentini Filippo.
 The implementation features both a command-line interface (CLI) and a JavaFX graphical user interface.
 
+## Final grade
+30
+
 ## Task reached:
 | Feature | Implemented |
 |:------- |:----------- |
